@@ -1,0 +1,525 @@
+@ELT,IQD UUSIG*1095-001-001.READ/ME,,SENT,,DOC
+                       SIPTOOL
+
+SIPTOOL is a program that serves no useful function, except as a
+tutorial of how to write a program that collects SIP data. It
+also provides you with most of the code necessary to begin your
+own SIP collection program.
+
+The source code of the program is the tutorial. It has been
+painstakingly commented to guide you through the steps necessary
+to successfully collect SIP data. 
+
+The SIPTOOL source code can be loaded just as it is onto an
+1100/2200 system. Once the source code is loaded it can be
+assembled, mapped and executed.
+
+To build SIPTOOL the following ECL commands may be used:
+
+      @MASM,NE UUSIG*1095-001-001.SIPTOOL
+      @MAP,NE ,UUSIG*1095-001-001.SIPTOOL
+      IN UUSIG*1095-001-001.SIPTOOL
+      END
+      @XQT UUSIG*1095-001-001.SIPTOOL
+
+When SIPTOOL is executed it checks to see if SIP is turned on. If
+it is not turned on, SIPTOOL turns SIP on. It then asks for a SIP
+variable. Unisys publication 7831 0323-002 "OS1100 Exec System
+Software Administration Reference Manual" provides a list of the
+legal SIP variables. After the variable is entered, SIPTOOL
+displays information about the variable and the data contained in
+the variable.
+@END SENT
+@ELT,IQD UUSIG*1095-001-001.SIPTOOL,,SENT,,ELT
+.DATE 18 OCT 91  17:07:45  RID     14B   18 OCT 91  MADSEN
+.@991231 TIMELOV Screen                                           Author: Coates
+*PURPOSE: Window for selecting a Department Report
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+PD
+FKEY,2,'Newer',KEY
+FKEY,3,'Older',KEY
+FKEY,8,'Help',dsphelp,1
+FKEY,10,'Quit',^
+fld,03,53,19,27,AFB,(pr,WHI/BLU)
+fld,03,53,,27,cvp,(pr,WHI/RED),,''
+dfld,c,P,(ts)
+dfld,d,P,(pr)
+area,,04,54,17,25,,(pr)
+ 
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+ 
+END
+HELP,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18   21   |
+       Tab to your selection and transmit.
+ 
+HELP,999
+                     ..... END REPORT .....
+@END SENT
+$(2)
+          AXR$  
+  . **********************************************************  
+  . *              SIP    RETRIEVAL                          *  
+  . **********************************************************  
+          . 
+          . 
+SIPSTAT   $EQUF     SIPPKT,,S1        . STATUS OF THE REQUEST   
+SIPFUNC   $EQUF     SIPPKT,,T3        . ER SYSBAL$ FUNCTION 
+SIPPARAM  $EQUF     SIPPKT+1,,W       . PARAMETER FOR FUNCTIONS 01,041, 060 
+SIPSTATUS $EQUF     SIPPKT+2,,H1      . DATA RETURNED FOR 031 FUNCTION  
+SIPBUFFER $EQUF     SIPPKT+3,,H1      . SIP BUFFER  
+SIPLNGTH  $EQUF     SIPPKT+3,,H2      . LENTGH TO SIP BUFFER
+SIPTIME   $EQUF     SIPPKT+4,,W       . TIME$ OF SIP REQUEST COMPLETION 
+          . 
+STATUS    +031                        . RETRIEVE SIP STATUS 
+          +0                          . NO SUB-FUNCTION 
+          +0,0                        . NO LENGTH OR ADDRESS
+           .
+FLGOF     +033                        . FLGOF FUNCTION  
+          +0                          . SIPPARAM
+          +1,ALL                      . PARAMETERS FOR SIPBUFFER & SIPLNGTH 
+          . 
+FLGON     +032                        . FLGON FUNCTION  
+          +0
+          +1,IO                       . PARAMETERS FOR SIPBUFFER & SIPLNGTH 
+          . 
+RETRIEVE  +01                         . RETRIEVE SIP DATA   
+ .        +033                        . GET UNIT ARRAY  
+          +0                          . GET ALL ARRAYS  
+          +15000,BUFFER               . PARAMETERS FOR SIPBUFFER & SIPLNGTH 
+          . 
+START     +010                        . SIP START FUNCTION  
+          +0                          . SIPPARAM
+          +15000,BUFFER               . PARAMTERS FOR SIPBUFFER & SIPLNGTH  
+          . 
+OFF       +021                        . SIP OFF FUNCTION
+          +0                          . SIPPARAM
+          +15000,BUFFER               . PARAMTERS FOR SIPBUFFER & SIPLNGTH  
+          . 
+IONET     +07                         . I/O NETWORK 
+          +0                          . SIPPARAM
+          +15000,BUFFER 
+          . 
+MAIN      +06                         . MAIN HEADER BLOCK   
+          +0                          . SIPPARAM
+          +15000,MAINB  
+          . 
+SYMB      +05                         . SYMBOL TABLE BLOCK  
+          +0                          . SIPPARAM
+          +15000,SYMBOL 
+          . 
+ALL       'ALL   '  
+IO        'ALL   '  
+          . 
+SIPPKT    $RES      5   
+MAINB     $RES      200 
+SYMBOL    $RES      700 
+BUFFER    $RES     15000              . BUFFER FOR RETURING SIP DATA
+JDESG     +0
+LENGTH    +0
+OFFSET    +0
+TURNON    +0                          . FLAG TO KNOW IF WE TURNED SIP ON
+JMNE      'W     '                    . LITERALS TO DISPLAY PARTS OF WORDS  
+          'H2    '  
+          'H1    '  
+          'XH2   '  
+          'XH1   '  
+          'T3    '  
+          'T2    '  
+          'T1    '  
+          'S6    '  
+          'S5    '  
+          'S4    '  
+          'S3    '  
+          'S2    '  
+          'S1    '  
+          'U     '  
+          'XU    '  
+OPTIONS   +0                          . XQT OPTIONS 
+PCT       +0                          . RUN TYPE
+VARIABLE  +0
+INSTRUC   +0
+DATA      +0
+PF        $FORM     12,6,18 
+VMSG      'ENTER SIP VARIABLE TO DUMP'  
+VMSGL     $EQU      $-VMSG  
+TREADPKT  PF 1,VMSGL,VMSG   
+          +EOF,VARIABLE 
+BADSTAT   ' STATUS RETURNED ON FUNCTION ^'  
+BELONGS   ' PART OF ARRAY ^'
+NFARRAY   'COULD NOT FIND ARRAY^'   
+ED        E$PKT     20,OUTLINE 'MSG','^'
+OUTLINE   $RES      20  
+SIPLEVEL  +0
+/   
+$(1)
+P         $PROC 
+SIP*      $NAME 
+          . 
+          . THIS PROC TAKES ADDRESS OF SIP PKT DATA, PUTS IT
+          . INTO THE SIP PKT AND DOES SYSBAL CALL   
+          . 
+          . THE FORMAT IS   
+          .               SIP FUNC ERROR-ADR,REG
+          . 
+          . WHERE FUNC       IS THE FIP FUNCTION TO PERFORM 
+          .                  THE ALLOWABLE FUNCTIONS ARE
+          .                    STATUS     RETRIEVE SIP STATUS
+          .                    FLGOF      TURN SIP FLAGS OFF
+          .                    FLGON      TURN SIP FLAGS ON
+          .                    RETRIEVE   RETRIEVE SIP DATA BLOCK
+          .                    START      START SIP 
+          .                    OFF        TURN SIP OFF
+          .                    IONET      RETRIEVE I/O NETWORK BLOCK
+          .                    MAIN       RETRIEVE MAIN HDR BLOCK
+          .                    SYMB       RETRIEVE SIP SYMBOL TABLE
+          .       ERROR-ADR  IS WHERE TO GO IN CASE OF ERROR
+          .       REG        IS THE X REGISTER TO USE FOR AN LMJ
+          . 
+          .  ERROR-ADR AND REG ARE BOTH OPTIONAL, IF NEITHER ARE
+          .  THE STATUS OF THE SYSBAL$ REQUEST IS NOT TESTED.   
+          .  IF ERROR-ADR[,REG] ARE SPECIFIED, THE PROGRAM WILL JUMP 
+          .  TO THE ERROR ADDRESS WHEN THE SYSBAL STATUS IS NON-ZERO.   
+          .  IF REG IS SPECIFIED AN LMJ USING THAT REGISTER IS GENERATED
+          .  INSTEAD OF A JUMP.   
+          . 
+          LA,U      A0,P(1,1)   
+          LA        A1,0,A0 
+          SA        A1,SIPPKT         . PUT FUNCTION IN 
+          LA        A1,1,A0 
+          SA        A1,SIPPKT+1       . PUT IN PARAMETER DATA (IF ANY)  
+          LA        A1,2,A0 
+          SA        A1,SIPPKT+3       . PUT IN BUFFER LENGTH & ADDRESS  
+          LA,U      A0,SIPPKT   
+          ER        SYSBAL$ 
+          $IF       P(2)              . IS ERROR HANDLING DESIRED
+            TZ        SIPSTAT           . YES, CHECK ER SYSBAL STATUS  
+            $IF       P(2,2)            . WAS A REGISTER PROVIDED
+              LMJ       P(2,2),P(2,1)     . YES, PERFORM AN LMJ 
+            $ELSE 
+              J         P(2,1)            . NO, JUST JUMP
+            $ENDF 
+          $ENDF 
+          $END  
+/   
+ST  
+          SA        A5,OPTIONS        . SAVE OPTIONS
+          SA        A4,PCT            . SAVE RUN TYPE   
+          . 
+          LA,U      A0,35             . PREPARE TO GO REALTIME  
+          TEP       A5,(1*/('Z'-'R')) . DOES THE USER WANT RT   
+          ER        RT$               . YEP, GO FOR IT  
+          . 
+          SIP       STATUS STATRTN,X10  
+          LA        A0,SIPSTATUS      . GET STATUS BITS 
+          AND,U     A0,0500           . IS SIP ALREADY ON   
+          JNZ       A1,SIPISON        . YES, CAN'T SET FLAGS
+                                      . AND REALLY SHOULDN'T TURN   
+                                      . IT ON WHILE SOMEBODY ELSE   
+                                      . HAS IT  
+          SIP       FLGON STATRTN,X10 . SET FLAGS TO COLLECT DESIRED DATA   
+                                      . 
+                                      . THE SIP FLAGS CANNOT BE TURNED ON   
+                                      . IF SIP DATA COLLECTION IS ALREADY   
+                                      . TAKING PLACE
+                                      . 
+          SIP       START STATRTN,X10 . TURN SIP ON 
+                                      . 
+          SFS       TURNON            . I TURNED SIP ON 
+          . 
+SIPISON 
+          SIP       MAIN STATRTN,X10  . RETRIEVE MAIN HDR BLOCK 
+                                      . 
+                                      . THE MAIN HDR BLOCK CONTAINS THE 
+                                      . POINTER TABLE, WHICH CONTAINS   
+                                      . POINTERS TO THE VARIOUS ARRAYS  
+                                      . IN THE SIP DATA BLOCK   
+                                      . IT ALSO PROVIDES YOU WITH THE   
+                                      . LEVEL OF SIP YOU ARE DEALING WITH   
+                                      . 
+          LA,S4     A0,MAIN+07        . GET SIP LEVEL   
+          SA        A0,SIPLEVEL       . SAVE IT 
+          . 
+          SIP       SYMB STATRTN,X10  . RETRIEVE SYMBOL TABLE   
+                                      . 
+                                      . THE SYMBOL TABLE PROVIDES ALL OF
+                                      . THE INFORMATION NECESSARY TO REFERENCE 
+                                      . ANY SIP VARIABLE. THE TABLE CONTIANS
+                                      . OFFSETS AND J DESCRIPTORS THAT  
+                                      . DECRIBE EACH VARIABLE   
+                                      . 
+          SIP       RETRIEVE STATRTN,X10 . GET SIP DATA BLOCK   
+          . 
+                                      . AT THIS POINT A PROGRAM WOULD   
+                                      . TYPICALLY INITIALIZE THE
+                                      . VARIABLES IT IS INTERESTED IN   
+          . 
+                                      . THE VALUES FOR THE FIRST
+                                      . SAMPLE WILL REFLECT ALL OF THE  
+                                      . EVENTS SINCE SIP WAS TURNED ON  
+          . 
+          LA        A0,OPTIONS        . DEBUG   
+          TEP       A0,(1*/('Z'-'Z')) . DEBUG   
+          SLJ       TON$              . DEBUG   
+          . 
+SLOOP   
+          .
+          . ***************************************************
+          . *  THIS SECTION OF CODE ASKS FOR A SIP VARIABLE   *
+          . *  VIA ER TREAD$ AND THEN CALLS SVR TO BUILD A    *
+          . *  LOAD INSTRUCTION THAT CAN EB EXECUTED TO LOAD  *
+          . *  THE SIP DATA INTO REGISTER A0.                 *
+          . *                                                 *
+          . *  IN AN ACTUAL PROGRAM THE VARIABLE NAME WOULD   *
+          . *  NORMALLY BE HARD CODED AND NOT SOLICITED LIKE  *
+          . *  THIS.                                          *
+          . ***************************************************
+          .
+          SIP       RETRIEVE STATRTN,X10 . GET ANOTHER SIP SAMPLE
+          . 
+          SFS       VARIABLE          . CLEAR INPUT BUFFER  
+          LA,U      A0,TREADPKT       . 
+          ER        TREAD$            . ASK FOR SIP VARIABLE
+          SZ        A1  
+          LXI,U     A1,X8             . USE X8 AS AN INDEX REGISTER 
+          LA        A0,VARIABLE       . GET SIP VARIABLE TO LOOK FOR
+                                      . INPUT TO SVR IS
+                                      .   A0 = FDATA VARIABLE NAME
+                                      .   A1 = INDEX REGISTER OR ZERO
+                                      .
+          LMJ       X11,SVR           . RETURN AN INSTRUCTION   
+                                      . 
+                                      . SVR RETURNS A LOAD INSTRUCTION  
+                                      . IN A0, THAT WHEN EXECUTED   
+                                      . WILL CAUSE THE FIRST WORD   
+                                      . OF THE VARIABLE TO BE LOADED
+                                      . INTO A0 
+                                      . 
+          JZ        A0,NOFIND   
+          SA        A0,INSTRUC        . SAVE LOAD INSTRUCTION   
+          . 
+          .
+          . ***************************************************
+          . *  AT THIS POINT THE A PROGRAM WOULD NORMALLY     *
+          . *  EXECUTE THE LOAD INSTRUCTION AND REFERENCE THE *
+          . *  SIP DATA.                                      *
+          . *                                                 *
+          . *  THIS PROGRAM, DOESN'T DO THAT. THE CODE        *
+          . *  FOLLOWING THIS POINT IS USED TO DISPLAY        *
+          . *  INFORMATION ABOUT THE SIP VARIABLE SUCH AS     *
+          . *  WHICH ARRAY IT IS IN, THE J DESIGNATOR AND THE *
+          . *  WORD OFFSET. AFTER THAT INFORMATION IS         *
+          . *  PRESENTED, THE DATA IN THE SIP VARIABLE IS     *
+          . *  DUMPED TO THE SCREEN.                          *
+          . *  SOME VARIABLES ARE LONGER THAN ONE WORD LONG.  *
+          . *  FOR THOSE VARIABLES MULTIPLE WORDS ARE         *
+          . *  DISPLAYED.                                     *
+          . ***************************************************
+          .
+          LX        X7,(2,SYMBOL+2)   . SET UP INC AND START FOR SEARCH 
+          LA        A0,SYMBOL+1 
+          SSL       A0,1              . GET NUMBER OF ENTRIES   
+          ANA,U     A0,1              . SKIP 1ST TWO WDS
+          LR        R1,A0             . NUMBER OF ENTRIES TO SEARCH 
+          LA,S1     A1,1,X1           . GET DATA DESCRIPTOR A-TYPE  
+          LSSL      A1,24   
+          LA,U      A0,077  
+          DSL       A0,6              . BUILD MASK FOR SEARCH   
+          LR        R2,(0770377,0)  
+          MSE       A1,1,*X7          . BY TAKING THE ARRAY TYPE OUT
+                                      . OF THE DATA DESCRIPTOR FOR THE  
+                                      . VARIABLE IN QUESTION, IT IS A SIMPLE
+                                      . MATTER TO FIND THE ARRAY NAME THAT  
+                                      . CONTIANS THE VARIABLE.  
+                                      . THE ARRAY DESCRIPTOR CONTAINS AN
+                                      . OFFSET INTO THE POINTER TABLE   
+                                      . 
+          J         NOFINDA           . COULD NOT FIND THE ARRAY
+          ANX,U     X7,2              . POINT BACK TO THE ARRAY DESCRIPTOR  
+                                      . 
+          E$DIT     ED  
+          E$CLEAR   
+          E$FD1     VARIABLE          . DISPLAY THE VARIABLE NAME   
+          E$COL     10  
+          LA        A0,JDESG          . GET INDEX FOR MNEUMONIC 
+          LA        A0,JMNE,A0  
+          LMJ       X11,EFD1$         . DISPLAY THE J DESIGNATOR
+          E$FD1     (',,    ')  
+          E$DECV    OFFSET            . AND THE OFFEST INTO THE ARRAY   
+          E$COL     20  
+          E$FD2     ('LENGTH=') 
+          E$DECV    LENGTH            . MANY VARIABLE ARE SEVERAL WORDS LONG
+          E$COL     40  
+          E$MSG     BELONGS           . 
+          E$FD1     0,X7              . SHOW THE NAME IF THE ARRAY  
+          E$PRINT   
+          . 
+                                      . THE POINTER TABLE RESIDES IN THE
+                                      . MAIN HEADER BLOCK.  
+                                      . 
+                                      . THE POINTER TABLE CONTAINS OFFSETS  
+                                      . FOR THE VARIOUS ARRAYS, INTO THE SIP
+                                      . DATA BLOCK. 
+                                      . 
+                                      . THE ARRAY DESCRIPTOR (SYMBOL TABLE) 
+                                      . PROVIDES AN OFFEST INTO THE POINTER 
+                                      . TABLE   
+                                      . 
+                                      . BY SUBTRACTING THE VALUE AT POINTER 
+                                      . TABLE+0 FROM THE VALUE AT POINTER TABLE
+                                      . +OFFSET, YOU CAN GET AN OFFSET INTO 
+                                      . THE SIP DATA BLOCK THAT POINTS TO   
+                                      . THE ARRAY YOU WANT  
+                                      . 
+          LA,H2     A1,1,X7           . GET OFFSET INTO POINTER TABLE   
+                                      . 
+          AA,H2     A1,MAINB+012      . ADD TO OFFSET FOR PTR TBL   
+          LX        X8,MAINB,A1       . GET POINTER TO ARRAY
+          LA,H2     A1,MAINB+012      . GET ADDRESS OF PTR TBL  
+          ANX       X8,MAINB,A1       . SUBTRACT START OF CONTROL ARRAY 
+          AX,U      X8,BUFFER         . ADD START OF SIP BUFFER ADDRESS 
+          . 
+          . THE FOLLOWING EX INTRUCTION CAN BE USED 
+          . TO LOAD THE FIRST WORD OF THE VARIABLE DATA 
+          . 
+          . IT IS COMMENTED OUT BECAUSE I'M USING   
+          . A ROUTINE TO DUMP ALL OF THE WORDS OF THE   
+          . VARIABLE
+          . 
+ .        EX        INSTRUC           . LOAD DATA   
+ .        SA        A0,DATA           . SAVE DATA   
+          . 
+          LA        A0,INSTRUC  
+          AND       A0,(0177777)      . ISOLATE OFFSET  
+          AA        A1,X8             . ADDRESS OF DATA 
+          LR        R7,LENGTH   
+          JGD       R7,$+1            . ADJUST JGD COUNTER  
+          SZ        A5                . CLEAR COUNTER   
+          LX        X8,A1             . PUT ADDRESS IN X8   
+          LXI,U     X8,1              . SET UP INCREMENT
+          . 
+          E$DIT     ED  
+          E$CLEAR   
+ODLP1   
+          E$OCTF    12,0,*X8          . EDIT IN FIRST WORD  
+          AA,U      A5,1              . INCREMENT LINE COUNTER  
+          TNE,U     A5,6              . 6 WORDS ON LINE YET 
+          J         ODP               . YEP, GO PRINT LINE  
+          E$CHAR    ' '               . SEPERATE WORDS WITH A SPACE 
+          JGD       R7,ODLP1          . GET NEXT WORD   
+ODP 
+          E$PRINT   
+          SZ        A5                . CLEAR LINE COUNTER  
+          TP        R7                . DID WE DO ALL OF THE WORDS  
+          J         ODDONE            . YEP, GET OUT OF HERE
+          E$DIT     ED                . RE-ENTER EDIT MODE  
+          E$CLEAR   
+          JGD       R7,ODLP1
+          E$PRINT   . PRINT LAST LINE   
+ODDONE  
+          J         SLOOP             . AND WE'RE GOING ON AHEAD
+NOFIND  
+          E$DIT     ED  
+          E$CLEAR   
+          E$FD1     ('NOFIND')  
+          E$CHAR    ' ' 
+          E$FD1     VARIABLE
+          E$PRINT   
+          J         SLOOP   
+NOFINDA 
+          E$DIT     ED  
+          E$CLEAR   
+          E$MSG     NFARRAY 
+          E$PRINT   
+          J         SLOOP   
+EOF 
+          TNZ       TURNON            . DID I TURN SIP ON   
+          J         EOF1              . NO, SO DON'T TURN IT OFF
+          SIP       OFF STATRTN,X10 
+EOF1
+          ER        EXIT$   
+/   
+SVR 
+          . *****************************************************
+          . * THIS IS THE SVR (SIP VARIABLE) ROUTINE.           *
+          . *                                                   *
+          . * SVR SEARCHES THE SIP SYMBOL TABLE FOR THE         *
+          . * VARIABLE NAME (PASSED IN A0).                     *
+          . *                                                   *
+          . * ONCE THE VARIABLE'S DATA DESCRIPTOR IS FOUND, SVR *
+          . * BUILDS A LOAD INSTRUCTION WITH THE INFORMATION    *
+          . * CONTAINED IN THE DATA DESCRIPTOR. THE LOAD        *
+          . * INSTRUCTION IS RETURNED IN A0. IF THE VARIABLE    *
+          . * IS NOT FOUND ZERO IS RETURNED IN A0               *
+          . *                                                   *
+          . * INPUT     A0 = FDATA SIP VARIABLE                 *
+          . *           A1 = INDEX REGISTER TO BE USED IN THE   *
+          . *                LOAD INSTRUCTION, OR ZERO          *
+          . *                                                   *
+          . * OUTPUT    A0 = LOAD INSTRUCTION OR ZERO           *
+          . *****************************************************
+          .
+$(2)
+LOAD      LA        A0,0
+$(1)
+          LX        X1,(2,SYMBOL+2) 
+          LA        A2,SYMBOL+1 
+          ANA,U     A2,2              . GET RID OF FIRST 2 WDS  
+          SSL       A2,1              . DIVIDE BY 2 FOR NUMBER OF ENTRIES   
+          LR        R1,A2   
+          SE        A0,0,*X1          . LOOK FOR ENTRY  
+          J         SVNOFND           . COULDN'T FIND IT
+          ANX,U     X1,2              . POINT BACK TO OUR ENTRY 
+          LA        A0,LOAD           . PUT LOAD INS TEMPLATE IN A0 
+          OR        A0,A1             . ADD IN INDEX REGISTER   
+          LA        A0,A1   
+          LA        A2,1,X1           . GET J-DESG AND OFFSET   
+          AND       A2,(I$ 0,017,0,0,0,0177777) . STRIP OF OTHER JUNK 
+          LA        A2,A3   
+          SA,H2     A3,OFFSET         . SAVE OFFSET FOR EDIT
+          LSSL      A3,6
+          SSL       A3,32   
+          SA        A3,JDESG          . SAVE J-DESIGNATOR FOR EDIT  
+          LA,H2     A3,3,X1           . GET OFFSET OF NEXT VAR  
+          ANA       A3,OFFSET         . GET LENGTH OF OUR VARIABLE  
+          TNZ       A3                . DID IT TURN OUT ZERO
+          LA,U      A3,1              . FIX IT  
+          SA        A3,LENGTH   
+          OR        A2,A0             . MERGE 'EM   
+          LA        A0,A3             . 
+          J         SVRET   
+SVNOFND 
+          SZ        A0  
+SVRET   
+          J         0,X11   
+/   
+STATRTN 
+          . ROUTINE TO DISPLAY NON-ZERO STATUS  
+          . 
+          E$DIT     ED  
+          E$CLEAR   
+          E$FD1     ('******')  
+          E$CHAR    ' ' 
+          E$OCTF    3,SIPSTAT   
+          E$MSG     BADSTAT 
+          E$OCTF    3,SIPFUNC   
+          E$CHAR    ' ' 
+          E$FD1     ('******')  
+          E$PRINT   
+          J         0,X10   
+          END       ST  
+@END SENT

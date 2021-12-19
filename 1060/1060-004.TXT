@@ -1,0 +1,1052 @@
+@CAT,P    1060-004-007.,///10000
+@ASG,T    TEMP.,///10000
+@ELT,OI TEMP.1060-004-007,,,160211033342,000
+)@@G@@**PF**@@@@AH@@@@@@@@@@@[@#'@@@]FE@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@]G@@@]F^@@@@@@@@@@@@@@B@@@@[@@@@]<G@@@@AH@B@@@@AB
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AC
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@B@@#@@@@@@@@C@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AD
+)@@G@@@@@@@@@@@@@@@@@@@D@@@@@@@@@@@@@@F@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AE
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AF
+)@@G@@@@@@@@@@@@@@@@@@@@@@A@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[@@@@@@@@@AG
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AI
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AJ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]AL
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@^@@@@@@@@@@@@@@@@@@@@E@@FAN
+)@@G@@CORRDUMP    @@@@@@@@[@@@            @ @A@ P@@@@B@@@@[@G /CFMCORRDUMPTTL AO
+)@@G@@@@@@@@@@[@@@            @ @[@]P@@@@^@@@@[BCS]DVMSKELPRINT   @@@@@@@@[@@@AP
+)@@G@@            @ @U@ P@@@@F@@@@[FI24DQMCDMNUMBERS  @@@@@@@@[@@@            AQ
+)@@G@@@ @^@ P@@@@#@@@@[QEL BVMPRINTCDM    @@@@@E@@[@@@            @ @C@ P@@@@UAR
+)@@G@@@@@@[TA5.DRMTITLE       @@@@@@@@A@@@            )@@]@@@@@@@-@@@@[3D?MAYLAS
+)@@G@@ALTER       @@@@@@@@A@@@            )@@]@@@@@@@T@@@@]OCN6DDLSPECS       AT
+)@@G@@@@@@@@@@[@@@            @ @[@][@@@@J@@@@]!E0EBNYSYSGEN-II   @@@@@@@@[@@@AU
+)@@G@@            @ @[@]D@@@[J@@@@]/HTDBNYSYSINIT     @@@@@@@@[@@@            AV
+)@@G@@@ @!@ D@@@@S@@@@^FIZRBNYSYSGEN      @@@@@@@@[@@@            @ @<@ D@@@[MAW
+)@@G@@@@@@^<I<2BNY@@@@@@@@@@@@@@@@@@@@[@@@            @ @!@ D@@@@S@@@@)5IZRBNYAX
+)@@G@@SYSGEN      @@I@@@)@[@@@            @ @+@ D@@@[M@@@@-HIZUBNYSYSGEN      AY
+)@@G@@@@@@@@@@[@@@            @ @<@ D@@@[M@@@@+ZI<2BNYSYSINIT     @@@@@@@@[@@@AZ
+)@@G@@            @ @?@ D@@@@S@@@@<.IPXBNYSYSGEN      @@L@@@)@[@@@            BA
+)@@G@@@ @)@ D@@@[M@@@@=PIP-BNYSYSGEN      @@@@@@@@[@@@            @ @-@ D@@@[MBB
+)@@G@@@@@@>$IP!BNYSYSINIT     @@Q@@@)@[@@@            @ @*@ D@@@@S@@@@$CHBKBNYBC
+)@@G@@SYSGEN      @@O@@@)@[@@@            @ @T@ D@@@[M@@@@$)HBPBNYSYSGEN      BD
+)@@G@@@@R@@@)@[@@@            @ @U@ D@@@[M@@@@*2HB!BNYSYSGEN-II   @@@@@@@@[@@@BE
+)@@G@@            @ @[@]D@@@[J@@@@%^HTDBNYSYSINIT     @@S@@@)@[@@@            BF
+)@@G@@@ @(@ D@@@@S@@@@:NHT%BNYSYSGEN      @@T@@@)@[@@@            @ @V@ D@@@[MBG
+)@@G@@@@@@::HT\BNYSYSINIT     @@@@@@@@[@@@            @ @%@ D@@@@S@@@@?.HWJBNYBH
+)@@G@@SYSGEN      @@U@@@)@[@@@            @ @W@ D@@@[Y@@@@!PHWOBNYSYSGEN      BI
+)@@G@@@@@@@@@@[@@@            @ @X@ D@@@[M@@@@,3HW&BNY@@@@@@@@@@@@@@@@@@@@@@@@BJ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@(E@@[[                                          BL
+)@@G@@                  @N@#[[^@)^@)A@4^[^C(#^@8A8)^@)^@)^@)^@)^@)^@)^@)^@)^@)BM
+)@@G@@^@)^@)^@)^@)^@)^@)^@)^@)^@)^@)^@)^@)^@)^@)^@)^@)^[KCDBC*'^@)^@3A8)@[__[[BN
+)@@G@@^@)^@)@-@@[[@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BO
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BP
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[[[BQ
+)@@G@@@-@@[[@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BR
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BS
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[[[@-@@[[BT
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BU
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BV
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[[[@-@@[[@@@@@@BW
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BX
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BY
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[[[@-@@[[@@@@@@@@@@@@BZ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@CA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@CB
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@K@[[[2116 NAM,SC0801 ACT,UCT1CC
+)@@G@@00 RUN,100  PRI,M                  PRG,1                                CD
+)@@G@@(L@@[[                                                                  CE
+)@@G@@                                    @-@[[[2117 NAM,SC0802 ACT,UCT110 RUNCF
+)@@G@@,100  PRI,M                  PRG,1                                      CG
+)@@G@@                                                                        CH
+)@@G@@                        @-@[[[2118 NAM,SC0802 ACT,UCT115 RUN,100  PRI,M CI
+)@@G@@                 PRG,1                                                  CJ
+)@@G@@                                                                        CK
+)@@G@@            @-@[[[2119 NAM,SC0803 ACT,UCT120 RUN,100  PRI,M             CL
+)@@G@@     PRG,1                                                              CM
+)@@G@@                                                                        CN
+)@@G@@@-@[[[2120 NAM,SC0803 ACT,UCT123 RUN,100  PRI,M                  PRG,1  CO
+)@@G@@                                                                        CP
+)@@G@@                                                            @-@[[[2121 NCQ
+)@@G@@AM,SC0803 ACT,UCT125 RUN,100  PRI,M                  PRG,1              CR
+)@@G@@                                                                        CS
+)@@G@@                                                @-@[[[2122 NAM,SC0803 ACCT
+)@@G@@T,UCT126 RUN,100  PRI,M                  PRG,1                          CU
+)@@G@@                                                                        CV
+)@@G@@                                    @[@[[[2123 N()@@[[AM,SC0804 ACT,UCT0CW
+)@@G@@30 RUN,100  PRI,M                  PRG,1                                CX
+)@@G@@                                                                        CY
+)@@G@@                              @-@[[[2124 NAM,SC0806 ACT,UCT020 RUN,100  CZ
+)@@G@@PRI,M                  PRG,1                                            DA
+)@@G@@                                                                        DB
+)@@G@@                  @-@[[[2125 NAM,SC0809 ACT,UCT040 RUN,100  PRI,M       DC
+)@@G@@           PRG,1                                                        DD
+)@@G@@                                                                        DE
+)@@G@@      @-@[[[2126 NAM,SC0810 ACT,UCT085 RUN,100  PRI,M                  PDF
+)@@G@@RG,1                                                                    DG
+)@@G@@                                                                  @-@[[[DH
+)@@G@@2127 NAM,SC0810 ACT,UCT086 RUN,100  PRI,M                  PRG,1        DI
+)@@G@@                                                                        DJ
+)@@G@@                                                      @-@[[[2128 NAM,SC0DK
+)@@G@@811 ACT,UCT050 RUN,100  PRI,M                  PRG,1                    DL
+)@@G@@                                                                        DM
+)@@G@@                                          @O@[[[2129 NAM,SC0812 ACT,UCT0DN
+)@@G@@55 RUN,100  PRI,M                  PRG,1                                DO
+)@@G@@                        (H@@[[                                          DP
+)@@G@@                                    @-@[[[2130 NAM,SC0813 ACT,UCT041 RUNDQ
+)@@G@@,100  PRI,M                  PRG,1                                      DR
+)@@G@@                                                                        DS
+)@@G@@                        @-@[[[2131 NAM,SC0813 ACT,UCT042 RUN,100  PRI,M DT
+)@@G@@                 PRG,1                                                  DU
+)@@G@@                                                                        DV
+)@@G@@            @-@[[[2132 NAM,SC0814 ACT,UCT043 RUN,100  PRI,M             DW
+)@@G@@     PRG,1                                                              DX
+)@@G@@                                                                        DY
+)@@G@@@-@[[[2133 NAM,SC0814 ACT,UCT046 RUN,100  PRI,M                  PRG,1  DZ
+)@@G@@                                                                        EA
+)@@G@@                                                            @-@[[[2134 NEB
+)@@G@@AM,SC0823 ACT,UCT060 RUN,100  PRI,M                  PRG,1              EC
+)@@G@@                                                                        ED
+)@@G@@                                                @-@[[[2135 NAM,SC0824 ACEE
+)@@G@@T,UCT901 RUN,100  PRI,M                  PRG,1                          EF
+)@@G@@                                                                        EG
+)@@G@@                                    @ @[[[2136 NAM,SC0825 ACT,UCT902 RUNEH
+)@@G@@(W@@[[,100  PRI,M                  PRG,1                                EI
+)@@G@@                                                                        EJ
+)@@G@@                              @-@[[[2137 NAM,SC0901 ACT,LAW010 RUN,100  EK
+)@@G@@PRI,G                  PRG,1                                            EL
+)@@G@@                                                                        EM
+)@@G@@                  @-@[[[2138 NAM,SC0901 ACT,LAW012 RUN,100  PRI,G       EN
+)@@G@@           PRG,1                                                        EO
+)@@G@@                                                                        EP
+)@@G@@      @-@[[[2139 NAM,SC0902 ACT,LAW011 RUN,100  PRI,G                  PEQ
+)@@G@@RG,1                                                                    ER
+)@@G@@                                                                  @-@[[[ES
+)@@G@@2140 NAM,SC0902 ACT,LAW013 RUN,100  PRI,G                  PRG,1        ET
+)@@G@@                                                                        EU
+)@@G@@                                                      @-@[[[2141 NAM,SC0EV
+)@@G@@903 ACT,LAW023 RUN,100  PRI,G                  PRG,1                    EW
+)@@G@@                                                                        EX
+)@@G@@                                          @S@[[[2142 NAM,SC0904 ACT,LAW0EY
+)@@G@@25 RUN,100  PRI,G                  PRG,1                                EZ
+)@@G@@                                                (D@@[[                  FA
+)@@G@@                                    @-@[[[2143 NAM,SC0905 ACT,LAW030 RUNFB
+)@@G@@,100  PRI,G                  PRG,1                                      FC
+)@@G@@                                                                        FD
+)@@G@@                        @-@[[[2144 NAM,SC0905 ACT,LAW032 RUN,100  PRI,G FE
+)@@G@@                 PRG,1                                                  FF
+)@@G@@                                                                        FG
+)@@G@@            @-@[[[2145 NAM,SC0906 ACT,LAW040 RUN,100  PRI,G             FH
+)@@G@@     PRG,1                                                              FI
+)@@G@@                                                                        FJ
+)@@G@@@-@[[[2146 NAM,SC0906 ACT,LAW041 RUN,100  PRI,G                  PRG,1  FK
+)@@G@@                                                                        FL
+)@@G@@                                                            @-@[[[2147 NFM
+)@@G@@AM,SC0906 ACT,LAW042 RUN,100  PRI,G                  PRG,1              FN
+)@@G@@                                                                        FO
+)@@G@@                                                @-@[[[2148 NAM,SC0906 ACFP
+)@@G@@T,LAW043 RUN,100  PRI,G                  PRG,1                          FQ
+)@@G@@                                                                        FR
+)@@G@@                                    @D@[[[2149 NAM,SC0907 ACT,LAW045 RUNFS
+)@@G@@,100  PRI,G             *[S@@@*SDFF*@ @ @]DIMENSION F(14),N(3),V(2)     FT
+)@@G@@@ @@@ DIMENSION F(14),N(3),V(2)     @C@@@]LET M=51+17*OPTS:H @ MAX CORREFU
+)@@G@@CTIONS PER PAGE   @#@@@]PARAMETER F,V     @ @@@]LET T=0 @ NOTHING IN PROFV
+)@@G@@GRESS @#@@@]OPEN SDFI CORR=<F>@]@@@]LET L=0     @]@@@]LET O=OPTS  @]@@@]FW
+)@@G@@DO FOREVER  @#@@@]GET CORR(EOF=EOF) @A@@@]IF IOBUF[0]:S1='*' THEN @ NEW FX
+)@@G@@MODULE@^@#@]LET <N>=<IOBUF:0,2>     @]@@@#LET <N>=' ' @ @@@#LET <N>=<IOBFY
+)@@G@@UF:0,NWORDS-1>    @#@@@]LET N(1):S1=' '   @^@@@]CORRDUMPTTL O,<N>,<V>,0 FZ
+)@@G@@@]@@@]LET R=0     @]@@@ LET L=0     @C@^@]ELSE IF IOBUF[0];S1='-' THEN @GA
+)@@G@@ NEW CORRECTION   @C@@@^ELSE IF IOBUF[0]:S1='-' THEN @ NEW CORRECTION   GB
+)@@G@@@]@@@] LET L=L+1  @]@@@] IF L>M THEN@^@@@]CORRDUMPTTL O,<N>,<V>,1 @]@@@]GC
+)@@G@@ LET L=1    @]@@@] END IF     @A@@@] WRITE CORECT <IOBUF:0,NWORDS-1>    GD
+)@@G@@@ @@@]CORECT: FORMAT C7,<NWORDS>F6,*@]@@@] LET R=0    @[@@@]ELSE  @]@@@]GE
+)@@G@@ LET R=R+1  @]@@@] LET L=L+1  @]@@@] IF L>M THEN@^@@@]CORRDUMPTTL O,<N>,GF
+)@@G@@<V>,1 @]@@@] LET L=1    @]@@@] END IF     @A@@@] WRITE TEXT R,<IOBUF:0,NGG
+)@@G@@WORDS-1>    @A@@@]TEXT: FORMAT D4,':',C7,<NWORDS>F6,* @]@@@] END IF     GH
+)@@G@@@[@@@]END DO@#@@@]EOF: CLOSE CORR   _@@@@@^[RELDE- ^[#D9MC(#E))B-DD9]E(AGI
+)@@G@@BK0 -IE9JEL^ES!AC"@C@@@[CTJEL CTOBK)C1JELHCDO^[#*[S@@@*SDFF*@]@@@[ LET PGJ
+)@@G@@=0    @^@@@@DIMENSION N(3),V(2)     @#@@@@PARAMETER O,N,V,F @C@@@@IF F=1GK
+)@@G@@ WRITE = *,'CONTINUED ON NEXT PAGE',*     @#@@@@IF O:T=1 THEN     @]@@@@GL
+)@@G@@LET X='TCF' @]@@@@LET Y='FOR' @[@@@@ELSE  @]@@@@LET X='PCF' @#@@@@LET Y=GM
+)@@G@@'AFTER'     @[@@@@END IF@]@@@@IF F=1 THEN @^@@@@WRITE TTL1 <N>,X,Y,<V>,PGN
+)@@G@@@G@@@@TTL1: FORMAT <3>WF,' ',WF,' ',WF,' GEN ',<2>WF,' (CONTINUED)',*(-1GO
+)@@G@@)     @[@@@@ELSE  @^@@@@WRITE TTL2 <N>,X,Y,<V>  @D@@@@TTL2: FORMAT <3>WFGP
+)@@G@@,' ',WF,' ',WF,' GEN ',<2>WF,*(-1)  @[@@@@END IF@]@@@@WRITE = *,* _@@@@@GQ
+)@@G@@ )/AK"E9A )$^@*CTJD1ODDIE( C)(^8? K* *1 C)@[@@[@C(GET @A@@[@E9MDDOC*)E-OGR
+)@@G@@D)2^@/D0" -S -T )/E0"^@)@H@@[@E-OD)2BK)C1JELHCDO^@/AS"E9A )$^@$ -RC0?^8)GS
+)@@G@@*[S@@@*SDFF*@]@@@ULET V=0     @#@@@Q DIMENSION F(12)  @]@@@Q PARAMETER FGT
+)@@G@@@^@@@Q OPEN SDFI SKEL=<F>     @]@@@Q LET P=1    @^@@@Q WRITE SKELNM <F>,GU
+)@@G@@P     @F@@@QSKELNM: FORMAT 'LISTING OF SKELETON ',<12>WF,C70,'PAGE: ',D,GV
+)@@G@@*(-1) @]@@@Q WRITE = *,*@^@@@Q LET M=51+OPTS:H*17     @]@@@Q LET X=0    GW
+)@@G@@@]@@@Q LET L=0    @]@@@Q LET N=0    @]@@@Q DO FOREVER @#@@@Q GET SKEL(EOGX
+)@@G@@F=EOF)@#@@@Q LET T=IOBUF[0]:H1@]@@@Q LET I=0    @D@@@Q IF T='*IF' OR T='GY
+)@@G@@*IN' OR T='*CO' OR T='*DE' LET I=1  @ @@@Q IF T='*EN' OR T='*LO' THEN   GZ
+)@@G@@@]@@@Q LET I=0    @]@@@Q LET V=V-1  @]@@@Q END IF     @#@@@Q IF T='*EL' HA
+)@@G@@THEN  @]@@@Q LET I=1    @]@@@Q LET V=V-1  @]@@@Q END IF     @]@@@Q IF V<HB
+)@@G@@0 THEN@]@@@Q LET V=0    @C@@@Q WRITE = 'ERROR: FOLLOWING IMAGE IGNORED:'HC
+)@@G@@,*    @]@@@Q END IF     @]@@@Q LET N=N+1  @]@@@Q LET L=L+1  @]@@@Q IF L>HD
+)@@G@@M THEN@]@@@Q LET P=P+1  @^@@@Q WRITE SKELNM <F>,P     @]@@@Q WRITE = *,*HE
+)@@G@@@]@@@Q LET L=0    @]@@@Q END IF     @#@@@R LET J=NWORDS-1   @#@R@Q LET JHF
+)@@G@@=NWORDS-1   @C@R@Q LET K=J*6+V*2+10 @ MAX # OF BYTES TO PRINT     @C@@@RHG
+)@@G@@ LET K=NWORDS*6+V*2+10 @ MAX # OF BYTES TO PRINT@ @@@Q LET K=K-132 @ AMOHH
+)@@G@@UNT OVER 132@ @@@Q IF K<=0 THEN @ NO OVERFLOW   @A@T@Q WRITE TEXT V,N,<IHI
+)@@G@@OBUF:0,NWORDS-1>  @ @@@T WRITE TEXT V,N,<IOBUF:0,J>   @[@@@Q ELSE @ @@@QHJ
+)@@G@@ LET K=(K+5)/6 @ # EXTRA WORDS@]@@@T LET J=J-K  @ @T@Q WRITE TEXT V,N,<IHK
+)@@G@@OBUF:0,J-K> @ @@@T WRITE TEXT V,N,<IOBUF:0,J>   @ @S@Q WRITE EXTRA <IOBUHL
+)@@G@@F:0,J-K+1,J>@ @T@S WRITE EXTRA <IOBUF:J-K+1,J>  @A@@@T WRITE EXTRA <IOBUHM
+)@@G@@F:J+1,NWORDS-1>   @[@@@QEND IF@C@T@QEXTRA: FORMAT '--CONTINUED IMAGE-->'HN
+)@@G@@,<K>F6,*    @C@@@TEXTRA: FORMAT '--CONTINUED IMAGE-->',<K>F6,*    @C@T@QHO
+)@@G@@TEXT: FORMAT Z2,' ',D5,': ',X(V*2),<NWORDS>F6,* @C@@@TTEXT: FORMAT Z2,' HP
+)@@G@@',D5,': ',X(V*2),<J+1>F6,*    @]@@@Q LET V=V+I  @]@@@Q END DO     @#@@@QHQ
+)@@G@@EOF: CLOSE SKEL   _@@@@@E0?D0?B-DD9]E(ABK0 -E (FB0)^@)@B@@@T^[RELDE- ^[OHR
+)@@G@@C(SE))E0?D0?B-DD9]E(ABK0 -EB0)@C@S@P^[RELDE- ^[ *[S@@@*SDFF*@#@@@[DIMENSHS
+)@@G@@ION C(500)  @^@^@@LET I=TOCSIZE DBE*CDM.  @#@@@^LET I=TOCSIZE MF. @#@@@[HT
+)@@G@@IF I<0 RETURN <C> @#@@@@DIMENSION T(I)    @^@^@@LET <T>=GETTOC DBE*CDM. HU
+)@@G@@@#@@@^LET <T>=GETTOC MF.@]@@@@LET N=0     @#@[@@DIMENSION C(500)  @#@@@@HV
+)@@G@@REPEAT P=141,10   @B@@@@IF T(P)='CDM   ' AND T(P+3):B35=0 THEN    @]@@@@HW
+)@@G@@LET N=N+1   @#@]@@LET C(N)=P(P+4)   @#@@@]LET C(N)=T(P+4)   @[@@@@END IFHX
+)@@G@@@]@@@@UNTIL P+10>I@]@@@@LET C(500)=N@]@@@#SORT <C> UP @]@@@@RETURN <C>  HY
+)@@G@@_@@@@@@^@@@]D- E))CS*D0(B(O [K S4 C)@]@@@@C(IC))*[S@@@*SDFF*@#@@@^DIMENSHZ
+)@@G@@ION A(1)    @G@@@^DIMENSION B(6),L(2),K(2),M(10),P(10),X(10*8),Y(10*8),ZIA
+)@@G@@(14*811),R(3)     @A@@@^DIMENSION N(500),Q(13),E(1),F(800)  @#@@@^LET <NIB
+)@@G@@>=CDMNUMBERS@]@@@^LET J=0     @]@@@CLET S=0     @]@@@CLET D=0     @]@@@CIC
+)@@G@@LET C=0     @]@@@CLET T=0     @]@@@^DO FOREVER  @]@@@^LET J=J+1   @]@@@^ID
+)@@G@@LET <A>=N(J)@ @@@^IF J>N(500) LET <A>='DONE  '  @]@@@^LET <E>=<A> @^@@@^IE
+)@@G@@IF A(1)='DONE  ' THEN   @[@@@^RETURN@[@@@^END IF@^@@@^LET I=SEARCH(<N>,AIF
+)@@G@@(1))  @]@@@^IF I<0 THEN @^@@@^IF DEVICE:S1<>0 OFF N   @ @@@^WRITE = 'CDMIG
+)@@G@@ NOT FOUND',*     @^@@@^IF DEVICE:S1<>0 ON N    @]@@@^GOTO REPEAT @[@@@^IH
+)@@G@@END IF@ @@@^OPEN SDFI CDMED=DBE$PF.CDM/<E>@]@@@^LET <Z>=' ' @I@@@^GET CDII
+)@@G@@MED <B>:'      ',S,D,C,<L>:'      ',<K>:'      ',T,<M>:'      ',<P>:'   IJ
+)@@G@@   '  @#@@@^REPEAT I=1,10     @ @@@^GET CDMED <X:I,I+9>:'      '  @#@@@^IK
+)@@G@@UNTIL I+10>10*8   @#@@@^REPEAT I=1,10     @ @@@^GET CDMED <Y:I,I+9>:'   IL
+)@@G@@   '  @#@@@^UNTIL I+10>10*8   @]@@@^LET H=0     @#@@@^REPEAT I=1,14     IM
+)@@G@@@B@@@^GET CDMED(EOF=EOF) <Z:I,I+13>:'      '    @]@@@^LET H=H+1   @D@@@^IN
+)@@G@@IF Z(I+12)<>'      ' OR Z(I+13)<>'      ' LET H=H+1   @#@@@^UNTIL I+14>8IO
+)@@G@@00*14 @#@@@^EOF: CLOSE CDMED  @#@@@^WRITE TITLE E(1)  @K@@@^TITLE: FORMAIP
+)@@G@@T C5,'DATA BASE EDITOR [DBE] CHANGE DESCRIPTION MEMORANDUM',C65,'CDM #: IQ
+)@@G@@',WF,*(-1),*@]@@@^WRITE LINES @A@@@^LINES: FORMAT C5,'I',<69>'=','I',*  IR
+)@@G@@@]@@@^WRITE SKIP  @ @@@^SKIP: FORMAT C5,'I',C75,'I',* @^@@@^WRITE NAMSITIS
+)@@G@@ <B:1,5>,S  @]@@@^LET I=CHARSW@#@@@^WRITE RJUST S     @F@@@^NAMSIT: FORMIT
+)@@G@@AT C5,'I PROBLEM SUBMITTED BY: ',<5>F6,C62,'SITE: ',WF@D@@@^RJUST: FORMAIU
+)@@G@@T C68,'      ',C68,X(73-I),WF,C75,'I',*   @]@@@^WRITE SKIP  @ @@@^WRITE IV
+)@@G@@DATE1 D:NT1,D:NT2,D:NT3 @E@@@^DATE1:  FORMAT C5,'I SUBMISSION DATE: ',F2IW
+)@@G@@,'/',F2,'/',F2    @ @@@^WRITE DATE2 C:NT1,C:NT2,C:NT3 @F@ @^DATE2: FORMAIX
+)@@G@@T C49,'CORRECTION DATE: ',F2,'/',F2,'/',F2,C75,'I',*  @F@@@ DATE2: FORMAIY
+)@@G@@T C49,'CORRECTION DATE: ',F2,'/',F2,'/',F2,C75,'I',*  @]@@@^WRITE SKIP  IZ
+)@@G@@@#@@@^WRITE MODULS <M>  @E@@@^MODULS: FORMAT C5,'I MODULES AFFECTED: ',<JA
+)@@G@@9>F6,C75,'I',*    @]@@@^WRITE SKIP  @#@@@^WRITE COMPNT <P>  @E@@@^COMPNTJB
+)@@G@@: FORMAT C5,'I COMPONENT(S):     ',<9>F6,C75,'I',*    @]@@@^WRITE SKIP  JC
+)@@G@@@]@@@^WRITE TYPE T@K@@@^TYPE:  FORMAT C5,'I CORRECTION TYPE: ',WF,' (P=PJD
+)@@G@@ROCESSOR, M=SYSTEM MACRO, O=OTHER)',C75,'I',*   @]@@@^WRITE SKIP  @#@@@^JE
+)@@G@@WRITE LEVEL <K>   @J@@@^LEVEL: FORMAT C5,'I USE THE FOLLOWING SGS FOR THJF
+)@@G@@E GEN: "LEVEL IS ',<2>WF,'"',C75,'I',*    @]@@@^WRITE SKIP  @#@@@^WRITE JG
+)@@G@@BASE <L>    @G@@@^BASE: FORMAT C5,'I GENERATE AGAINST DBE BASE LEVEL ',<JH
+)@@G@@2>WF,C75,'I',*    @]@@@^WRITE SKIP  @]@@@^WRITE LINES @E@@@^WRITE = *,C5JI
+)@@G@@,'PROBLEM DESCRIPTION AS REPORTED BY USER:',*   @]@@@^WRITE LINES @#@@@^JJ
+)@@G@@REPEAT I=1,10     @^@@@^WRITE DESC <X:I,I+9>    @B@@@^DESC: FORMAT C5,'IJK
+)@@G@@    ',<10>F6,C75,'I',*  @#@@@^UNTIL I+10>8*10   @]@@@^WRITE LINES @B@@@^JL
+)@@G@@WRITE = *,C5,'PROBLEM CAUSE/SOLUTION:',*  @]@@@^WRITE LINES @#@@@^REPEATJM
+)@@G@@ I=1,10     @^@@@^WRITE DESC <Y:I,I+9>    @#@@@^UNTIL I+10>8*10   @]@@@^JN
+)@@G@@WRITE LINES @#@@@^IF T:S1='O' THEN  @H@@@^WRITE = *,C5,'PERFORM THE FOLLJO
+)@@G@@OWING PROCEDURE TO EFFECT THE CHANGE NEEDED:',* @[@@@^ELSE  @J@@@^WRITE JP
+)@@G@@= *,C5,'ENTER THE FOLLOWING INTO YOUR TCF ELEMENT PRIOR TO RUNNING A DBEJQ
+)@@G@@ GEN:',*    @[@@@^END IF@]@@@^WRITE LINES @]@@@^WRITE SKIP  @]@@@^LET C=JR
+)@@G@@0     @#@@@^REPEAT I=1,14     @^@@@^WRITE TCF <Z:I,I+10>    @A@@@^TCF: FJS
+)@@G@@ORMAT C5,'I ',<11>F6,C75,'I',*@]@@@^LET C=C+1   @G@@@^IF Z(I+11)<>'     JT
+)@@G@@ ' OR Z(I+12)<>'      ' OR Z(I+13)<>'      ' THEN     @]@@@^LET C=C+1   JU
+)@@G@@@ @@@^WRITE CNTTCF <Z:I+11,I+13>    @B@@@^CNTTCF: FORMAT C5,'I',C47,<3>FJV
+)@@G@@6,C75,'I',* @[@@@^END IF@]@B@^UNTIL C>=5  @^@@@BUNTIL C>=5+14*OPTS:H    JW
+)@@G@@@]@@@^WRITE SKIP  @]@@@^WRITE LINES @]@@@^LET U=1     @^@ @^LET V=1+(H-CJX
+)@@G@@+48)/49     @^@A@ LET V=1+(H-C+62)/63     @C@@@ALET V=1+(H-C+(48+14*OPTSJY
+)@@G@@:H))/(49+14*OPTS:H)     @#@@@^WRITE PAGES U,V   @B@@@^PAGES: FORMAT C35,JZ
+)@@G@@'PAGE ',D,' OF ',D,*    @]@@@^WHILE U<V DO@]@@@^LET W=I+14  @]@@@^LET U=KA
+)@@G@@U+1   @#@@@^WRITE TITLE E(1)  @]@@@^WRITE LINES @]@@@^WRITE SKIP  @]@@@^KB
+)@@G@@LET C=0     @#@@@^REPEAT I=W,14     @^@@@^WRITE TCF <Z:I,I+10>    @]@@@^KC
+)@@G@@LET C=C+1   @G@@@^IF Z(I+11)<>'      ' OR Z(I+12)<>'      ' OR Z(I+13)<>KD
+)@@G@@'      ' THEN     @ @@@^WRITE CNTTCF <Z:I+11,I+13>    @]@@@^LET C=C+1   KE
+)@@G@@@[@@@^END IF@]@ @^UNTIL C>=48 @]@@@ UNTIL C>=62 @]@@@^WRITE SKIP  @]@@@^KF
+)@@G@@WRITE LINES @#@@@^WRITE PAGES U,V   @]@@@^END WHILE   @#@@@^REPEAT: END KG
+)@@G@@DO    _@@@@@@[@@@#END IF@]@ @#UNTIL C>=48 @]@@@ UNTIL C>=62 @]@@@#WRITE KH
+)@@G@@SKIP  @]@@@#WRITE LINES ======@@^@@ @@@@@@@@@@@@@@ ^#&@@@@@]@@@@@@@@@@@@KI
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@D?MAYL68-2  @@@@@@@@@@@X@@@@@@@@@@@@@@@@@@KJ
+)@@G@@@@@@@@@@@@@@@@P@@A@@A@@D@@@@@@@@@@@^@@@@IW@@@@@@@^@@@]@^@[@[@ @@@]K^@[@)KK
+)@@G@@@@@@+6@@@@+8@#-+<BH@F@FWLTT001MKL1  @@@@] @Q@@@@@@D@@G#SF^@)@@JD(HELNE(HKL
+)@@G@@^@1BC6BC0A@9AC)A@1@#-+0AH@G@FWLTT001MKL1  @@@@]F@V@@@@@@X@@N#SFA)-@@J#1HKM
+)@@G@@@A*@C@)[S@I*@@@___@@E^@@@^H^@V)@L^@E)#S^^*@@@___@@@___@@@___@@@___@@@___KN
+)@@G@@@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___KO
+)@@G@@@@@___@@@___@@@___@@@___[@@^@@C8W@@@KCK^@@H8)@@[&;K@CQC@@@@H'=@@@HG8W@@@KP
+)@@G@@ @H@@@>@@@F%/K@@CN>@@@F:/KF@@[C8H@@@?8I@@@/K@@C C@@@F(C8K@@#/KF@@@C@@@FYKQ
+)@@G@@C8K@@[/KF@@@C@@@F=C8K@@]/KF@@@L8@@@[C@)^@@G8)@@[*@I@@@?CY@@@/K@@C-G),@@@KR
+)@@G@@/K@@CV%CI@@@/KF@@@C)"@@@H80@@[T80@@AG="@@@9?I@@[?80@@BC@K@F?/KF@@[N8W@@@KS
+)@@G@@C^@^@@G8@@@[C9K@@[ @@^@IN8)@@@(@G@@@/K@@DQ(4G@@@/K@@DA%1W@@@/K@@DQC?W@@@KT
+)@@G@@!8K@@A/K@@DD%(K^@I @@^@H[(K^@I9??@@[C-G@@@:9@@@[C@0@F?')H@EAH9@@@[T9@@@AKU
+)@@G@@G>G@@@')H@EIG)G@@@G8@@@[/K@@C1:9K@@[/K@@DIC*?@@@:8)@@.N8)@@[%[K@[[/K@@DAKV
+)@@G@@/K@@C.%@)@F?[5@^@H:@)@F?[-K^@H/K@@DA(@@@[]:(K^@I/K@@DV[(K^@I @@^@H:[K@[[KW
+)@@G@@/K@@D<G9K@@[*@G@@@/K@@C0 @@^@H @@^@I/KF@@@:(K^@I *@^@I9?K^@H98V@@@C8@@@-KX
+)@@G@@[=@^@I(?@^@I/KF@@[C@@^@UD8)@@@C80@@@C!@^@I8^@@D61@@@@I!8)@[@C80@@E[))^@IKY
+)@@G@@[=0^@I/KF@@[C8K@@@;=@@@A?8K@@'?8K@@0/K@@E[(@@@@JC80@[@H8K@@0T8)@@EG8!@@@KZ
+)@@G@@/K@@D\/^0@D2%8K@@+:8K@@-C8.@@@/@0@D2/K@@D\9*)^@J9*)^@L[@)^@N[@)^@O[@)^@PLA
+)@@G@@9*)^@Q9*)^@S[@)^@U/K@@DL[1@^@H[!@^@H[(@^@H[>@^@H[5@^@I[1@^@I[!@^@IC80@@FLB
+)@@G@@+8K@@_:8)@@ ;^@@@A8#0@ES9*@^@]C@@@F!C@K@F,C8)@@BC@0@F?[@"^@ 8#)@E-N4K^@HLC
+)@@G@@9!@^@J/\)@FJC9K@@*(4@^@H*)@^@H')H)@@N0K^@H9!@^@L*@@@[[/K@@E0C[@@F\N8K@@^LD
+)@@G@@/\)@FJN?K^@H(@@@[[/K@@E'C9K@@(')H)@@C[@^@N/\)@FJC9K@@)')H)@@(*@^@H*=@^@HLE
+)@@G@@/K@@F@C@@@F0'=@@@J/KF@@@C9K@@/')H)@@N*K^@HC[@^@O/\)@FJN=K^@H(@@@[[/K@@E.LF
+)@@G@@C9K@@/')H)@@C[@^@P/\)@FJ/K@@E.;>@@@A')H)@@8KK@FH/KI@@@[5W@@@[1W@@@[!W@@@LG
+)@@G@@[(W@@@[>W@@@/\0@FR[-W)@@Q;K@FL/KJ@@@PROCESSOR CALL ERROR    @[^@FUABNORMLH
+)@@G@@AL RETURN FROM READ$    @[ @FZTOO MANY SPECIFICATIONS @[^@F>]@@@@@[@@@@@LI
+)@@G@@      @@[^@ @@[@FLTPF$  @@G^@[C@@^@-/,0@C@/K@@IOC;K@@B @@@@QC90@@ZC9)@@ LJ
+)@@G@@R])^@+R]K^@<C8D)@@/,0@CT/K@@G@9*E^@3G')@@[/K@@GY @@@@J(=@^#&/K@@GIC8E^@3LK
+)@@G@@&;@@@]'=@@@49,'^@3*?@^#&;,0@@=C#@@[J =@^#&G')@@[9%'^@3/K@@G-(0@^#&/K@@GPLL
+)@@G@@9,0^[] 0@^#&G')@@[9%'^@3/K@@G-(=@^#$/K@@GY[50^[#9,0^[#;&0@@S =@^#$G')@@[LM
+)@@G@@9%'^@3/K@@G-/])@IN/@0@IA9,'^@3*)@^#&/K@@G$**@^#$/,0@IQ(*@^#$/,0@IVC80@@CLN
+)@@G@@C@K@@R;GK@@Y;C)@@AG@)^@=:8K@@$C]0@@I;&0@@A8#0@G*;&0@@M9%'^@3^B'=@4^#U^@3LO
+)@@G@@&;E@@#Q;@^@1**@^#&'=@@[ZC8)@@P^#"^#*8#)@G9C@@^@&:;K@@#'=@@[ZC@@^@$:;K@@BLP
+)@@G@@&;@@[[:;K@@#&;@@[[9"0@[I/K@@HAG@@^@*'=@@@I9"0@[I/K@@HE/K@@I N;@@@#N'0@@]LQ
+)@@G@@R[0^@(O90@@GR[)^@+9,'^@1N'@@@CC@0@@R;C0@@Y9?K@[I:80@@ /K@@H?%80@@-/K@@HULR
+)@@G@@C80@@>/K@@H)\[)@@JH80@@ \#)@@JH80@@P:80@@:C80@@&T80@@^H@0@[GC[Z^[H;(R@@@LS
+)@@G@@N')@@F;-K@@[;=K@@AC@@@@H/-K@H%)8@@@$8M)@H>;^K@@=9*Q=#(;&0@@A8M@@HLR[K^@%LT
+)@@G@@R[@^@:N90@@]9?@^#:9?=^#!9!^^#\;^@@@G9* ^#:[@ ^#!;=)@@G9*>^#,[O5^#!9?^=#1LU
+)@@G@@9( ^#0^Z5^#:^V5^#!^R5=#\8L0@H3C@@^@?'=@@@I8M0@HH8N@@HF8AK@F'(4@^#$/K@@IJLV
+)@@G@@R@)^@!9?]^@3;^@@@M9*]^@3/*)@IDC8@^[F'=@@@CC@@^@\%;K@@#'=@@[Z'=@@@DC@@^@0LW
+)@@G@@'=@@@I'=@@@D%,E^@4/KF@@@;A0@@A9%'^@3/K@@IQ @@@@P:2E^@4G'K@@A:+E^@3G'K@@ALX
+)@@G@@:%E^@3G'K@@A:2E^@3G'K@@A[+K@I>;A0@@@9%'^@3/KF@@@@@@@@@@USE  @@@@@@@@@@@@LY
+)@@G@@,     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@0@@@@@0@[ ^[@        H,,,@@#^@1LZ
+)@@G@@@@W^^[@@]@@@@[@[[A @@@@@L,2.  @@[^@>@][^#*@G@@@@_____3@@B@@@@@A@@@@[Q^#*MA
+)@@G@@__.@@AL,57. @@[^@,@[A^[        H,N,,.     JAN@@[FEB@@[MAR@@]APR@@]MAY@@]MB
+)@@G@@JUN@@^JUL@@IAUG@@]SEP@@#OCT@@[NOV@@[DEC@@MTITLE 02 -- DD MMM YY/HH:MM:SSMC
+)@@G@@      ******NOTHING TO PRINT******  @@@@@@@@0^@3@@@@@@#0B8IWWI8B8B____8BMD
+)@@G@@8B8B8B_0_88W8I8B___/8W8I8B___"J"Z_8B8@8@8@8@8@8@8BZ_J"_8_/8I8B8B8B8B8B8BME
+)@@G@@8I_/_8____8@8@8@_8_88@8@8@________8@8@_0_08@8@8@8@8@8@J"Z_8B8@8@8@8Z8Z8BMF
+)@@G@@8BZ_J"8B8B8B8B8B____8B8B8B8B8BZ/Z/#)#)#)#)#)#)#)#)Z/Z/@B@B@B@B@B@B@B8B8BMG
+)@@G@@WIJ/B88B8I8/90;)_)_0/88W8I8B8#8@8@8@8@8@8@8@8@8@8@____8B/J"Z7;339$8B8B8BMH
+)@@G@@8B8B8B8B8B/B"B_B;$978_8Z8J8B8BB8J/WI8B8B8B8B8B8BWIJ/B8_/_"8B8B8B_"_/8@8@MI
+)@@G@@8@8@8@B8J/WI8B8B8B8B878ZWIJ"B;_/_"8B8B8B_"_/90888W8I8BJ/Z"8B8@8@Z/J"@B@BMJ
+)@@G@@8BZ"J/____#)#)#)#)#)#)#)#)#)#)8B8B8B8B8B8B8B8B8BWIJ/B88B8B8B8B8B8B8BWIIWMK
+)@@G@@B8#0[)8B8B8B8B8B8B9$336V"ZWISA8BWIIWB8#0[)[)#0B8IWWI8B8BWIIWB8#0#)#)#)#)ML
+)@@G@@#)#)#)____@I@W@8[0#)B@I@W@____J/Z"8J8Z879$9$;B"B/BZ"J/#)B)J)#)#)#)#)#)#)MM
+)@@G@@#)J8J8J/Z"8B8B@B@Y[8B)Y@8@____J/Z"8B8B@B["["@B8B8BZ"J/[8#8B8I8W888____@8MN
+)@@G@@@8@8@8____8@8@8@_/_"@B@B@B_"_/J/Z"8@8@8@_/_"8B8B8BZ"J/____8B@B@I@I@I@I@WMO
+)@@G@@@W@W@WJ/Z"8B8B8BZ"Z"8B8B8BZ"J/J/Z"8B8B8BZ_J_@B@B@BZ"J/@@@@@@@@@@____@@@@MP
+)@@G@@@@@@@@@@@@#0#0#0@@@@#0#0#0@@@@N#0^@1N#)@[JN#K^@3C;0@@9C;)@@\C'@@@ '=@@@MMQ
+)@@G@@[OK^[^;CK@@G[?K^[^;CK@@A[0K^[^;CK@@A[OK^[#;G@@@G[W@^[];G@@@M;CK@@Y9=@^@VMR
+)@@G@@T8@@@EG@@@@HCCW^@3[^K^[]^CK^[#^70^[#C@@^@X'=@@@IC8)@@F;I0@[CC^"^@4^#"^@4MS
+)@@G@@;[Z@@@;A0@@AC])@@R0@@@@L)')@@D8#)^^#9%0^#&(*@^#&/K@@F1*0@^#$/K@^^>9?@^@YMT
+)@@G@@(4@^#&/K@^^R;^@@@G;*K@@AG8K@@B;=@@@G()@^#$/K@^^Y;^@@@G;*K@@AG8K@@X;=@@@GMU
+)@@G@@/K@^^=(?@^#$/K@^^=;^@@@A;*K@@AG8K@@1;=@@@A9*@^@1C@@^@)'=@@[Z/K@@F1AK6BC7MV
+)@@G@@AC1A@1^[#FDI@#-LN$H@K@FULTT014MDL34 @@@@^G@(@@@@@@B@@##SF^@-@@J#1RETTET[MW
+)@@G@@DSU[*H[*H[*H[*H[*H[*H[*H[*H[*H[*H[*H#LS#KU^@J[04@@@@@@[*H#LS#KH[*)@@@@@@MX
+)@@G@@MAIN        @@^@@^@@@@@]@@@#@ @@@@@]____________________________________MY
+)@@G@@________________________________________________________________________MZ
+)@@G@@________________________ERU$        LU:CBCINFOR$      DQD^KBTITLE       NA
+)@@G@@@Z7^MD__________________________________________________________________NB
+)@@G@@________________________________________________$IBANK      @@J@@]$DBANKNC
+)@@G@@      @@@@@ ____________________________________________________________ND
+)@@G@@________________________________________________________________________NE
+)@@G@@@@@@@#0@@@@ @@V^@@@@@@@A)@@@@ @@Q^@V@@@@@A)@@]@ @@X^@1@@@@@A)@@^@ @]S^[INF
+)@@G@@@@@@@A)@@A@ @[]^#&@@@@@#K@@[@^@#1@C@@@@@@A@@@[@^@]7@F1^@)^@):@@@@E:@@@@ONG
+)@@G@@:@@@@Y:@@@@*:@@@@2:@@@@/======@@^@@ @@@@@@@@@@@@@@ @HN@@@@@]@@@@@@@@@@@@NH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@CN6DDL      @@@@@@@@@@@N@@@@@@@@@@@@@@@@@@NI
+)@@G@@@@@@@@@@@@@@@@J@@A@@A@@J@@M@@@@@#@@^@@@@E/@@@@@@@^@@@]@^@[@[@ @@@]K^@[@)NJ
+)@@G@@E-DE-GC*1B@!D9RE))@@@@@#@@[@@#@@[@@4E[DCS)@@@@@^@@[@@A@@@)@@F@*A@0A8( 0)NK
+)@@G@@@@@@@#@#@D@]@@[@@KA@5^@)@@@@@^@@[@@A@@[@@OC1DD-GC(M^@)@@@@@#@@[@@#@@[@@4NL
+)@@G@@@ ;@C@)] @H;@@@___@@E^@@@@E^@W@@-^[@)@M^@E)@U^@&)AZ^[-@@@___@@@___@@@___NM
+)@@G@@@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___@@@___NN
+)@@G@@@@@___@@@___@@@___@@@___C9K@@[/K@@C#C9K@@@&';@@@N@K@@DQ'K^@W9?(@@@C8K@@HNO
+)@@G@@/K@@CF;G)@@AH8K@@[+80@@_:9@@@ /K@@CD;GK@@=W8K@@AO]K@@H&'K@@[&;)@@[C[@@DHNP
+)@@G@@C@@@DIC80@@@+8@@@_%8K@@ /K@@CY;C@@@AG80@@A;-@@@A')I)D^/K@@CQ;*J@@@C@0@@GNQ
+)@@G@@ @@@@K;=0@@A')I)D^/^0@C-C9@@@ ')I)D^9?@@[](@@@@L'=@@@MC@0@@G/\@@C_C9@@@/NR
+)@@G@@')I)D^/\@@C_C9@@@/')I)D^/\@@C_C9@@@ ')I)D^C@0@@H/\@@C_C9@@@:')I)D^/\@@C_NS
+)@@G@@C9@@@:')I)D^/\@@C_R]K@[[Q'0@@@/SF)@@/KF@@@;=0@@A')I)D^;=0@@A')I)D^/KG@@@NT
+)@@G@@[5D@@@[1D@@@[!D@@@[(D@@@[>D@@@/,0@DEQ;)@@@[-D)@@/KF@@@SLIB  74R1  *@@^@@NU
+)@@G@@/KF@@[ @@^@[[@@^@@ @@^@[C8W@@@KCK^@@H8)@@V&;K@D:C@@@@H'=@@@H(@@^@[[@@^@[NV
+)@@G@@G8W@@@ @H@@@>@@@HG/K@@D*>@@@HH/KF@@[C8H@@@?8I@@@/K@@DSC@@@HFC8K@@#/KF@@@NW
+)@@G@@C@@@H@C8K@@[/KF@@@[@@^@[C@@@HAC8K@@]/KF@@@L8@@@[C@)^@@G8)@@[*@I@@@?CY@@@NX
+)@@G@@/K@@D7G),@@@/K@@D1%CI@@@/KF@@@C)"@@@H80@@[T80@@AG="@@@9?I@@[?80@@BC@K@HINY
+)@@G@@/KF@@[;CK@@=;^@@@%(@@@@HG8K@@[[@K@[#;C@@@Y[@@@[[C^@^@@G8@@@[C9K@@[ @@^@JNZ
+)@@G@@N8)@@@C@W@@@/@K@E6;CK@@Y*@@@@H?@K@[#/K@@E&%@K@[#/K@@E6%1W@@@/K@@E6C?W@@@OA
+)@@G@@!8K@@A/K@@E(%(K^@J @@^@I[(K^@J9??@@[C-G@@@:9@@@[C@0@HI')H@F*H9@@@[T9@@@AOB
+)@@G@@G>G@@@')H@F0G)G@@@G8@@@[/K@@EH:9K@@[/K@@E,C*?@@@:8)@@.N8)@@[%[K@[[/K@@E&OC
+)@@G@@/K@@EX%@)@HI[5@^@I:@)@HI[-K^@I/K@@E&(@@@[]:(K^@J/K@@E;[(K^@J @@^@I:[K@[[OD
+)@@G@@/K@@F G9K@@[(@G@@@/K@@F]!4W@@@/K@@EG @@^@I @@^@J/KF@@@:(K^@J *@^@J9?K^@IOE
+)@@G@@98V@@@C8@@@-[=@^@J(?@^@J/KF@@[C@@^@VD8)@@@C80@@@C!@^@J8^@@FS1@@@@I!8)@[@OF
+)@@G@@C80@@E[))^@J[=0^@J/KF@@[C8K@@@;=@@@A?8K@@'?8K@@0/K@@F<(@@@@JC80@[@H8K@@0OG
+)@@G@@T8)@@EG8!@@@/K@@FL/^0@FO%8K@@+:8K@@-C8.@@@/@0@FO/K@@FL9*)^@K9*)^@M[@)^@OOH
+)@@G@@[@)^@P[@)^@Q9*)^@R9*)^@T[@)^@V/K@@E1[1@^@I[!@^@I[(@^@I[>@^@I[5@^@J[1@^@JOI
+)@@G@@[!@^@JC80@@F+8K@@_:8)@@ ;^@@@A8#0@F'9*@^@#C@@@HJC@K@HKC8)@@BC@0@HI[@"^@AOJ
+)@@G@@8#)@G#N4K^@I9!@^@K/\)@G1C9K@@*(4@^@I*)@^@I')H)@@N0K^@I9!@^@M*@@@[[/K@@GMOK
+)@@G@@C[@@HLN8K@@^/\)@G1N?K^@I(@@@[[/K@@GWC9K@@(')H)@@C[@^@O/\)@G1C9K@@)')H)@@OL
+)@@G@@(*@^@I*=@^@I/K@@G+C@@@HM'=@@@J/KF@@@C9K@@/')H)@@N*K^@IC[@^@P/\)@G1N=K^@IOM
+)@@G@@(@@@[[/K@@GZC9K@@/')H)@@C[@^@Q/\)@G1/K@@GZ;>@@@A')H)@@8KK@G\/KI@@@[5W@@@ON
+)@@G@@[1W@@@[!W@@@[(W@@@[>W@@@/\0@G9[-W)@@Q;K@G3/KJ@@@PROCESSOR CALL ERROR    OO
+)@@G@@@[^@G/ABNORMAL RETURN FROM READ$    @[ @H[TOO MANY SPECIFICATIONS @[^@HBOP
+)@@G@@]@@@@@[@@@@@      @@[^@A@@[@G3TPF$  @@G^@]/,0@C]C@@^[S'=@@@IC@@^[X/,0@DJOQ
+)@@G@@/K@@H0C8@@@[/,0@E[/K@@H59?@^[Y/,0@F9C8@[]A/,0@D\/K@@H2C@K@@GC8@^[@'=@@@#OR
+)@@G@@C@@^@=%@@^[)/K@@H8[@K^@*[@K^@%C8@@@C[0@^[#C8@^[@'=@@@#C@@^[W'=@@@I'=@@@DOS
+)@@G@@'=@@@I/K@@H!C@@^[U'=@@@I/K@@H!C@@^[T'=@@@I/K@@H!C@@^[V'=@@@I/K@@H!@@@@@@OT
+)@@G@@@@@@@@@USE  @@@@@@@@@@@@,     @@@@@@@@@@@@@@@@@@@@@@@@ALTER 1R1         OU
+)@@G@@                              @@@@@@@@@@@@ALTER$FILE$$@@@@@@@K@@@@@@W^@=OV
+)@@G@@@@@@@@@@@@@@@@@@@@NO FILE SPECIFIED NO RUNID/USERID SPECIFIED     SPECIFOW
+)@@G@@IED FILE NOT A PRINT FILE     END ALTER   @[C^@W@[#^[C@[ ^[F@[A^[K@[]^[QOX
+)@@G@@@@W^@=ALTER$FILE$$*OP@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OY
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@$MAIN$      @@^@@^@@@@@]OZ
+)@@G@@@@@#@ @@@@@]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PB
+)@@G@@A           CN1DDLERU$        JTKGOIIDONLY$     B_*CBIINFOR$      M99DSGPC
+)@@G@@SYSLIB$ID   JN7GOI@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PD
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@$IBANK      @@@@@#$DBANK      @@D@@]A@3A08A@0^@)PE
+)@@G@@^@)^@)DDA^@3A0!AC3AK!E-MDS!DDIC))D9A^[ CD#D@!DDIC))D9A^[RES!E[ D1^ (^CDOPF
+)@@G@@CC)^@)@D@@@@A@3A09A@0^@)^@)^@)^@)^@*E9N (#CTMES!@@@@@AK@@[@^@[J@C@@@@@@DPG
+)@@G@@K@@[@^@^^@DJ@@@@@@@@@[@^@@*@HN@@@@@D0@@]@ @@W^@@@@@@@@)@@@@ @[ ^@W@@@@@@PH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PI
+)@@G@@DUSE$       @@#@]%IDBUFF      @@G@@@IDONLY$     @@@@@]RINF$       @@#@@@PJ
+)@@G@@SELT$       @@#@@2SINF$       @@#@@)@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@SYSLIB$ID   74R1  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PL
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*[S@@@*SDFF*@E@@@@. ****PN
+)@@G@@******************************************************@E@@@@. *         PO
+)@@G@@  SYSINIT INFO COMMON TO ALL CLASSES           *@E@@@@. ****************PP
+)@@G@@******************************************@C@@@@INITIAL       BRKPT IS 'PQ
+)@@G@@'@CAT,P $DB$(+1).'', ;  @C@@@@                       ''@ASG,A $DB$. '', PR
+)@@G@@;     @C@@@@                       ''@BRKPT PRINT$/$DB$'', ;@C@@@@      PS
+)@@G@@                 ''@HDG,N .M,88,8,8.B,8'' @ @@@@MASTER        FILE IS DBPT
+)@@G@@E*F2  @C@@@@TERMINATING   BRKPT IS ''@BRKPT PRINT$'', ;     @C@@@@      PU
+)@@G@@                 ''@FREE $DB$. . '', ;    @B@@@@                       'PV
+)@@G@@'@SYM $DB$.''     @ @@@@TITLE         FILE IS DBE*F2  @E@@@@. **********PW
+)@@G@@************************************************@E@@@@. *               PX
+)@@G@@    R E L E A S E                        *@E@@@@. **********************PY
+)@@G@@************************************@ @@@@ABSOLUTE      GOES TO DBE*F5  PZ
+)@@G@@@ @@@@ACCOUNT       NUMBER IS SU000 @G@@@@DEBUGGING     FEATURES ARE ENAQA
+)@@G@@BLED WITH SNOOPY VERSION SYSLIB-74R1 ; .  @F@@@@                        QB
+)@@G@@                CABSAD$ VERSION SYS74 ; . @G@@@@                        QC
+)@@G@@                CRELAD$ VERSION SYSLIB-74R1 .   @C@@@@EXPRESSION    EVALQD
+)@@G@@UATION STACK CONTAINS 50 SLOTS@I@@@@FILE          LIMITS ARE 5 WITH 4 SEQE
+)@@G@@CTOR SDF BUFFERS & 4000 WORD GENERAL BUFFER     @B@@@@FREE          OF DQF
+)@@G@@BE FILE IS DISABLED .   @B@@@@FULL          SCHEMA READ IS DISABLED .   QG
+)@@G@@@H@@@@HELP          ELEMENTS GO TO ''DBE*F5'' AND ARE IN LIBRARY ''CSINTQH
+)@@G@@NAME$''     @A@@@@INPUT         COMES FROM DBE*F3     @^@@@@LISTING     QI
+)@@G@@  IS LONG   @B@@@@MACRO         AREA SIZE IS 040000 WORDS   @E@@@@MACROSQJ
+)@@G@@        GO TO DBE*F5 AND ARE IN LIBRARY CSINTNAME$ .  @^@@@@MASTERID    QK
+)@@G@@  IS DBEGEN @^@@@@MODE          IS BATCH  @A@@@@NAME          OF SCHEMA QL
+)@@G@@MAY BE ANY .@D@@@@OBJECT        COMPUTER IS 1100 / 90 RUNNING LEVEL 39  QM
+)@@G@@@B@@@@OPERATOR      NOTIFICATION IS DISABLED    @ @@@@OUTPUT        GOESQN
+)@@G@@ TO TPF$    @ @@@@PARAMETER     LIMIT IS 10     @A@@@@PATCH         FEATQO
+)@@G@@URES ARE ENABLED  @A@@@@PCFELT        IS PCF IN FILE DBE*F3 @^@@@@PROJIDQP
+)@@G@@        IS EXEC-8 @ @@@@RELOCATABLES  GO TO DBE*F4    @A@@@@SECURITY    QQ
+)@@G@@  CHECKS ARE DISABLED . @E@@@@SYSTEM        CLASS IS ''RELEASE'' WITH DUQR
+)@@G@@MP ID ''DBE''     @A@@@@TCFELT        IS TCF IN FILE DBE*F3 @A@@@@TIP   QS
+)@@G@@        FILES ARE ENABLED     @ @@@@UPA           SIZE IS 0 WORDS @ @@@@QT
+)@@G@@VARIABLE      LIMIT IS 100 .  _@@@@@    IN FILE ''DBSG*DBE$SEC/+*+*+*/$!QU
+)@@G@@$!$!.'' ;   @D@@@@.               USING USERIDS FOR DEMAND CLEARANCE .  QV
+)@@G@@@E@@@@SYSTEM        CLASS IS ''RELEASE'' WITH DU*[S@@@*SDFF*@Q@[@@@STARTQW
+)@@G@@,A/R TPF$.DBEGEN                                                        QX
+)@@G@@                                          \\\\\\\\\\\\@#@@@@*DEFINE CHECQY
+)@@G@@KMASM @B@@@@*IF [#1] = ANY AND [#2] HAS CORRECTIONS   @ @@@@*CREATE SGS:QZ
+)@@G@@ $MASMNEEDED$     @[@@@@*END  @C@@@@*IF [#1] = TEMP AND [#2] HAS TEMP CORA
+)@@G@@RRECTIONS   @ @@@@*CREATE SGS: $MASMNEEDED$     @[@@@@*END  @C@@@@*IF [#RB
+)@@G@@1] = PERM AND [#2] HAS PERM CORRECTIONS   @ @@@@*CREATE SGS: $MASMNEEDEDRC
+)@@G@@$     @[@@@@*END  @C@@@@*IF [#1]=MANDATORY AND [#2] HAS TEMP CORRECTIONSRD
+)@@G@@@ @@@@*CREATE SGS: $MASMNEEDED$     @[@@@@*END  @[@@@@*END  @]@@@@*DEFINRE
+)@@G@@E ELT @^@@@@*IF [#1] HAS CORRECTIONS@#@@@@*IF [$LOCAL$]     @B@@@@*MERGERF
+)@@G@@,R [#1] TCF1 WITH TCF GIVING TCF    @[@@@@*END  @A@@@@*CREATE SGS: LISTMRG
+)@@G@@ACRO [#1] MODIFIED@^@@@@#ELT,SP SI.[#1],MO.[#1] @#@@@@*CORRECT [#1]     RH
+)@@G@@@[@@@@*END  @ @@@@*IF [$SI$,1,1,1]=[$SO$,1,1,1] @^@@@@#ELT,P MO.[#1],SI.RI
+)@@G@@[#1]  @[@@@@*END  @[@@@@*ELSE @A@@@@*CREATE SGS: LISTMACRO [#1] BASE    RJ
+)@@G@@@ @@@@* . ENSURE THAT IT'S FIELDATA @^@@@@#ED,P SI.[#1],MO.[#1]   @[@@@@RK
+)@@G@@*END  @[@@@@*END  @#@@@@*DEFINE DMDBRK    @ @@@@*IF [$MODE$,1,1,1]=DEMANRL
+)@@G@@D     @ @@@@*INCREMENT I TO [$BRKINIT$]   @#@@@@[$BRKINIT$,I,1,1] @[@@@@RM
+)@@G@@*LOOP @[@@@@*END  @[@@@@*END  @#@@@@*DEFINE DMDSYM    @ @@@@*IF [$MODE$,RN
+)@@G@@1,1,1]=DEMAND     @ @@@@*INCREMENT I TO [$BRKTERM$]   @#@@@@[$BRKTERM$,IRO
+)@@G@@,1,1] @[@@@@*LOOP @[@@@@*END  @[@@@@*END  @#@@@@*DEFINE MASMELT   @#@@@@RP
+)@@G@@*IF [$LOCAL$]     @B@@@@*MERGE,R [#1] TCF1 WITH TCF GIVING TCF    @[@@@@RQ
+)@@G@@*END  @^@@@@#ELT,N [#2].[#1],SO.[#1]@^@@@@*IF [#1] HAS CORRECTIONS@#@@@@RR
+)@@G@@*CORRECT [#1]     @[@@@@*END  @^@@@@*IF [$SO$,1,1,1]=SI     @#@@@@*REMOVRS
+)@@G@@E PERM [#1] @#@@@@*REMOVE TEMP [#1] @[@@@@*END  @[@@@@*END  @[@@@@*END  RT
+)@@G@@@]@@@@*DEFINE MASM@ @@@@*CREATE SGS: $GENNED$ [#1]    @ @@@@*IF [$LIST$,RU
+)@@G@@1,1,1]=ABSENT     @[@@@@*ELSE @E@@@@#HDG DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,RV
+)@@G@@1] ***** [#1] ***** .L,0@[@@@@*END  @^@@@@*IF [$SO$,1,1,1]=SI     @ @@@@RW
+)@@G@@*PROCESS MASMELT [#1] [#2]    @[@@@@*END  @C@@@@#MASM[$MASMOPT$,1,1,1] [RX
+)@@G@@#2].[#1],RO.[#1],SO.[#1]@^@@@@*IF [#1]=''DBE-000A''   @ @@@@#ADD TPF$.DBRY
+)@@G@@E-000A/CONFIG     @[@@@@*END  @#@@@@*IF [$LOCAL$]     @B@@@@*MERGE,R [#1RZ
+)@@G@@] TCF1 WITH TCF GIVING TCF    @[@@@@*END  @^@@@@*IF [#1] HAS CORRECTIONSSA
+)@@G@@@#@@@@*CORRECT [#1]     @[@@@@*END  @[@@@@*END  @ @@@@*IF       [$NOTIFYSB
+)@@G@@$,1,1,1]=1  @E@@@@#MSG DBE [$LEVEL$,1,1,1].[$GEN$,1,1,1]: [#1] MASM COMPSC
+)@@G@@LETE  @[@@@@*END  @[@@@@*END  @]@@@@*DEFINE MAP @ @@@@*IF [$LIST$,1,1,1]SD
+)@@G@@=ABSENT     @[@@@@*ELSE @F@@@@#HDG DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,1] ***SE
+)@@G@@** COLLECTION ***** .L,0@[@@@@*END  @C@@@@#MAP,R[$MAPOPT$,1,1,1] SI.MAP/SF
+)@@G@@SNOOPY,RO.SNOOPY  @D@@@@#MAP,R[$MAPOPT$,1,1,1] SI.MAP/SORT-MERGE,RO.SORTSG
+)@@G@@-MERGE@B@@@@#MAP,[$MAPOPT$,1,1,1] SI.MAP/FINAL,AO.DBE @ @@@@*IF       [$SH
+)@@G@@NOTIFY$,1,1,1]=1  @E@@@@#MSG DBE [$LEVEL$,1,1,1].[$GEN$,1,1,1]: COLLECTISI
+)@@G@@ON COMPLETE @[@@@@*END  @[@@@@*END  @C@@@@* . ********** START OF SKELETSJ
+)@@G@@ON **********     @^@@@@*IF [$LIST$,1,1,1]=LONG @D@@@@*CREATE   SGS:    SK
+)@@G@@  $MASMOPT$         '',ESVYW ''     @A@@@@*CREATE SGS: $MAPOPT$  ''LX   SL
+)@@G@@ ''   @[@@@@*END  @^@@@@*IF [$LIST$,1,1,1]=SHORT@D@@@@*CREATE   SGS:    SM
+)@@G@@  $MASMOPT$         '',ESVYW ''     @A@@@@*CREATE SGS: $MAPOPT$  ''XS   SN
+)@@G@@ ''   @[@@@@*END  @ @@@@*IF [$LIST$,1,1,1]=ABSENT     @ @@@@*CREATE SGS:SO
+)@@G@@ $MASMOPT$ '',E ''@ @@@@*CREATE SGS: $MAPOPT$  ''X '' @[@@@@*END  @ @@@@SP
+)@@G@@*IF [$MODE$,1,1,1]=@START     @#@@@@#CAT,P DBEGEN(+1).@#@@@@#ASG,A DBEGESQ
+)@@G@@N.    @^@@@@#ELT,SID DBEGEN.DBEGEN  @C@@@@#RUN [$SYSID$,1,1,1],,[$PROJIDSR
+)@@G@@$,1,1,1],199,999  @ @@@@*. #HDG,N  .M,88,8,4.B,8.L,0  @[@@@@*END  @#@@@@SS
+)@@G@@*PROCESS DMDBRK   @ @@@@*IF       [$NOTIFY$,1,1,1]=1  @H@@@@#MSG **** DBST
+)@@G@@E [$SYSID$,1,1,1]: [$LEVEL$,1,1,1].[$GEN$,1,1,1] GEN STARTING ****@[@@@@SU
+)@@G@@*END  @A@@@@*CREATE SGS: $FILE$ [$SI$,1,1,1]    @A@@@@*CREATE SGS: $FILESV
+)@@G@@$ [$SO$,1,1,1]    @A@@@@*CREATE SGS: $FILE$ [$RO$,1,1,1]    @A@@@@*CREATSW
+)@@G@@E SGS: $FILE$ [$AO$,1,1,1]    @A@@@@*CREATE SGS: $FILE$ [$MF$,1,1,1]    SX
+)@@G@@@A@@@@*CREATE SGS: $FILE$ [$PCF$,1,2,1]   @A@@@@*CREATE SGS: $FILE$ [$TCSY
+)@@G@@F$,1,2,1]   @A@@@@*CREATE SGS: $FILE$ [$MO$,1,1,1]    @A@@@@*CREATE SGS:SZ
+)@@G@@ $FILE$ [$HO$,1,1,1]    @#@@@@*SET K TO [$FILE$]@^@@@@*INCREMENT I FROM TA
+)@@G@@2 TO K@ @@@@*INCREMENT J FROM 1 TO I-1    @A@@@@*IF [$FILE$,I,1,1]=[$FILTB
+)@@G@@E$,J,1,1]   @^@@@@*REMOVE SGS $FILE$,I    @#@@@@*SET J TO I-1     @]@@@@TC
+)@@G@@*SET I TO J @#@@@@*SET K TO K-1     @[@@@@*END  @[@@@@*LOOP @[@@@@*LOOP TD
+)@@G@@@^@@@@#USE SI,[$SI$,1,1,1]    @^@@@@#USE SO,[$SO$,1,1,1]    @^@@@@#USE RTE
+)@@G@@O,[$RO$,1,1,1]    @#@@@@#USE ASM$PF.,RO.  @^@@@@#USE AO,[$AO$,1,1,1]    TF
+)@@G@@@^@@@@#USE MF,[$MF$,1,1,1]    @^@@@@#USE MO,[$MO$,1,1,1]    @^@@@@#USE HTG
+)@@G@@O,[$HO$,1,1,1]    @^@@@@*INCREMENT I TO [$FILE$]@^@@@@#ASG,A  [$FILE$,I,TH
+)@@G@@1,1]. @[@@@@*LOOP @^@@@@*IF [$SO$,1,1,1]=TPF$   @]@@@@#FREE TPF$. @^@@@@TI
+)@@G@@#ASG,T TPF$.,///1000    @#@@@@#USE SO.,TPF$.    @[@@@@*END  @ @@@@*IF [$TJ
+)@@G@@LIST$,1,1,1] = ABSENT   @[@@@@*ELSE @]@@@@#HDG,N .L,0 @H@@@@#[$TITLE$,1,TK
+)@@G@@1,1].TITLE,DL [$SYSID$,1,1,1],[$LEVEL$,1,1,2],NO-[$GEN$,1,1,1]    @[@@@@TL
+)@@G@@*END  @B@@@@#ELT,P [$TCF$,1,2,1].[$TCF$,1,1,1],TCF    @#@@@@*IF [$INHIBITM
+)@@G@@T$]   @[@@@@*ELSE @A@@@@#ELT,SIP [$PCF$,1,2,1].[$PCF$,1,1,1]@^@@@@*INCRETN
+)@@G@@MENT I TO [$NAME$]@A@@@@*IF [$NAME$,I,1,1] HAS CORRECTIONS  @#@@@@"[$NAMTO
+)@@G@@E$,I,1,1]   @ @@@@*CORRECT,K [$NAME$,I,1,1]     @[@@@@*END  @[@@@@*END  TP
+)@@G@@@[@@@@*LOOP @ @@@@*INCREMENT I TO [MACRONAME]   @B@@@@*IF [MACRONAME,I,1TQ
+)@@G@@,1] HAS CORRECTIONS     @#@@@@"[MACRONAME,I,1,1]@ @@@@*CORRECT,K [MACRONTR
+)@@G@@AME,I,1,1]  @[@@@@*END  @[@@@@*END  @[@@@@*LOOP @[@@@@#EOF  @I@@@@#ELT,STS
+)@@G@@  [$TCF$,1,2,1].[$TCF$,1,1,1],.[$TCF$,1,1,1]/[$LEVEL$,1,1,2]-[$GEN$,1,1,TT
+)@@G@@1]    @A@@@@#ELT,SI [$TCF$,1,2,1].[$TCF$,1,1,1] @[@@@@#EOF  @[@@@@*END  TU
+)@@G@@@#@@@@*IF [$LOCAL$]     @C@@@@#ELT,P [$LOCAL$,1,2,1].[$LOCAL$,1,1,1],LOCTV
+)@@G@@AL-TCF@[@@@@*END  @B@@@@#ELT,P [$PCF$,1,2,1].[$PCF$,1,1,1],PCF    @#@@@@TW
+)@@G@@*IF [$BUILDHELP$] @ @@@@#DELETE,SV HO./EXPLANATION    @ @@@@#COPY,SV SI.TX
+)@@G@@/EXPLANATION,HO.  @^@@@@*IF [$NOTIFY$,1,1,1]=1  @E@@@@#MSG DBE [$LEVEL$,TY
+)@@G@@1,1,1].[$GEN$,1,1,1]: HELP LIBRARY BUILT  @[@@@@*END  @[@@@@*END  @#@@@@TZ
+)@@G@@*SET DOIT TO 0    @]@@@@*IF [$COPY$]@#@@@@*SET DOIT TO 1    @[@@@@*END  UA
+)@@G@@@#@@@@*IF [$MACROCOPY$] @#@@@@*SET DOIT TO 1    @[@@@@*END  @#@@@@*IF [*UB
+)@@G@@DOIT]=1     @]@@@@*IF [$COPY$]@G@@@@#HDG DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,UC
+)@@G@@1] ***** MACRO UPDATES ***** .L,0   @ @@@@*INCREMENT I TO [MACRONAME]   UD
+)@@G@@@^@@@@*IF [$COPY$,1,1,1]=ALL  @ @@@@*PROCESS ELT [MACRONAME,I,1,1]@[@@@@UE
+)@@G@@*END  @F@@@@*IF [$COPY$,1,1,1]=CHANGED AND [MACRONAME,I,1,1] HAS CORRECTUF
+)@@G@@IONS  @ @@@@*PROCESS ELT [MACRONAME,I,1,1]@[@@@@*END  @F@@@@*IF [$COPY$,UG
+)@@G@@1,1,1]=PERM AND [MACRONAME,I,1,1] HAS PERM CORRECTIONS@ @@@@*PROCESS ELTUH
+)@@G@@ [MACRONAME,I,1,1]@[@@@@*END  @F@@@@*IF [$COPY$,1,1,1]=TEMP AND [MACRONAUI
+)@@G@@ME,I,1,1] HAS TEMP CORRECTIONS@ @@@@*PROCESS ELT [MACRONAME,I,1,1]@[@@@@UJ
+)@@G@@*END  @[@@@@*LOOP @[@@@@*END  @#@@@@*IF [$MACROCOPY$] @ @@@@*INCREMENT IUK
+)@@G@@ TO [$MACROCOPY$] @A@@@@*PROCESS ELT [$MACROCOPY$,I,1,1]    @[@@@@*LOOP UL
+)@@G@@@[@@@@*END  @^@@@@*IF [$NOTIFY$,1,1,1]=1  @F@@@@#MSG DBE [$LEVEL$,1,1,1]UM
+)@@G@@.[$GEN$,1,1,1]: MACRO UPDATE(S) COMPLETE  @[@@@@*END  @[@@@@*END  @ @@@@UN
+)@@G@@*INCREMENT I TO [$MODULE$]    @D@@@@*PROCESS CHECKMASM [$MODULE$,I,2,1] UO
+)@@G@@[$MODULE$,I,1,1]  @[@@@@*LOOP @#@@@@*IF [$MASMNEEDED$]@ @@@@#ED,IE TPF$.UP
+)@@G@@DBE-000A/CONFIG   @[@@@@-0    @#@@@@          AXR$    @D@@@@          ONUQ
+)@@G@@        0=0=0             . MASM ONLY     @F@@@@          DEF           UR
+)@@G@@              . DEFINITION MODE ASSEMBLY  @ @@@@          LEVEL     0,1,US
+)@@G@@0     @A@@@@TIP       EQU       [$TIP$,1,1,1]   @A@@@@UPA       EQU     UT
+)@@G@@  [$UPA$,1,1,1]   @B@@@@MAXPARM   EQU       [$PARAMETERS$,1,1,1]  @A@@@@UU
+)@@G@@USERIDCHK EQU       [$USERID$,1,1,1]@B@@@@ACCTCHK   EQU       [$ACCOUNT$UV
+)@@G@@,1,1,1]     @A@@@@NTRKS     EQU       [$NTRKS$,1,1,1] @B@@@@SECFILE   EQUW
+)@@G@@U       '[$SECFILE$,1,1,1]'   @B@@@@SECURITY  EQU       [$SECURITY$,1,1,UX
+)@@G@@1]    @ @@@@*INCREMENT J TO [$MASTERID$]  @E@@@@MASTERID([*J])  EQU     UY
+)@@G@@  $SS('[$MASTERID$,J,1,1]',1,12)    @[@@@@*LOOP @ @@@@NMASTERS EQU [$MASUZ
+)@@G@@TERID$]     @A@@@@NFILES    EQU       [$NFILES$,1,1,1]@A@@@@NTAPES    EQVA
+)@@G@@U       [$NTAPES$,1,1,1]@B@@@@IOBUFSZ   EQU       [$IOBUFSZ$,1,1,1]     VB
+)@@G@@@B@@@@BUFSECTORS EQU      [$BUFSECTORS$,1,1,1]  @B@@@@TERMFREE   EQU    VC
+)@@G@@  [$TERMFREE$,1,1,1]    @B@@@@FULLSCHEMA EQU      [$FULLSCHEMA$,1,1,1]  VD
+)@@G@@@ @@@@*IF [$SCHEMANAME$,1,1,1]=ANY  @^@@@@SCHEMANAME$$ EQU    0   @[@@@@VE
+)@@G@@*ELSE @D@@@@SCHEMANAME$$ EQU    $SS('[$SCHEMANAME$,1,1,1]',1,12)  @[@@@@VF
+)@@G@@*END  @A@@@@DEBUG     EQU       [$DEBUG$,1,1,1] @B@@@@STACKSIZE EQU     VG
+)@@G@@  [$SLOTS$,1,1,1]*2     @A@@@@MASIZE    EQU       [$MASIZE$,1,1,1]@C@@@@VH
+)@@G@@SYSTEM    EQU       $SS('[$MACHINE$,1,1,1]',1,3)@A@@@@SYSLEV    EQU     VI
+)@@G@@  [$EXEC$,1,1,1]  @B@@@@LEVEL     EQU       '[$LEVEL$,1,1,1]'     @#@@@@VJ
+)@@G@@@EDIT C /-/./ G   @B@@@@DMPLEVEL  EQU       '[$LEVEL$,1,1,2]'     @A@@@@VK
+)@@G@@PATCH     EQU       [$PATCH$,1,1,1] @A@@@@GEN       EQU       '[$GEN$,1,VL
+)@@G@@1,1]' @B@@@@SYSID     EQU       '[$SYSID$,1,1,1]'     @B@@@@DUMPID    EQVM
+)@@G@@U       '[$DUMPID$,1,1,1]'    @A@@@@LIBRARYFILE EQU       '[$ML$,1,1,1]'VN
+)@@G@@@A@@@@HELPFILE    EQU       '[$HL$,1,1,1]'@B@@@@NVARS     EQU       [$VAVO
+)@@G@@RIABLE$,1,1,1]    @[@@@@#EOF  @]@@@@LPSUB D1,$  @[@@@@I $   @#@@@@LPSUB VP
+)@@G@@TX,$,1,2*   @]@@@@C / /$/     @]@@@@TCCHAR *    @]@@@@C /**//     @#@@@@VQ
+)@@G@@*SET LBRK$ TO 1   @#@@@@C ::/: [3,80]     @#@@@@C ::/: [6,80]     @#@@@@VR
+)@@G@@*SET LBRK$ TO 0   @#@@@@LPSUB TX,$,1,8*   @ @@@@R DATE      EQU       '$VS
+)@@G@@'     @[@@@@#EOF  @#@@@@#ED,U MF.SYSGEN   @ @@@@LOCATE *CREATE SGS: LEVEVT
+)@@G@@L     @B@@@@CHANGE @LEVEL@LEVEL IS [$LEVEL$,1,1,1]@>  @]@@@@CHANGE /./,/VU
+)@@G@@@[@@@@TOP   @^@@@@LOCATE *CREATE SGS: GEN @ @@@@*SET GEN TO [$GEN$,1,1,1VV
+)@@G@@]+1   @^@@@@CHANGE /GEN/GEN [*GEN]/>@[@@@@EXIT  @^@@@@*IF [$LIST$,1,1,1]VW
+)@@G@@=LONG @A@@@@#SETC,P . FORCE PAGE EJECTS NOW     @[@@@@*END .@ @@@@*INCREVX
+)@@G@@MENT I TO [$MODULE$]    @ @@@@*IF [$MODULE$,I,2,1]=MANDATORY@C@@@@*PROCEVY
+)@@G@@SS MASM [$MODULE$,I,1,1] [$MODULE$,I,3,1] @[@@@@*ELSE @F@@@@*IF [$MODULEVZ
+)@@G@@$,I,2,1]=ANY AND [$MODULE$,I,1,1] HAS CORRECTIONS     @C@@@@*PROCESS MASWA
+)@@G@@M [$MODULE$,I,1,1] [$MODULE$,I,3,1] @[@@@@*ELSE @G@@@@*IF [$MODULE$,I,2,WB
+)@@G@@1]=TEMP AND [$MODULE$,I,1,1] HAS TEMP CORRECTIONS     @C@@@@*PROCESS MASWC
+)@@G@@M [$MODULE$,I,1,1] [$MODULE$,I,3,1] @[@@@@*ELSE @G@@@@*IF [$MODULE$,I,2,WD
+)@@G@@1]=PERM AND [$MODULE$,I,1,1] HAS PERM CORRECTIONS     @C@@@@*PROCESS MASWE
+)@@G@@M [$MODULE$,I,1,1] [$MODULE$,I,3,1] @[@@@@*ELSE @D@@@@*PROCESS MASMELT [WF
+)@@G@@$MODULE$,I,1,1] [$MODULE$,I,3,1]    @[@@@@*END  @[@@@@*END  @[@@@@*END  WG
+)@@G@@@[@@@@*END  @[@@@@*LOOP @]@@@@*PROCESS MAP@ @@@@*IF [$LIST$,1,1,1]=ABSENWH
+)@@G@@T     @[@@@@*ELSE @G@@@@#HDG DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,1] ***** GLOWI
+)@@G@@BAL TAG CULL ***** .L,0 @#@@@@#CULL,INX ,SO.    @G@@@@#HDG DBE [$LEVEL$,WJ
+)@@G@@1,1,2]-[$GEN$,1,1,1] ***** REGISTER CULL ***** .L,0   @]@@@@#CULL,M ,SO.WK
+)@@G@@@D@@@@A0 A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 A11 A12 A13 A14 A15 @A@@@@X1 X2 WL
+)@@G@@X3 X4 X5 X6 X7 X8 X9 X10 X11  @D@@@@R1 R2 R3 R4 R5 R6 R7 R8 R9 R10 R11 RWM
+)@@G@@12 R13 R14 R15    @F@@@@#HDG DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,1] ***** ERRWN
+)@@G@@OR CULL ***** .L,0@]@@@@#CULL,M ,SO.@[@@@@E$0   @^@@@@*INCREMENT I TO 20WO
+)@@G@@0     @[@@@@E$[*I]@[@@@@*LOOP @^@@@@*IF [$NOTIFY$,1,1,1]=1  @D@@@@#MSG DWP
+)@@G@@BE [$LEVEL$,1,1,1].[$GEN$,1,1,1]: CULL COMPLETED@[@@@@*END  @[@@@@*END  WQ
+)@@G@@@]@@@@#PACK SO.   @]@@@@#PACK MF.   @]@@@@#PACK RO.   @]@@@@#PACK MO.   WR
+)@@G@@@[@@@@*END  @]@@@@#PACK AO.   @^@@@@*IF [$LIST$,1,1,1]=LONG @^@@@@#[$AO$WS
+)@@G@@,1,1,1].DBE,S     @H@@@@PRTCN 'H,,,DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,1] ***WT
+)@@G@@** TOC OF ABSOLUTE FILE *****'@]@@@@TOC AO.     @ @@@@*IF [$AO$,1,1,1]=[WU
+)@@G@@$MO$,1,1,1] @[@@@@*ELSE @H@@@@PRTCN 'H,,,DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,WV
+)@@G@@1] ***** TOC OF MACRO LIBRARY *****'@]@@@@TOC MO.     @[@@@@*END  @ @@@@WW
+)@@G@@*IF [$AO$,1,1,1]=[$HO$,1,1,1] @[@@@@*ELSE @ @@@@*IF [$MO$,1,1,1]=[$HO$,1WX
+)@@G@@,1,1] @[@@@@*ELSE @H@@@@PRTCN 'H,,,DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,1] ***WY
+)@@G@@** TOC OF HELP LIBRARY *****' @]@@@@TOC HO.     @[@@@@*END  @[@@@@*END  WZ
+)@@G@@@ @@@@*INCREMENT I TO [LISTMACRO]   @K@@@@PRTCN 'H,,,DBE [$LEVEL$,1,1,2]XA
+)@@G@@-[$GEN$,1,1,1] ***** LISTING OF MACRO [LISTMACRO,I,1,1] *****.L,0'@^@@@@XB
+)@@G@@LIST,L [LISTMACRO,I,1,1]@[@@@@*LOOP @^@@@@*IF [$NOTIFY$,1,1,1]=1  @G@@@@XC
+)@@G@@WRITE,C = 'DBE [$LEVEL$,1,1,1].[$GEN$,1,1,1]: MACRO LISTINGS COMPLETE',*XD
+)@@G@@@[@@@@*END  @#@@@@*IF [$SKELPRINT$] @I@@@@PRTCN 'H,,,DBE [$LEVEL$,1,1,2]XE
+)@@G@@-[$GEN$,1,1,1] ***** SKELETON LISTINGS *****.L,0'     @]@@@@LIBRARY MF. XF
+)@@G@@@^@@@@SKELPRINT MF.SYSINIT    @^@@@@SKELPRINT MF.SYSGEN     @^@@@@SKELPRXG
+)@@G@@INT MF.SYSGEN-II  @^@@@@*IF [$NOTIFY$,1,1,1]=1  @H@@@@WRITE,C = 'DBE [$LXH
+)@@G@@EVEL$,1,1,1].[$GEN$,1,1,1]: SKELETON LISTINGS COMPLETE',*   @[@@@@*END  XI
+)@@G@@@#@@@@*IF [$CDMPRINT$]  @H@@@@PRTCN 'H,,,DBE [$LEVEL$,1,1,2]-[$GEN$,1,1,XJ
+)@@G@@1] ***** CDM LISTINGS *****.L,0'    @]@@@@PRINTCDM,H  @^@@@@*IF [$NOTIFYXK
+)@@G@@$,1,1,1]=1  @G@@@@WRITE,C = 'DBE [$LEVEL$,1,1,1].[$GEN$,1,1,1]: CDM LISTXL
+)@@G@@INGS COMPLETE',*  @[@@@@*END  @[@@@@*END  @[@@@@*END  @H@@@@PRTCN 'H,,,DXM
+)@@G@@BE [$LEVEL$,1,1,2]-[$GEN$,1,1,1] ***** TCF/PCF LISTINGS *****.L,0'@]@@@@XN
+)@@G@@LIBRARY MF. @C@@@@CORRDUMP,TH TCF,[$LEVEL$,1,1,1].[$GEN$,1,1,1]   @C@@@@XO
+)@@G@@CORRDUMP,PH PCF,[$LEVEL$,1,1,1].[$GEN$,1,1,1]   @#@@@@*IF [$LOCAL$]     XP
+)@@G@@@D@@@@CORRDUMP,TLH LOCAL-TCF,[$LEVEL$,1,1,1].[$GEN$,1,1,1]  @[@@@@*END  XQ
+)@@G@@@^@@@@*IF [$NOTIFY$,1,1,1]=1  @H@@@@WRITE,C = 'DBE [$LEVEL$,1,1,1].[$GENXR
+)@@G@@$,1,1,1]: TCF/PCF LISTINGS COMPLETE',*    @[@@@@*END  @^@@@@PRTCN 'M,*,*XS
+)@@G@@,*.B,*'     @[@@@@BYE   @[@@@@*END  @D@@@@#MSG,N . THIS CONCLUDES THE DBXT
+)@@G@@E SYSTEM GENERATION     @ @@@@*IF       [$NOTIFY$,1,1,1]=1  @H@@@@#MSG *XU
+)@@G@@*** DBE [$SYSID$,1,1,1]: [$LEVEL$,1,1,1].[$GEN$,1,1,1] GEN COMPLETE ****XV
+)@@G@@@[@@@@*END  @ @@@@*IF [$MODE$,1,1,1]=@START     @[@@@@#EOF  @#@@@@#FREE XW
+)@@G@@DB$ST$.     @B@@@@#START DB$ST$.SYSGEN,,,[$ACCT$,1,1,1]     @[@@@@*END  XX
+)@@G@@@#@@@@*PROCESS DMDSYM   _@@@@@@@@@ $@@@@ *@@@@ (@@@@ %@@@@ :@@@@ ?@@@@ !XY
+)@@G@@*[S@@@*SDFF*@ @%@(*CREATE SGS: $MF$ ''DBE*F2''  @ @:@%*CREATE SGS: $MF$ XZ
+)@@G@@''DBE*F2''  @ @?@:*CREATE SGS: $MF$ ''DBE*F2''  @ @!@?*CREATE SGS: $MF$ YA
+)@@G@@''DBE*F2''  @ @@@!*CREATE SGS: $MF$ ''DBE*F2''  @]@@@(*IF [MASTER]@ @@@(YB
+)@@G@@#ED,U [MASTER,1,3,1].SYSINIT  @[@@@(1     @B@@@(R *CREATE SGS: $MF$ ''[MYC
+)@@G@@ASTER,1,3,1]''    @[@@@(#EOF  @#@@@(*REMOVE SGS $MF$  @A@@@(*CREATE SGS:YD
+)@@G@@ $MF$ ''[MASTER,1,3,1]''@[@@@(*END  @^@@@(#ED,EI TPF$.SKEL-TCF    @[@@@(YE
+)@@G@@#EOF  @#@@@(EXCHAR % 0133     @[@@@(TAB ^ @[@@@(INPUT @^@@@(*INCREMENT IYF
+)@@G@@ TO [SYSTEM]@[@@@(" .   @C@@@(" . SYSGEN INFO LOCAL TO CLASS [SYSTEM,I,3YG
+)@@G@@,1]   @[@@@(" .   @A@@@("IF %GENERATE,1,1,1]=[SYSTEM,I,3,1]:@D@@@("CREATYH
+)@@G@@E SGS: ABSOLUTE GOES TO ''[ABSOLUTE,I,3,1]''    @C@@@("CREATE SGS: ACCOUYI
+)@@G@@NT NUMBER IS [ACCOUNT,I,3,1]  @D@@@("CREATE SGS: DEBUGGING FEATURES ARE YJ
+)@@G@@[DEBUGGING,I,3,1] @H@@@("CREATE SGS: EXPRESSION EVALUATION STACK CONTAINYK
+)@@G@@S [EXPRESSION,I,4,1] SLOTS    @G@@@("CREATE SGS: FILE LIMITS ARE [FILE,IYL
+)@@G@@,3,1] WITH [FILE,I,5,1] SECTOR ;    @D@@@(   SDF BUFFERS AND [FILE,I,10,YM
+)@@G@@1] WORD GENERAL BUFFER  @C@@@("CREATE SGS: FREE OF DBE FILE IS [FREE,I,5YN
+)@@G@@,1]   @C@@@("CREATE SGS: FULL SCHEMA READ IS [FULL,I,4,1]   @D@@@("CREATYO
+)@@G@@E SGS: HELP ELEMENTS GO TO ''[HELP,I,4,1]'' ;   @C@@@(           AND AREYP
+)@@G@@ IN LIBRARY ''[HELP,I,9,1]''  @C@@@("CREATE SGS: INPUT FILE IS ''[INPUT,YQ
+)@@G@@I,3,1]''    @B@@@("CREATE SGS: LISTING IS [LISTING,I,2,1]   @#@@@(*IF [LYR
+)@@G@@OCAL]=[*I]  @G@@@("CREATE SGS: LOCAL TCFELT IS ''[LOCAL,I,3,1]'' IN FILEYS
+)@@G@@ ''[LOCAL,I,6,1]''@[@@@(*END  @D@@@("CREATE SGS: MACRO AREA SIZE IS [MACYT
+)@@G@@RO,I,4,1] WORDS   @C@@@("CREATE SGS: MACROS GO TO ''[MACROS,I,3,1]'' ;  YU
+)@@G@@@C@@@(          AND ARE IN LIBRARY ''[MACROS,I,8,1]'' @]@@@(*EDIT ON &  YV
+)@@G@@@B@@@("CREATE SGS: MASTERID IS [MASTERID,I,2,1]&@^@@@(*IF [MASTERID,I,2]YW
+)@@G@@>1    @B@@@(*INCREMENT J FROM 2 TO [MASTERID,I,2] BY 1@#@@@(,[MASTERID,IYX
+)@@G@@,2,J]&@[@@@(*LOOP @[@@@(*END  @]@@@(*EDIT OFF   @A@@@("CREATE SGS: MODE YY
+)@@G@@IS [MODE,I,2,1]   @^@@@(*IF [NAME,I,5,1]=ANY    @B@@@("CREATE SGS: NAME YZ
+)@@G@@OF SCHEMA MAY BE ANY    @[@@@(*ELSE @C@@@("CREATE SGS: NAME OF SCHEMA MUZA
+)@@G@@ST BE [NAME,I,5,1]@[@@@(*END  @H@@@("CREATE SGS: OBJECT COMPUTER IS 1100ZB
+)@@G@@ / [OBJECT,I,5,1] ON LEVEL [OBJECT,I,8,1] @D@@@("CREATE SGS: OPERATOR NOZC
+)@@G@@TIFICATION IS [OPERATOR,I,3,1]@C@@@("CREATE SGS: OUTPUT GOES TO ''[OUTPUZD
+)@@G@@T,I,3,1]''  @D@@@("CREATE SGS: PARAMETER LIMIT IS [PARAMETER,I,3,1]     ZE
+)@@G@@@C@@@("CREATE SGS: PATCH FEATURES ARE [PATCH,I,3,1]   @G@@@("CREATE SGS:ZF
+)@@G@@ PCFELT IS ''[PCFELT,I,2,1]'' IN FILE ''[PCFELT,I,5,1]''    @B@@@("CREATZG
+)@@G@@E SGS: PROJID IS [PROJID,I,2,1]     @E@@@("CREATE SGS: RELOCATABLES GO TZH
+)@@G@@O ''[RELOCATABLES,I,3,1]''    @ @@@(*IF [SECURITY,I,3,1]=DISABLED @B@@@(ZI
+)@@G@@"CREATE SGS: SECURITY CHECKS ARE DISABLED @[@@@(*ELSE @E@@@("CREATE SGS:ZJ
+)@@G@@ SECURITY TABLES ARE [SECURITY,I,3,1] TRACKS ;  @C@@@(              IN FZK
+)@@G@@ILE ''[SECURITY,I,7,1]'' ;    @E@@@(              USING [SECURITY,I,9,1]ZL
+)@@G@@ FOR DEMAND CLEARANCE   @[@@@(*END  @G@@@("CREATE SGS: SYSTEM CLASS IS [ZM
+)@@G@@SYSTEM,I,3,1] WITH DUMP ID [SYSTEM,I,7,1] @G@@@("CREATE SGS: TCFELT IS 'ZN
+)@@G@@'[TCFELT,I,2,1]'' IN FILE ''[TCFELT,I,5,1]''    @B@@@("CREATE SGS: TIP FZO
+)@@G@@ILES ARE [TIP,I,3,1]    @B@@@("CREATE SGS: UPA SIZE IS [UPA,I,3,1] WORDSZP
+)@@G@@@C@@@("CREATE SGS: VARIABLE LIMIT IS [VARIABLE,I,3,1] @[@@@("END  @[@@@(ZQ
+)@@G@@*LOOP @[@@@(" .   @ @@@(" . SYSTEM CONTROL INFORMATION@[@@@(" .   @ @@@(ZR
+)@@G@@*INCREMENT I TO [INITIAL,1,3] @C@@@("CREATE SGS: $BRKINIT$     ''[INITIAZS
+)@@G@@L,1,3,I]''  @[@@@(*LOOP @A@@@(*INCREMENT I TO [TERMINATING,1,3]   @D@@@(ZT
+)@@G@@"CREATE SGS: $BRKTERM$     ''[TERMINATING,1,3,I]''    @[@@@(*LOOP @C@@@(ZU
+)@@G@@"CREATE SGS: $MF$          ''[$MF$,1,1,1]''     @B@@@("CREATE SGS: $TITLZV
+)@@G@@E$       [TITLE,1,3,1]  @[@@@(#EOF  @[@@@(#EOF  @ @@@(#ED,U [$MF$,1,1,1]ZW
+)@@G@@.SYSGEN     @]@@@(ON BRIEF    @]@@@(LOCATE EJECT@]@@@(COMP:XA N   @]@@@(ZX
+)@@G@@LOCATE EJECT@#@@@(COMP:XB N-XA-1    @]@@@(COMP XA     @]@@@(LPSUB V,$   ZY
+)@@G@@@[@@@($+1   @]@@@(COMP XB     @]@@@(LPSUB,2 V,# @]@@@(LPTST V EQ 0@]@@@(ZZ
+)@@G@@DELETE+ #   @[@@@(-1    @#@@@(ADD+ SKEL-TCF     @[@@@(#EOF  _@@@@@@D@@@*AA
+)@@G@@"CREATE SGS: $BRKTERM$     ''[TERMINATING,1,3,I]''    @[@@@**LOOP @C@@@*AB
+)@@G@@"CREATE SGS: $MF$          ''[$MF$,1,1,1]''     @B@@@*"CREATE SGS: $TITLAC
+)@@G@@*[S@@@*SDFF*@#@@@Z*IF [GENERATE]    @[@@@Z*ELSE @E@@@Z*MESSAGE,I *******AD
+)@@G@@***************************************   @E@@@Z*MESSAGE,I * FATAL ERRORAE
+)@@G@@ - "GENERATE" SGS NOT SUPPLIED! *   @E@@@Z*MESSAGE,IX ******************AF
+)@@G@@****************************  @[@@@Z*END  @C@@@Z* . DBE SYSTEM GENERATIOAG
+)@@G@@N SKELETON (PASS I)     @A@@@Z* .     VERSION II        04/04/79  @[@@@ZAH
+)@@G@@* .   @C@@@Z*CREATE SGS: MODULE DBE-000A MANDATORY SI OMN   @C@@@Z*CREATAI
+)@@G@@E SGS: MODULE DBE-000B MANDATORY SI REL   @C@@@Z*CREATE SGS: MODULE DBE-AJ
+)@@G@@001 OPTIONAL SI REL     @C@@@Z*CREATE SGS: MODULE DBE-002 OPTIONAL SI REAK
+)@@G@@L     @C@@@Z*CREATE SGS: MODULE DBE-003 OPTIONAL SI REL     @C@@@Z*CREATAL
+)@@G@@E SGS: MODULE DBE-004 OPTIONAL SI REL     @C@@@Z*CREATE SGS: MODULE DBE-AM
+)@@G@@005 OPTIONAL SI REL     @C@@@Z*CREATE SGS: MODULE DBE-006 OPTIONAL SI REAN
+)@@G@@L     @C@@@Z*CREATE SGS: MODULE DBE-007 OPTIONAL SI REL     @C@@@Z*CREATAO
+)@@G@@E SGS: MODULE DBE-008 OPTIONAL SI REL     @C@@@Z*CREATE SGS: MODULE DBE-AP
+)@@G@@009 OPTIONAL SI REL     @C@@@Z*CREATE SGS: MODULE DBE-010 OPTIONAL SI REAQ
+)@@G@@L     @C@@@Z*CREATE SGS: MODULE DBE-011 OPTIONAL SI REL     @F@@@Z*CREATAR
+)@@G@@E   SGS:      MODULE            DBE-012 OPTIONAL SI REL     @C@@@Z*CREATAS
+)@@G@@E SGS: MODULE DBE-013 OPTIONAL SI REL     @C@@@Z*CREATE SGS: MODULE DBE-AT
+)@@G@@999 OPTIONAL SI REL     @[@@@Z*EJECT@[@@@+* .   @B@@@+* . SYSGEN INFO LOAU
+)@@G@@CAL TO CLASS RELEASE    @[@@@+* .   @ @@@+*IF [GENERATE,1,1,1]=RELEASE: AV
+)@@G@@@B@@@+*CREATE SGS: ABSOLUTE GOES TO ''DBE*F5''  @A@@@+*CREATE SGS: ACCOUAW
+)@@G@@NT NUMBER IS SU000@C@@@+*CREATE SGS: DEBUGGING FEATURES ARE ENABLED     AX
+)@@G@@@E@@@+*CREATE SGS: EXPRESSION EVALUATION STACK CONTAINS 50 SLOTS  @C@@@+AY
+)@@G@@*CREATE SGS: FILE LIMITS ARE 5 WITH 4 SECTOR ;  @C@@@+   SDF BUFFERS ANDAZ
+)@@G@@ 4000 WORD GENERAL BUFFER     @B@@@+*CREATE SGS: FREE OF DBE FILE IS DISBA
+)@@G@@ABLED @B@@@+*CREATE SGS: FULL SCHEMA READ IS DISABLED @C@@@+*CREATE SGS:BB
+)@@G@@ HELP ELEMENTS GO TO ''DBE*F5'' ;   @C@@@+           AND ARE IN LIBRARY BC
+)@@G@@''CSINTNAME$''    @B@@@+*CREATE SGS: INPUT FILE IS ''DBE*F3''     @ @@@+BD
+)@@G@@*CREATE SGS: LISTING IS LONG  @C@@@+*CREATE SGS: MACRO AREA SIZE IS 0400BE
+)@@G@@00 WORDS    @B@@@+*CREATE SGS: MACROS GO TO ''DBE*F5'' ;    @C@@@+      BF
+)@@G@@    AND ARE IN LIBRARY ''CSINTNAME$''     @A@@@+*CREATE SGS: MASTERID ISBG
+)@@G@@ DBEGEN     @ @@@+*CREATE SGS: MODE IS BATCH    @B@@@+*CREATE SGS: NAME BH
+)@@G@@OF SCHEMA MAY BE ANY    @D@@@+*CREATE SGS: OBJECT COMPUTER IS 1100 / 90 BI
+)@@G@@ON LEVEL 39 @C@@@+*CREATE SGS: OPERATOR NOTIFICATION IS DISABLED  @A@@@+BJ
+)@@G@@*CREATE SGS: OUTPUT GOES TO ''TPF$''@A@@@+*CREATE SGS: PARAMETER LIMIT IBK
+)@@G@@S 10  @B@@@+*CREATE SGS: PATCH FEATURES ARE ENABLED   @D@@@+*CREATE SGS:BL
+)@@G@@ PCFELT IS ''PCF'' IN FILE ''DBE*F3''     @ @@@+*CREATE SGS: PROJID IS EBM
+)@@G@@XEC-8 @B@@@+*CREATE SGS: RELOCATABLES GO TO ''DBE*F4''@B@@@+*CREATE SGS:BN
+)@@G@@ SECURITY CHECKS ARE DISABLED @D@@@+*CREATE SGS: SYSTEM CLASS IS RELEASEBO
+)@@G@@ WITH DUMP ID DBE @D@@@+*CREATE SGS: TCFELT IS ''TCF'' IN FILE ''DBE*F3'BP
+)@@G@@'     @A@@@+*CREATE SGS: TIP FILES ARE ENABLED  @A@@@+*CREATE SGS: UPA SBQ
+)@@G@@IZE IS 0 WORDS    @A@@@+*CREATE SGS: VARIABLE LIMIT IS 100  @[@@@+*END  BR
+)@@G@@@[@@@+* .   @ @@@+* . SYSTEM CONTROL INFORMATION@[@@@+* .   @C@@@+*CREATBS
+)@@G@@E SGS: $BRKINIT$     ''@CAT,P $DB$(+1).'' @C@@@+*CREATE SGS: $BRKINIT$  BT
+)@@G@@   ''@ASG,A $DB$. ''    @D@@@+*CREATE SGS: $BRKINIT$     ''@BRKPT PRINT$BU
+)@@G@@/$DB$''     @D@@@+*CREATE SGS: $BRKINIT$     ''@HDG,N .M,88,8,8.B,8''   BV
+)@@G@@@C@@@+*CREATE SGS: $BRKTERM$     ''@BRKPT PRINT$''    @C@@@+*CREATE SGS:BW
+)@@G@@ $BRKTERM$     ''@FREE $DB$. . ''   @B@@@+*CREATE SGS: $BRKTERM$     ''@BX
+)@@G@@SYM $DB$.'' @B@@@+*CREATE SGS: $MF$          ''DBE*F2''     @A@@@+*CREATBY
+)@@G@@E SGS: $TITLE$       DBE*F2   @[@+@)* .   @B@+@)* . SYSGEN INFO LOCAL TOBZ
+)@@G@@ CLASS RELEASE    @[@+@)* .   @ @+@)*IF [GENERATE,1,1,1]=RELEASE: @B@+@)CA
+)@@G@@*CREATE SGS: ABSOLUTE GOES TO ''DBE*F5''  @A@+@)*CREATE SGS: ACCOUNT NUMCB
+)@@G@@BER IS SU000@C@+@)*CREATE SGS: DEBUGGING FEATURES ARE ENABLED     @E@+@)CC
+)@@G@@*CREATE SGS: EXPRESSION EVALUATION STACK CONTAINS 50 SLOTS  @C@+@)*CREATCD
+)@@G@@E SGS: FILE LIMITS ARE 5 WITH 4 SECTOR ;  @C@+@)   SDF BUFFERS AND 4000 CE
+)@@G@@WORD GENERAL BUFFER     @B@+@)*CREATE SGS: FREE OF DBE FILE IS DISABLED CF
+)@@G@@@B@+@)*CREATE SGS: FULL SCHEMA READ IS DISABLED @C@+@)*CREATE SGS: HELP CG
+)@@G@@ELEMENTS GO TO ''DBE*F5'' ;   @C@+@)           AND ARE IN LIBRARY ''CSINCH
+)@@G@@TNAME$''    @B@+@)*CREATE SGS: INPUT FILE IS ''DBE*F3''     @ @+@)*CREATCI
+)@@G@@E SGS: LISTING IS LONG  @C@+@)*CREATE SGS: MACRO AREA SIZE IS 040000 WORCJ
+)@@G@@DS    @B@+@)*CREATE SGS: MACROS GO TO ''DBE*F5'' ;    @C@+@)          ANCK
+)@@G@@D ARE IN LIBRARY ''CSINTNAME$''     @A@+@)*CREATE SGS: MASTERID IS DBEGECL
+)@@G@@N     @ @+@)*CREATE SGS: MODE IS BATCH    @B@+@)*CREATE SGS: NAME OF SCHCM
+)@@G@@EMA MAY BE ANY    @D@+@)*CREATE SGS: OBJECT COMPUTER IS 1100 / 90 ON LEVCN
+)@@G@@EL 39 @C@+@)*CREATE SGS: OPERATOR NOTIFICATION IS DISABLED  @A@+@)*CREATCO
+)@@G@@E SGS: OUTPUT GOES TO ''TPF$''@A@+@)*CREATE SGS: PARAMETER LIMIT IS 10  CP
+)@@G@@@B@+@)*CREATE SGS: PATCH FEATURES ARE ENABLED   @D@+@)*CREATE SGS: PCFELCQ
+)@@G@@T IS ''PCF'' IN FILE ''DBE*F3''     @ @+@)*CREATE SGS: PROJID IS EXEC-8 CR
+)@@G@@@B@+@)*CREATE SGS: RELOCATABLES GO TO ''DBE*F4''@B@+@)*CREATE SGS: SECURCS
+)@@G@@ITY CHECKS ARE DISABLED @D@+@)*CREATE SGS: SYSTEM CLASS IS RELEASE WITH CT
+)@@G@@DUMP ID DBE @D@+@)*CREATE SGS: TCFELT IS ''TCF'' IN FILE ''DBE*F3''     CU
+)@@G@@@A@+@)*CREATE SGS: TIP FILES ARE ENABLED  @A@+@)*CREATE SGS: UPA SIZE ISCV
+)@@G@@ 0 WORDS    @A@+@)*CREATE SGS: VARIABLE LIMIT IS 100  @[@+@)*END  @[@+@)CW
+)@@G@@* .   @ @+@)* . SYSTEM CONTROL INFORMATION@[@+@)* .   @C@+@)*CREATE SGS:CX
+)@@G@@ $BRKINIT$     ''@CAT,P $DB$(+1).'' @C@+@)*CREATE SGS: $BRKINIT$     ''@CY
+)@@G@@ASG,A $DB$. ''    @D@+@)*CREATE SGS: $BRKINIT$     ''@BRKPT PRINT$/$DB$'CZ
+)@@G@@'     @D@+@)*CREATE SGS: $BRKINIT$     ''@HDG,N .M,88,8,8.B,8''   @C@+@)DA
+)@@G@@*CREATE SGS: $BRKTERM$     ''@BRKPT PRINT$''    @C@+@)*CREATE SGS: $BRKTDB
+)@@G@@ERM$     ''@FREE $DB$. . ''   @B@+@)*CREATE SGS: $BRKTERM$     ''@SYM $DDC
+)@@G@@B$.'' @B@+@)*CREATE SGS: $MF$          ''DBE*F2''     @A@+@)*CREATE SGS:DD
+)@@G@@ $TITLE$       DBE*F2   @[@)@Z* .   @B@)@Z* . SYSGEN INFO LOCAL TO CLASSDE
+)@@G@@ RELEASE    @[@)@Z* .   @ @)@Z*IF [GENERATE,1,1,1]=RELEASE: @B@)@Z*CREATDF
+)@@G@@E SGS: ABSOLUTE GOES TO ''DBE*F5''  @A@)@Z*CREATE SGS: ACCOUNT NUMBER ISDG
+)@@G@@ SU000@C@)@Z*CREATE SGS: DEBUGGING FEATURES ARE ENABLED     @E@)@Z*CREATDH
+)@@G@@E SGS: EXPRESSION EVALUATION STACK CONTAINS 50 SLOTS  @C@)@Z*CREATE SGS:DI
+)@@G@@ FILE LIMITS ARE 5 WITH 4 SECTOR ;  @C@)@Z   SDF BUFFERS AND 4000 WORD GDJ
+)@@G@@ENERAL BUFFER     @B@)@Z*CREATE SGS: FREE OF DBE FILE IS DISABLED @B@)@ZDK
+)@@G@@*CREATE SGS: FULL SCHEMA READ IS DISABLED @C@)@Z*CREATE SGS: HELP ELEMENDL
+)@@G@@TS GO TO ''DBE*F5'' ;   @C@)@Z           AND ARE IN LIBRARY ''CSINTNAME$DM
+)@@G@@''    @B@)@Z*CREATE SGS: INPUT FILE IS ''DBE*F3''     @ @)@Z*CREATE SGS:DN
+)@@G@@ LISTING IS LONG  @C@)@Z*CREATE SGS: MACRO AREA SIZE IS 040000 WORDS    DO
+)@@G@@@B@)@Z*CREATE SGS: MACROS GO TO ''DBE*F5'' ;    @C@)@Z          AND ARE DP
+)@@G@@IN LIBRARY ''CSINTNAME$''     @A@)@Z*CREATE SGS: MASTERID IS DBEGEN     DQ
+)@@G@@@ @)@Z*CREATE SGS: MODE IS BATCH    @B@)@Z*CREATE SGS: NAME OF SCHEMA MADR
+)@@G@@Y BE ANY    @D@)@Z*CREATE SGS: OBJECT COMPUTER IS 1100 / 90 ON LEVEL 39 DS
+)@@G@@@C@)@Z*CREATE SGS: OPERATOR NOTIFICATION IS DISABLED  @A@)@Z*CREATE SGS:DT
+)@@G@@ OUTPUT GOES TO ''TPF$''@A@)@Z*CREATE SGS: PARAMETER LIMIT IS 10  @B@)@ZDU
+)@@G@@*CREATE SGS: PATCH FEATURES ARE ENABLED   @D@)@Z*CREATE SGS: PCFELT IS 'DV
+)@@G@@'PCF'' IN FILE ''DBE*F3''     @ @)@Z*CREATE SGS: PROJID IS EXEC-8 @B@)@ZDW
+)@@G@@*CREATE SGS: RELOCATABLES GO TO ''DBE*F4''@B@)@Z*CREATE SGS: SECURITY CHDX
+)@@G@@ECKS ARE DISABLED @D@)@Z*CREATE SGS: SYSTEM CLASS IS RELEASE WITH DUMP IDY
+)@@G@@D DBE @D@)@Z*CREATE SGS: TCFELT IS ''TCF'' IN FILE ''DBE*F3''     @A@)@ZDZ
+)@@G@@*CREATE SGS: TIP FILES ARE ENABLED  @A@)@Z*CREATE SGS: UPA SIZE IS 0 WOREA
+)@@G@@DS    @A@)@Z*CREATE SGS: VARIABLE LIMIT IS 100  @[@)@Z*END  @[@)@Z* .   EB
+)@@G@@@ @)@Z* . SYSTEM CONTROL INFORMATION@[@)@Z* .   @C@)@Z*CREATE SGS: $BRKIEC
+)@@G@@NIT$     ''@CAT,P $DB$(+1).'' @C@)@Z*CREATE SGS: $BRKINIT$     ''@ASG,A ED
+)@@G@@$DB$. ''    @D@)@Z*CREATE SGS: $BRKINIT$     ''@BRKPT PRINT$/$DB$''     EE
+)@@G@@@D@)@Z*CREATE SGS: $BRKINIT$     ''@HDG,N .M,88,8,8.B,8''   @C@)@Z*CREATEF
+)@@G@@E SGS: $BRKTERM$     ''@BRKPT PRINT$''    @C@)@Z*CREATE SGS: $BRKTERM$  EG
+)@@G@@   ''@FREE $DB$. . ''   @B@)@Z*CREATE SGS: $BRKTERM$     ''@SYM $DB$.'' EH
+)@@G@@@B@)@Z*CREATE SGS: $MF$          ''DBE*F2''     @A@)@Z*CREATE SGS: $TITLEI
+)@@G@@E$       DBE*F2   @[@@@Z*EJECT@ @-@Z*CREATE SGS: LEVEL IS 6R1C    @ @<@-EJ
+)@@G@@*CREATE SGS: LEVEL IS 6R1C    @ @@@<*CREATE SGS: LEVEL IS 6R1C    @#@-@ZEK
+)@@G@@*CREATE SGS: GEN 1@#@<@-*CREATE SGS: GEN 1@#@@@<*CREATE SGS: GEN 1@]@@@ZEL
+)@@G@@#ASG,T MACS.@B@@@Z#SSG,SB ,[INPUT,1,3,1]./MACRONAME,MACS.   @[@@@ZSKEL  EM
+)@@G@@@#@@@Z*SET LBRK$ TO 1   @ @@@Z"INCREMENT I TO [MACRONAME]   @^@@@Z"IF [MEN
+)@@G@@ACRONAME,I,3,1]=1 @^@@@Z"IF [MACRONAME,I,3,2]=21@ @@@ZMACRONAME [MACRONAEO
+)@@G@@ME,I,1,1]   @#@@@Z*SET LBRK$ TO 0   @[@@@Z"END  @[@@@Z"END  @[@@@Z"LOOP EP
+)@@G@@@]@@@Z*IF [DEBUG] @^@@@Z#ASG,T SSG$SQUELCH$.    @ @@@Z#BRKPT PRINT$/SSG$EQ
+)@@G@@SQUELCH$    @ @@@Z#SSG,AK [$MF$,1,1,1].SYSGEN-II@[@@@Z*ELSE @ @@@Z#SSG,AER
+)@@G@@ [$MF$,1,1,1].SYSGEN-II @[@@@Z*END  @]@@@Z*IF [IGNORE]@^@@@Z$NOCHANGES$ ES
+)@@G@@TO MACROS   @[@@@Z*ELSE @B@@@ZTEMP COR [TCFELT,1,5,1].[TCFELT,1,2,1]    ET
+)@@G@@@]@@@Z*IF [LOCAL] @B@@@ZTEMP COR [LOCAL,1,6,1].[LOCAL,1,3,1] :TCF1@[@@@ZEU
+)@@G@@*END  @B@@@ZPERM COR [PCFELT,1,5,1].[PCFELT,1,2,1]    @[@@@Z*END  @]@@@ZEV
+)@@G@@SGS MACS.   @[@@@ZSGS   @]@@@Z*IF [LOCAL] @A@@@Z$LOCAL$ [LOCAL,1,3,1] [LEW
+)@@G@@OCAL,1,6,1] @[@@@Z*END  @#@@@Z*IF [INHIBIT]     @#@@@Z$INHIBIT$ MERGE   EX
+)@@G@@@[@@@Z*END  @^@@@Z*INCREMENT I TO [MODULE]@^@@@Z*IF [MODULE,I,3,1]=SI   EY
+)@@G@@@^@@@Z$NAME$ [MODULE,I,1,1]   @[@@@Z*END  @^@@@Z*IF [MODULE,I,4,1]=REL  EZ
+)@@G@@@^@@@Z$REL$ [MODULE,I,1,1]    @[@@@Z*END  @[@@@Z*LOOP @ @@@Z*IF [SECURITFA
+)@@G@@Y,1,3,1]=DISABLED @]@@@Z$SECURITY$ 0@]@@@Z$NTRKS$ 0   @#@@@Z$SECFILE$ ''FB
+)@@G@@ ''   @]@@@Z$USERID$ 0  @]@@@Z$ACCOUNT$ 0 @[@@@Z*ELSE @]@@@Z$SECURITY$ 1FC
+)@@G@@@^@@@Z$NTRKS$ [SECURITY,1,3,1]@ @@@Z$SECFILE$ ''[SECURITY,1,7,1]''@ @@@ZFD
+)@@G@@*IF [SECURITY,1,9,1]=ACCOUNTS @]@@@Z$ACCOUNT$ 1 @]@@@Z$USERID$ 0  @[@@@ZFE
+)@@G@@*ELSE @]@@@Z$ACCOUNT$ 0 @]@@@Z$USERID$ 1  @[@@@Z*END  @[@@@Z*END  @ @@@ZFF
+)@@G@@*INCREMENT J TO [MASTERID,1,2]@ @@@Z$MASTERID$ [MASTERID,1,2,J]   @[@@@ZFG
+)@@G@@*LOOP @ @@@Z*IF [PATCH,1,3,1]=ENABLED     @]@@@Z$PATCH$ 1   @[@@@Z*ELSE FH
+)@@G@@@]@@@Z$PATCH$ 0   @[@@@Z*END  @^@@@Z*IF [GENERATE,1,2,1]=ALL@^@@@Z*INCREFI
+)@@G@@MENT I TO [MODULE]@ @@@Z*IF [MODULE,I,2,1]=MANDATORY  @C@@@Z$MODULE$ [MOFJ
+)@@G@@DULE,I,1,1] MANDATORY [MODULE,I,3,1]@[@@@Z*ELSE @D@@@Z*IF [GENERATE,1]>3FK
+)@@G@@ AND [GENERATE,1,5,1]=CORRECTIONS   @#@@@Z$COPY$ CHANGED    @B@@@Z$MODULFL
+)@@G@@E$ [MODULE,I,1,1] ANY [MODULE,I,3,1]@[@@@Z*END  @D@@@Z*IF [GENERATE,1]>3FM
+)@@G@@ AND [GENERATE,1,5,1]=TEMPORARY     @]@@@Z$COPY$ TEMP @C@@@Z$MODULE$ [MOFN
+)@@G@@DULE,I,1,1] TEMP [MODULE,I,3,1]     @[@@@Z*END  @D@@@Z*IF [GENERATE,1]>3FO
+)@@G@@ AND [GENERATE,1,5,1]=PERMANENT     @]@@@Z$COPY$ PERM @C@@@Z$MODULE$ [MOFP
+)@@G@@DULE,I,1,1] PERM [MODULE,I,3,1]     @[@@@Z*END  @#@@@Z*IF [GENERATE,1]<4FQ
+)@@G@@@]@@@Z$COPY$ ALL  @]@@@Z$BUILDHELP$ @C@@@Z$MODULE$ [MODULE,I,1,1] MANDATFR
+)@@G@@ORY [MODULE,I,3,1]@]@@@Z$MASMNEEDED$@[@@@Z*END  @[@@@Z*END  @[@@@Z*LOOP FS
+)@@G@@@[@@@Z*ELSE @^@@@Z*INCREMENT I TO [MODULE]@ @@@Z*IF [MODULE,I,2,1]=MANDAFT
+)@@G@@TORY  @C@@@Z$MODULE$ [MODULE,I,1,1] MANDATORY [MODULE,I,3,1]@[@@@Z*ELSE FU
+)@@G@@@D@@@Z*IF ROW SEARCH FROM GENERATE,1,2,1 FOR [MODULE,I,1,1] @C@@@Z$MODULFV
+)@@G@@E$ [MODULE,I,1,1] MANDATORY [MODULE,I,3,1]@]@@@Z$MASMNEEDED$@[@@@Z*ELSE FW
+)@@G@@@B@@@Z$MODULE$ [MODULE,I,1,1] ELT [MODULE,I,3,1]@[@@@Z*END  @[@@@Z*END  FX
+)@@G@@@[@@@Z*LOOP @ @@@Z*INCREMENT I TO [GENERATE,1,2]@E@@@Z*IF COLUMN SEARCH FY
+)@@G@@FROM MODULE,1,1,1 FOR [GENERATE,1,2,I]    @]@@@Z$MASMNEEDED$@[@@@Z*ELSE FZ
+)@@G@@@ @@@Z$MACROCOPY$ [GENERATE,1,2,I]  @[@@@Z*END  @[@@@Z*LOOP @[@@@Z*END  GA
+)@@G@@@^@@@Z$AO$ [ABSOLUTE,1,3,1]   @^@@@Z$ACCT$ [ACCOUNT,1,3,1]  @ @@@Z*IF [DGB
+)@@G@@EBUGGING,1,3,1]=ENABLED @]@@@Z$DEBUG$ 1   @ @@@Z*INCREMENT K FROM 5 TO 1GC
+)@@G@@1 BY 3@#@@@Z*SET L TO K+2     @ @@@Z*IF [DEBUGGING,1,K,1]=SNOOPY  @ @@@ZGD
+)@@G@@$SNOOPY$ [DEBUGGING,1,L,1]    @[@@@Z*END  @ @@@Z*IF [DEBUGGING,1,K,1]=CAGE
+)@@G@@BSAD$ @ @@@Z$CABSAD$ [DEBUGGING,1,L,1]    @[@@@Z*END  @ @@@Z*IF [DEBUGGIGF
+)@@G@@NG,1,K,1]=CRELAD$ @ @@@Z$CRELAD$ [DEBUGGING,1,L,1]    @[@@@Z*END  @[@@@ZGG
+)@@G@@*LOOP @[@@@Z*ELSE @]@@@Z$DEBUG$ 0   @[@@@Z*END  @ @@@Z$SLOTS$ [EXPRESSIOGH
+)@@G@@N,1,4,1]    @^@@@Z$NFILES$ [FILE,1,3,1]   @ @@@Z$BUFSECTORS$ [FILE,1,5,1GI
+)@@G@@]     @^@@@Z$NTAPES$ [FILE,1,3,1]   @^@@@Z$IOBUFSZ$ [FILE,1,10,1] @^@@@ZGJ
+)@@G@@*IF [FREE,1,5,1]=ENABLED@]@@@Z$TERMFREE$ 1@[@@@Z*ELSE @]@@@Z$TERMFREE$ 0GK
+)@@G@@@[@@@Z*END  @^@@@Z*IF [FULL,1,4,1]=ENABLED@#@@@Z$FULLSCHEMA$ 1    @[@@@ZGL
+)@@G@@*ELSE @#@@@Z$FULLSCHEMA$ 0    @[@@@Z*END  @#@@@Z$SI$ [INPUT,1,3,1]@^@@@ZGM
+)@@G@@$LIST$ [LISTING,1,2,1]  @^@@@Z$MASIZE$ [MACRO,1,4,1]  @^@@@Z$MODE$ [MODEGN
+)@@G@@,1,2,1]     @^@@@Z$MACHINE$ [OBJECT,1,5,1]@^@@@Z$EXEC$ [OBJECT,1,8,1]   GO
+)@@G@@@ @@@Z$SCHEMANAME$ [NAME,1,5,1]     @ @@@Z*IF [OPERATOR,1,3,1]=ENABLED  GP
+)@@G@@@]@@@Z$NOTIFY$ 1  @[@@@Z*ELSE @]@@@Z$NOTIFY$ 0  @[@@@Z*END  @#@@@Z*IF [LGQ
+)@@G@@EVEL,1]<3   @^@@@Z$SO$ [OUTPUT,1,3,1]     @[@@@Z*ELSE @]@@@Z$SO$ SI     GR
+)@@G@@@[@@@Z*END  @A@@@Z$PCF$ [PCFELT,1,2,1] [PCFELT,1,5,1] @^@@@Z$PROJID$ [PRGS
+)@@G@@OJID,1,2,1] @ @@@Z$RO$ [RELOCATABLES,1,3,1]     @^@@@Z$SYSID$ [SYSTEM,1,GT
+)@@G@@3,1]  @^@@@Z$DUMPID$ [SYSTEM,1,7,1] @A@@@Z$TCF$ [TCFELT,1,2,1] [TCFELT,1GU
+)@@G@@,5,1] @#@@@Z$UPA$ [UPA,1,3,1] @^@@@Z*IF [TIP,1,3,1]=ENABLED @]@@@Z$TIP$ GV
+)@@G@@1     @[@@@Z*ELSE @]@@@Z$TIP$ 0     @[@@@Z*END  @#@@@Z$MF$ [$MF$,1,1,1] GW
+)@@G@@@]@@@Z*IF [PRINT] @B@@@Z*IF COLUMN SEARCH FROM PRINT FOR SKELETONS@]@@@ZGX
+)@@G@@$SKELPRINT$ @[@@@Z*END  @B@@@Z*IF COLUMN SEARCH FROM PRINT FOR CDMS     GY
+)@@G@@@]@@@Z$CDMPRINT$  @[@@@Z*END  @[@@@Z*END  @ @@@Z*INCREMENT I TO [$BRKINIGZ
+)@@G@@T$]   @A@@@Z$BRKINIT$ ''[$BRKINIT$,I,1,1]''     @[@@@Z*LOOP @ @@@Z*INCREHA
+)@@G@@MENT I TO [$BRKTERM$]   @A@@@Z$BRKTERM$ ''[$BRKTERM$,I,1,1]''     @[@@@ZHB
+)@@G@@*LOOP @^@@@Z$TITLE$ [$TITLE$,1,1,1] @^@@@Z$ML$ [MACROS,1,8,1]     @^@@@ZHC
+)@@G@@$MO$ [MACROS,1,3,1]     @#@@@Z$HL$ [HELP,1,9,1] @#@@@Z$HO$ [HELP,1,4,1] HD
+)@@G@@@ @@@Z$PARAMETERS$ [PARAMETER,1,3,1]@ @@@Z$VARIABLE$ [VARIABLE,1,3,1]   HE
+)@@G@@@#@@@Z*IF [LEVEL,1,2]=1 @C@@@Z$LEVEL$ ''[LEVEL,1,2,1]'',''[LEVEL,1,2,1]'HF
+)@@G@@'     @[@@@Z*ELSE @G@@@Z$LEVEL$ ''[LEVEL,1,2,1].[LEVEL,1,2,2]'',''[LEVELHG
+)@@G@@,1,2,1]-[LEVEL,1,2,2]'' @[@@@Z*END  @B@@@Z*IF [LEVEL,1]<3  . "BASE" NOT HH
+)@@G@@SPECIFIED   @#@@@Z$GEN$ [GEN,1,1,1] @[@@@Z*ELSE @]@@@Z$GEN$ 0     @[@@@ZHI
+)@@G@@*END  @[@@@Z#EOF  @[@@@Z#EOF  @]@@@Z*IF [DEBUG] @#@@@Z#BRKPT PRINT$     HJ
+)@@G@@@[@@@Z*END  _@@@@@   ''@SYM $DB$.'' @B@@@+*CREATE SGS: $MF$          ''DHK
+)@@G@@BE*F2''     @A@@@+*CREATE SGS: $TITLE$       DBE*F2   @[@+@)* .   @B@+@)HL
+)@@G@@* . SYSGEN INFO LOCAL TOD9HC(KE)[DD^@@[SA76L@7Z)@@@]&?@@[@[+@@@@@@@@@@#)HM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HN
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HO
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HP
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HQ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HR
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HS
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HT
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HU
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HV
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HW
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HX
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HY
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@HZ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IB
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IC
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ID
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IE
+)@@G@@@@@]%G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IF
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IG
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@II
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IJ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IL
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IN
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IO
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IP
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IQ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IR
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IS
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IT
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IU
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IV
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IW
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IX
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IY
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@IZ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JB
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JC
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JD
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JE
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JF
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JG
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JI
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JJ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JL
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JN
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JO
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@JP
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YJQ
+)@@G@@3FILES>     >#U+#&E#U+#&!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE JR
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&E#U+#&9@@@@@@@@@@@@@@@@@@@@@@@JS
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&E#U+#&JT
+)@@G@@9@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YJU
+)@@G@@3FILES>     >#U+#&E#U+#&9@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE JV
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&E#U+#&9@@@@@@@@@@@@@@@@@@@@@@@JW
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&F#U+#&JX
+)@@G@@9@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YJY
+)@@G@@3FILES>     >#U+#&F#U+#&9@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE JZ
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&F#U+#&9@@@@@@@@@@@@@@@@@@@@@@@KA
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&F#U+#&KB
+)@@G@@9@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YKC
+)@@G@@3FILES>     >#U+#&F#U+#&7@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE KD
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&G#U+#&!@@@@@@@@@@@@@@@@@@@@@@@KE
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+#&H#U+#&KF
+)@@G@@9@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YKG
+)@@G@@3FILES>     >#U+#&H#U+#&9@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE KH
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+H@@@@@@@@@@@@@@@@@@@@@@@KI
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+KJ
+)@@G@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YKK
+)@@G@@3FILES>     >#U+N+)#U+N+H@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE KL
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+I@@@@@@@@@@@@@@@@@@@@@@@KM
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+KN
+)@@G@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YKO
+)@@G@@3FILES>     >#U+N+)#U+N+H@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE KP
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+D@@@@@@@@@@@@@@@@@@@@@@@KQ
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+KR
+)@@G@@D@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YKS
+)@@G@@3FILES>     >#U+N+)#U+N+D@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE KT
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+I@@@@@@@@@@@@@@@@@@@@@@@KU
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+)#U+N+KV
+)@@G@@J@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YKW
+)@@G@@3FILES>     >#U+N+-#U+N+G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE KX
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+-#U+N+I@@@@@@@@@@@@@@@@@@@@@@@KY
+)@@G@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@Y3FILES>     >#U+N+-#U+N+KZ
+)@@G@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE >@@@@@@@@@@@@^6EX@@@J@@YLA
+)@@G@@3FILES>     >#U+N+-#U+N+D@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@INITI&LIZE LB
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3COMM >     >#U+#$F#U+#$:@@@@@A@@@@@@@@@@@@@@@@@LC
+)@@G@@@@@@@@@@@@@@@WEL27K0000 >@@@@@@@@@@@@^6EX@@@J@@Y3COMM >     >#U+N+C#U+N+LD
+)@@G@@*@@@@@A@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@WEL27K0000 >@@@@@@@@@@@@^6EX@@@J@@YLE
+)@@G@@3SYSTE2     >#U+#&E#U+#:B@@@%S\@@@%%K@@@@@@@@@@@@@@@@@@@@@@@@WEL27K0000 LF
+)@@G@@>@@@@@@@@@@@@^6EX@@@J@@Y3SYSTE2     >#U+N+)#U+N=.@@@%(Q@@@%'%@@@@@@@@@@@LG
+)@@G@@@@@@@@@@@@@@@WEL27K0000 >@@@@@@@@@@@@^6EX@@@J@@Y3MAPCO4RD   >#U+#*[#U+#*LH
+)@@G@@?@@@^\D@@@#F&@@@@@@@@@@@@@@@@@@@@@@@@WEL27T9999 >@@@@@@@@@@@]^6EX@@@J@@YLI
+)@@G@@3MAPCO4RD   >#U+N<^#U+N<$@@@^\H@@@#F*@@@@@@@@@@@@@@@@@@@@@@@@WEL27T9999 LJ
+)@@G@@>@@@@@@@@@@@]^6EX@@@J@@Y3MAPPE7     >#V+#RK#V+#R0@@@@@@@@@@@@@@@@@@@@@@@LK
+)@@G@@@@@@@@@@@@@@@DCS03K0302 >@@@@@@@@@@@[^6EX@@@J@@Y3TRACK8     >#V+#RK#V+#RLL
+)@@G@@0@@@@@O@@@@@A@@@@@@@@@@@@@@@@@@@@@@@@DCS03K0302 >@@@@@@@@@@@#^6EX@@@@@@@LM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LN
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LO
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LP
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LQ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LR
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LS
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LT
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LU
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LV
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LW
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LX
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LY
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LZ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MB
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MC
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MD
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ME
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MF
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MG
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MI
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MJ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ML
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MN
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MO
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MP
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MQ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MR
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MS
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MT
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MU
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MV
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MW
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MX
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MY
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@MZ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NB
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NC
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ND
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NE
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NF
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NG
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NI
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NJ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NL
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NM
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NN
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NO
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NP
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NQ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NR
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NS
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NT
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NU
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NV
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NW
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NX
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NY
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@NZ
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OA
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OB
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OC
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OD
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OE
+)@@^@@@@@@@@@@@@@@@@@@@@@@@@@@                                                OF
+@EOF
+@COPY,IO  TEMP.1060-004-007,1060-004-007.
+@FREE     TEMP.

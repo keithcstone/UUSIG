@@ -1,0 +1,247 @@
+       IALOG is a home-grown, interactive EXEC-1100 ASCII Log processor,
+  designed to read and display data from the log as efficiently (quickly)
+  as possible.  IALOG processes one Log file at a time, as specified on the
+  processor call.  Records are selected for display individually by Record
+  Type or by Log Record Groups.  Record Sub-Types are not directly selectable,
+  but can be retrieved with the LOCATE function if necessary.  Only Record
+  Types selected are edited for display processing; therefore, to locate all
+  assignments of a particular file, it's faster to first select the FILES
+  Group, so that only Record Types pertaining to File Assignments are
+  edited and searched.
+
+       All IALOG commands apply only to Record Types selected.  For example,
+  following a SELECT CONSOLE command, the command PRINT 10 will display the
+  next 10 console records.  Every record is assigned a sequential record
+  number as it is first read.  This is primarily to assist in the processing
+  of the Log, but can be used to position IALOG within the file.  In the
+  above example, the ten console records will be displayed with increasingly
+  greater but non-consecutive record numbers, due to the presence of records
+  unselected between those displayed.
+
+       Internally, IALOG uses a much simplified Recovery Audit File read
+  routine (not SLRR) to process the ASCII Log File.  All records are
+  processed directly from one of two track sized buffers.  Each I/O creates
+  a table entry in memory, to speed repositioning within a file.  GSA-1100
+  provides the command syntax analysis, as well as primary program structure;
+  the remainder of the program is written in PLUS.
+
+       Operational Note:  IALOG treats an invalid ALAT block as an end of
+  file, which allows reading of the System Log File currently in use by the
+  EXEC up to the point at which He's writing it.  However, because the ALAT
+  IO routines are local code, all invalid blocks are considered suspect and
+  dumped to the screen, as an aid to debugging.
+
+       The format for the IALOG processor call is as follows:
+
+           @file.IALOG[<,opts>] <ALAT>
+
+           <ALAT> is any valid ASCII Log Audit Trail (ALAT) file, as long
+                  as it resides on disc.  (The current active ALAT is always
+                  the (-1) cycle.)
+
+           <opts> The Following options are currently available.
+
+                  I - Initializes the Input File (Reads Thru EOF)
+                  E - Errors off Processor on Invalid Command
+                  P - Parser and Input/Stacking Trace (devel only)
+                  D - Lexical, Parse and Input/Stacking Trace (devil only)
+
+       The IALOG command syntax just sort of evolved as new features were
+  added.  Most commands have short, one character synonyms.  The list here is
+  presented alphabetically for ease of use, not by the relative importance of
+  the respective commands.
+
+  BREAK -  (BRKPT, BRK): Sets up an internal breakpoint.
+
+               BREAK [ ON / OFF ] ( <filename> )
+
+           IALOG reroutes the generated ALAT data to the specified file,
+           or the default IA$BK$. if <filename> is not provided or is in
+           error.  BREAK ON begins the breakpoint to the file, BREAK OFF
+           terminates the redirection and closes the file.
+
+  CLEAR -  (CLR): Clears IALOG switches.
+
+               CLEAR
+
+           Restores all DISPLAY switches to their initial value, resets the
+           START and END time parameters to low and high value respectively,
+           and removes all SELECT criterian.  Used mostly as a last resort,
+           sort of a "To heck with this...!" command.
+
+  COLUMN - (COLUMNS, COL): Sets column range.
+
+                COLUMN x,y
+
+           Sets the start and stop scan columns for the LOCATE and COUNT
+           commands.  Initially set to 1 and 80, respectively.  The maximum
+           stop column is 132.  Limiting the columns scanned can noticeably
+           reduce the time it takes to LOCATE a value.
+
+  COUNT -  (CNT, C): Counts occurances of a given target.
+
+               COUNT  [ " <target> " ]  ( PRINT / DISPLAY )
+
+           Scans the ALAT file for the input target string, and produces a
+           single line output that contains the number of lines found.  The
+           PRINT/DISPLAY option displays the record containing the target
+           string.  The target string MUST be enclosed in double quotation
+           marks (").
+
+  DISPLAY - (D): Sets output control switches.
+
+               DISPLAY  [ DATE       [ ON / OFF ]  ]
+                        [ NUMBERING  [ ON / OFF ]  ]
+                        [ SGSLABEL   [ ON / OFF ]  ]
+
+           DISPLAY provides some tailoring of IALOG output.  The DATE parameter
+           controls display of the date and time on each record.  In some
+           instances, the timestamp of each record may have little to no
+           significance, and can be eliminated.  Also, some records types, such
+           as console records, are greater than 80 characters per line with the
+           date and time displayed, and will wrap around the screen.
+           The NUMBERING parameter controls the display of the record number,
+           either with the record itself (ON) or in the prompt (OFF).  This
+           is helpful when locating a string that appears several times in the
+           ALAT file, and then returning to a previous occurance by way of the
+           record number.  (See discussion of Record Numbers above...)
+           The SGSLABEL parameter causes every record displayed to be preceded
+           by a label, 'LOG', effectively turning each record into an SGS.
+           Other fields may also be nominally affected by this parameter to
+           aid in the records' use as an SGS.
+
+  DUMP -   Dumps a record in Octal & ASCII.
+
+               DUMP  [ <nnnnnn> ]
+
+           Creates a formated DUMP of the SELECTed record, in octal and ASCII.
+           Starting with the ALAT Descriptor Word, DUMP displays 4 words per
+           line, followed by any printable ASCII characters in those 4 words.
+
+  END -    Sets the ending timestamp range.
+
+               END  [ <yy/mm/dd hh:mm:ss> ]
+
+           Establishes a soft end of file at the designated time and date,
+           providing the specified timestamp is within the range of the ALAT
+           file.  If the file has not been read once through to either the
+           physical end of file or the input timestamp, this command will do so.
+           All commands treat this as an end of file.
+
+  GO -     (G): Positioning within the file.
+
+               GO  [  ( + / - )  nnnnnn  ( HOURS / MINUTES )  ]
+
+           Positions IALOG to the specified line number.  The absence of the
+           plus or minus sign indicates absolute positioning by record number.
+           A sign implies relative positioning, forward (+) or backward (-).
+           The HOURS and MINUTES parameters are used only with relative
+           positioning, which then indiacte a number of HOURS or MINUTES to
+           advance.  Or retreat.
+  HELP -   Shorthelp display.
+
+               HELP
+
+           Displays a short HELP screen, with basic syntax.
+
+  INIT -   Initialize the ALAT file.
+
+              INIT
+
+           Causes the entrie ALAT file to be read through to physical end
+           of file, in turn building the internal I/O tables used in the
+           START, END and GO commands to position faster within the file.
+
+  LOCATE - (LOC, L): Locates a given string.
+
+               LOCATE  [  " <targ1> "  (  , " <targ2> "  )  ( occurs )  ]
+               LOCATE  [ AGAIN / REPEAT / A / R ]
+
+           LOCATEs the target string or strings in the records SELECTed.  The
+           second string is an logical AND condition; for a record to meet
+           the criterian, it must contain both strings.  The occurs field
+           indicates the number of occurances to found; the default is one.
+           The AGAIN/REPEAT/A/R parameter repeats the previous search pattern,
+           complete with number of occurances.
+
+  PRINT - (PRI, P): Prints ALAT records.
+
+               PRINT [ <nnnnnn> ]
+
+           Displays the specified number of records.  PRINTed records may be
+           tailored using the DISPLAY command.  Only records SELECTed are
+           available for PRINTing.
+
+  SELECT - (SEL, S): Include/Exclude ALAT Record Types
+
+               SELECT  [  RECTYPE  <nnn>  ( , <nnn> ... )  ]
+                       [  ALL       ]
+                       [  CLEAR     ]
+
+                       [  CONSOLE   ]
+                       [  STARTS    ]
+                       [  FINS      ]
+                       [  FILES     ]
+                       [  PROGRAMS  ]
+                       [  TIP       ]
+                       [  SECURITY  ]
+                       [  SYSTEM    ]
+                       [  HARDWARE  ]
+                       [  PERCON    ]
+                       [  FAULTS    ]
+
+           Sets the Record Type Selection table.  Only record types that have
+           been SELECTed are available for PRINTing, LOCATEing, COUNTing or
+           DUMPing.  Record Types may be selected individually or as a Group.
+           The ALL parameter SELECTs every Record Type for display, and is the
+           default for the CLEAR and INIT commands.  The first SELECT command
+           issued after ALL Record Types are included for display automatically
+           CLEARS all Record Types before setting the requested Types.
+           Subsequent SELECT commands simply add the requested Record Type
+           to the list, until a CLEAR or ALL parameter is entered.  Groups
+           roughly equate to those found in the Operations, Programming and
+           Support manual:
+
+               Group          Record Type(s)
+               -----          --------------
+               CONSOLE ...... 201, 202, 203
+               STARTS ....... 106
+               FINS ......... 107
+               FILES ........ 401-406
+               PROGRAMS ..... 101
+               TIP .......... 103, 110
+               SECURITY ..... 801-814
+               SYSTEM ....... 601-619, 1001, 1002
+               HARDWARE ..... 901, 902, 903
+               PERCON ....... 10112-10115, 11502-11505
+               FAULTS ....... 1201-1213, 1401-1409, 1301-1303, 1501
+
+  START -  Sets the beginning timestamp range.
+
+               START  [ <yy/mm/dd hh:mm:ss> ]
+
+           Establishes a soft top of file at the designated time and date,
+           providing the specified timestamp is within the range of the ALAT
+           file.  If the file has not been read once through to either the
+           physical end of file or the input timestamp, this command will do so.
+           The GO command will treat this as the top of the file, and not
+           go beyond that point.
+
+  STATUS - (STAT, S): Displays processing switches and parameters
+
+               STATUS
+
+           Displays the current values of DISPLAY variables, START and END
+           times (if any), COLUMN scan limits, and all Record Types that will
+           be processed.
+
+  TOP -    (T): Go to top of file.
+
+              TOP
+
+           Positions the line pointer to the first record in the file, or to
+           the first record past the input START timestamp.
+
+
+
+

@@ -1,0 +1,625 @@
+@CAT,P UUSIG*1104-001-001.,F///500
+@MASM,ILER UUSIG*1104-001-001.CLEAR-BITS
+.  This will clear the IP/SV bits in all the monitored queues.  No
+.  transfer should be taking place at this time.  This should be put
+.  into the main program as an II contingency when I get the time.
+         $include 'maxr$/'
+         $ASCII
+SMOQGPKT .
+         2         . FUNCTION = GET
+         001427010410   . OK,MULTI-DV,N-P,N-T,B-C,DGS,X-M,G-I
+         0
+         0
+         BDIREF$+SMOQNTRY,SMOQNTRY
+         39,0
+         0
+SMQGPKT_L $EQU      $-SMOQGPKT.
+
+SMOQCPKT .
+         3         . FUNCTION = CHANGE
+         000001000002   . N-X,B-C,X-M,C-I
+         0
+         0
+         BDIREF$+SMOQNTRY,SMOQNTRY
+         39,0
+         0
+SMQCPKT_L $EQU      $-SMOQCPKT.
+
+save     $res     4
+
+SMCLR
+         DS       a0,save      . save a0 & A1 for later use
+         DS       A2,SAVE+2    .  SAVE A2 & A3 FOR RESTORE LATER.
+CLEARIP  .
+         l        A2,(BDIREF$+QUEUE_LIST,QUEUE_LIST)
+         S        A2,QUEUE
+         L,U      A1,SMQGPKT_L
+         L        A0,(BDIREF$+SMOQGPKT,SMOQGPKT)
+         ER       SMOQUE$       .  GET IN PROGRESS
+         L        A2,SMOQGPKT+2
+         JZ       A2,CLEARSV
+         L$SNAP   'CLR IP',0,0
+         L,U      A1,SMQCPKT_L
+         L        A0,(BDIREF$+SMOQCPKT,SMOQCPKT)
+         ER       SMOQUE$       .  CLEAR IN PROGRESS
+         J        CLEARIP
+CLEARSV  .
+         L        A0,SMOQGPKT+1
+         A,U      A0,0170
+         S        A0,SMOQGPKT+1
+         L        A0,SMOQCPKT+1
+         A,U      A0,036
+         S        A0,SMOQCPKT+1
+CLEARSV_1 .
+         l        A2,(BDIREF$+QUEUE_LIST,QUEUE_LIST)
+         S        A2,QUEUE
+         L,U      A1,SMQGPKT_L
+         L        A0,(BDIREF$+SMOQGPKT,SMOQGPKT)
+         ER       SMOQUE$       .  GET SV
+         L        A2,SMOQGPKT+2
+         JZ       A2,CLRDONE
+         L$SNAP   'CLR SV',0,0
+         L,U      A1,SMQCPKT_L
+         L        A0,(BDIREF$+SMOQCPKT,SMOQCPKT)
+         ER       SMOQUE$       .  CLEAR SV
+         J        CLEARSV_1
+CLRDONE  .
+         DL   a0,save         . restore A0 & A1
+          DL       A2,SAVE+2   .  RESTORE A2 & A3.
+          ER       EXIT$       .
+         $end      SMCLR
+@map,Is   ,clear-bits
+  in    clear-bits
+  lib   FTP.
+end
+@MASM,ILER UUSIG*1104-001-001.DEACT
+         $include 'maxr$/'
+         $ASCII
+SMOQPKT  .
+         1         . FUNCTION = DEACT
+         001407010504   . OK,MULTI-DV,N-P,N-T,B-C,DGS,X-M,B-SV,B-IP
+         0
+         0
+         BDIREF$+SMOQNTRY,SMOQNTRY
+         39,0
+         0
+SMQPKT_L $EQU      $-SMOQPKT.
+
+C$BDEACT*  $EQU     0
+DEACT*
+         DS       a0,save      . save a0 for later use
+         DS       A2,SAVE+2    .  SAVE A2 & A3 FOR RESTORE LATER.
+         l        A2,(BDIREF$+QUEUE_LIST,QUEUE_LIST)
+         S        A2,QUEUE
+         L,U      A1,SMQPKT_L
+         L        A0,(BDIREF$+SMOQPKT,SMOQPKT)
+         ER       SMOQUE$
+         DL   a0,save         . restore A0
+         L    A0,1,A0
+          DL       A2,SAVE+2   .  RESTORE A2 & A3.
+          J        0,X11       .  RETURN TO COBOL PROGRAM.
+         $end     .   DEACT
+@USE   COB$PF.,SYS$LIB$*DDN1100-3.
+@ASG,A COB$PF.
+@ACOB,IECSR  UUSIG*1104-001-001.FTPQUEUE
+001000 IDENTIFICATION DIVISION.
+001100 PROGRAM-ID. ftpqueue.
+001200 AUTHOR. UNISYS BY LEE WOOD.
+001300 DATE-WRITTEN. MARCH 23 1994.
+001400 DATE-COMPILED.
+001500 ENVIRONMENT DIVISION.
+001600 CONFIGURATION SECTION.
+001700 SOURCE-COMPUTER.       UNIVAC-1100-80.
+001800 OBJECT-COMPUTER.       UNIVAC-1100-80.
+       SPECIAL-NAMES.
+           CONSOLE IS REMOTE-TERMINAL.
+001900 INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+002300 DATA DIVISION.
+002400 FILE SECTION.
+003000 WORKING-STORAGE SECTION.
+
+       COPY DDN-FTP-PKTS.
+       COPY DDN-PC-PKTS.
+       01  FILE-GROUP.
+           03  MASM-FILE.
+               05  FILE-1   PIC X(8).
+               05  FILE-2   PIC X(8).
+               05  FILE-3   PIC X(8).
+               05  FILE-4   PIC X(4).
+               05  FILE-5   PIC X(8).
+           03  COBOL-FILE REDEFINES MASM-FILE.
+               05  FILE-QUAL  PIC X(12).
+               05  FILE-NAME.
+                   10  FILE-NAME-8.
+                       15  FILE-NAME-4   PIC X(4).
+                       15  FILLER        PIC X(4).
+                   10  FILLER       PIC X(4).
+               05  FILE-CYCLE PIC X(4).
+               05  P-QUEUE            PIC X(6).
+               05  FILLER           PIC X(2).
+       01  CHAR-CNT    PIC 9(2) VALUE 0.
+       01  option-character picture x(6) display-1.
+       01  T-OPTION-FLAG    picture s9(10) comp-4 value 0.
+           88  T-opt        value is 1.
+       01  B-OPTION-FLAG    picture s9(10) comp-4 value 0.
+           88  B-opt        value is 1.
+
+       01  name-server.
+ *********  Be sure to add new queues to SMOQUE elt and recompile
+ *********  The definition of these fields are in the DDN file
+ *********  transfer manual.
+           03  name-list.
+            05 filler     PIC X(100)    value     'RBT001129-131-101-7
+      -                       'userid      password                00001
+      -                       'PC PATH                               '.
+            05 filler     PIC X(100)    value     'RBT002129-131-101-7
+      -                       'userid      password                00001
+      -                       'PC PATH                               '.
+            05 filler     PIC X(100)    value     'RBT004129-131-101-7
+      -                       'userid      password    account     02201
+      -                       'UNI                                   '.
+            05 filler     PIC X(100)    value     'FCLM02129-131-101-7
+      -                       'userid      password                00001
+      -                       'PC PATH                               '.
+           03  name-table REDEFINES NAME-LIST.
+           05  name-record occurs 6 tomes INDEXED BY NAME-INDEX.
+               10  name-name-server pic x(6).
+               10  name-id-server   pic x(15).
+               10  name-user-id     pic x(12).
+               10  name-password    pic x(12).
+               10  name-account     pic x(12).
+               10  name-default.
+               15  name-position    pic 9.
+               15  name-translate   pic 9.
+               15  name-mode        pic 9.
+               15  name-structure   pic 9.
+               15  name-type        pic 9.
+               15  name-to-type     pic x(3).
+               15  name-to-path     pic x(20).
+               15  filler           pic x(15).
+       01  to-type  pic x(3).
+           88 PC      value 'PC '.
+           88 MAC     value 'MAC'.
+           88 UNISYS  value 'UNI'.
+           88 IBM     value 'IBM'.
+           88 VAX     value 'VAX'.
+           88 UNIX    value 'UNX'.
+       01  NAME-EXT   PIC 9(3).
+       01  detail-status   pic 9(5) usage comp.
+           88  retry value  0595,5995,6010,6020,6025,6045
+                            7145,7250,7255,7260,9000.
+           88  wait  value  6000,6005,6015,6055,7140.
+       01  retry-flag  pic 9 usage comp value 0.
+
+003200 PROCEDURE DIVISION.
+       MAIN-PARA.
+           move 'T' to option-character.
+           enter asm 'cobopt' using option-character t-option-flag.
+           move 'B' to option-character.
+           enter asm 'cobopt' using option-character B-option-flag.
+           if b-opt PERFORM GO-PRIV  PERFORM CLEARBITS
+               else STOP RUN.
+       LOOP.
+           SET NAME-INDEX TO 1.
+           MOVE SPACES TO DDN-TRANSFER-PKT.
+           MOVE ZEROS TO NAME-EXT
+                         DDN-POSITION
+                         DDN-TRANSLATE
+                         DDN-STRUCTURE
+                         DDN-TRANSFER-MODE
+                         DDN-TRANSFER-TYPE.
+           MOVE 1     TO DDN-TRANSFER-TYPE.
+           MOVE 512   TO DDN-MAX-REC-SIZE.
+           perform smoque thru smoque-exit.
+           if t-opt
+              DISPLAY DDN-TRANSFER-PKT UPON PRINTER
+              GO TO LOOP.
+       LOOP-1.
+           COPY DDN-TRANSFER.
+           display ddn-transfer-pkt upon printer.
+           IF DDNPC-OK
+              DISPLAY 'FTP COPY SUCCESSFUL' UPON PRINTER
+              ENTER MASM 'SMDEL'
+              MOVE 0 TO RETRY-FLAG
+              go to loop.
+ *********  Enter specific Error logic at this point.
+           IF DDNPC-DETAIL-STATUS = 6085
+              IF PC
+                 ADD 1 TO NAME-EXT
+                 STRING name-to-path(name-index) FILE-NAME-8 '.'
+                   NAME-EXT DELIMITED BY SPACE INTO DDN-TO-FILE-NAME
+                 DISPLAY DDN-TO-FILE-NAME UPON PRINTER
+                 GO TO LOOP-1.
+           MOVE DDNPC-DETAIL-STATUS TO DETAIL-STATUS.
+           IF RETRY
+              IF RETRY-FLAG=0
+                 ADD 1 TO RETRY-FLAG
+                 GO TO LOOP-1.
+
+           DISPLAY 'FTP COPY FAILURE' UPON PRINTER.
+           display ddn-transfer-pkt upon printer.
+           PERFORM DISPLAY-STATUS.
+           MOVE 0 TO RETRY-FLAG.
+           GO TO LOOP.
+       STOP-IT.
+           STOP RUN.
+
+       search-it.
+           search name-RECORD varying name-index
+             at end DISPLAY 'AT END' P-QUEUE UPON PRINTER
+             when name-name-server(name-index) = P-QUEUE
+                  move name-id-server(name-index) to ddn-to-host-id
+                  move name-user-id(name-index)   to ddn-user-id-1
+                  move name-password(name-index)  to ddn-password-1
+                  move name-account(name-index)   to ddn-acct-1
+                  move name-position(name-index)  to ddn-position
+                  move name-translate(name-index) to ddn-translate
+                  move name-mode(name-index)      to ddn-transfer-mode
+                  move name-structure(name-index) to ddn-structure
+                  move name-type(name-index)      to ddn-transfer-type
+                  move name-to-type(name-index)   to to-type.
+       smoque.
+           ENTER MASM 'DEACT'.
+           DISPLAY 'FOUND SOMETHING ON A QUEUE' UPON PRINTER.
+           ENTER MASM 'SMGET' USING FILE-1 FILE-2 FILE-3 FILE-4 P-QUEUE.
+           DISPLAY 'ASGD FILE = ' FILE-GROUP UPON PRINTER.
+           STRING FILE-QUAL '*' FILE-NAME '(' FILE-CYCLE ')'
+                  DELIMITED BY SPACE INTO DDN-FROM-FILE-NAME.
+           SET name-index TO 1.
+           PERFORM SEARCH-IT.
+ ********  Enter logic for specific naming conventions to be used on the
+ ********  site that you are transferring to.
+           if PC
+               STRING name-to-path(name-index) FILE-NAME-8 '.000'
+                  DELIMITED BY SPACE INTO DDN-TO-FILE-NAME
+           else if UNISYS
+               move ddn-from-file-name to ddn-to-file-name
+           else
+               MOVE file-name to ddn-to-file-name.
+
+       smoque-exit.   exit.
+
+       CLEARBITS.
+           ENTER MASM 'SMCLR'.
+
+       GO-PRIV.
+           ENTER MASM 'GONO'.
+
+       DISPLAY-STATUS.
+           DISPLAY 'ERR FUNC = ' DDNPC-ERR-FUNCTION '  '
+                   'CLASS CODE = ' DDNPC-CLASS-CODE '  '
+                   'DETAIL = ' DDNPC-DETAIL-STATUS
+                   UPON PRINTER.
+           DISPLAY 'INSERT1 = ' DDNPC-MSG-INSERT (1) UPON PRINTER.
+           DISPLAY 'INSERT2 = ' DDNPC-MSG-INSERT (2) UPON PRINTER.
+           DISPLAY 'INSERT3 = ' DDNPC-MSG-INSERT (3) UPON PRINTER.
+@elt,iqD UUSIG*1104-001-001.FTPQUEUE/RUN,,SENT,
+@run     FTPSYM,,,9999,9999
+@sym,f   print$,,pr
+@copy,a  ftp.,tpf$.
+@free    ftp.
+@xqt,b   ftpqueue
+@END SENT
+@masm,ler UUSIG*1104-001-001.GONO
+.  Puts run into PRIV mode useing MODPS$ if allowed by security.
+         $include 'maxr$/'
+SAVE     $RES 2
+         $ASCII
+
+C$BGONO*  $EQU     0
+GONO*
+         DS       a0,save      . save a0 & A1 for later use
+         L        A0,1
+         ER       MODPS$
+         DL   a0,save         . restore A0
+          J        0,X11       .  RETURN TO COBOL PROGRAM.
+         $end     .   GONO
+@USE     PPPCLIB.,SYS$LIB$*DDN1100-1.
+@ASG,A   PPPCLIB.
+@MAP,IL  UUSIG*1104-001-001.MAP,UUSIG*1104-001-001.FTPQUEUE
+ TYPE EXTDIAG
+ IBANK,M    I1,01000
+ LIB PPPCLIB.
+   IN   UUSIG*1104-001-001.FTPQUEUE($ODD)
+   IN   PPPCLIB.DDN$COBPPPC($ODD)
+   IN   UUSIG*1104-001-001.DEACT($ODD)
+   IN   UUSIG*1104-001-001.SMGET($ODD)
+   IN   UUSIG*1104-001-001.SMDEL($ODD)
+   IN   UUSIG*1104-001-001.SMCLR($ODD)
+   IN   UUSIG*1104-001-001.GONO($ODD)
+   IN   UUSIG*1104-001-001.SMOQUE($ODD)
+   IN   UUSIG*1104-001-001.XQTOPT($ODD)
+ DBANK,MCD  D1,0112000
+   IN   UUSIG*1104-001-001.FTPQUEUE($EVEN)
+   IN   PPPCLIB.PPPC-STK-RES ($EVEN)
+   IN   PPPCLIB.DDN$COBPPPC  ($EVEN)
+END
+@elt,iq UUSIG*1104-001-001.READ-ME,,,,DOC
+When a monitored queue and its TCP/IP address get added to FTPQUEUE, it must
+be added to SMOQUE.  The Entry immediatly after QUEUE_LIST contains the number
+of monitored queues in H2.  I knoe, this can use the length but I haven't done
+it yet or many other modifications.  The monitored queues can be local queues
+created by STATION cards in the EXEC gen (1 que for each TCP/IP address[also
+being planned to change]).  If an error occurs during connect or transfer, for
+some errors it will try again but most of the time the IP bit will stay set and
+processing will bypass that file.  To clear the bit run CLEAR-BITS when no
+transfer is taking place.  Later this will be incorporated into an II
+contingency.  Also planned is after a certain period of time clear the IP bits
+and retry.  XQTOPT has been around for along time and I don't know who to give
+credit to for it.  In some cases you may find that the user wants something
+unique done in naming files or in case of errors.  That is put in the main
+program at the anotated spot near the end of the program.
+    Good luck.  If I can be of help just holler.  I will let you know when I
+have had time to improve it.  If you get a chance first please let me know.
+
+                    Lee
+
+  The following is the list of elements and a 1 line description.
+
+FTPQUEUE     Main Program
+GONO         Goes privledged (ER MODPS$)
+SMOQUE       Smoque packet
+XQTOPT       Tests the XQT options
+DEACT        Deactivate program until someting comes into queue
+SMCLR        will clear all IP/SV bits on program startup
+SMGET        Get the information of a entry in the queue
+SMDEL        Will delete the smoque entry after transfer
+SMERR
+CLEAR-BITS   Standalone program to clear the IP/SV bits
+MAP          @Map stream
+FTPQUEUE/RUN Runstream for FTPQUEUE
+@masm,ler UUSIG*1104-001-001.SMCLR
+         $include 'maxr$/'
+         $ASCII
+SMOQGPKT .
+         2         . FUNCTION = GET
+         001427010410   . OK,MULTI-DV,N-P,N-T,B-C,DGS,X-M,G-I
+         0
+         0
+         BDIREF$+SMOQNTRY,SMOQNTRY
+         39,0
+         0
+SMQGPKT_L $EQU      $-SMOQGPKT.
+
+SMOQCPKT .
+         3         . FUNCTION = CHANGE
+         000001000002   . N-X,B-C,X-M,C-I
+         0
+         0
+         BDIREF$+SMOQNTRY,SMOQNTRY
+         39,0
+         0
+SMQCPKT_L $EQU      $-SMOQCPKT.
+
+C$BSMCLR*  $EQU     0
+SMCLR*
+         DS       a0,save      . save a0 & A1 for later use
+         DS       A2,SAVE+2    .  SAVE A2 & A3 FOR RESTORE LATER.
+CLEARIP  .
+         l        A2,(BDIREF$+QUEUE_LIST,QUEUE_LIST)
+         S        A2,QUEUE
+         L,U      A1,SMQGPKT_L
+         L        A0,(BDIREF$+SMOQGPKT,SMOQGPKT)
+         ER       SMOQUE$       .  GET IN PROGRESS
+         L        A2,SMOQGPKT+2
+         JZ       A2,CLEARSV
+         L$SNAP   'CLR IP',0,0
+         L,U      A1,SMQCPKT_L
+         L        A0,(BDIREF$+SMOQCPKT,SMOQCPKT)
+         ER       SMOQUE$       .  CLEAR IN PROGRESS
+         J        CLEARIP
+CLEARSV  .
+         L        A0,SMOQGPKT+1
+         A,U      A0,0170
+         S        A0,SMOQGPKT+1
+         L        A0,SMOQCPKT+1
+         A,U      A0,036
+         S        A0,SMOQCPKT+1
+CLEARSV_1 .
+         l        A2,(BDIREF$+QUEUE_LIST,QUEUE_LIST)
+         S        A2,QUEUE
+         L,U      A1,SMQGPKT_L
+         L        A0,(BDIREF$+SMOQGPKT,SMOQGPKT)
+         ER       SMOQUE$       .  GET SV
+         L        A2,SMOQGPKT+2
+         JZ       A2,CLRDONE
+         L$SNAP   'CLR SV',0,0
+         L,U      A1,SMQCPKT_L
+         L        A0,(BDIREF$+SMOQCPKT,SMOQCPKT)
+         ER       SMOQUE$       .  CLEAR SV
+         J        CLEARSV_1
+CLRDONE  .
+         DL   a0,save         . restore A0 & A1
+          DL       A2,SAVE+2   .  RESTORE A2 & A3.
+          J        0,X11       .  RETURN TO COBOL PROGRAM.
+         $end     .   SMCLR
+@masm,ler  UUSIG*1104-001-001.SMDEL
+         $include 'maxr$/'
+         $ASCII
+SMOQPKT  .
+         3         . FUNCTION = CHANGE
+         000001400002   . B-C,DELETE,C-IP
+         0
+         0
+         BDIREF$+SMOQNTRY,SMOQNTRY
+         39,0
+         0
+SMQPKT_L $EQU      $-SMOQPKT.
+
+C$BSMDEL*  $EQU     0
+SMDEL*
+         DS       a0,save      . save a0 & A1 for later use
+         DS       A2,SAVE+2    .  SAVE A2 & A3 FOR RESTORE LATER.
+         L,U      A1,SMQPKT_L
+         L        A0,(BDIREF$+SMOQPKT,SMOQPKT)
+         ER       SMOQUE$
+         DL       a0,save         . restore A0 & A1
+         DL       A2,SAVE+2   .  RESTORE A2 & A3.
+         J        0,X11       .  RETURN TO COBOL PROGRAM.
+         $end     .   SMDEL
+@masm,ler UUSIG*1104-001-001.SMGET
+         $include 'maxr$/'
+         $ASCII
+SMOQPKT  .
+         2         . FUNCTION = GET
+         001427010505 . OK,MULTI-DV,N-P,N-T,B-C,DGS,X-M,B-SV,    ,B-IP,S-I
+         0
+         0
+         BDIREF$+SMOQNTRY,SMOQNTRY
+         39,0
+         0
+SMQPKT_L $EQU      $-SMOQPKT.
+
+C$BSMGET*  $EQU     0
+SMGET*
+         DS       a0,save      . save a0 & A1 for later use
+         DS       A2,SAVE+2    .  SAVE A2 & A3 FOR RESTORE LATER.
+         dl       a0,('FTPSYM  ')
+         ds       a0,OUTPUTID
+         l        A2,(BDIREF$+QUEUE_LIST,QUEUE_LIST)
+         S        A2,QUEUE
+         L,U      A1,SMQPKT_L
+         L        A0,(BDIREF$+SMOQPKT,SMOQPKT)
+         ER       SMOQUE$
+         DL   a0,save         . restore A0
+         DL       A2,QUAL
+         DS       A2,*1,A0
+         DL       A2,QUAL+2
+         DS       A2,*3,A0
+         DL       A2,FILE+1
+         DS       A2,*5,A0
+         L        A2,CYCLE
+         S        A2,*7,A0
+         DL       A2,QUEUE
+         DS       A2,*9,A0
+    .    l$snap   'SMOQUE',0,046,smoqntry
+          DL       A2,SAVE+2   .  RESTORE A2 & A3.
+          J        0,X11       .  RETURN TO COBOL PROGRAM.
+         $end     .   SMGET
+@masm,ler  UUSIG*1104-001-001.SMOQUE
+         $ASCII
+SMOQNTRY*  .
+RUN_ID   '        '          .
+ACCNT    '            '      .
+PROJ_ID  '            '      .
+USER_ID  '            '      .
+QUEUE*   '        '          .
+OUTPUTID*   '        '       .
+USENAME  '            '      .
+QUAL*    '            '      .
+FILE*    '            '      .
+CYCLE*   '    '              .
+BANNER   '            '      .
+         0                   .
+FAC_STAT 0                   .
+         0                   .
+         0                   .
+ENTRY_ID 0                   .
+THIS_ID  0                    .
+TAPE_PRT 0                    .
+NUM_PAGE 0                    .
+FLAG_BIT 0                    .
+         0,0                  .
+         0,0                  .
+SMOQNTRY_L*  $EQU   $-SMOQNTRY .
+.  The following are the monitored queues.  They can be local queues
+.  using STATION cards in the EXEC gen.  One queue for each TCP/IP
+.  address.  I plan to change this later. H2 contains # of queues.
+QUEUE_LIST*  .
+            0,4
+            'RBT001  '
+            'RBT003  '
+            'RBT004  '
+            'FCLM02  '
+QUEUE_LIST_L*  $EQU  $-QUEUE_LIST
+
+save*    $res     4
+
+         $end     .   SMGET
+@ . Not my program.  Was old before I got here.
+@masm,iler    UUSIG*1104-001-001.XQTOPT
+       AXR$
+$(0),BUFF
+       'INVALI'
+       'D OPTI'
+       'ON IS'
+       ' '
+COBMSG 'INCORR'
+       'ECT PA'
+       'RAMETE'
+       'R COUN'
+       'T FOR '
+       'COBOPT'
+TYPE   000064000044 . INDICATES THAT FULL WORD BINARY PASSED
+BADMSG 'INCORR'
+       'ECT DA'
+        'TA'
+       'TYPE P'
+       'ASSED '
+       'TO COB'
+       'OPT   '
+ .
+ .     ASCII COBOL ENTRY POINT WITH 'ENTER FORTRAN COBOPT USING ...'
+$(1),COBOPT* LA,U A5,1 . TO FLAG ASCII COBOL ENTRY
+       LXI,U X11,1 .
+       LA,U A4,*0,*X11 . LOAD PARAMETER COUNT
+ .          L$SNAP 'COBOPT',2 .
+          TE,U A4,4 . 2 PARAMETERS+2 WORD TYPE DESIGNATORS PASSED?
+       J BADCNT .      NO
+       J START
+ .
+ .        FORTRAN FUNCTION ENTRY POINT (VALUE RETURNED IN REGISTER A0)
+$(1),IXOPT*
+       LA,U A5,0 . TO FLAG FORTRAN FUNCTION ENTRY
+$(1),START  LXI,U X11,1 . LOAD INCREMENT PORTION OF ADDRESS REG X11
+       LA A1,*0,*X11 . LOAD INPUT CHARACTER INTO A1
+ .                   L$SNAP 'FXOPT',2,6,BUFF
+       SSC A1,30 . SHIFT CHARACTER TO RIGHT
+       AND,U A1,077 .
+       LA,U A3,05 . FIELDATA CHARACTER BEFORE A=06
+       LA,U A4,037 . FIELDATA CHARACTER Z
+ .                   L$SNAP 'ANDMSK',2
+       TW,S6 A3,A2 . IS INPUT A THRU Z?
+       J BADIN.   NO
+       AA,U A2,4 . COMPUTE SHIFT COUNT
+       ER OPT$ . RETREIVE @XQT OPTIONS IN A0
+ .                   L$SNAP 'ER OPT',2
+       SA,H2 A2,$+1 . STORE SHIFT COUNT IN U-FIELD OF NI
+       LSSC A0,0 . SHIFT OPTION BIT TO SIGN BIT
+ .                   L$SNAP 'LSSC-1',2,7,$-5
+       TP A0 .
+       J SET . NEGATIVE A0 MEANS OPTION WAS SET
+       LA,XU A0,0 . OPTION NOT SET
+       J OUT
+SET    LA,XU A0,1 . OPTION SET
+OUT    TZ A5 . FORTRAN OR COBOL ENTRY?
+       J COBOL . A5 NOT =0 MEANS COBOL ENTRY
+       NOP 0,0,*X11 . A5=0 MEANS FORTRAN ENTRY SO INCREMENT PAST W.B. WORD
+       J 0,X11
+ .
+COBOL  LA A1,0,*X11 . LOAD DATA TYPE PASSED
+       TE,U A1,06 . 6 CHARACTER WORD FOR FIRST PARAMETER?
+       J BADDAT .            NO
+       SA A0,*0,*X11 . STORE ANSWER FOR COBOL RETURN
+       LA A1,0,*X11 . LOAD DATA TYPE FOR SECOND PARAMETER
+       TE A1,TYPE . IS SECOND PARAMETER 36 BIT BNARY?
+       J BADDAT .            NO
+       J 0,X11 . RETURN TO CALLING ROUTINE
+PF FORM 12,6,18
+BADIN   SA A1,BUFF+3 . STORE INVALID INPUT IN OUTPUT BUFFER
+       LA A0,(PF 2,4,BUFF)
+       ER PRINT$ . ERROR MESSAGE
+       LA,U A0,0 . PASS BACK 0 FOR INVALID INPUT
+       J OUT
+BADCNT . COBOL PASSES WRONG NMBER OF PARAMETERS:
+       LA A0,(PF 2,6,COBMSG)
+       ER PRINT$ .
+       ER ERR$ . KILL PROGRAM AFTER ERROR MESSAGE
+BADDAT.  COBOL PASSES WRONG DATA TYPE.
+       LA A0,(PF 2,7,BADMSG)
+       ER PRINT$ .
+        L$SNAP 'A1 BAD',2
+       ER ERR$ .
+       END
+@EOF

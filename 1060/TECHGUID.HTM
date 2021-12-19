@@ -1,0 +1,5837 @@
+<!--This file created 6/5/97 10:00 PM by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE> Data Base Editor [DBE] Level 9R1 Technical Guide </TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=42 BOTTOM=765 LEFT=4 RIGHT=534>
+<!DOCTYPE PUBLIC HTML "-//IETF//DTD HTML 2.0//EN" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<P><CENTER><B>DATA BASE EDITOR</B></CENTER></P>
+
+<P><CENTER><B>TECHNICAL GUIDE</B></CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This document is a technical memorandum on 'DBE' as of level 9R1.
+All specifications described herein are subject to change without
+notice.</P>
+
+<P>The topics covered in this guide are as follows:</P>
+
+<P>1. Distribution tape format</P>
+
+<P>2. System initialization/generation</P>
+
+<P>3. User registration and security</P>
+
+<P>4. Internal concepts</P>
+
+<P>5. Table formats to facilitate dump analysis</P>
+
+<P>Many thanks go to Mr. Richard Goldberg of UNISYS, Richmond
+Virginia. With his help in isolating and fixing problems and with his
+substantial contributions to the DBE macro library, DBE has matured
+considerably from it's infancy.</P>
+
+<P>DBE is fully compatable with schemas and databases prepared for
+use by DMS-1100 levels 7R1 through 12R4 (inclusive).</P>
+
+<P>Level 6 databases may be accessed by DBE if a level 7R1-12R4
+schema can be constructed for use by DBE.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 1 | | </B></CENTER></P>
+
+<P><CENTER><B>| DISTRIBUTION TAPE FORMAT | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>1. Distribution Tape Format</H1>
+
+<P>&nbsp;</P>
+
+<P>The 'DBE' distribution tape consists of six files. These files and
+their contents are described in the following six sections.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 1 | File #1 | </B></CENTER></P>
+
+<P><CENTER><B>| DISTRIBUTION TAPE FORMAT | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>1.1. File #1 - Documentation</H2>
+
+<P>&nbsp;</P>
+
+<P>File one contains the documents describing the system in symbolic
+(@DOC) format as well as the print listing of the DBE gen that
+produced the absolute in file 5.</P>
+
+<P>The standard UNISYS @DOC processor should not be used to print the
+documents as several extensions are required (if used, the @DOC will
+print the document but will have many errors after the document
+listing). An absolute of a @DOC processor that will work is included.
+No instructions on the enhancements are provided however, and use of
+that document processor for any purpose other than the printing of
+these two manuals will be at your own risk.</P>
+
+<P>The following elements are included in the file:</P>
+
+<P>1. USERS-GUIDE A symbolic element containing the documentation on
+the use and operation of 'DBE'.</P>
+
+<P>2. TECH-GUIDE A symbolic element containing the technical guide
+for the generation and maintenance of 'DBE'.</P>
+
+<P>3. PROG-REF A symbolic element containing the DBE Programmer's
+Reference Manual</P>
+
+<P>4. SITE-LIB A symbolic element containing the DBE Site Macro
+Library Manual</P>
+
+<P>5. GEN-LISTING An omnibus element version of a @SYM file which is
+the printed listing of the sysgen that built the version of DBE
+supplied on the tape.</P>
+
+<P>To print the sysgen listing from the distribution tape:</P>
+
+<PRE>@ASG,TJ TAPE.,U9V,&lt;REEL-ID&gt;
+U9S
+@CAT,P FILE1.,///1000
+@CAT,P SYMFILE.,///500
+@COPY,G TAPE.,FILE1.
+@COPY,IO FILE1.GEN-LISTING,SYMFILE.
+@SYM[,U] SYMFILE.[,&lt;COPIES&gt;[,&lt;DEVICE&gt;]]</PRE>
+
+<P>To print either of the four manuals from this tape:</P>
+
+<PRE>@ASG,TJ TAPE.,U9V,&lt;REEL-ID&gt;
+U9S
+@CAT,P FILE1.,///1000
+@CAT,P SYMFILE.,///500
+@COPY,G TAPE.,FILE1.
+@ASG,A SYMFILE.
+@BRKPT PRINT$/SYMFILE
+@DOC,EFHRDX FILE1.USERS-GUIDE
+TECH-GUIDE
+PROG-REF
+@BRKPT PRINT$
+@FREE SYMFILE.
+@SYM[,U] SYMFILE.[,&lt;COPIES&gt;[,&lt;DEVICE&gt;]]</PRE>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 1 | File #2 | </B></CENTER></P>
+
+<P><CENTER><B>| DISTRIBUTION TAPE FORMAT | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>1.2. File #2 - Master File</H2>
+
+<P>&nbsp;</P>
+
+<P>File two contains the master-control information for the system.
+This includes:</P>
+
+<P>&nbsp;</P>
+
+<P>1. SYSINIT The system initialization skeleton.</P>
+
+<P>2. SYSGEN The system generation skeleton (pass one).</P>
+
+<P>3. SYSGEN-II The skeleton that handles pass two of the 'sysgen'
+process.</P>
+
+<P>4. SPECS An element of sample sysinit specifications.</P>
+
+<P>5. CORRDUMP A DBE macro used by the sysgen skeleton to
+'pretty-print' TCF/PCF elements.</P>
+
+<P>6. TITLE An absolute (sorry, no source available) to produce block
+letter titles on sysgen's.</P>
+
+<P>7. SKELPRINT A DBE macro used to 'pretty-print' skeletons.</P>
+
+<P>8. PRINTCDM A DBE macro used to print the change descriptions that
+document all corrections made to DBE to-date. See the "PRINT" sysgen
+SGS for more information.</P>
+
+<P>9. CDMNUMBERS A DBE macro used by the "PRINTCDM" macro.</P>
+
+<P>10. CDM/#### Source elements containing the documentation on the
+DBE changes made to-date. The #### represents the change number. See
+the "PRINT" sysgen SGS for more information.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 1 | File #3 | </B></CENTER></P>
+
+<P><CENTER><B>| DISTRIBUTION TAPE FORMAT | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>1.3. File #3 - Symbolics</H2>
+
+<P>&nbsp;</P>
+
+<P>File number three contains the base symbolics of all 'DBE'
+modules, macros, help elements and the permanent correction file
+(PCF) for DBE. The PCF contains correction cards to the base DBE
+processor modules and macros to correct reported problems. During the
+sysgen for DBE this PCF (along with new corrections - entered into
+the 'TCF' element also in this file) will be used to modify the
+necessary symbolics and produce the most current possible version of
+DBE.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 1 | File #4 | </B></CENTER></P>
+
+<P><CENTER><B>| DISTRIBUTION TAPE FORMAT | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>1.4. File #4 - Relocatables</H2>
+
+<P>&nbsp;</P>
+
+<P>File number four contains the relocatables of all 'DBE' elements.
+Note that the relocatables in this file were used to construct the
+absolute in the next file. The element 'specs' in the master file
+(File #2) was used to define the various operating parameters for
+these relocatables.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 1 | File #5 | </B></CENTER></P>
+
+<P><CENTER><B>| DISTRIBUTION TAPE FORMAT | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>1.5. File #5 - Production File</H2>
+
+<P>&nbsp;</P>
+
+<P>File number five contains the updated system macro library and a
+working copy of an 1100/40 (level 36) version of DBE with all
+features EXCEPT security enabled; this version should run on any 1100
+system.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 1 | File #6 | </B></CENTER></P>
+
+<P><CENTER><B>| DISTRIBUTION TAPE FORMAT | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>1.6. File #6 - Site Macro File</H2>
+
+<P>&nbsp;</P>
+
+<P>File number six contains the Site Library macros. These macros
+differ from those in the Production File in that they require
+modification before installing in the Site Library File.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | Introduction | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>2. Skeleton Operation And System Generation</H1>
+
+<P>&nbsp;</P>
+
+<P>This chapter deals with the operation of the three skeletons that
+comprise the DBE skeleton library.</P>
+
+<P>&nbsp;</P>
+
+<P>All three skeletons should be residing in the same file. That file
+will be referred to in this document as the Master File.</P>
+
+<P>TOCLVL 5</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | SYSINIT Skeleton | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>2.1. The System Initialization (Sysinit) Skeleton</H2>
+
+<P>&nbsp;</P>
+
+<P>The purpose of this skeleton is to provide a means by which
+certain system generation parameters that are likely to be used many
+times can be established as a default. This is done by having the
+runstream produced by SYSINIT actually modify the sysgen skeleton.
+</P>
+
+<P>&nbsp;</P>
+
+<P>The reader should be aware that the 'system initialization'
+process is not optional. It must be done prior to running a DBE
+sysgen for the first time. It must also be done any time a new set of
+defaults or a new system class (see the next section) are to be
+established.</P>
+
+<H3>2.1.1 System Generation Classes</H3>
+
+<P>&nbsp;</P>
+
+<P>The DBE SYSINIT process allows the DBE installation manager to
+establish system generation 'classes' of default sysgen parameters so
+that different versions of DBE can be simply (and quickly) generated
+from one set of source and skeletons. The various versions will each
+be named (the name is the sysgen class) and may be generated by name.
+</P>
+
+<P>&nbsp;</P>
+
+<P>There are also a number of parameters that are shared between
+different classes (for example, the name of the file containing the
+symbolics). All this is specified by the sysinit process.</P>
+
+<P>&nbsp;</P>
+
+<P>Later on in this section there will be an example of a set of
+sysinit specifications (contained in a 'sysinit specs element') that
+are used to establish a multiple-class DBE site.</P>
+
+<H3>2.1.2 Sysinit Skeleton Operation</H3>
+
+<P>&nbsp;</P>
+
+<P>The 'sysinit' skeleton is used as follows:</P>
+
+<P>&nbsp;</P>
+
+<P>@SSG
+&lt;Master-File&gt;.Sysinit,,,,,,SGS/1,&lt;sysinit-specs-elt&gt;</P>
+
+<P>[ SGS</P>
+
+<P>--- utility specifications, if any ---</P>
+
+<P>@eof ]</P>
+
+<P>@eof</P>
+
+<P>where &lt;Master-File&gt; is the file in which all three DBE
+skeletons reside, &lt;sysinit-specs-elt&gt; is the 'File.Elt' name of
+the SYSINIT specs element and utility specifications are optional SGS
+statements used to perform certain utility operations during the
+system initialization process.</P>
+
+<H3>2.1.3 The Sysinit Specs Element</H3>
+
+<P>&nbsp;</P>
+
+<P>This element is a symbolic element of a program file containing
+the SGS's discussed in the following three sections. Those SGS's
+covered in the first two sections are mandatory, and must occur only
+once. Their order of occurrence is irrelevent, but it is recommended
+that they be blocked together for readability. The SGS's in the final
+section are used to define sysgen classes and the defaults for those
+sysgen's. They are all required, but may be repeated any number of
+times to create any number of sysgen classes.</P>
+
+<P>&nbsp;</P>
+
+<P>At this time, the following is presented as an example of a
+sysinit specifications element. This spec element has been prepared
+to provide three sysgen classes, as follows:</P>
+
+<P>&nbsp;</P>
+
+<P>DBE40: A sysgen class used to build a version of DBE for an
+1100/40 (in this case an 1100/43) running EXEC-8 level 33. This
+version of DBE has no debugging features enabled, and is probably to
+be used for production purposes.</P>
+
+<P>&nbsp;</P>
+
+<P>DBE600: A sysgen class used to build a version of DBE for a
+2200/600 (in this case a 2200/633) running EXEC-8 level 41. This
+version of DBE has debugging features enabled, and is probably to be
+used for testing purposes.</P>
+
+<P>&nbsp;</P>
+
+<P>. ********************************************************** . *
+SYSTEM INITIALIZATION INFO COMMON TO ALL CLASSES * .
+********************************************************** INITIAL
+BRKPT IS ''@USE $GEN$.,DBE*(SYSTEM,1,3,1)-GEN. . '', ;</P>
+
+<P>''@ASG,A $GEN. ', ;</P>
+
+<P>''@BRKPT PRINT$/$GEN'', ;</P>
+
+<P>''@HDG,N .M,88,8,8.B,8'' TERMINATING BRKPT IS ''@BRKPT PRINT$ '',
+;</P>
+
+<P>''@FREE GEN$. '' MASTER FILE IS ''DBE*FILE2'' TITLE FILE IS
+''DBE*FILE2'' .
+********************************************************** . * D B E
+4 0 * . **********************************************************
+ABSOLUTE GOES TO DBE*PROD40 ACCOUNT NUMBER IS SU000 ATT BUFFER SIZE
+IS 15000 WORDS BANK READ BUFFER SIZE IS 900 WORDS CALCASE CALC
+ROUTINE IS DISABLED DEBUGGING FEATURES ARE DISABLED DOUBLE BUFFERED
+IO SIZE IS 12 TRACKS EXPRESSION EVALUATION STACK CONTAINS 50 SLOTS
+FDT COPY FILE IS ''DBE$FDT$'' FILE LIMITS ARE 5 WITH 4 SECTOR SDF
+BUFFERS ;</P>
+
+<P>AND 2000 WORD GENERAL BUFFER FREE OF DBE FILE IS DISABLED FULL
+SCHEMA READ IS DISABLED GOSUB STACK CONTAINS 200 SLOTS HELP ELEMENTS
+GO TO DBE*PROD40 AND ARE IN LIBRARY CSINTNAME$ IACULL OUTPUT FILE IS
+''DBE*IACULL'' INPUT FILE IS DBE*FILE3 KEYIN HANDLER IS ENABLED
+LISTING IS LONG LOGGING IS ENABLED VIA LOG$ MACRO AREA SIZE IS 022000
+WORDS MACROS GO TO DBE*FILE5 AND ARE IN LIBRARY CSINTNAME$ MASTERID
+IS USERXX MODE IS @START NAME OF SCHEMA MAY BE ANY OBJECT COMPUTER IS
+1100 / 43 ON LEVEL 33 OPERATOR NOTIFICATION IS ENABLED OUTPUT GOES TO
+TPF$ PARAMETER LIMIT IS 10 PATCH FEATURES ARE DISABLED PCFELT IS PCF
+IN FILE DBE*FILE3 PCT WRITE IS ENABLED WITH ER 04011 PROJID IS DMS
+RDMS ACCESS IS ENABLED REALTIME STATUS IS ENABLED AT LEVEL 35
+RELOCATABLES GO TO DBE*PROD40-REL SECURITY TABLES ARE 1 TRACK ;</P>
+
+<P>IN FILE ''DBE*40$SEC.'' ;</P>
+
+<P>USING USERIDS FOR DEMAND CLEARANCE SITE MACROS ARE IN LIBRARY
+DBE*LIB$ SORT ROUTINES AREA COMMON BANKED SYSTEM CLASS IS DBE40 WITH
+DUMP ID DBEDMP TCFELT IS TCF IN FILE DBE*FILE3 TFPMAX IS 3000 WITH ER
+0 TIP FILES ARE ENABLED UPA SIZE IS 5 WORDS USER BUFFER SIZE IS 200
+WORDS VARIABLE LIMIT IS 64</P>
+
+<P>. ********************************************************** . * D
+B E 6 0 0 * .
+********************************************************** ABSOLUTE
+GOES TO DBE*PROD600 ACCOUNT NUMBER IS SU000 ATT BUFFER SIZE IS 15000
+WORDS BANK READ BUFFER SIZE IS 900 WORDS CALCASE CALC ROUTINE IS
+DISABLED DEBUGGING FEATURES ARE ENABLED DOUBLE BUFFERED IO SIZE IS 12
+TRACKS EXPRESSION EVALUATION STACK CONTAINS 50 SLOTS FDT COPY FILE IS
+''DBE$FDT$'' FILE LIMITS ARE 5 WITH 4 SECTOR SDF BUFFERS ;</P>
+
+<P>AND 2000 WORD GENERAL BUFFER FREE OF DBE FILE IS DISABLED FULL
+SCHEMA READ IS DISABLED GOSUB STACK CONTAINS 200 SLOTS HELP ELEMENTS
+GO TO DBE*PROD600 AND ARE IN LIBRARY CSINTNAME$ IACULL OUTPUT FILE IS
+''DBE*IACULL-40'' INPUT FILE IS DBE*FILE3 KEYIN HANDLER IS ENABLED
+LISTING IS LONG LOGGING IS ENABLED VIA LOG$ MACRO AREA SIZE IS 022000
+WORDS MACROS GO TO DBE*PROD600 AND ARE IN LIBRARY CSINTNAME$ MASTERID
+IS USERXX MODE IS @START NAME OF SCHEMA MAY BE ANY OBJECT COMPUTER IS
+2200 / 633 ON LEVEL 41 OPERATOR NOTIFICATION IS ENABLED OUTPUT GOES
+TO TPF$ PARAMETER LIMIT IS 10 PATCH FEATURES ARE DISABLED PCFELT IS
+PCF IN FILE DBE*FILE3 PCT WRITE IS ENABLED WITH ER 04011 PROJID IS
+DMS RDMS ACCESS IS ENABLED REALTIME MODE IS ENABLED AT LEVEL 35
+RELOCATABLES GO TO DBE*PROD600-REL SECURITY TABLES ARE 1 TRACK ;</P>
+
+<P>IN FILE ''DBE*600$SEC.'' ;</P>
+
+<P>USING USERIDS FOR DEMAND CLEARANCE SITE MACROS ARE IN LIBRARY
+DBE*LIB$ SORT ROUTINES ARE COMMON BANKED SYSTEM CLASS IS DBE600 WITH
+DUMP ID DBEDMP TCFELT IS TCF IN FILE DBE*FILE3 TFPMAX IS 0 WITH ER
+04021 TIP FILES ARE ENABLED UPA SIZE IS 5 WORDS USER BUFFER SIZE IS
+200 WORDS VARIABLE LIMIT IS 64</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | Common SGS's | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>2.1.3.1 Sysinit Sgs's Common To All Classes</H4>
+
+<P>&nbsp;</P>
+
+<P>The SGS's covered in this section are those that describe DBE
+attributes that are common among all the different sysgen classes.
+There can only be one of each of these SGS's present in the specs
+element.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'INITIAL' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.1.1 INITIAL</H5>
+
+<H6>2.1.3.1.1.1 Syntax</H6>
+
+<P>INITIAL BRKPT IS &lt;CONTROL-CARD-1&gt;,&lt;CONTROL-CARD-2&gt;,...
+</P>
+
+<H6>2.1.3.1.1.2 Purpose</H6>
+
+<P>Specifies those control cards to be used to open @BRKPT mode in a
+demand mode sysgen.</P>
+
+<H6>2.1.3.1.1.3 Discussion</H6>
+
+<P>By specifying the control cards here, rather than hard-coding them
+into the sysgen skeleton, the DBE installation manager can perform
+any sequence of operations when opening the @BRKPT mode. An example
+of this might be to use one of the @BRKPT utility programs that are
+floating around various univac sites (@SITE, @BREAK, @SUSPEND, etc.)
+Or to specify any desired margin/density/cartridge requirement.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'MASTER' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.1.2 MASTER</H5>
+
+<H6>2.1.3.1.2.1 Syntax</H6>
+
+<PRE>MASTER FILE IS &lt;FILE&gt;</PRE>
+
+<H6>2.1.3.1.2.2 Purpose</H6>
+
+<P>Specifies the name of the Master File.</P>
+
+<H6>2.1.3.1.2.3 Discussion</H6>
+
+<P>This enables the DBE installation manager to specify the name of
+the master file. As mentioned earlier, the master file is that file
+containing the three DBE skeletons and the symbolics of the two
+utility programs - SKELPRINT and CORRDUMP.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'TERMINATING' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.1.3 TERMINATING</H5>
+
+<H6>2.1.3.1.3.1 Syntax</H6>
+
+<PRE>TERMINATING BRKPT IS &lt;CONTROL-CARD-1&gt;,&lt;CONTROL-CARD-2&gt;,...</PRE>
+
+<H6>2.1.3.1.3.2 Purpose</H6>
+
+<P>This specifies the control card(s) used to terminate a @BRKPT
+(started via INITIAL ) whenever a 'demand' mode sysgen is done.</P>
+
+<H6>2.1.3.1.3.3 Discussion</H6>
+
+<P>This SGS allows the DBE installation manager to control the @BRKPT
+termination process. This might include using the appropriate program
+for @BRKPT termination (@SEND, @AWAY, @RESUME, etc.) Or perhaps doing
+an @ED,R on the print file.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'TITLE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.1.4 TITLE</H5>
+
+<H6>2.1.3.1.4.1 Syntax</H6>
+
+<P>TITLE FILE IS &lt;FILE&gt;</P>
+
+<H6>2.1.3.1.4.2 Purpose</H6>
+
+<P>Specifies the file in which the absolute of the TITLE utility
+program (supplied on the distribution tape - no symbolics are
+available) is located.</P>
+
+<H6>2.1.3.1.4.3 Discussion</H6>
+
+<P>This program is used by the SYSGEN skeleton to prefix all sysgen
+listings (if long or short listings are wanted) with a block-letter
+printout of the DBE-level and gen-date.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | Class-specific SGS's | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>2.1.3.2 Sysgen Default Sgs's Unique To Each Class</H4>
+
+<P>&nbsp;</P>
+
+<P>The SGS's in this section describe those aspects of a sysgen that
+may (but do not have to) differ depending upon the class of the
+sysgen.</P>
+
+<P>&nbsp;</P>
+
+<P>Except where explicitly stated to the contrary, each of the SGS's
+covered in this section must occur exactly once for each generation
+class.</P>
+
+<P>&nbsp;</P>
+
+<P>There is no limit to the number of classes that may be specified.
+</P>
+
+<P>&nbsp;</P>
+
+<P>Please note that the concept of a sysgen 'class' only specifies
+default sysgen values. Any of the values specified within a class
+(with the exception of the class-id - specified by the system SGS)
+may be overridden at sysgen time.</P>
+
+<P>&nbsp;</P>
+
+<P>The system SGS identifies the sysgen class and provides a name by
+which that class may be referred at sysgen time. The total number of
+system cards specifies the total number of classes. Each SGS
+discussed in this section must, therefore, occur the exact number of
+times as there are occurrences of system SGS's.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'ABSOLUTE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.1 ABSOLUTE</H5>
+
+<H6>2.1.3.2.1.1 Syntax</H6>
+
+<P>ABSOLUTE GOES TO &lt;FILE&gt;</P>
+
+<H6>2.1.3.2.1.2 Purpose</H6>
+
+<P>Specifies the destination of the absolute version of DBE produced
+by the sysgen class in which this SGS occurs.</P>
+
+<H6>2.1.3.2.1.3 Discussion</H6>
+
+<P>This SGS merely indicates the file into which the absolute
+produced by the sysgen will be put. The element name will always be
+'DBE'.</P>
+
+<H6>2.1.3.2.1.4 Suggested Specification</H6>
+
+<P>As desired at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'ACCOUNT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.2 ACCOUNT</H5>
+
+<H6>2.1.3.2.2.1 Syntax</H6>
+
+<P>ACCOUNT NUMBER IS &lt;ACCOUNT-NUMBER&gt;</P>
+
+<H6>2.1.3.2.2.2 Purpose</H6>
+
+<P>Specifies the account number to be used on the @RUN card of an
+@START mode sysgen.</P>
+
+<H6>2.1.3.2.2.3 Discussion</H6>
+
+<P>None.</P>
+
+<H6>2.1.3.2.2.4 Suggested Specification</H6>
+
+<P>As desired at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'ATT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.3 ATT</H5>
+
+<H6>2.1.3.2.3.1 Syntax</H6>
+
+<P>ATT BUFFER SIZE IS &lt;INTEGER&gt; WORDS</P>
+
+<H6>2.1.3.2.3.2 Purpose</H6>
+
+<P>Specifies the default size for the Audit Trail Buffer ATTBUF.</P>
+
+<H6>2.1.3.2.3.3 Discussion</H6>
+
+<P>This value is used to size the ATTBUFF system table when the
+ATTSIZE command is executed with no sizing parameter. If a sizing
+parameter is specified, the default is ignored.</P>
+
+<H6>2.1.3.2.3.4 Suggested Specification</H6>
+
+<P>As required at your site (minimum should be at least 2000 words).
+</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'BANK' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.4 BANK</H5>
+
+<H6>2.1.3.2.4.1 Syntax</H6>
+
+<P>BANK READ BUFFER SIZE IS &lt;INTEGER&gt; WORDS</P>
+
+<H6>2.1.3.2.4.2 Purpose</H6>
+
+<P>Specifies the size of the bank read buffer used to transfer data
+from common banks into the DBE D-Bank.</P>
+
+<H6>2.1.3.2.4.3 Discussion</H6>
+
+<P>This size is used in the two Bank Read modules. Changing to a
+number greater than 900 words will require modification to the DBE
+map stream.</P>
+
+<H6>2.1.3.2.4.4 Suggested Specification</H6>
+
+<P>900.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'CALCASE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.5 CALCASE</H5>
+
+<H6>2.1.3.2.5.1 Syntax</H6>
+
+<P>CALCASE CALC ROUTINE IS ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.5.2 Purpose</H6>
+
+<P>Indicates whether the class of DBE in the sysgen class in which
+this SGS occurs is to have CALCASE code generated or disabled.</P>
+
+<H6>2.1.3.2.5.3 Discussion</H6>
+
+<P>The CALCASE routine is a Calc DBP written for use at NYSDSS/NYC.
+</P>
+
+<H6>2.1.3.2.5.4 Suggested Specification</H6>
+
+<P>DISABLED.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'DOUBLE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.6 DOUBLE</H5>
+
+<H6>2.1.3.2.6.1 Syntax</H6>
+
+<P>DOUBLE BUFFERED IO SIZE IS &lt;INTEGER&gt; TRACKS</P>
+
+<H6>2.1.3.2.6.2 Purpose</H6>
+
+<P>Defines the size of each of two dynamically allocated I/O buffers
+used in the double buffered I/O routine accessed by the SCAN &amp;
+RSCAN commands.</P>
+
+<H6>2.1.3.2.6.3 Discussion</H6>
+
+<P>Analysis at NYSDSS shows that maximum performance is acheived by
+performing 12 track I/O. This figure will vary depending on system
+configuration.</P>
+
+<H6>2.1.3.2.6.4 Suggested Specification</H6>
+
+<P>As desired at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'DEBUGGING' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.7 DEBUGGING</H5>
+
+<H6>2.1.3.2.7.1 Syntax</H6>
+
+<P>DEBUGGING FEATURES ARE ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.7.2 Purpose</H6>
+
+<P>Indicates whether the version of DBE in the sysgen class in which
+this SGS occurs is to have debugging featueres enabled or disabled by
+default.</P>
+
+<H6>2.1.3.2.7.3 Discussion</H6>
+
+<P>The debugging features are merely the presence of 'SNOOPY' in the
+absolute element. Snoopy is activated by the presence of the 'Z'
+option on the DBE call (or the execution of the "on Z" command). If
+debugging features are disabled for a version of DBE in which the 'Z'
+option is given, an error message will result.</P>
+
+<H6>2.1.3.2.7.4 Suggested Specification</H6>
+
+<P>ENABLED - The debugging routines will be collected into a dynamic
+segment and therefore will not require core allocation unless
+actually required.</P>
+
+<P>&nbsp;</P>
+
+<P>If you do not desire the ability to trace/debug the DBE processor
+you may as well specify "DISABLED".</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'EXPRESSION' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.8 EXPRESSION</H5>
+
+<H6>2.1.3.2.8.1 Syntax</H6>
+
+<P>EXPRESSION EVALUATION STACK CONTAINS &lt;INTEGER&gt; SLOTS</P>
+
+<H6>2.1.3.2.8.2 Purpose</H6>
+
+<P>Specifies the number of slots available in the expression
+evaluation stack.</P>
+
+<H6>2.1.3.2.8.3 Discuission</H6>
+
+<P>As of DBE level 3R1 the expression evaluation stack is a
+fixed-size table &lt;integer&gt;*2 words in length. The exact number
+of 'slots' required is unknown, but is dependent on the complexity of
+the expressions to be evaluated. As can be seen by the expression
+evaluation grammar (see the section describing the DBE expression
+evaluator) the evaluator operates recursively. Each time a grammar
+production is invoked, one slot of the evaluation stack will be
+occupied.</P>
+
+<H6>2.1.3.2.8.4 Suggested Specification</H6>
+
+<P>25.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'FDT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.9 FDT</H5>
+
+<H6>2.1.3.2.9.1 Syntax</H6>
+
+<P>FDT COPY FILE IS ( &lt;FILE&gt; )</P>
+
+<P>( DISABLED)</P>
+
+<H6>2.1.3.2.9.2 Purpose</H6>
+
+<P>Specifies the DBE FDT copy file name.</P>
+
+<H6>2.1.3.2.9.3 Discuission</H6>
+
+<P>Several DBE system macros require the DBE FDT copy file to convert
+FDT$ date/time stamps to area name / file name. One file is required
+for each UDS application configured on the system.</P>
+
+<P>&nbsp;</P>
+
+<P>Specifying "DISABLED" will prevent the code for "OPEN DBEFDT" from
+being generated.</P>
+
+<P>&nbsp;</P>
+
+<P>Note that only the file name is specified, not the '*' or the
+qualifier.</P>
+
+<H6>2.1.3.2.9.4 Suggested Specification</H6>
+
+<P>As desired at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'FILE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.10 FILE</H5>
+
+<H6>2.1.3.2.10.1 Syntax</H6>
+
+<P>FILE LIMITS ARE &lt;INTEGER-1&gt; ;</P>
+
+<P>WITH &lt;INTEGER-2&gt; SECTOR SDF BUFFERS ;</P>
+
+<P>AND &lt;INTEGER-3&gt; WORD GENERAL BUFFER</P>
+
+<H6>2.1.3.2.10.2 Purpose</H6>
+
+<P>Specifies how many user files are allowed and how large their I/O
+buffers are to be.</P>
+
+<H6>2.1.3.2.10.3 Discussion</H6>
+
+<P>The value of &lt;integer-1&gt; will be the maximum number of user
+files that will be allowed at one time. The value of
+&lt;integer-2&gt; will be the size (in sectors) that the I/O buffers
+will be for the user SDF files. Note that each user SDF file will
+always have two buffers. The value of &lt;integer-3&gt; will be the
+size (in words) of the general I/O buffer (the DBE table 'IOBUF')
+required for use by tape files.</P>
+
+<P>&nbsp;</P>
+
+<P>The SDF I/O buffers will be allocated at run time only when a
+macro is executed.</P>
+
+<H6>2.1.3.2.10.4 Suggested Specifications</H6>
+
+<P>&lt;Integer-1&gt;: 4</P>
+
+<P>&lt;Integer-2&gt;: 4</P>
+
+<P>&lt;Integer-3&gt;: 2000</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'FREE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.11 FREE</H5>
+
+<H6>2.1.3.2.11.1 Syntax</H6>
+
+<P>FREE OF DBE FILE IS ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.11.2 Purpose</H6>
+
+<P>Controls the automatic @FREE of the DBE processor file when the
+"BYE" command is executed. If "ENABLED" is specified the file will be
+'@FREE'ed, otherwise it will not.</P>
+
+<H6>2.1.3.2.11.3 Discussion</H6>
+
+<P>The only time one might wish the specification to be "enabled" is
+if the file in which DBE is contained is not dedicated to DBE and
+other people wish to access other elements within the file (via @ED
+or FURPUR). This is also useful as a DBE development tool as it
+guarantees that the DBE file is not 'tied up' for long periods of
+time so that new versions of DBE or its macros may be @COPYed into
+the file.</P>
+
+<H6>2.1.3.2.11.4 Suggested Specification</H6>
+
+<P>DISABLED.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'FULL' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.12 FULL</H5>
+
+<H6>2.1.3.2.12.1 Syntax</H6>
+
+<P>FULL SCHEMA READ IS ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.12.2 Purpose</H6>
+
+<P>Specifies whether the entire schema / subschema is to be read when
+the schema / subschema command is executed or whether only part (with
+the rest being dynamically accessable) is to be read.</P>
+
+<H6>2.1.3.2.12.3 Discussion</H6>
+
+<P>All DBE levels prior to level 5r1 effectively had "full schema
+read is enabled".</P>
+
+<P>&nbsp;</P>
+
+<P>By disabling the full schema read, only the FDT and SCRT of a
+schema will be automatically loaded upon execution of a schema
+command. The</P>
+
+<P>record command will read in the appropriate RDT and the SET
+command will do the same for an sdt. There will be no difference in
+functionality except for the loss of the table schema, which will no
+longer be defined for "FULL SCHEMA READ DISABLED" versions. If the
+table schema is required, you may generate DBE with the "ENABLED"
+specification for this SGS.</P>
+
+<P>&nbsp;</P>
+
+<P>Experience has shown that users tend to prefer referencing the
+schema component tables (FDT, SCRT, SRT, RRT, SDT AND RDT) rather
+than the table "SCHEMA" (thus having to locate the component tables
+manually) so the loss of the "SCHEMA" table from the DBE table set
+should not even be noticed.</P>
+
+<H6>2.1.3.2.12.4 Suggested Specification</H6>
+
+<P>"DISABLED" since by doing so will reduce the DBE memory
+requirements by approximately 25%.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'GOSUB' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.13 GOSUB</H5>
+
+<H6>2.1.3.2.13.1 Syntax</H6>
+
+<P>GOSUB STACK CONTAINS &lt;INTEGER&gt; SLOTS</P>
+
+<H6>2.1.3.2.13.2 Purpose</H6>
+
+<P>Specifies the number of slots available in the gosub return stack.
+</P>
+
+<H6>2.1.3.2.13.3 Discuission</H6>
+
+<P>When a "GOSUB" command is executed, the address of the statement
+immediately following the GOSUB is "pushed" onto the gosub stack.
+When an "END SUB" command is executed, the most recent return address
+is "pulled" from the gosub stack and the statement at that address is
+executed.</P>
+
+<H6>2.1.3.2.13.4 Suggested Specification</H6>
+
+<P>200.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'HELP' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.14 HELP</H5>
+
+<H6>2.1.3.2.14.1 Syntax</H6>
+
+<P>HELP ELEMENTS GO TO &lt;FILE-1&gt; ;</P>
+
+<P>AND ARE IN LIBRARY &lt;FILE-2&gt;</P>
+
+<H6>2.1.3.2.14.2 Purpose</H6>
+
+<P>Specifies where the explain macro description elements are to be
+copied at sysgen time and where DBE will expect to see them at
+run-time.</P>
+
+<H6>2.1.3.2.14.3 Discussion</H6>
+
+<P>&lt;File-1&gt; is the file to which the help elements will be
+copied at sysgen time.</P>
+
+<P>&nbsp;</P>
+
+<P>&lt;File-2&gt; is the file DBE will expect the help elements to be
+in at run-time (DBE will attach the @use name "DBE$HELPLIB" to this
+file).</P>
+
+<P>&nbsp;</P>
+
+<P>If the help elements are to be in the DBE processor file at
+run-time, it is better to name &lt;file-2&gt; as "CSINTNAME$" rather
+than explicitly naming the file since DBE (and its help elements)
+could then be moved to a different file without requiring a re-gen.
+</P>
+
+<H6>2.1.3.2.14.4 Suggested Specifications</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'IACULL' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.15 IACULL</H5>
+
+<H6>2.1.3.2.15.1 Syntax</H6>
+
+<P>IACULL (OUTPUT FILE IS &lt;FILE&gt; )</P>
+
+<P>(FILE CREATION IS DISABLED)</P>
+
+<H6>2.1.3.2.15.2 Purpose</H6>
+
+<P>Specifies where the IACULL cross reference file is to be built at
+sysgen time.</P>
+
+<H6>2.1.3.2.15.3 Discussion</H6>
+
+<P>&lt;File&gt; is the file to which the IACULL cross reference will
+be placed at sysgen time.</P>
+
+<P>If DISABLED, no IACULL cross reference will be produced.</P>
+
+<H6>2.1.3.2.15.4 Suggested Specifications</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'INPUT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.16 INPUT</H5>
+
+<H6>2.1.3.2.16.1 Syntax</H6>
+
+<P>INPUT COMES FROM &lt;FILE&gt;</P>
+
+<H6>2.1.3.2.16.2 Purpose</H6>
+
+<P>Specifies the default sysgen source-input file for this sysgen
+class.</P>
+
+<H6>2.1.3.2.16.3 Discussion</H6>
+
+<P>This is the file containing the DBE symbolics.</P>
+
+<H6>2.1.3.2.16.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'KEYIN' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.17 KEYIN</H5>
+
+<H6>2.1.3.2.17.1 Syntax</H6>
+
+<P>KEYIN HANDLER IS ( ENABLED )</P>
+
+<P>( DISABLED )</P>
+
+<H6>2.1.3.2.17.2 Purpose</H6>
+
+<P>Determines whether the KEYIN$ handler is available for this sysgen
+class.</P>
+
+<H6>2.1.3.2.17.3 Discussion</H6>
+
+<P>The KEYIN$ handler provides DBE statistics via a console keyin
+while DBE is executing.</P>
+
+<H6>2.1.3.2.17.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'LISTING' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.18 LISTING</H5>
+
+<H6>2.1.3.2.18.1 Syntax</H6>
+
+<P>LISTING IS ( ABSENT )</P>
+
+<P>( SHORT )</P>
+
+<P>( LONG )</P>
+
+<H6>2.1.3.2.18.2 Purpose</H6>
+
+<P>Specifies the default sysgen listing mode for this sysgen class.
+</P>
+
+<H6>2.1.3.2.18.3 Discussion</H6>
+
+<P>'ABSENT' indicates the shortest possible listing.</P>
+
+<P>&nbsp;</P>
+
+<P>'SHORT' indicates that the 'ESVYZ' options are used on the
+assembly and the 'S' option is used on the collection.</P>
+
+<P>&nbsp;</P>
+
+<P>'LONG' indicates that the 'ESVYZ' options are used on the assembly
+and the 'L' option is used on the collection.</P>
+
+<P>&nbsp;</P>
+
+<P>'@MASM' is used for all assemblies.</P>
+
+<H6>2.1.3.2.18.4 Suggested Specification</H6>
+
+<P>LONG.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'LOGGING' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.19 LOGGING</H5>
+
+<H6>2.1.3.2.19.1 Syntax</H6>
+
+<P>LOGGING IS ( DISABLED )</P>
+
+<P>( ENABLED VIA LOG$ )</P>
+
+<P>( ENABLED VIA SYSLOG$ ENTRY TYPE &lt;entry-type&gt; )</P>
+
+<H6>2.1.3.2.19.2 Purpose</H6>
+
+<P>Determines whether logging is enabled for this sysgen class.</P>
+
+<H6>2.1.3.2.19.3 Discussion</H6>
+
+<P>If logging is via SYSLOG$, the &lt;entry-type&gt; should be in the
+site defined range to uniquely identify the log entry as originating
+from DBE.</P>
+
+<H6>2.1.3.2.19.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'MACRO' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.20 MACRO</H5>
+
+<H6>2.1.3.2.20.1 Syntax</H6>
+
+<P>MACRO AREA SIZE IS &lt;INTEGER&gt; WORDS</P>
+
+<H6>2.1.3.2.20.2 Purpose</H6>
+
+<P>Specifies the default macro area size for this sysgen class.</P>
+
+<H6>2.1.3.2.20.3 Discussion</H6>
+
+<P>If &lt;integer&gt; has a leading zero, it will be treated as an
+octal number. If it does not have a leading zero it will be treated
+as decimal.</P>
+
+<P>&nbsp;</P>
+
+<P>This SGS will establish [fixed] size of the macro area for this
+version of DBE.</P>
+
+<H6>2.1.3.2.20.4 Suggested Specification</H6>
+
+<P>020000.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'MACROS' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.21 MACROS</H5>
+
+<H6>2.1.3.2.21.1 Syntax</H6>
+
+<P>MACROS GO TO &lt;FILENAME1&gt; AND ARE IN LIBRARY
+&lt;FILENAME2&gt;</P>
+
+<H6>2.1.3.2.21.2 Purpose</H6>
+
+<P>Specifies the destination file for macros during a gen and the
+system library file in which they will reside when DBE is actually
+used.</P>
+
+<H6>2.1.3.2.21.3 Discussion</H6>
+
+<P>The specification for &lt;filename1&gt; is the exec file to which
+macros will be written during the sysgen. It is the responsibility of
+the DBE installation manager to copy the macros into the correct
+runtime library file, which is specified as &lt;filename2&gt;. If the
+file in which DBE resides is to be used as the macro system library,
+a specification of 'CSINTNAME$' may be supplied as &lt;filename2&gt;.
+</P>
+
+<H6>2.1.3.2.21.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'MASTERID' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.22 MASTERID</H5>
+
+<H6>2.1.3.2.22.1 Syntax</H6>
+
+<P>MASTERID IS &lt;USERID OR ACCT&gt;[,&lt;USERID OR ACCT&gt;]...
+</P>
+
+<H6>2.1.3.2.22.2 Purpose</H6>
+
+<P>In the event that security checks are enabled (see the 'security'
+SGS) this SGS specifies the id(s) of the DBE manager(s).</P>
+
+<H6>2.1.3.2.22.3 Discussion</H6>
+
+<P>The user(s) specified here will be the one(s) initially allowed to
+use DBE prior to the construction and initialization of the security
+file.</P>
+
+<P>&nbsp;</P>
+
+<P>If 'security checks are disabled', this SGS, while required, will
+have no meaning.</P>
+
+<P>&nbsp;</P>
+
+<P>If demand clearance is based on userids, then this SGS will be
+indicating the userid(s) of the master user(s). If demand clearance
+is based on accounts, this specifies the account number(s) of the
+master user(s).</P>
+
+<P>&nbsp;</P>
+
+<P>Note that the 'masterid' user(s) will automatically be given all
+possible DBE privileges in the event of loss of the security file.
+</P>
+
+<H6>2.1.3.2.22.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'MODE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.23 MODE</H5>
+
+<H6>2.1.3.2.23.1 Syntax</H6>
+
+<P>MODE IS ( @START )</P>
+
+<P>( BATCH )</P>
+
+<P>( DEMAND )</P>
+
+<H6>2.1.3.2.23.2 Purpose</H6>
+
+<P>Specifies the default sysgen mode for this sysgen class.</P>
+
+<H6>2.1.3.2.23.3 Discussion</H6>
+
+<P>If the specified mode is @START, the ACCOUNT, PROJID and SYSTEM
+SGS's for this class will be used to construct a @RUN card for the
+sysgen runstream.</P>
+
+<P>&nbsp;</P>
+
+<P>If the specified mode is DEMAND, the INITIAL and TERMINATING SGS's
+will be used to control the opening and closing '@BRKPT's of the
+sysgen.</P>
+
+<P>&nbsp;</P>
+
+<P>If the specified mode is 'BATCH', the sysgen runstream will be
+immediately processed (via @ADD) with nothing special being done to
+it.</P>
+
+<H6>2.1.3.2.23.4 Suggested Specification</H6>
+
+<P>Demand (a full DBE gen should take no more than 10 minutes).</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'NAME' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.24 NAME</H5>
+
+<H6>2.1.3.2.24.1 Syntax</H6>
+
+<P>NAME OF SCHEMA ( MUST BE &lt;SCHEMA-NAME&gt; )</P>
+
+<P>( MAY BE ANY )</P>
+
+<H6>2.1.3.2.24.2 Purpose</H6>
+
+<P>Specifies the name of the only schema that DBE will be allowed to
+access (if so restricted) or specifies that DBE will be allowed to
+access any schema.</P>
+
+<H6>2.1.3.2.24.3 Discussion</H6>
+
+<P>Unless a version of DBE is being prepared for a classroom
+situation (where only a single schema would be accessed) you will
+most likely be allowing any schema.</P>
+
+<H6>2.1.3.2.24.4 Suggested Specification</H6>
+
+<P>ANY.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'OBJECT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.25 OBJECT</H5>
+
+<H6>2.1.3.2.25.1 Syntax</H6>
+
+<P>OBJECT COMPUTER IS &lt;SERIES&gt; / &lt;MODEL&gt; ;</P>
+
+<P>RUNNING LEVEL &lt;EXEC-LEVEL&gt;</P>
+
+<H6>2.1.3.2.25.2 Purpose</H6>
+
+<P>Specifies the object (run-time) system environment so that any
+system-dependent features may be properly generated.</P>
+
+<H6>2.1.3.2.25.3 Discussion</H6>
+
+<P>The &lt;series&gt; / &lt;model&gt; is the 1100/2200 series system
+model designation, and may be taken from the following set:</P>
+
+<P>&nbsp;</P>
+
+<P>1100 / 10 1100 / 11 1100 / 12</P>
+
+<P>1100 / 20 1100 / 21 1100 / 22</P>
+
+<P>1100 / 40 1100 / 41 1100 / 42</P>
+
+<P>1100 / 43 1100 / 44 1100 / 46</P>
+
+<P>1100 / 60 1100 / 61 1100 / 62</P>
+
+<P>1100 / 63 1100 / 64</P>
+
+<P>1100 / 80 1100 / 81 1100 / 82</P>
+
+<P>1100 / 83 1100 /84</P>
+
+<P>1100 / 80A 1100 / 81A 1100 / 82A</P>
+
+<P>1100 / 83A 1100 / 84A</P>
+
+<P>1100 / 90 1100 / 91 1100 / 92</P>
+
+<P>1100 / 93 1100 / 94</P>
+
+<P>2200 / 100 2200 / 111 2200 / 122</P>
+
+<P>2200 / 133</P>
+
+<P>2200 / 200 2200 / 211 2200 / 222</P>
+
+<P>2200 / 233</P>
+
+<P>2200 / 300 2200 / 311 2200 / 322</P>
+
+<P>2200 / 333</P>
+
+<P>2200 / 400 2200 / 411 2200 / 422</P>
+
+<P>2200 / 433</P>
+
+<P>2200 / 500 2200 / 511 2200 / 522</P>
+
+<P>2200 / 533</P>
+
+<P>2200 / 600 2200 / 611 2200 / 622</P>
+
+<P>2200 / 633</P>
+
+<P>2200 / 900 2200 / 911 2200 / 922</P>
+
+<P>2200 / 933</P>
+
+<P>&nbsp;</P>
+
+<P>The only distinction DBE will really make is between the catagory
+"1100/10/20/40" and the catagory "1100/60/80 - 2200/xxx".</P>
+
+<P>&nbsp;</P>
+
+<P>The &lt;EXEC-LEVEL&gt; is the level of the operating system
+(EXEC-8 or OS/1100) that the system is operating on. For example,
+'37'.</P>
+
+<H6>2.1.3.2.25.4 Suggested Specification</H6>
+
+<P>As required for your system.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'OPERATOR' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.26 OPERATOR</H5>
+
+<H6>2.1.3.2.26.1 Syntax</H6>
+
+<P>OPERATOR NOTIFICATION IS ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.26.2 Purpose</H6>
+
+<P>Specifies whether or not console messages are to be generated
+following each assembly during the sysgen process.</P>
+
+<H6>2.1.3.2.26.3 Discussion</H6>
+
+<P>None.</P>
+
+<H6>2.1.3.2.26.4 Suggested Specification</H6>
+
+<P>As desired.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'OUTPUT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.27 OUTPUT</H5>
+
+<H6>2.1.3.2.27.1 Syntax</H6>
+
+<P>OUTPUT GOES TO &lt;FILE&gt;</P>
+
+<H6>2.1.3.2.27.2 Purpose</H6>
+
+<P>Specifies the destination file of the output symbolic elements of
+the sysgen process.</P>
+
+<H6>2.1.3.2.27.3 Discussion</H6>
+
+<P>Normally, this should be set to 'TPF$' since the updated symbolic
+elements are discarded after the typical sysgen. However, the source
+input file may be used when new base symbolic elements are being
+built. Note that the level SGS is used to indicate that new bases are
+to be built.</P>
+
+<H6>2.1.3.2.27.4 Suggested Specification</H6>
+
+<P>As required for your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'PARAMETER' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.28 PARAMETER</H5>
+
+<H6>2.1.3.2.28.1 Syntax</H6>
+
+<P>PARAMETER LIMIT IS &lt;INTEGER&gt;</P>
+
+<H6>2.1.3.2.28.2 Purpose</H6>
+
+<P>Sets the maximum number of parameters that macros may receive.
+There will be a (small) table allocated for parameter descriptions
+and this specifies its size.</P>
+
+<H6>2.1.3.2.28.3 Discussion</H6>
+
+<P>The value of &lt;integer&gt; should be set no lower than 5 (or
+some system macros will no longer work).</P>
+
+<H6>2.1.3.2.28.4 Suggested Specification</H6>
+
+<P>10.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'PATCH' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.29 PATCH</H5>
+
+<H6>2.1.3.2.29.1 Syntax</H6>
+
+<P>PATCH FACILITIES ARE ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.29.2 Purpose</H6>
+
+<P>If set to 'ENABLED', the 'REWRITE' command will be allowed. If set
+to 'DISABLED', this command will be illegal.</P>
+
+<H6>2.1.3.2.29.3 Discussion</H6>
+
+<P>See the section on 'Security Facilities and Priviledged Commands'.
+</P>
+
+<H6>2.1.3.2.29.4 Suggested Specifications</H6>
+
+<P>For your own good - do not enable this unless you are configuring
+security as well (even then, be careful - you can patch virtually
+anything with DBE).</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'PCFELT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.30 PCFELT</H5>
+
+<H6>2.1.3.2.30.1 Syntax</H6>
+
+<P>PCFELT IS &lt;ELT&gt; IN FILE &lt;FILE&gt;</P>
+
+<H6>2.1.3.2.30.2 Purpose</H6>
+
+<P>Specifies the File.Elt containing permanent corrections.</P>
+
+<H6>2.1.3.2.30.3 Discussion</H6>
+
+<P>DBE uses corrections in the form:</P>
+
+<P>&nbsp;</P>
+
+<P>*&lt;Module&gt;</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>*&lt;Module&gt;</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>And not by the program-file approach (ssg p/t options).</P>
+
+<H6>2.1.3.2.30.4 Suggested Specification</H6>
+
+<P>As required for your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'PCT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.31 PCT</H5>
+
+<H6>2.1.3.2.31.1 Syntax</H6>
+
+<P>PCT WRITE IS (ENABLED WITH ER &lt;ER#&gt;)</P>
+
+<P>PCT WRITE IS (DISABLED )</P>
+
+<H6>2.1.3.2.31.2 Purpose</H6>
+
+<P>NYSDSS has implemented a local ER to modify selected words in the
+slop table. It is used by DBE to clear the output message count in
+the PCT/ Slop Table.</P>
+
+<H6>2.1.3.2.31.3 Discussion</H6>
+
+<P>&lt;ER#&gt; is the local ER# to call the ER PCTWT$.</P>
+
+<P>If DISABLED, DBE will be unable to recover from sending max TIP
+messages.</P>
+
+<H6>2.1.3.2.31.4 Suggested Specification</H6>
+
+<P>As required for your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'PROJID' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.32 PROJID</H5>
+
+<H6>2.1.3.2.32.1 Syntax</H6>
+
+<P>PROJID IS &lt;PROJID&gt;</P>
+
+<H6>2.1.3.2.32.2 Purpose</H6>
+
+<P>Specifies the @RUN card project id to be used on a @START mode
+sysgen.</P>
+
+<H6>2.1.3.2.32.3 Discussion</H6>
+
+<P>None.</P>
+
+<H6>2.1.3.2.32.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'RDMS' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.33 RDMS</H5>
+
+<H6>2.1.3.2.33.1 Syntax</H6>
+
+<P>RDMS ACCESS IS ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.33.2 Purpose</H6>
+
+<P>If set to 'ENABLED', all RDMS related commands and tables are
+accessible.</P>
+
+<H6>2.1.3.2.33.3 Discussion</H6>
+
+<P>If the site at which DBE is being built does not use RDMS areas
+and does not have UDS or is not interested in the UDS FDT$ file, then
+this feature should be 'disabled' to reduce the IBank and Dbank size
+of DBE.</P>
+
+<H6>2.1.3.2.33.4 Suggested Specifications</H6>
+
+<P>ENABLED.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'REALTIME' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.34 REALTIME</H5>
+
+<H6>2.1.3.2.34.1 Syntax</H6>
+
+<P>REALTIME MODE IS (ENABLED AT LEVEL &lt;INTEGER&gt;)</P>
+
+<P>(DISABLED )</P>
+
+<H6>2.1.3.2.34.2 Purpose</H6>
+
+<P>If set to 'ENABLED', THE "ON F" processor option will cause DBE to
+run at Realtime priority.</P>
+
+<H6>2.1.3.2.34.3 Discussion</H6>
+
+<P>&lt;INTEGER&gt; is the level at which DBE is to execute in
+Realtime mode.</P>
+
+<P>If disabled, an error will be returned if an "ON F" is attempted.
+</P>
+
+<H6>2.1.3.2.34.4 Suggested Specifications</H6>
+
+<P>ENABLED AT LEVEL 35.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'RELOACTABLES' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.35 RELOCATABLES</H5>
+
+<H6>2.1.3.2.35.1 Syntax</H6>
+
+<P>RELOCATABLES GO TO &lt;FILE&gt;</P>
+
+<H6>2.1.3.2.35.2 Purpose</H6>
+
+<P>Specifies the default relocatable output file for the sysgen
+process.</P>
+
+<H6>2.1.3.2.35.3 Discussion</H6>
+
+<P>None.</P>
+
+<H6>2.1.3.2.35.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'SECURITY' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.36 SECURITY</H5>
+
+<H6>2.1.3.2.36.1 Syntax</H6>
+
+<P>1. SECURITY CHECKS ARE DISABLED</P>
+
+<P>2. SECURITY TABLES ARE &lt;INTEGER&gt; TRACKS ;</P>
+
+<P>IN FILE &lt;FILE&gt; ;</P>
+
+<P>USING ( ACCOUNTS ) FOR DEMAND CLEARANCE</P>
+
+<P>( USERIDS )</P>
+
+<H6>2.1.3.2.36.2 Purpose</H6>
+
+<P>Specifies if security code is to be generated and, if so, what
+kind it is to be.</P>
+
+<H6>2.1.3.2.36.3 Discussion</H6>
+
+<P>Format one will cause no security code to be generated. This will
+still require a 'masterid' SGS, even though that SGS will be ignored.
+</P>
+
+<P>&nbsp;</P>
+
+<P>Format two will cause security code to be generated.</P>
+
+<P>&nbsp;</P>
+
+<P>The value of &lt;integer&gt; will be the number of tracks of
+mass-storage reserved for each of the three security tables
+(demand-users, batch-users and siteids). Each track allocated per
+table will allow for 597 entries.</P>
+
+<P>&nbsp;</P>
+
+<P>The &lt;file&gt; specification is the one- to eighteen-character
+file name of the security file. This may include read- and
+write-keys, cycle information, etc. The eighteen character limit is
+one that ssg imposes upon character string parameters on an SGS and
+is not one imposed by DBE. The size of &lt;file&gt; should be at
+least 3*&lt;integer&gt; tracks.</P>
+
+<P>&nbsp;</P>
+
+<P>The remaining parameters define the type of demand clearance that
+will be done. The choice of basing demand security upon userid or
+account number is up to each site. Batch security is always based
+upon account number.</P>
+
+<H6>2.1.3.2.36.4 Suggested Specification</H6>
+
+<P>"ENABLED".</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'SITE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.37 SITE</H5>
+
+<H6>2.1.3.2.37.1 Syntax</H6>
+
+<P>SITE MACROS ARE IN LIBRARY &lt;FILENAME1&gt;</P>
+
+<H6>2.1.3.2.37.2 Purpose</H6>
+
+<P>Specifies the site library file where macros will reside when DBE
+is actually used.</P>
+
+<H6>2.1.3.2.37.3 Discussion</H6>
+
+<P>It is the responsibility of the DBE installation manager to copy
+the macros into the correct runtime library file, which is specified
+as &lt;filename1&gt;. If the file in which DBE resides is to be used
+as the macro system library, a specification of 'CSINTNAME$' may be
+supplied as &lt;filename1&gt;.</P>
+
+<H6>2.1.3.2.37.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'SORT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.38 SORT</H5>
+
+<H6>2.1.3.2.38.1 Syntax</H6>
+
+<P>SORT ROUTINES ARE (COMMON BANKED)</P>
+
+<P>(RELOCATABLE)</P>
+
+<H6>2.1.3.2.38.2 Purpose</H6>
+
+<P>Determines whether the Common Banked Sort routines will be
+utilized or the Relocatable routines are to be mapped in with the
+program.</P>
+
+<H6>2.1.3.2.38.3 Discussion</H6>
+
+<P>Using Common Banked Sort routines will decrease the DBE Ibank
+size.</P>
+
+<H6>2.1.3.2.38.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'SYSTEM' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.39 SYSTEM</H5>
+
+<H6>2.1.3.2.39.1 Syntax</H6>
+
+<P>SYSTEM CLASS IS &lt;CLASS-ID&gt; WITH DUMP ID
+&lt;DUMP-ID&gt;,&lt;DUMP-ID&gt;</P>
+
+<H6>2.1.3.2.39.2 Purpose</H6>
+
+<P>Specifies the id for this particular sysgen class as well as the
+runid to which DBE dumps will be sent.</P>
+
+<H6>2.1.3.2.39.3 Discussion</H6>
+
+<P>In addition to providing a means by which the group of default
+SGS's associated with this class-id may be invoked at sysgen time,
+this SGS serves the purpose of providing a run-id for an @START mode
+sysgen (should this class be sysgen'ed in that fashion). The
+&lt;dump-id&gt; specifies the runid to appear on any dump produced by
+the version of DBE built by the SGS's of this sysgen class.</P>
+
+<P>Specifying more than one &lt;dump-id&gt; allows users matching the
+specified &lt;dump-id&gt;s to have dumps sent under their ID rather
+than the defualt of the first &lt;dump-id&gt;.</P>
+
+<H6>2.1.3.2.39.4 Suggested Specification</H6>
+
+<P>&lt;class-id&gt;: As desired</P>
+
+<P>&lt;dump-id&gt;: Usual runid of individual at your site
+responsible for DBE</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'TCFELT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.40 TCFELT</H5>
+
+<H6>2.1.3.2.40.1 Syntax</H6>
+
+<P>TCFELT IS &lt;ELT&gt; IN FILE &lt;FILE&gt;</P>
+
+<H6>2.1.3.2.40.2 Purpose</H6>
+
+<P>Exactly like pcfelt, but for temporary corrections.</P>
+
+<H6>2.1.3.2.40.3 Discussion</H6>
+
+<P>None.</P>
+
+<H6>2.1.3.2.40.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'TFPMAX' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.41 TFPMAX</H5>
+
+<H6>2.1.3.2.41.1 Syntax</H6>
+
+<P>TFPMAX IS &lt;INTEGER-1&gt; WITH ER &lt;INTEGER-2&gt;</P>
+
+<H6>2.1.3.2.41.2 Purpose</H6>
+
+<P>Identifies the highest TIP File number which can be allocated on
+the system.</P>
+
+<H6>2.1.3.2.41.3 Discussion</H6>
+
+<P>If the site at which DBE is being built does not use TIP Files for
+their database areas or schemas, then &lt;integer-1&gt; and
+&lt;integer-2&gt; should be set to 0.</P>
+
+<P>&nbsp;</P>
+
+<P>If the site has an 'ER TPFMAX' then &lt;integer-2&gt; is the octal
+number for that ER. The DBE masm code assumes that the value of
+TFPMAX is returned in register A0 - this will require modification if
+the ER at your site functions differently. Note that supplying
+&lt;integer-2&gt; causes the value of &lt;integer-1&gt; to be
+ignored.</P>
+
+<P>In all other situations &lt;integer-1&gt; should be set to the
+value of TFPMAX on the object system and &lt;integer-2&gt; MUST be
+set to 0.</P>
+
+<H6>2.1.3.2.41.4 Suggested Specification</H6>
+
+<P>As required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'TIP' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.42 TIP</H5>
+
+<H6>2.1.3.2.42.1 Syntax</H6>
+
+<P>TIP FILES ARE ( DISABLED )</P>
+
+<P>( ENABLED )</P>
+
+<H6>2.1.3.2.42.2 Purpose</H6>
+
+<P>Specifies whether DBE is or is not allowed to access tip files.
+</P>
+
+<H6>2.1.3.2.42.3 Discussion</H6>
+
+<P>If the site at which DBE is being built does not use tip files for
+their database areas or schemas, then this feature should be
+'disabled' to reduce (slightly) the Ibank size of DBE. In all other
+situations however, this feature should be 'enabled'.</P>
+
+<P>&nbsp;</P>
+
+<P>Disabling access to tip files will also disable the tip hardcopy
+feature.</P>
+
+<H6>2.1.3.2.42.4 Suggested Specification</H6>
+
+<P>"ENABLED" if you use tip/dms areas or schemas, "DISABLED"
+otherwise.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'UPA' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.43 UPA</H5>
+
+<H6>2.1.3.2.43.1 Syntax</H6>
+
+<P>UPA SIZE IS &lt;INTEGER&gt; WORDS</P>
+
+<H6>2.1.3.2.43.2 Purpose</H6>
+
+<P>This SGS allows you to specify the size (in words) of the CMS user
+parameter area on your system.</P>
+
+<H6>2.1.3.2.43.3 Discussion</H6>
+
+<P>If the user parameter area is not used, or tip features are not to
+be configured on your system, or you do not wish to take advantage of
+tip hardcopy mode, set the value of &lt;integer&gt; to zero -
+otherwise the value of &lt;integer&gt; MUST be exactly the number of
+UPA words in use at your site for tip hardcopy to work.</P>
+
+<H6>2.1.3.2.43.4 Suggested Specification</H6>
+
+<P>As necessary at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'USER' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.44 USER</H5>
+
+<H6>2.1.3.2.44.1 Syntax</H6>
+
+<P>USER BUFFER SIZE IS &lt;INTEGER&gt; WORDS</P>
+
+<H6>2.1.3.2.44.2 Purpose</H6>
+
+<P>This SGS allows you to specify the size (in words) of the user
+definable buffer (USRVAR).</P>
+
+<H6>2.1.3.2.44.3 Discussion</H6>
+
+<P>This variable should be set at a minimun of 200 words for some of
+the system macros to function correctly.</P>
+
+<H6>2.1.3.2.44.4 Suggested Specification</H6>
+
+<P>200.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'VARIABLE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>2.1.3.2.45 VARIABLE</H5>
+
+<H6>2.1.3.2.45.1 Syntax</H6>
+
+<P>VARIABLE LIMIT IS &lt;INTEGER&gt;</P>
+
+<H6>2.1.3.2.45.2 Purpose</H6>
+
+<P>This SGS specifies how many variables may be defined within any
+one macro.</P>
+
+<H6>2.1.3.2.45.3 Discussion</H6>
+
+<P>This limits the number of variables to the specified number.
+Remember however that each macro has its own set of variables. Each
+macro will allocate 3*&lt;integer&gt; words of memory when it starts
+up.</P>
+
+<H6>2.1.3.2.45.4 Suggested Specification</H6>
+
+<P>64 is the recommended specification to support the system macro
+library. Your site may require a higher limit if you are developing
+your own macros. If macros start receiving E$30 errors, this SGS
+should be increased.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | The SYSGEN Skeleton | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>2.2. The System Generation (Sysgen) Skeleton</H2>
+
+<P>&nbsp;</P>
+
+<P>This skeleton is used whenever a sysgen needs to be done. At
+sysgen time, a sysgen class will be selected and modules to be
+assembled will be specified (both via the GENERATE SGS) and the
+individual performing the sysgen will be given the oportunity to
+override any sysinit-specified defaults for the given class.</P>
+
+<P>&nbsp;</P>
+
+<P>This is a two-pass skeleton, but that fact should be transparent
+to it's users.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | SYSGEN Skeleton Operation | </B>
+</CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>2.2.1 Sysgen Skeleton Operation</H3>
+
+<P>&nbsp;</P>
+
+<P>The 'SYSGEN' skeleton is used as follows:</P>
+
+<P>&nbsp;</P>
+
+<P>@SSG &lt;master-file&gt;.SYSGEN</P>
+
+<P>SGS</P>
+
+<P>&lt;'GENERATE' SGS&gt;</P>
+
+<P>[ &lt;other sysgen-specification SGS's, if any&gt; ]</P>
+
+<P>[ &lt;default-override SGS's, if any&gt; ]</P>
+
+<P>@EOF</P>
+
+<P>@EOF</P>
+
+<P>where &lt;master-file&gt; is the sysinit-specified master file
+name. Note that the 'generate' SGS is required while all others are
+optional.</P>
+
+<P>&nbsp;</P>
+
+<P>This will be the only operation necessary to perform a DBE sysgen
+once a "sysinit" has been done.</P>
+
+<P><CENTER>***** NOTE *****</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>The tag "PCTWT$* will come up undefined at sites not running
+integrated recovery. This will cause absolutely no difficulty
+whatsoever and is not indicitive of any problems.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | Default-override SYSGEN SGS's | </B>
+</CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>2.2.2 Default-override Sysgen Sgs's</H3>
+
+<P>&nbsp;</P>
+
+<P>The SGS's in this class are identical in format and purpose to
+those covered in the section entitled "Sysgen Default SGS's Unique To
+Each Class".</P>
+
+<P>&nbsp;</P>
+
+<P>Such SGS's, specified at 'sysgen' time, will override the defaults
+specified at system initialization for the DBE class being
+'generate'd.</P>
+
+<P>&nbsp;</P>
+
+<P>Only the SYSTEM SGS cannot be overriden.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | SYSGEN Specification SGS's | </B>
+</CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>2.2.3 Sysgen Specification Sgs's</H3>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'GENERATE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>2.2.3.1 GENERATE</H4>
+
+<H5>2.2.3.1.1 Syntax</H5>
+
+<P>1. GENERATE &lt;CLASS&gt;: &lt;MODULE-1&gt;, &lt;MODULE-2&gt;, ...
+</P>
+
+<P>2. GENERATE &lt;CLASS&gt;: ALL MODULES</P>
+
+<P>3. GENERATE &lt;CLASS&gt;: ALL MODULES WITH CORRECTIONS</P>
+
+<P>4. GENERATE &lt;CLASS&gt;: ALL MODULES WITH ( TEMPORARY )
+CORRECTIONS</P>
+
+<P>( PERMANENT )</P>
+
+<H5>2.2.3.1.2 Purpose</H5>
+
+<P>Specify what DBE class is to be 'sysgen'ed and what modules are to
+be assembled.</P>
+
+<H5>2.2.3.1.3 Discussion</H5>
+
+<P>&lt;CLASS&gt; is a sysinit-specified sysgen class (as per the
+SYSTEM SGS) and indicates which class is to be built.</P>
+
+<P>&nbsp;</P>
+
+<P>Format one will cause only the specified modules to be built.
+However, any modules specified as 'MANDATORY' at sysinit time will
+also be assembled, even if they are not explicitly mentioned here.
+</P>
+
+<P>&nbsp;</P>
+
+<P>Format two will cause all modules to be assembled. This is the
+only type of generation that will cause the HELP explain elements to
+be copied to the file specified on the HELP SGS. This type of gen
+should be the first one you preform.</P>
+
+<P>&nbsp;</P>
+
+<P>Format three will cause all modules having corrections (either
+temporary or permanent) to be assembled. Any modules specified as
+'MANDATORY' at sysinit time will also be assembled, even if they have
+no corrections.</P>
+
+<P>&nbsp;</P>
+
+<P>Format four is like format three, but puts a restriction on the
+kind of corrections a module must have in order to be generated.</P>
+
+<P>&nbsp;</P>
+
+<P>Only one GENERATE SGS may be specified per execution of the
+'sysgen' skeleton. If more than one is given, only the first will be
+used.</P>
+
+<P>&nbsp;</P>
+
+<P>Please note that a system macro is considered a module as far as
+the 'generate' SGS is concerned. Thus the standard tcf/pcf structure
+may be used to update system macros as well as to update DBE itself.
+</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'IGNORE' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>2.2.3.2 IGNORE</H4>
+
+<H5>2.2.3.2.1 Syntax</H5>
+
+<P>IGNORE CORRECTIONS</P>
+
+<H5>2.2.3.2.2 Purpose</H5>
+
+<P>Will cause all corrections to be ignored during the current
+sysgen.</P>
+
+<H5>2.2.3.2.3 Discussion</H5>
+
+<P>By using this SGS, the base version of a DBE class may be built.
+</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'INHIBIT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>2.2.3.3 INHIBIT</H4>
+
+<H5>2.2.3.3.1 Syntax</H5>
+
+<P>INHIBIT MERGE</P>
+
+<H5>2.2.3.3.2 Purpose</H5>
+
+<P>Presence of this SGS will inhibit the merge of the tcf/pcf entries
+into a new pcf.</P>
+
+<H5>2.2.3.3.3 Discussion</H5>
+
+<P>Typical sysgen operation will call for merging the tcf/pcf into a
+new pcf and clearing the tcf. This SGS will prevent this. This is
+useful when testing a tcf.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'LEVEL' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>2.2.3.4 LEVEL</H4>
+
+<H5>2.2.3.4.1 Syntax</H5>
+
+<P>LEVEL IS &lt;LEVEL-ID&gt;[,&lt;STABILITY VERSION NUMBER&gt;]
+[BASE]</P>
+
+<H5>2.2.3.4.2 Purpose</H5>
+
+<P>Specifies the level that is to be used on the idline of the DBE
+processor call (i.E. 'LEVEL IS 6R1' would build 'DBE 6R1').</P>
+
+<H5>2.2.3.4.3 Discussion</H5>
+
+<P>The &lt;level-id&gt; is to be of the form
+&lt;integer&gt;r&lt;integer&gt; in the case of a production release
+of DBE or of the form &lt;integer&gt;r&lt;integer&gt;q&lt;integer&gt;
+in the case of a qualification release. The presence of a LEVEL SGS
+will case the sysgen number to be reset to one (see the section on
+the meaning of the DBE idline information).</P>
+
+<P>&nbsp;</P>
+
+<P>The optional &lt;stability version number&gt; allows a unique
+number to be established for stability update versions.</P>
+
+<P>&nbsp;</P>
+
+<P>The presence of the optional word 'base' will cause new base
+symbolics to be produced from the old bases and the temp/perm
+corrections. This is accomplished by an implied OUTPUT GOES TO SI
+SGS. Thus, any sysinit- or sysgen-specified OUTPUT SGS will be
+ignored and the previously mentioned one substituted.</P>
+
+<P>&nbsp;</P>
+
+<P>The only time this SGS should be used is when a stability update
+version of DBE is being built. At that time, the "change description"
+document describing the modifications will contain the specification
+you should use on the LEVEL SGS.</P>
+
+<P>&nbsp;</P>
+
+<P>**********************************************************</P>
+
+<P>* Note: The two correction elements are not erased when *</P>
+
+<P>* new bases are built. This is the responsibility *</P>
+
+<P>* of the DBE installation manager. *</P>
+
+<P>**********************************************************</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | 'PRINT' SGS | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>2.2.3.5 PRINT</H4>
+
+<H5>2.2.3.5.1 Syntax</H5>
+
+<P>1. PRINT SKELETONS</P>
+
+<P>2. PRINT CDMS</P>
+
+<H5>2.2.3.5.2 Purpose</H5>
+
+<P>Format one prints listings of each of the ssg skeletons during a
+DBE gen.</P>
+
+<P>&nbsp;</P>
+
+<P>Format two will include a listing of the entire set of DBE Change
+Description Memoranda [CDM], documenting all problems reported to
+date, their causes and solutions. Users encountering problems should
+consult these CDMs for possible insights into the solutions (perhaps
+the change is not installed, or did not completely fix a
+previously-reported problem).</P>
+
+<H5>2.2.3.5.3 Discussion</H5>
+
+<P>None.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | Running a SYSGEN | </B></CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>2.3. Running A Sysgen</H2>
+
+<H3>2.3.1 Initializing The Skeletons</H3>
+
+<P>&nbsp;</P>
+
+<P>You have unloaded the release tape onto files "DBE*FILE1" through
+"DBE*FILE6" and have the system specifications (as shown earlier) in
+the element "DBE*FILE2.SPECS. You want to register those as the
+specifications in the sysgen skeleton:</P>
+
+<P>&nbsp;</P>
+
+<P>@SSG DBE*FILE2.SYSINIT,,,,,,SGS/1,DBE*FILE2.SPECS</P>
+
+<P>@EOF</P>
+
+<P>At this point you are ready to perform a sysgen.</P>
+
+<H3>2.3.2 A "Simple" Sysgen</H3>
+
+<P>&nbsp;</P>
+
+<P>The purpose of defining the "specs" of the system is to make the
+actual sysgen as easy as possible. For example, if you wish to run a
+sysgen exactly as described as for the system class 'DBE40' in the
+specs (shown earlier), and assuming you wish to generate all modules
+of DBE before '@MAP'ing:</P>
+
+<P>&nbsp;</P>
+
+<P>@SSG DBE*FILE2.SYSGEN</P>
+
+<P>SGS</P>
+
+<P>GENERATE DBE40: ALL MODULES</P>
+
+<P>@EOF</P>
+
+<P>@EOF</P>
+
+<H3>2.3.3 Modifying Defaults</H3>
+
+<P>&nbsp;</P>
+
+<P>You wish to build a version of DBE exactly like the one described
+as 'DBE80' except that you wish to have patch features enabled (note
+that they are specified as 'disabled' in the specifications):</P>
+
+<P>&nbsp;</P>
+
+<P>@SSG DBE*FILE2.SYSGEN</P>
+
+<P>SGS</P>
+
+<P>GENERATE DBE80: ALL MODULES</P>
+
+<P>PATCH FEATURES ARE ENABLED</P>
+
+<P>@EOF</P>
+
+<P>@EOF</P>
+
+<P>&nbsp;</P>
+
+<P>Presence of any of the common default specification SGS's (section
+2.1.3.2) In the 'sysgen' SGS set will override the default specified
+at "sysinit" time - in this case, the presence of a "patch" SGS will
+cause it to override the default "patch" specification.</P>
+
+<P>&nbsp;</P>
+
+<P>When specifying default SGS overrides in the actual sysgen, their
+syntax is exactly as if they were used during the sysinit.</P>
+
+<H3>2.3.4 Partial Sysgen</H3>
+
+<P>&nbsp;</P>
+
+<P>Selected modules may be chosen on the "generate" SGS. If you are
+only changing "DBE-004", there is little need to re-assemble all of
+the modules of DBE:</P>
+
+<P>&nbsp;</P>
+
+<P>@SSG DBE*FILE2.SYSGEN</P>
+
+<P>SGS</P>
+
+<P>GENERATE DBE80: DBE-004</P>
+
+<P>@EOF</P>
+
+<P>@EOF</P>
+
+<P>&nbsp;</P>
+
+<P>If only "DBE-002" and "DBE-007" are to be assembled:</P>
+
+<P>&nbsp;</P>
+
+<P>@SSG DBE*FILE2.SYSGEN</P>
+
+<P>SGS</P>
+
+<P>GENERATE DBE80: DBE-002,DBE-007</P>
+
+<P>@EOF</P>
+
+<P>@EOF</P>
+
+<P>&nbsp;</P>
+
+<P>Please note that regardless of your selection of modules to be
+assembled, all modules specified as "mandatory" on their "module" SGS
+(in the sysinit definition) will be assembled in addition to the ones
+you specify. In addition, a partial sysgen will be successful only if
+you have a relocatables library already constructed (from a prior
+complete gen) so that all entry points may be found.</P>
+
+<P><CENTER>***** NOTE *****</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>Unlike the example defined herein, it is recommended that each
+sysgen "class" of DBE be defined with it's own (unique) relocatables
+file so that relocatables from different classes cannot be
+accidentally combined in a partial sysgen.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 2 | Special Considerations for | </B>
+</CENTER></P>
+
+<P><CENTER><B>| SYSTEM GENERATION | Running the First SYSGEN | </B>
+</CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>2.4. Special Considerations For Your First Sysgen</H2>
+
+<H3>2.4.1 DBE FDT Copy File</H3>
+
+<P>If the DBE FDT copy files are enabled, the following steps are
+required before any of the macros referencing those files can be
+used:</P>
+
+<P>&nbsp;</P>
+
+<P>1. For each UDS application configured, catalogue a file with a
+qualifier matching the application NAME and a file name matching the
+one specified in the FDT SGS. For example, the FDT copy file for
+application 3 using the release DBE FDT copy file name of 'DBE$FDT$'
+would be catalogued as:</P>
+
+<P>&nbsp;</P>
+
+<P>UDSSRC*DBE$FDT$.,F70M/200/TRK/200,PACKID</P>
+
+<P>This allows for approximately 5,000 FDT entries and 1,000 group /
+schema entries.</P>
+
+<H3>2.4.2 UDS Processor Files</H3>
+
+<P>To support the various macros that require knowledge of the
+UDS/DMS processor files, the macsub XXXXXX-UFILS must be created in
+the DBE Site Library (See Section 3). The format of XXXXXX is the
+system identifier as identified in register R15 during program
+initiation. This can also be determined by entering the DBE command
+"E,F SYSTEM(5)".</P>
+
+<P>&nbsp;</P>
+
+<P>As an example, see macsub XXXXXX-UFILS in File #6 on the release
+tape.</P>
+
+<H3>2.4.3 Security Tables</H3>
+
+<P>If you are configuring DBE with security features disabled, you
+may ignore this section.</P>
+
+<P>&nbsp;</P>
+
+<P>When configuring security, the first sysgen with security enabled
+is 'tricky'. To assure a successful installation, follow the
+following guidlines:</P>
+
+<P>&nbsp;</P>
+
+<P>1. Catalog the security file (as named on the SECURITY SGS) with a
+min/max reserve at least three times larger than the track size
+specified on the SECURITY SGS. The size on the SGS specifies the size
+of each of the three security tables on disc.</P>
+
+<P>&nbsp;</P>
+
+<P>2. Make sure to configure at least one userid or acct on the</P>
+
+<P>MASTERID SGS.</P>
+
+<P>&nbsp;</P>
+
+<P>3. Run the gen in demand mode in a run signed-on under one of the
+master-user userids (or accts) specified on the masterid SGS.</P>
+
+<P>&nbsp;</P>
+
+<P>4. After the gen, call DBE and enter the USAGE command. You should
+now be prompted by 'COMMAND:'. Enter the following:</P>
+
+<P>&nbsp;</P>
+
+<P>INITIALIZE,BATCH</P>
+
+<P>INITIALIZE,DEMAND</P>
+
+<P>INITIALIZE,SITES</P>
+
+<P>&nbsp;</P>
+
+<P>5. Congratulations! You are now ready to register users/sites as
+described in chapter 4.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 3 | General | </B></CENTER></P>
+
+<P><CENTER><B>| SITE MACRO LIBRARY INSTALL | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>3. Site Macro Library Installation</H1>
+
+<H2>3.1. General</H2>
+
+<P>File #6 on the release tape contains macros intended for
+installation in the Site Macro Library File. These macros differ from
+the normal system macros in that they require manual modification
+before installing in the appropriate run time files.</P>
+
+<P>&nbsp;</P>
+
+<P>The changes necessary for macro installation are described in the
+following sections. See the Site Library Guide for full macro
+descriptions.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 3 | 'TARUS-SAVE' Macro | </B></CENTER></P>
+
+<P><CENTER><B>| SITE MACRO LIBRARY INSTALL | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>3.2. TARUS-SAVE</H2>
+
+<H3>3.2.1 Required Changes</H3>
+
+<P>The TARUS absolute file will need to be changed from the current
+</P>
+
+<P>&nbsp;</P>
+
+<P>TARUS3R1*ABSFILE.TARUS</P>
+
+<P>as required at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 3 | 'TIP-MAP' Macro | </B></CENTER></P>
+
+<P><CENTER><B>| SITE MACRO LIBRARY INSTALL | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>3.3. TIP-MAP</H2>
+
+<H3>3.3.1 Required Changes</H3>
+
+<P>The file name for TIP File #0 will need to be changed as required
+at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 3 | 'U$SCH-ABORT' Macro | </B></CENTER></P>
+
+<P><CENTER><B>| SITE MACRO LIBRARY INSTALL | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>3.4. U$SCH-ABORT</H2>
+
+<H3>3.4.1 Required Changes</H3>
+
+<P>The message displayed is</P>
+
+<P>"SCHEMA schema-name HAS ABORTED IN APP app - NOTIFY DA."</P>
+
+<P>Change this message as desired at your site.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | General | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>4. User Registration And Privilege Establishment</H1>
+
+<H2>4.1. General</H2>
+
+<P>Once a user who has 'master' status (see the 'MASTERID' SGS) has
+executed the 'USAGE' command in DBE, he will be in a special mode of
+operation known as 'definition mode'. This is a separate mode from
+either the conversational or macro mode of operation discussed in the
+users guide.</P>
+
+<P>&nbsp;</P>
+
+<P>Note that in the process of switching into definition mode the
+contents of the synamic buffer (schema, database info) will be lost!
+</P>
+
+<P>&nbsp;</P>
+
+<P>Within this mode of operation, the security tables controlling
+access to DBE may be examined or altered as follows:</P>
+
+<P>&nbsp;</P>
+
+<P>1. The normal command prompt as described in the users guide will
+be replaced with:</P>
+
+<P>&nbsp;</P>
+
+<P>COMMAND-L/C/A/R/D/I/S/E/O/?:</P>
+
+<P>&nbsp;</P>
+
+<P>2. Any changes made to the security tables via the command
+discussed in this chapter will be made only to the in-core copy, not
+to the mass-storage security file until the user is done.</P>
+
+<P>&nbsp;</P>
+
+<P>3. The user indicates that his work is complete and that all
+changes made should be posted to the security file by entering an
+'@EOF' when the 'command:' prompt is made. This will cause DBE to
+return to conversational mode.</P>
+
+<P>&nbsp;</P>
+
+<P>4. If at any time during definition mode an @@x is entered,
+control will return to conversational mode and no changes will be
+applied to the security file.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Table Types | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>4.2. Table Types</H2>
+
+<P>&nbsp;</P>
+
+<P>All definition mode commands make reference to a &lt;table&gt; in
+their syntax. This specification indicates what kind of a table is to
+be referenced by a command. These tables are discussed in the
+following three sections.</P>
+
+<P>&nbsp;</P>
+
+<P>Whenever a definition mode command refers to a &lt;table&gt;
+specification, it is expecting a table-specification of 'demand',
+'batch' or 'site'. In actuality it will only care about the first
+letter, so 'dalmation' or 'd' are as good as 'demand'.</P>
+
+<H3>4.2.1 Demand Table</H3>
+
+<P>&nbsp;</P>
+
+<P>The first table is the table of legal demand users. If a user has
+his userid (or account number, depending on the 'security' SGS) in
+this table, he will be allowed access to DBE. It is further possible
+for this user to have a number of 'privileges' bestowed upon him as
+bit-mask entries in his entry. These will be discussed in detail
+later.</P>
+
+<H3>4.2.2 Batch Table</H3>
+
+<P>&nbsp;</P>
+
+<P>The second table is the table of those account numbers through
+which batch users may access DBE. These may also have privileges
+associated with them.</P>
+
+<H3>4.2.3 Siteid Table</H3>
+
+<P>&nbsp;</P>
+
+<P>The last table defines what sites are allowed to use DBE. This
+will (obviously) apply only to demand users. It is possible to give
+sites privileges also, but they have a slightly different meaning
+than for 'demand' or 'batch' users.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>4.3. Privileges</H2>
+
+<P>&nbsp;</P>
+
+<P>The following sections discuss the privileges that may be given to
+a user or to a site. These will appear in command syntax as a
+&lt;priv&gt; specification and, like &lt;table&gt;, will only be
+scanned for the first letter. In the discussion of each, it's
+complete name as might appear on a command will be given.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Access Any Site | </B>
+</CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.1 Allow User To Access Any Site</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege, called 'Any-site' on a command, is meaningful only
+within the 'demand' table entries. While it may be present in entries
+of the 'batch' and 'siteid' tables, it will be ignored.</P>
+
+<P>&nbsp;</P>
+
+<P>This allows a demand user to access DBE at any site, not just
+those explicitly described in the 'siteid' table. In addition, it
+allows the demand users privileges to override those of the site if
+the site happens to be defined. For example, if user 'xxx' has update
+privileges and siteid 'sss' does not, then normally user 'xxx' would
+not be able to update from site 'sss'. If, however, user 'xxx' has
+the 'any-site' privilege in addition to his 'update', he can override
+the restictions placed upon site 'sss'.</P>
+
+<P>&nbsp;</P>
+
+<P>The discussion of the 'add' and 'remove' command will tell how
+privileges are given to users and sites as well as how they may be
+taken away.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Master Privileges |
+</B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.2 Allow User To Be A 'Master'</H3>
+
+<P>&nbsp;</P>
+
+<P>The 'masterid' SGS designates one or more users at the site as a
+'master' user. These users have access to DBE even if the security
+file is non-existant, or empty (as would be the case when DBE is
+initially established at a site).</P>
+
+<P>&nbsp;</P>
+
+<P>In addition to the above, the master user is allowed access to the
+definition mode command. One of the legal privileges is that of
+giving a user 'Master' privileges ('Master' is the keyword to be used
+on the 'add' or 'remove' commands). Please note that the 'master'
+status bestowed to a user by another master user does not imply all
+possible privileges as does the 'masterid' sgs-specified user, but it
+does allow access to the commands covered in this chapter.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Ignore Copy Locks |
+</B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.3 Allow User To Ignore Copy Locks</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege (named 'Ignore-locks') allows users to bypass the
+copy-lock checking code of the schema command. The normal operation
+of the 'schema' command would require the user to supply the copy
+lock of a schema when accessing one that has such a lock. This
+privilege will bypass that process.</P>
+
+<P>Note that this privilege also controls the users ability to read
+Common Banks (as used by the UDS System Macros).</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Access Update
+Facilities | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.4 Allow User Access To "Update" Facilities</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege (called 'Update') allows the user to access the
+REWRITE command or to PUT to sector-addressable files.</P>
+
+<P>Note that a PUT to an SDFO, TAPE or TIP file is always allowed
+regardless of which privileges are set.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Access Debug Code |
+</B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.5 Allow Access To Debugging Code</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege (named 'Debug-access') allows the user to access
+any debugging code that might be configured (see the 'debugging'
+SGS).</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Supress Automatic News
+Printing| </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.6 Suppress Automatic News Printing</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege (named 'No-news') suppresses the automatic printing
+of system news for users so configured (they may still execute the
+"news" macro however). This is probably of most value to a batch
+user.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | FDT Copy File Not
+Updatable | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.7 Disallow Update of DBE FDT copy file</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege (named 'FDT-disallow') prevents users from updating
+the DBE FDT copy file via the OPEN DBEFDT command unless they have
+the 'UPDATE' privilege.</P>
+
+<P>&nbsp;</P>
+
+<P>Users without this privilege set can update the DBE FDT copy file
+regardless of whether or not they have the 'Update' privilege set.
+</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Disallow Schema / RDMS
+Access | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.8 Disallow Schema / RDMS Access</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege (named 'X-clude') prevents the user from executing
+any of the Schema/Subschema or RDMS related commands.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Privileges - | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | Selected Table Rewrite
+| </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.3.9 Selected Table Rewrite</H3>
+
+<P>&nbsp;</P>
+
+<P>This privilege (named 'Selected-tables') allows the user to
+execute the REWRITE command against any schema/subschema table which
+will write to the schema/subschema file. It does NOT allow users to
+update pages or Sector Formatted Exec files.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | Commands | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>4.4. Commands</H2>
+
+<P>&nbsp;</P>
+
+<P>The following commands are discussed, not in the usual alphabetic
+order, but in the order that they would be most likely used. For
+review purposes, remember the meanings of the following
+specifications:</P>
+
+<P>&nbsp;</P>
+
+<P>&lt;TABLE&gt; &lt;PRIV&gt;</P>
+
+<P>DEMAND ANY-SITE</P>
+
+<P>BATCH MASTER</P>
+
+<P>SITEID IGNORE-LOCKS</P>
+
+<P>UPDATE</P>
+
+<P>DEBUG-ACCESS</P>
+
+<P>NO-NEWS</P>
+
+<P>FDT COPY FILE NOT UPDATABLE</P>
+
+<P>X-CLUDE SCHEMA / RDMS ACCESS</P>
+
+<P>&nbsp;</P>
+
+<P>Remember also that any &lt;table&gt; or &lt;priv&gt;
+specification, along with the actual command itself, may be
+abbreviated to it's first character.</P>
+
+<P>&nbsp;</P>
+
+<P>All commands are shown with a comma (',') being used as a
+delimiter. A space may also be used in place of the comma, if so
+desired.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | INITIALIZE Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.1 INITIALIZE</H3>
+
+<P>&nbsp;</P>
+
+<P>INITIALIZE,&lt;TABLE&gt;</P>
+
+<P>&nbsp;</P>
+
+<P>This command initializes the specified table, erasing any and all
+previous contents. This must be done prior to doing the initial entry
+of any information to that table. Each table must be separately
+initialized.</P>
+
+<P>&nbsp;</P>
+
+<P>When the INITIALIZE command is entered, the prompt</P>
+
+<P>&nbsp;</P>
+
+<P>INITIALIZE &lt;table&gt; TABLE (Y/N):</P>
+
+<P>will be displayed to prevent accidental table initailization.
+Answering with anything but a 'Y' as the first character will cancel
+the initialization.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | CREATE Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.2 CREATE</H3>
+
+<P>&nbsp;</P>
+
+<P>CREATE,&lt;TABLE&gt;,&lt;ENTRY&gt;</P>
+
+<P>&nbsp;</P>
+
+<P>Create the given &lt;entry&gt; in the table of the given
+&lt;table&gt;. If the &lt;table&gt; was 'site' (or 's', 'siteid',
+...) Then the &lt;entry&gt; would be an actual siteid of a terminal.
+If &lt;table&gt; was 'batch', the &lt;entry&gt; would be an account
+number and, finally, if the &lt;table&gt; was 'demand' the
+&lt;entry&gt; would be a userid (or account number).</P>
+
+<P>&nbsp;</P>
+
+<P>Entries in tables will be inserted in ascending alphanumeric order
+based upon their first six characters.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | DELETE Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.3 DELETE</H3>
+
+<P>&nbsp;</P>
+
+<P>DELETE,&lt;TABLE&gt;,&lt;ENTRY&gt;</P>
+
+<P>&nbsp;</P>
+
+<P>Deletes the given &lt;entry&gt; from the given &lt;table&gt;.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | LIST Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.4 LIST</H3>
+
+<P>&nbsp;</P>
+
+<P>LIST,&lt;TABLE&gt;[,&lt;ENTRY&gt;]</P>
+
+<P>&nbsp;</P>
+
+<P>Without the optional &lt;entry&gt; specification, this command
+will list all entries (four to a line) in the given table. With the
+&lt;entry&gt; parameter, only the given &lt;entry&gt; will be listed.
+</P>
+
+<P>&nbsp;</P>
+
+<P>The entries will be listed in the form 'eeeeee/pppppp' where
+'eeeeee' is the entry (account #, userid or siteid) and 'pppppp' is
+the list of privileges associated with the entry. For example, if
+demand user 'USR001' has 'any-site', 'update' and 'debug-access'
+privileges, then the command:</P>
+
+<P><CENTER>LIST,DEMAND,USR001</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>Would produce the output:</P>
+
+<P><CENTER>USR001/AUD</CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | ADD Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.5 ADD</H3>
+
+<P>&nbsp;</P>
+
+<P>ADD,&lt;TABLE&gt;,&lt;ENTRY&gt;,&lt;PRIV&gt;[&lt;PRIV&gt;]...</P>
+
+<P>&nbsp;</P>
+
+<P>Add the given &lt;priv&gt;ilege(s) to the &lt;entry&gt; of
+&lt;table&gt;. The &lt;entry&gt; must already exist or an error will
+result.</P>
+
+<P>&nbsp;</P>
+
+<P>If the &lt;table&gt; is the site table, then the privilege means
+that the terminal will allow users who have that privilege to use it
+at that device. If the terminal did not have the specified privilege,
+then only those users having the 'any-site' privilege in addition to
+the specified one could execute it at this terminal.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | REMOVE Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.6 REMOVE</H3>
+
+<P>&nbsp;</P>
+
+<P>REMOVE,&lt;TABLE&gt;,&lt;ENTRY&gt;,&lt;PRIV&gt;</P>
+
+<P>&nbsp;</P>
+
+<P>Remove the given privilege from the &lt;entry&gt; of
+&lt;table&gt;.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | SAVE Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.7 SAVE</H3>
+
+<P>&nbsp;</P>
+
+<P>SAVE</P>
+
+<P>&nbsp;</P>
+
+<P>Saves the current security tables back to the security file and
+remains in definition mode.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | EXIT Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.8 EXIT</H3>
+
+<P>&nbsp;</P>
+
+<P>EXIT</P>
+
+<P>&nbsp;</P>
+
+<P>Like "save", but returns to conversational mode when done. This is
+identical to entering a control card.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 4 | OMIT Command | </B></CENTER></P>
+
+<P><CENTER><B>| USER REGISTRATION/PRIVILEGES | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>4.4.9 OMIT</H3>
+
+<P>&nbsp;</P>
+
+<P>OMIT</P>
+
+<P>&nbsp;</P>
+
+<P>Return to definition mode without saving the security tables. This
+is identical to entering an @@X.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 5 | | </B></CENTER></P>
+
+<P><CENTER><B>| MAINENANCE OF THE NEWS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>5. Maintenance Of The News</H1>
+
+<P>&nbsp;</P>
+
+<P>The DBE news facility is invoked by use of the "news" macro either
+automatically when the user calls DBE or at anytime during the users
+DBE session by actually calling "news".</P>
+
+<P>&nbsp;</P>
+
+<P>The news is kept in a symbolic element "news/data" in the same
+file in which the DBE system macros are kept. The news element may be
+edited using the standard system editor @ed.</P>
+
+<P>&nbsp;</P>
+
+<P>The news element will consist of a series of one or more "packets"
+of news items. Each "packet" will consist of an optional effective
+date specification (on which the item will appear), a mandatory
+expiration date specification (after which the item will cease
+appearing), a series of optional interrogation specifications
+(allowing the user to see a one-line "headline" and selectively see
+or ignore the remainder of the news item) and, finally, the actual
+news text itself. The remainder of this chapter discusses the format
+of these specifications.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 5 | *EFFECT | </B></CENTER></P>
+
+<P><CENTER><B>| MAINENANCE OF THE NEWS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>5.1. *EFFECT</H2>
+
+<P>&nbsp;</P>
+
+<P>The "*effect" specification has the following syntax:</P>
+
+<P><CENTER>*EFFECT MMDDYY</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>The "*" must be in column one, and there must be exactly one space
+separating the "effect" from the "mmddyy".</P>
+
+<P>&nbsp;</P>
+
+<P>The "mmddyy" is a standard 6-digit month-day-year format date on
+which the immediately following news item will begin to appear in the
+news.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 5 | *EXPIRE | </B></CENTER></P>
+
+<P><CENTER><B>| MAINENANCE OF THE NEWS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>5.2. *EXPIRE</H2>
+
+<P>&nbsp;</P>
+
+<P>The "*expire" specification has the following syntax:</P>
+
+<P><CENTER>*EXPIRE MMDDYY</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>The "*" must be in column one, and there must be exactly one space
+separating the "expire" from the "mmddyy".</P>
+
+<P>&nbsp;</P>
+
+<P>The "mmddyy" is a standard 6-digit month-day-year format date on
+which the immediately following news item will cease to appear in the
+news.</P>
+
+<P>If "*effect" and "*expire" are to be defined for the same news
+item, the "*expire" must immediately follow the "*effect".</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 5 | News Item Text | </B></CENTER></P>
+
+<P><CENTER><B>| MAINENANCE OF THE NEWS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>5.3. News Item Text</H2>
+
+<P>&nbsp;</P>
+
+<P>Text in the news element must begin in column two. The following
+example illustrates how the three items mentioned thus far may be
+combined to form a news element:</P>
+
+<P>&nbsp;</P>
+
+<P>*EXPIRE 071081</P>
+
+<P>THIS ITEM WILL PRINT UNTIL JULY 10, 1981.</P>
+
+<P>*EXPIRE 050581</P>
+
+<P>THIS ITEM WILL PRINT UNTIL MAY 5, 1981.</P>
+
+<P>*EFFECT 070481</P>
+
+<P>*EXPIRE 070481</P>
+
+<P>HAPPY INDEPENDENCE DAY, 1981!!!</P>
+
+<P>*EFFECT 122581</P>
+
+<P>*EXPIRE 122581</P>
+
+<P>MERRY CHRISTMAS!</P>
+
+<P>*EXPIRE 999999</P>
+
+<P>FOR ALL PRACTICAL PURPOSES, THIS ITEM WILL ALWAYS</P>
+
+<P>PRINT.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 5 | *SKIP | </B></CENTER></P>
+
+<P><CENTER><B>| MAINENANCE OF THE NEWS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>5.4. *SKIP</H2>
+
+<P>&nbsp;</P>
+
+<P>This item has the following syntax:</P>
+
+<P><CENTER>*SKIP <ANNOUNCEMENT></CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>The effect of this item will be to print the &lt;announcement&gt;
+text and then ask the user if more information is desired. An answer
+of "yes" will allow processing to continue normally. An answer of
+"no" will cause the remainder of that particular news item (up to the
+next *expire or *effect) to be skipped.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 6 | IDLINE Conventions | </B></CENTER></P>
+
+<P><CENTER><B>| DBE INTERNAL CONCEPTS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>6. Overall DBE Internals Concepts</H1>
+
+<H2>6.1. DBE Idline Conventions</H2>
+
+<P>&nbsp;</P>
+
+<P>The DBE idline takes a format according to the following example:
+</P>
+
+<P>DBE 9R1.5 (DBE80) 2200/633 L41 (901018 1609:56) 1990 Oct 18 Thu
+1925:15</P>
+
+<P>===== ======= ======== === ================
+=======================</P>
+
+<P>I I I I I I I</P>
+
+<P>I I I I I I I</P>
+
+<P>I I I I I \---------------------/</P>
+
+<P>I I I I I CURRENT DATE/TIME</P>
+
+<P>I I I I I</P>
+
+<P>I I I I \----------- DBE GEN DATE</P>
+
+<P>I I I I</P>
+
+<P>I I I \------------------------- EXEC LEVEL DBE IS</P>
+
+<P>I I I CONFIGURED FOR</P>
+
+<P>I I I</P>
+
+<P>I I \-------------------------------- HARDWARE DBE IS</P>
+
+<P>I I CONFIGURED FOR</P>
+
+<P>I I</P>
+
+<P>I \--------------------------------------- SYSGEN CLASS</P>
+
+<P>I</P>
+
+<P>\---------------------------------------------- LEVEL AND GEN
+NUMBER.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 6 | Level / Version Conventions | </B>
+</CENTER></P>
+
+<P><CENTER><B>| DBE INTERNAL CONCEPTS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>6.2. DBE Level/version Conventions</H2>
+
+<P>When DBE is sent to someone, it has a pre-determined level and
+release number. This version is level "9" release "1" (9R1). When
+problems are reported and fixed, a stability version of DBE is built.
+Each stability version has its own version number (i.E. 9R1A). The
+stability version may be sent to a user directly, or one or more
+"change description memos" may be sent describing the fix(es) in
+standard pcf/tcf format. In this latter case the user will be advised
+of the specifications to use on the LEVEL SGS when building that
+version of DBE. Each time you generate DBE, a "generation number" is
+incremented and appended to the level/release/version. Therefore, a
+DBE idline of "6R1B.5" Signifies the fifth generation of stability
+update #2 of release #1 of level 6.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 6 | DBE Construction | </B></CENTER></P>
+
+<P><CENTER><B>| DBE INTERNAL CONCEPTS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>6.3. DBE Construction</H2>
+
+<P>&nbsp;</P>
+
+<P>DBE is constructed using a static twin-bank segmented approach. On
+all versions without debugging features, the ibank will be read-only
+(it cannot be read-only on test versions since snoopy will not work
+properly against write-inhibited banks). On all versions with
+debugging features, the debug routines (SNOOPY, CABSAD$ and CRELAD$)
+will be collected together in a dynamic segment.</P>
+
+<P>&nbsp;</P>
+
+<P>Certain location counters are reserved for certain uses. They are
+as follows:</P>
+
+<P>&nbsp;</P>
+
+<P>$(0): All miscellaneous dbank information</P>
+
+<P>&nbsp;</P>
+
+<P>$(1): All Ibank code</P>
+
+<P>&nbsp;</P>
+
+<P>$(3): All literals (literal pool)</P>
+
+<P>&nbsp;</P>
+
+<P>$(5): Dump control table (see section on contingency processing
+and dump control)</P>
+
+<P>&nbsp;</P>
+
+<P>$(8): All universal tables (including macro area and dynamic
+buffer)</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 6 | DBE Modules | </B></CENTER></P>
+
+<P><CENTER><B>| DBE INTERNAL CONCEPTS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>6.4. DBE Modules</H2>
+
+<P>&nbsp;</P>
+
+<P>The various modules comprising the database editor are as follows:
+</P>
+
+<P><CENTER>DBE-000A</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This is the proc element. No object code is generated by this
+module. This masm definition-mode assembly will define tags and procs
+required by the other modules as well as configuration-dependent
+tags.</P>
+
+<P><CENTER>DBE-000B</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This is an element containing all idline-related information such
+as the idline buffer or dump headers.</P>
+
+<P><CENTER>DBE-001</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This is the main element containing the command scanner and all
+global tables. The dynamic buffer area (lc 8) is also defined here.
+</P>
+
+<P><CENTER>DBE-002</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the expression evaluation, i/o, character
+processing, searching and option bit processing subroutines used by
+the other modules.</P>
+
+<P><CENTER>DBE-003</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the DBE error-handler.</P>
+
+<P><CENTER>DBE-004</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the handlers for all @ED-compatable printing
+commands.</P>
+
+<P><CENTER>DBE-005</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the handlers for all schema, subschema and
+database access commands.</P>
+
+<P><CENTER>DBE-006</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the handlers for the procedural commands that
+provide DBE with its programmability.</P>
+
+<P><CENTER>DBE-007</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the handlers for the miscellaneous commands
+that defy catagorization (see the chapter on miscellaneous commands
+in the DBE users guide).</P>
+
+<P><CENTER>DBE-008</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the handlers for the macro maintenance
+commands (LIST, DELETE, etc.) as well as the macro invocation
+routine.</P>
+
+<P><CENTER>DBE-009</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the handler for the REWRITE command. If patch
+features are disabled, this module will be empty.</P>
+
+<P><CENTER>DBE-010</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the DBE interface to the dms/1100 dmscalc
+routine (gs11) and also contains gs11 itself.</P>
+
+<P><CENTER>DBE-010A</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the DBE interface to the dms/1100 randential
+routine (gs13) and also contains gs13 itself.</P>
+
+<P><CENTER>DBE-010B</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the DBE interface to the dms/1100 calcase
+routine (calcase) and also contains calcase itself. Although calcase
+code generation is configurable via a sysgen SGS, this module will
+always exist and will be included in the map.</P>
+
+<P><CENTER>DBE-011</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the handlers for the non-database file i/o
+commands (open, close, get, put, mark and position).</P>
+
+<P><CENTER>DBE-013</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module creates the dynamic segment for the debug code
+(SNOOPY).</P>
+
+<P><CENTER>DBE-014A</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the code to read High Addressed Common Banks.
+</P>
+
+<P><CENTER>DBE-014B</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the code to read Low Addressed Common Banks.
+</P>
+
+<P><CENTER>DBE-015</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the code for all RDMS commands.</P>
+
+<P><CENTER>DBE-999</CENTER></P>
+
+<P>&nbsp;</P>
+
+<P>This module contains the contingency trap routine and online dump
+generator.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 6 | Register Usage | </B></CENTER></P>
+
+<P><CENTER><B>| DBE INTERNAL CONCEPTS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>6.5. DBE Register Usage</H2>
+
+<P>&nbsp;</P>
+
+<P>There are a number of registers that have been reserved for or
+dedicated to a certain set of special purposes. These registers
+should never be used for any purposes other than their dedicated
+tasks. This chapter discusses those registers.</P>
+
+<H3>6.5.1 X1-X3</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers have been dedicated to the EDIT$ package. Since
+edit$ mode is always turned on, these registers are never available
+for use.</P>
+
+<H3>6.5.2 X4-X5</H3>
+
+<P>&nbsp;</P>
+
+<P>All character handling is done through the use of the load- and
+store-vector technique. X4 is dedicated to the word-pointer portion
+of the load vector while x5 is dedicated to the byte-pointer portion.
+</P>
+
+<H3>6.5.3 X6-X7</H3>
+
+<P>&nbsp;</P>
+
+<P>X6 is the word-pointer portion of the store-vector. X7 is the
+byte-portion of the store-vector.</P>
+
+<H3>6.5.4 X8</H3>
+
+<P>&nbsp;</P>
+
+<P>X8 is the exception return address for the various character
+manipulation procs (see the discussion on procs for more
+information).</P>
+
+<H3>6.5.5 X9-X10</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers are available for use.</P>
+
+<H3>6.5.6 X11</H3>
+
+<P>&nbsp;</P>
+
+<P>X11 is reserved for LMJ usage and is the only register so used.
+</P>
+
+<H3>6.5.7 R1-R3</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers are reserved for local usage. Keep in mind that
+the EDIT$ package alters them, so nothing of importance should ever
+be kept in them. They are used mainly for SE, BT and JGD.</P>
+
+<H3>6.5.8 R4-R5</H3>
+
+<P>&nbsp;</P>
+
+<P>These are the two span/break characters. See the section on procs
+for more information.</P>
+
+<H3>6.5.9 R6-R7</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers are unassigned and are available for use.</P>
+
+<H3>6.5.10 R8</H3>
+
+<P>&nbsp;</P>
+
+<P>Mass-storage (sector) address of last i/o operation.</P>
+
+<H3>6.5.11 R9</H3>
+
+<P>&nbsp;</P>
+
+<P>Memory buffer address of last i/o operation.</P>
+
+<H3>6.5.12 R10</H3>
+
+<P>&nbsp;</P>
+
+<P>Number of words [to be] transferred on last i/o operation.</P>
+
+<H3>6.5.13 R11</H3>
+
+<P>&nbsp;</P>
+
+<P>The constant +1 (used for flag-setting).</P>
+
+<H3>6.5.14 R12</H3>
+
+<P>&nbsp;</P>
+
+<P>The constant -0.</P>
+
+<H3>6.5.15 R13</H3>
+
+<P>&nbsp;</P>
+
+<P>The highest Dbank address at program initialization time.</P>
+
+<H3>6.5.16 R14</H3>
+
+<P>&nbsp;</P>
+
+<P>The current highest Dbank address.</P>
+
+<H3>6.5.17 R15</H3>
+
+<P>&nbsp;</P>
+
+<P>Fieldata spaces.</P>
+
+<H3>6.5.18 A0-A5</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers are unassigned and are available for local use.
+They are used by most, if not all, of the RLIB$ functions used by
+'DBE' and as such should be considered volatile.</P>
+
+<H3>6.5.19 A6</H3>
+
+<P>&nbsp;</P>
+
+<P>Last character accessed by the load/store vectors.</P>
+
+<H3>6.5.20 A7-A10</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers are unassigned.</P>
+
+<H3>6.5.21 A11-A12</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers hold the values 057 and 071, respectively. They
+are reserved for use by the 'TW' and 'TNW' instructions for checking
+a character to see if it is a digit.</P>
+
+<H3>6.5.22 A13-A14</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers hold the values 05 and 037, respectively. They are
+reserved for use by the 'TW' and 'TNW' instructions for checking a
+character to see if it is a letter.</P>
+
+<H3>6.5.23 A15</H3>
+
+<P>&nbsp;</P>
+
+<P>The option bits (ala ER OPT$ ) specified at @DBE initialization.
+Note that through the use of the ON and OFF commands these bits may
+be changed dynamically and, in a dump, may not be an accurate
+indication of the initially-specified options.</P>
+
+<H3>6.5.24 A16-A17</H3>
+
+<P>&nbsp;</P>
+
+<P>These registers (referred to as A15+1 and A15+2 ) are used in many
+instances as temporary register save areas. They should be used only
+in extremely local situations as they are considered always available
+for such usage in most DBE components.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 6 | CALC ROUTINES | </B></CENTER></P>
+
+<P><CENTER><B>| DBE INTERNAL CONCEPTS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>6.6. Calc Routines</H2>
+
+<H3>6.6.1 Dmscalc</H3>
+
+<P>&nbsp;</P>
+
+<P>The actual DMS/1100 "GS11" routine is used within module "DBE-010"
+to provide DBE with it's dmscalc interface. All registers are saved
+and restored prior to entering GS11 so future revision of the GS11
+register usage (if any) will not impact DBE.</P>
+
+<H3>6.6.2 Randential</H3>
+
+<P>&nbsp;</P>
+
+<P>The actual DMS/1100 "GS13" routine is used within module
+"DBE-010A" to provide DBE with it's randential interface. All
+registers are saved and restored prior to entering GS13 so future
+revision of the GS13 register usage (if any) will not impact DBE.
+</P>
+
+<H3>6.6.3 Calcase</H3>
+
+<P>&nbsp;</P>
+
+<P>The actual DMS/1100 "CALCASE" routine is used within module
+"DBE-010B" to provide DBE with it's calcase interface. All registers
+are saved and restored prior to entering CALCASE so future revision
+of the CALCASE register usage (if any) will not impact DBE.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 7 | General | </B></CENTER></P>
+
+<P><CENTER><B>| CONTINGENCY HANDLING | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>7. Contingency Handling</H1>
+
+<H2>7.1. Contingency Processing In General</H2>
+
+<P>&nbsp;</P>
+
+<P>Contingency processing in DBE takes the form of trapping the given
+contingency, determining if it is fatal or recoverable and then
+recovering or dumping/aborting.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 7 | Dumps | </B></CENTER></P>
+
+<P><CENTER><B>| CONTINGENCY HANDLING | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>7.2. Dumps</H2>
+
+<P>&nbsp;</P>
+
+<P>All contingencies deemed 'fatal', will cause a dump to be printed
+at the onsite printer. At the time the contingency is taken, the user
+will receive an error message (printed via the er errpr$ request) and
+the message:</P>
+
+<P>&nbsp;</P>
+
+<P>DUMP BEING TAKEN</P>
+
+<P>upon completion of the dump, the message:</P>
+
+<P>&nbsp;</P>
+
+<P>DUMP COMPLETE</P>
+
+<P>will be printed and DBE will be terminated.</P>
+
+<P>&nbsp;</P>
+
+<P>The printed dump will be sent to the onsite printer complex under
+queue PR with the runid specified on the SYSTEM SGS (see the idline
+information section). The name of the DBE dump file will always be
+DBE$$$ (highest cycle catalogued is most current).</P>
+
+<P>&nbsp;</P>
+
+<P>A DBE dump may be generated at any time by entering the</P>
+
+<P>DP% command.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 7 | Dump Contents | </B></CENTER></P>
+
+<P><CENTER><B>| CONTINGENCY HANDLING | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>7.3. Dump Contents</H2>
+
+<P>&nbsp;</P>
+
+<P>DBE will be dumped module by module. The name of the module and
+component currently being dumped will always be at the top of each
+page. Also at the top of page will be the level/gen identification of
+the version of DBE that caused the dump.</P>
+
+<P>&nbsp;</P>
+
+<P>The first dump page will contain a register dump as of the moment
+the contingency occurred. Immediately following the registers will be
+the two-word contingency packet and four-/eight-word jump history (if
+available). Following this (still on the first page) will be the ER
+ERRPR$ interpretation of the error.</P>
+
+<P>&nbsp;</P>
+
+<P>Module dumps will follow in high (DBE-999) to low (DBE-001) order.
+Within each module, components will be dumped in their order of
+defenition within the module. Each component will have it's Dbank and
+Ibank dumped separately. At the end of each module will be a dump of
+that module's literal pool.</P>
+
+<P>&nbsp;</P>
+
+<P>When the table area ($(8) of DBE-001) is dumped, each major table
+will be dumped separately, preceeded by it's name.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 8 | General | </B></CENTER></P>
+
+<P><CENTER><B>| ERROR HANDLING | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>8. Error Handling</H1>
+
+<H2>8.1. In General</H2>
+
+<P>There is an error-call vector declared in 'CONTROL' under the
+entry point of 'CON$005'. This vector consists of a series of 'LMJ
+X11,ERR$001' instructions. The 'ERROR' proc creates an 'EX'
+instruction of the following form:</P>
+
+<P><CENTER>EX <A NAME=""></A>,CON$005+</CENTER></P>
+
+<P><B>Where &lt;a&gt; (in the a-field of the instruction word -
+ignored by an 'EX' instruction) is the remainder of the error-code on
+the 'ERROR' proc call divided by 16. The &lt;b&gt; is the integer
+portion of the division just mentioned. For example, assume the error
+vector is this:</B></P>
+
+<P><B>CON$005* LMJ X11,ERR$001</B></P>
+
+<P><B>LMJ X11,ERR$001</B></P>
+
+<P><B>LMJ X11,ERR$001</B></P>
+
+<P><B>LMJ X11,ERR$001</B></P>
+
+<P><B>and assume that the 'ERROR' call was this:</B></P>
+
+<P><B>&nbsp;</B></P>
+
+<P><B>Error 41</B></P>
+
+<P><B>the 'EX' instruction generated would therefore be:</B></P>
+
+<P><B>&nbsp;</B></P>
+
+<P><B>EX 9,CON$005+2</B></P>
+
+<P><B>when the 'EX' is done, control will be transferred to 'ERR$001'
+which must determine what the error code is. The return address in
+X11 is the address following the 'EX'. Using this, 'ERROR' fetches
+the 'EX' instruction and extracts from it the u-field (CON$005+2) and
+the a-field (9). Subtracting the address of CON$005 from the u-field,
+DBE gets the number 2 which, when multiplied by 16, yields 32. Adding
+into this the a-field (9), the number 41 is gotten - the error
+code.</B></P>
+
+<P><B>&nbsp;</B></P>
+
+<P><B>DBE already had the return address (the instruction after the
+'EX') so this, along with the error code are used to process the
+error.</B></P>
+
+<P><B>&nbsp;</B></P>
+
+<P><B>Using the information produced by 'ERRCODE', the proper message
+is printed. If the error is fatal, recovery will take place with H2
+of X9 being set to zero (0) (like contingencies, errors terminate an
+executing macro). If the error is recoverable, H2 of X9 will be set
+to the return address. Control is then passed off to 'CON$004' where
+the recovery is done.</B></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 8 | Demand Error Recovery | </B>
+</CENTER></P>
+
+<P><CENTER><B>| ERROR HANDLING | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>8.2. Demand Error Recovery</H2>
+
+<P>&nbsp;</P>
+
+<P>If the demand user has the 'X' option on, recovery will proceed as
+per the batch job. Otherwise, it proceeds exactly as specified in the
+previous section.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 8 | Batch Error Recovery | </B></CENTER></P>
+
+<P><CENTER><B>| ERROR HANDLING | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>8.3. Batch Job Error Recovery</H2>
+
+<P>&nbsp;</P>
+
+<P>Batch jobs are normally terminated when a fatal error occurs. If
+the 'A' option is set however, recovery proceeds as per the demand
+user.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 9 | | </B></CENTER></P>
+
+<P><CENTER><B>| DBE EXPRESSION EVALUATOR | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>9. The DBE Expression Evaluator</H1>
+
+<P>&nbsp;</P>
+
+<P>Arithmetic expressions in DBE are evaluated by a recursive
+evaluation routine. This routine uses an evaluation stack whose size
+is fixed at DBE sysgen time by the 'expression' SGS.</P>
+
+<P>&nbsp;</P>
+
+<P>The evaluator is a recursive implimentation of the following
+left-linear grammar:</P>
+
+<P>&lt;S&gt; ==&gt; &lt;E&gt;</P>
+
+<P>&lt;E&gt; ==&gt; &lt;T&gt; &lt;EL&gt;</P>
+
+<P>&lt;EL&gt; ==&gt; + &lt;T&gt;</P>
+
+<P>&lt;EL&gt; ==&gt; - &lt;T&gt;</P>
+
+<P>&lt;EL&gt; ==&gt;</P>
+
+<P>&lt;T&gt; ==&gt; &lt;P&gt; &lt;TL&gt;</P>
+
+<P>&lt;TL&gt; ==&gt; * &lt;T&gt;</P>
+
+<P>&lt;TL&gt; ==&gt; / &lt;T&gt;</P>
+
+<P>&lt;TL&gt; ==&gt; \ &lt;T&gt;</P>
+
+<P>&lt;TL&gt; ==&gt; % &lt;T&gt;</P>
+
+<P>&lt;TL&gt; ==&gt; ** &lt;T&gt;</P>
+
+<P>&lt;TL&gt; ==&gt;</P>
+
+<P>&lt;P&gt; ==&gt; + &lt;P&gt;</P>
+
+<P>&lt;P&gt; ==&gt; - &lt;P&gt;</P>
+
+<P>&lt;P&gt; ==&gt; ++ &lt;P&gt;</P>
+
+<P>&lt;P&gt; ==&gt; -- &lt;P&gt;</P>
+
+<P>&lt;P&gt; ==&gt; ( &lt;E&gt; )</P>
+
+<P>&lt;P&gt; ==&gt; INTEGER</P>
+
+<P>&lt;P&gt; ==&gt; VARIABLE &lt;PM&gt;</P>
+
+<P>&lt;P&gt; ==&gt; BYTE SUBSET</P>
+
+<P>&lt;P&gt; ==&gt; &lt;TB&gt; &lt;TM&gt;</P>
+
+<P>&lt;PM&gt; ==&gt; &lt;SB&gt; &lt;J&gt;</P>
+
+<P>&lt;SB&gt; ==&gt; ( &lt;E&gt; )</P>
+
+<P>&lt;SB&gt; ==&gt;</P>
+
+<P>&lt;TB&gt; ==&gt; TABLE</P>
+
+<P>&lt;TM&gt; ==&gt; [ &lt;E&gt; ] &lt;J&gt;</P>
+
+<P>&lt;TM&gt; ==&gt;</P>
+
+<P>&lt;J&gt; ==&gt; : J-DESIGNATOR</P>
+
+<P>&lt;J&gt; ==&gt;</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Overall Dbank Format | </B>
+</CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H1>10. Internal Table Formats</H1>
+
+<H2>10.1. Overall Dbank Format</H2>
+
+<P>&nbsp;</P>
+
+<P>The following is the overall format of the DBE Dbank. No @MAP must
+ever be done that violates this format.</P>
+
+<P>*-----------------------------------------* I I I GENERAL MODULE
+DBANKS (FIXED SIZE) I I I *-----------------------------------------*
+* * * GENERAL UNIVERSAL TABLES * * (MODULE: DBE-001, COMPONENT:
+TABLES * * * *-----------------------------------------*&lt;--- I I I
+I MACRO AREA (SYSGEN SPECIFIED SIZE) I I I I IN
+*-----------------------------------------* COMPONENT I I 'TABLES' I
+DYNAMIC BUFFER (VARIABLE SIZE, AS I I I NEEDED) I I I I I
+*-----------------------------------------*&lt;---</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Tables | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H2>10.2. Tables (Module: DBE-001, Component: Tables)</H2>
+
+<P>&nbsp;</P>
+
+<P>The various internal DBE tables are diagrammed in the DBE sysgen
+listing.</P>
+
+<P>&nbsp;</P>
+
+<P>A 'tables-only' listing may be generated in which the various
+tables are printed by masm (no source listing will be produced,
+however). To produce this listing, run a full demand-mode sysgen and
+then do the following:</P>
+
+<P>&nbsp;</P>
+
+<P>@MASM,S SO.DBE-001,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-002,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-003,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-004,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-005,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-006,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-007,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-008,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-009,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-010,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-011,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-013,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-014A,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-014B,,,TABLES</P>
+
+<P>@MASM,S SO.DBE-999,,,TABLES</P>
+
+<P>&nbsp;</P>
+
+<P>The next sections illustrate various tables that are not
+diagrammed during the sysgen.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Flags | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>10.2.1 Flags</H3>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>These are the various run-time flag entries that exist in the
+table 'flags'.</P>
+
+<P>SWITCH MEANING IF 0 MEANING IF &gt;0</P>
+
+<P>============ ====================== ======================</P>
+
+<P>ABORT CONTINUE ABORT</P>
+
+<P>&nbsp;</P>
+
+<P>IMODE INPUT FROM TERMINAL INPUT FROM MACRO</P>
+
+<P>&nbsp;</P>
+
+<P>MACMODE CONVERSATIONAL MODE MACRO MODE</P>
+
+<P>&nbsp;</P>
+
+<P>IFMODE NORMAL PROCESSING SIMPLE 'IF'</P>
+
+<P>&nbsp;</P>
+
+<P>TIPCONNECT NORMAL TIP BATCH CONNECTED</P>
+
+<P>&nbsp;</P>
+
+<P>CLRWBUF NORMAL CLEAR WRITE BUFFER</P>
+
+<P>&nbsp;</P>
+
+<P>CONSIO NORMAL NEXT 'TREAD' OR 'WRITE' GOES TO CONSOLE.</P>
+
+<P>&nbsp;</P>
+
+<P>MACFIND NORMAL LAST CALL TO 'SEA$007' OR 'IO$008' RESULTED IN A
+'FIND' CONDITION</P>
+
+<P>&nbsp;</P>
+
+<P>NOMOREREAD$ NORMAL EOF RECIEVED</P>
+
+<P>&nbsp;</P>
+
+<P>ALTFILE HARDCOPY FILE UNUSED HARDCOPY FILE IN USE CURRENTLY</P>
+
+<P>&nbsp;</P>
+
+<P>MACERR NORMAL LAST MACRO EXECUTED HAD TERMINATED IN ERROR. ALL
+VARIABLES IN USE AT THAT TIME (ARRAYS INCLUDED) ARE STILL AVAILABLE
+FOR INSPECTION IN CONVERSATIONAL MODE.</P>
+
+<P>&nbsp;</P>
+
+<P>CMDTYPE NO CURRENT COMMAND ADDRESS OF COMMAND HANDLER CURRENTLY
+RUNNING</P>
+
+<P>&nbsp;</P>
+
+<P>VARSAVED NORMAL VARIABLES FROM PREVIOUS MACRO ARE PRESENTLY SAVED
+</P>
+
+<P>&nbsp;</P>
+
+<P>TIPHDCOPY NORMAL TIP HARDCOPY MODE IN EFFECT CHECK 'H' OPTION BIT
+TO SEE IF HARDCOPY ACTUALLY IN USE</P>
+
+<P>&nbsp;</P>
+
+<P>LATENT NORMAL IO$004 SHOULD NOT READ A NEW COMMAND FROM THE
+TERMINAL OR RETRIEVE THE NEXT STATEMENT FROM THE CURRENTLY RUNNING
+MACRO, BUT SHOULD USE WHAT IS ALREADY IN "TBL$INBF".</P>
+
+<P>&nbsp;</P>
+
+<P>RETRY NORMAL MACRO LOAD SHOULD BE RETRIED FOLLOWING ERROR #37.
+</P>
+
+<P>&nbsp;</P>
+
+<P>ALLOWIOERR NORMAL IO ERRORS WHILE READING A FILE WILL BE ALLOWED
+RATHER THAN THE TRADITIONAL ERROR 75 PROCESSING.</P>
+
+<P>&nbsp;</P>
+
+<P>ALLOWCORR NORMAL WHEN THE NEXT MACRO IS LOADED, ANY SIR$
+CORRECTIONS ENCOUNTERED WITH THE MACRO TEXT ARE TO BE LOADED AS
+SPECIAL NON-EXECUTABLE STATEMENTS SO THAT THEY MAY BE PRINTED. THIS
+IS SET BY "LIST,L".</P>
+
+<P>&nbsp;</P>
+
+<P>FUNCMAC NORMAL MACRO BEING SCHEDULED IS RUNNING AS A FUNCTION.
+</P>
+
+<P>&nbsp;</P>
+
+<P>FUNCRTN NORMAL MACRO PRESENTLY EXECUTING A RETURN IS RETURNING A
+VALUE.</P>
+
+<P>&nbsp;</P>
+
+<P>TPINPROG NORMAL TAPE MOVE IN PROGRESS.</P>
+
+<P>&nbsp;</P>
+
+<P>EXPCMD NORMAL CURRENT COMMAND WAS EXPANDED FROM A SUBSET.</P>
+
+<P>&nbsp;</P>
+
+<P>TAKEDUMP NORMAL TAKE A DUMP NEXT TIME CON$001 IS ENTERED.</P>
+
+<P>&nbsp;</P>
+
+<P>INEVAL NORMAL ONE OF THE TWO EXPRESSION EVALUATION ROUTINES
+(EVA$000/EVA$001) IS IN USE.</P>
+
+<P>&nbsp;</P>
+
+<P>PRINTOUT NORMAL THE NEXT LINE OF OUTPUT PRINTED BY IO$022 IS TO BE
+PRECEEDED AND FOLLOWED BY A LINE OF 36 HYPENS IF TRACE MODE IS ON.
+</P>
+
+<P>&nbsp;</P>
+
+<P>DEBUGMODE NORMAL DEBUG MODE IS ON</P>
+
+<P>&nbsp;</P>
+
+<P>TRACEMODE NORMAL TRACE MODE IS ON</P>
+
+<P>&nbsp;</P>
+
+<P>ALLOCATEOK NORMAL O.K. TO ALLOCATE VARIABLE/ARRAY IN SEA$005</P>
+
+<P>&nbsp;</P>
+
+<P>MACRESTART NORMAL MACRO BEING RESTARTED VIA "GO"</P>
+
+<P>&nbsp;</P>
+
+<P>STEPMODE NORMAL STEPPING THROUGH MACRO</P>
+
+<P>&nbsp;</P>
+
+<P>ASCIIFLAG NORMAL ASCII WRITE IN PROGRESS</P>
+
+<P>&nbsp;</P>
+
+<P>IOFLAG NORMAL IST I/O IN BUFFER (FROM DOUBLE BUFFER READ ROUTINE
+IO$100)</P>
+
+<P>&nbsp;</P>
+
+<P>SCANFLAG NORMAL SCAN FUNCTION IN PROGRESS</P>
+
+<P>&nbsp;</P>
+
+<P>LOGFLAG NORMAL LOG IN PROGRESS</P>
+
+<P>&nbsp;</P>
+
+<P>NOTDMS NORMAL NON/DMS TIP I/O IN PROGRESS</P>
+
+<P>&nbsp;</P>
+
+<P>VARFOUND NORMAL VARIABLE ALREADY EXISTS</P>
+
+<P>&nbsp;</P>
+
+<P>RECOVERR NORMAL TREAT FATAL ERRORS AS RECOVERABLE</P>
+
+<P>&nbsp;</P>
+
+<P>WAYOUT NORMAL CURRENTLY EXITING DBE</P>
+
+<P>&nbsp;</P>
+
+<P>WASLATENT NORMAL COPY OF LATENT FLAG BEFORE RESETTING</P>
+
+<P>&nbsp;</P>
+
+<P>RSCANFLAG NORMAL RSCAN FUNCTION IN PROGRESS</P>
+
+<P>&nbsp;</P>
+
+<P>INSORT NORMAL SORT ROUTINE COMMAND BEING EXECUTED</P>
+
+<P>&nbsp;</P>
+
+<P>EABT NORMAL TAKE 'ER EABT$' INSTEAD OF 'ER EXIT$' UPON PROGRAM
+TERMINATION</P>
+
+<P>&nbsp;</P>
+
+<P>RLTFLAG NORMAL DBE IS RUNNING AT REALTIME PRIORITY</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | User File Area - | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | File Control Blocks | </B>
+</CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>10.2.2 User File Area</H3>
+
+<H4>10.2.2.1 File Control Blocks</H4>
+
+<P>There will be one of these allocated for each configured user file
+(see the file limits SGS). The exact format will depend on the type
+of file.</P>
+
+<H5>10.2.2.1.1 OPEN SDFO</H5>
+
+<P>&nbsp;</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+0 I FILEID (@@@@@@ IF UNUSED) I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+1 I 0 I TYPE I I CHRSET I I I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+2 I I MAC I I I I I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+3-8 I UNUSED I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>TYPE: 0=DATA FILE, 1=PROGRAM FILE CHRSET: 0=FIELDATA, 1=ASCII MAC
+: 1=ELEMENT SUBTYPE MAC</P>
+
+<H5>10.2.2.1.2 OPEN SDFI</H5>
+
+<P>&nbsp;</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+0 I FILEID (@@@@@@ IF UNUSED) I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+1 I 1 I TYPE I PRINT I CHRSET I I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+2-8 I UNUSED I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>TYPE: 0=DATA FILE, 1=PROGRAM FILE</P>
+
+<P>PRINT: 0=DATA FILE/SDF ELEMENT, 1=SYMBIONT FILE CHRSET:
+0=FIELDATA, 1=ASCII remain 12</P>
+
+<H5>10.2.2.1.3 OPEN DISC</H5>
+
+<P>&nbsp;</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+0 I FILEID (@@@@@@ IF UNUSED) I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+1 I 2 I 0 I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+2 I FDT I I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+3-5 I FILE QUALIFIER I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+6-8 I FILE NAME I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>FDT: 1=ALLOW PUT TO FILE WITHOUT UPDATE PRIVILEGE</P>
+
+<P>&nbsp;</P>
+
+<P>FILE QUALIFIER AND FILE NAME ARE ONLY USED IF LOGGING IS ENABLED
+remain 12</P>
+
+<H5>10.2.2.1.4 OPEN DMS / DISC,T</H5>
+
+<P>&nbsp;</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+0 I FILEID (@@@@@@ IF UNUSED) I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+1 I 3 I 0 I TIP/DMS FILE NUMBER I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+2-8 I UNUSED I</P>
+
+<P>I------------------------------------------------------I remain 12
+</P>
+
+<H5>10.2.2.1.5 OPEN TIP</H5>
+
+<P>&nbsp;</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+0 I FILEID (@@@@@@ IF UNUSED) I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+1 I 3 I 0 I TIP/DMS FILE NUMBER I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+2 I I TIP RECORD SIZE I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P>+3-8 I UNUSED I</P>
+
+<P>I------------------------------------------------------I</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | User File Area - | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | File Information Block
+Format | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>10.2.2.2 File Information Block Format</H4>
+
+<P>&nbsp;</P>
+
+<P>One of these will exist for each open SDFI/SDFO file.</P>
+
+<P>I---------------------------------------------------------I</P>
+
+<P>+0 I 2 WORD ELEMENT NAME OF USER FILE OR SPACES IF DATA FILE I
+</P>
+
+<P>I---------------------------------------------------------I</P>
+
+<P>+2 I 2 WORD VERSION NAME OF USER FILE OR SPACES IF DATA FILE I
+</P>
+
+<P>I---------------------------------------------------------I</P>
+
+<P>+4 I STARTING SECTOR ADDRESS OF USER FILE AT TIME OF 'OPEN' I</P>
+
+<P>I---------------------------------------------------------I</P>
+
+<P>+5 I 11 WORD FILE CONTROL TABLE (STANDARD SDFI$/SDFO$ FCT) I</P>
+
+<P>I---------------------------------------------------------I</P>
+
+<P>I &lt;N&gt; WORD I/O BUFFER WHERE &lt;N&gt; IS THE NUMBER OF
+ALLOWABLEI</P>
+
+<P>I SECTORS FROM THE 'FILE' SGS TIMES 28 I</P>
+
+<P>I---------------------------------------------------------I</P>
+
+<P>I SECOND &lt;N&gt; WORD I/O BUFFER I</P>
+
+<P>I---------------------------------------------------------I</P>
+
+<P>. One such entry</P>
+
+<P>. Per allowable user</P>
+
+<P>. File</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Macro Area - | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | Format | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>10.2.3 Macro Area</H3>
+
+<H4>10.2.3.1 Macro Area Format</H4>
+
+<P>&nbsp;</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I MACRO HEADER BLOCK [MHB] 12 WORDS I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I STATEMENT HEADER BLOCK [SHB] 4 WORDS I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I STATEMENT TEXT I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I SHB I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I STATEMENT TEXT I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I MHB OF NEXT MACRO I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I SHB I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I TEXT I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Macro Area - | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | Macro Header Block Format |
+</B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>10.2.3.1.1 Macro Header Block [MHB] Format</H5>
+
+<P>&nbsp;</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+0 I MACRO NAME (2 WDS) I MACNAME</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+2 I MACRO SIZE (WORDS) I (1) I (2) I I MACSIZE</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+3 I MHB ADR OF CALLER I SHB ADR OF CALLER I CALLMHB,CALLSHB</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+4 I 'ERROR' LABEL CURRENTLY IN EFFECT I MACERROR</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+5 I PRIOR # WDS DELETEDI DBANK SIZE @ START I MACDELTA,MACDBANK
+</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+6 I MACRO OPTION BITS I MACOPTS</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+7 I RCVNG FLD NAME I RCVNG FLD PFLAG I MACVNAME, MACVINFO</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+10 I RECEIVING FIELD DESCRIPTION I MACVDESC</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+11 I RECEIVING FIELD MASK I MACVMASK</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+12 I # VARS DEFINED I VAR DESC. TBL PTR I MACVARCNT, MACVDESC
+</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>+13 I VAR NAME TBL. ADR I UNUSED I MACVNTADR</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>(1) MACFILE 1=macro came from file</P>
+
+<P>0=macro entered from crt</P>
+
+<P>&nbsp;</P>
+
+<P>(2) MACUSED 1=macro in use</P>
+
+<P>0=otherwise</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Macro Area - | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | Statement Header Block
+Format | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>10.2.3.1.2 Statement Header Block [SHB] Format</H5>
+
+<P>&nbsp;</P>
+
+<P>'IF' statement</P>
+
+<P>&nbsp;</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I STATEMENT LABEL (IF ANY) I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I TEXT SIZE (WORDS) I FALSELINK * I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I I I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I STATEMENT NUMBER I I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>* FALSELINK is the displacement to be added to the current SHB
+address thus pointing to the next statement to be executed should the
+IF be 'FALSE'.</P>
+
+<P>&nbsp;</P>
+
+<P>'ELSE'/'ELSE IF' statement</P>
+
+<P>&nbsp;</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I TEXT SIZE (WORDS) I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I I EM * I EI **I ENDLINK *** I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT NUMBER I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>* 'EM' set to 1 indicates that this statement is being entered as
+an ELSE IF, not as an ELSE.</P>
+
+<P>&nbsp;</P>
+
+<P>** 'EI' set to 1 indicates that this statement is an ELSE IF. It
+may be entered by 'falling through' or as an ELSE IF, depending on
+the setting of 'EM'.</P>
+
+<P>&nbsp;</P>
+
+<P>*** ENDLINK is the location of the 'END IF'.</P>
+
+<P>remain 14</P>
+
+<P>'REPEAT'/'WHILE' statement</P>
+
+<P>&nbsp;</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT LABEL I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I TEXT SIZE (WORDS) I LINK TO UNTIL/END I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I CNTRL VAR ADDR * I I I CV I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT NUMBER I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>* 'CV' is the 'REPEAT' control variable.</P>
+
+<P>remain 13</P>
+
+<P>ERROR, GOTO, GOSUB, WRITE statements</P>
+
+<P>&nbsp;</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT LABEL I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I TEXT SIZE (WORDS) I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I I I I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT NUMBER I TARGET SHB ADDRESS I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>remain 13</P>
+
+<P>GET/PUT statements</P>
+
+<P>&nbsp;</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT LABEL I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I TEXT SIZE (WORDS) I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I I I I ERR LABEL SHB ADR I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT NUMBER I EOF LABEL SHB ADR I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>remain 15</P>
+
+<P>LIST,L correction images</P>
+
+<P>&nbsp;</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT LABEL (ALWAYS 050505050505) I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I SDF CONTROL WORD (05200000000NN) I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I CORRECTION IMAGE WORD 1 (FIELDATA) I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I CORRECTION IMAGE WORD 2 (FIELDATA) I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>NOTE: The above will never have any text associated with it.</P>
+
+<P>remain 13</P>
+
+<P>All other statements</P>
+
+<P>&nbsp;</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT LABEL I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I TEXT SIZE (WORDS) I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I I I I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P>I STATEMENT NUMBER I I</P>
+
+<P>I-----------------------------------------I</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Macro Area - | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | User Variable Maintenance |
+</B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H5>10.2.3.1.3 User Variable Maintanence</H5>
+
+<P>&nbsp;</P>
+
+<P>The following diagram illustrates how the macro header block links
+to the variable name table and the variable description table. Both
+are sized at twice the number of allocatable user variables (see the
+"variable limit" SGS).</P>
+
+<P>:---------: :-------------: VNT ENTRY: I MACRO I------&gt;I
+VARIABLE I :-----------------------: I HEADER I I NAME I I VAR NAME
+(CHARS 1-6) I I BLOCK I--: I TABLE I I-----------------------I
+:---------: : :-------------: I VAR NAME (CHARS 7-12) I</P>
+
+<P>:---&gt;I VARIABLE I :-----------------------:</P>
+
+<P>I DESCRIPTION I</P>
+
+<P>I TABLE I VDT ENTRY (SCALAR)</P>
+
+<P>:-------------:</P>
+
+<P>:-----------------------:</P>
+
+<P>I 0 I $+1 I</P>
+
+<P>I-----------:-----------I</P>
+
+<P>I VALUE I</P>
+
+<P>:-----------------------:</P>
+
+<P>&nbsp;</P>
+
+<P>VDT ENTRY (1D ARRAY)</P>
+
+<P>&nbsp;</P>
+
+<P>:-----------------------:</P>
+
+<P>I $+1 ** I ADDRESS * I</P>
+
+<P>I-----------:-----------I</P>
+
+<P>I 0 I # WDS I</P>
+
+<P>:-----------------------:</P>
+
+<P>VDT ENTRY (2D ARRAY)</P>
+
+<P>&nbsp;</P>
+
+<P>:-----------------------:</P>
+
+<P>I $+1 ** I ADDRESS * I</P>
+
+<P>I-----------:-----------I</P>
+
+<P>I # ROWS I # COLS I</P>
+
+<P>:-----------------------:</P>
+
+<P>&nbsp;</P>
+
+<P>* Denotes core address (in dynamic buffer) of first word of array
+</P>
+
+<P>&nbsp;</P>
+
+<P>** Note that this normally points to the second word of the VDT.
+</P>
+
+<P>In the case of a "global" variable (one "stolen" from another</P>
+
+<P>macro) the first word of the VDT of the variables occurrence</P>
+
+<P>in the "called" macro will be replaced with the first</P>
+
+<P>VDT word of the variables occurrence in the calling macro.</P>
+
+<P>In that case, the "$+1" entry would actually be pointing to</P>
+
+<P>the second VDT word in the "calling" macro.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Dynamic Buffer | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | | </B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H3>10.2.4 Dynamic Buffer</H3>
+
+<P>&nbsp;</P>
+
+<P>If DBE is operating in conversational or macro mode, the format of
+the dynamic buffer is as follows:</P>
+
+<P>&nbsp;</P>
+
+<P>I----------------------------------------I &lt;===I</P>
+
+<P>I SCHEMA AREA * I I</P>
+
+<P>I----------------------------------------I REALLOCATED EACH</P>
+
+<P>I PAGE ZERO AREA ** I TIME A 'SCHEMA'</P>
+
+<P>I----------------------------------------I COMMAND IS DONE</P>
+
+<P>I PAGE BUFFER AREA *** I I</P>
+
+<P>I I &lt;===I</P>
+
+<P>I----------------------------------------I ALLOCATED BY EACH</P>
+
+<P>I SUBSCHEMA AREA **** I 'SUBSCHEMA' COMMAND</P>
+
+<P>I----------------------------------------I &lt;===I</P>
+
+<P>I PAGE BUFFER AREA (MACROS) I</P>
+
+<P>I----------------------------------------I</P>
+
+<P>I----------------------------------------I ALLOCATED DURING</P>
+
+<P>I ARRAY VARIABLE AREA ***** I MACRO EXECUTION</P>
+
+<P>I----------------------------------------I AND RELEASED WHEN</P>
+
+<P>I AUXILIARY PAGE BUFFER AREA ****** I MACRO STOPS</P>
+
+<P>I----------------------------------------I &lt;===I</P>
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<P>* The schema area may be located through 'CAD$FDT' in the 'table
+information' table.</P>
+
+<P>&nbsp;</P>
+
+<P>** The page zero area may be located through 'CAD$P0'in the 'table
+information' table.</P>
+
+<P>&nbsp;</P>
+
+<P>*** The page buffer area may be located through 'CAD$PAGE'in the
+'table information' table.</P>
+
+<P>&nbsp;</P>
+
+<P>**** The subschema area may be located through 'CAD$SFD' in the
+'table information' table.</P>
+
+<P>&nbsp;</P>
+
+<P>***** The array area is deallocated upon macro mode termination,
+thus losing the contents of all arrays.</P>
+
+<P>&nbsp;</P>
+
+<P>****** The auxiliary page buffer area is allocated when the
+'SCANt' command activates and is deallocated when it completes.
+remain 14</P>
+
+<P>If DBE is running in definition mode, the format of the dynamic
+buffer is as follows:</P>
+
+<P>&nbsp;</P>
+
+<P>I--------------------------------------------------I</P>
+
+<P>I DEMAND USER TABLE * I</P>
+
+<P>I--------------------------------------------------I</P>
+
+<P>I BATCH USER TABLE * I</P>
+
+<P>I--------------------------------------------------I</P>
+
+<P>I SITE TABLE * I</P>
+
+<P>I--------------------------------------------------I</P>
+
+<P>&nbsp;</P>
+
+<P>* Size is 1792*&lt;integer&gt; words where &lt;integer&gt; is the
+</P>
+
+<P>parameter of the 'SECURITY' SGS.</P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<P><CENTER><B>| Chapter 10 | Definition Mode | </B></CENTER></P>
+
+<P><CENTER><B>| INTERNAL TABLE FORMATS | Demand/Batch/Site Tables |
+</B></CENTER></P>
+
+<P><CENTER><B>:-------------------------------:--------------------------------:
+</B></CENTER></P>
+
+<H4>10.2.4.1 Definition Mode Demand/Batch/Site Tables</H4>
+
+<P>&nbsp;</P>
+
+<P>I----------------------------------------------I</P>
+
+<P>+0 I MAX # OF ENTRIES I CURRENT # OF ENTRIES I</P>
+
+<P>I----------------------------------------------I</P>
+
+<P>+1 I ENTRY ID (ACCT, USERID, SITE) CHARS 1-6 I</P>
+
+<P>I----------------------------------------------I</P>
+
+<P>+2 I ENTRY ID CHARS 7-12 (BLANK FOR SITES) I</P>
+
+<P>I----------------------------------------------I</P>
+
+<P>+3 I PERMISSION BITS I</P>
+
+<P>I----------------------------------------------I</P>
+
+<P>.</P>
+
+<P>.</P>
+
+<P>.</P>
+</BODY>
+</HTML>

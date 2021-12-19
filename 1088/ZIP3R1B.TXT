@@ -1,0 +1,831 @@
+@RUN ZIPUPD,acct,proj
+@ .    This is the complete TCF for ZIP 3R1B.  Changes to 4 elements
+@ .    are required.  Apply to level 3R1, UPLI release 6/93.  Sorry,
+@ .    printed docs have not been updated.  Changes include:
+@ .
+@ .    - The TOTAL command totals columns from selected fields for
+@ .      all or part of a file.
+@ .    - A banner-id can be supplied with SITE or LNSITE.
+@ .    - The WIDTH,P command allows various widths for printed output.
+@ .    - A user configurable parameter (ZLFSEC) has been added to
+@ .      permit SYS$*ZIPLIB$ to exist in a security environment.
+@ .    - Misc changes for ASCII log, updated to SB5R3.
+@ .      (Thanks to Stephen M. Chisholm, NYNEX)
+@ .    - Corrections for proper processing of segmented PCIOS files
+@ .      and other minor fixes.
+@ .
+@ .                    Ward Condit, City of Scottsdale (602) 994-7886
+@ .                                 warc@ci.scottsdale.az.us
+@ .
+@ASG,AX ZIP*RELEASE(+0).    . Unedited 3R1 from UPLI
+@USE ZIPIN,ZIP*RELEASE(+0).
+@ASG,CP ZIP*RELEASE(+1),///1000  . This will contain 3R1B
+@USE ZIPOUT,ZIP*RELEASE(+1).
+@COPY ZIPIN.,ZIPOUT.
+@ED ZIPOUT.FULLBUILD,.FULLBUILD
+26
+R -21,21
+@ELT,QW ZIPOUT.HELPTEXT,.HELPTEXT
+-64,65
+ S 'given range, that meet the current selection criteria.  It is also used '
+ S 'to compute column totals for fields previously requested with the TOTAL '
+ S 'command.  This command can only be used when a SELECT and/or a TOTAL is '
+ S 'active. '
+-68,69
+ S ''
+ S 'After the specified range is processed, the number of counted records is'
+ S 'displayed.  If a SELECT is active, this may be less than the total numbe';
+   'r   '
+ S 'of records in the range.  Additionally, if fields have been specified wi';
+   'th  '
+ S 'the TOTAL command, the field(s) and column total(s) are displayed.  If b';
+   'oth '
+ S 'a SELECT and a TOTAL are active, only selected records are totaled. '
+$(3)  +  0,H$RANGE
+  P1  'Define  '
+-72,72
+ S 'in place of field specifications with the REFORMAT, SELECT, KEY and TOTA';
+   'L   '
+-93,93
+ S 'definitions in REFORMAT, SELECT, KEY and TOTAL commands.  For example:  '
+-524,524
+ S '  LNS(ITE)[,options] [range] [queue-name[/banner-id]]   '
+-528,528
+ S 'for use with REFORMAT, SELECT, KEY and TOTAL commands.  '
+-949,949
+ S '  SI(TE)[,options] [range] [queue-name[/banner-id]] '
+-952,958
+ S 'by ZIP for symbiont queueing (ZPF$hhmmss).  Carriage control and print  '
+ S 'control records which occur in print files are removed.  A user-supplied'
+ S 'page heading is inserted in the output.  If [queue-name] is not given, i';
+   't   '
+ S 'defaults to ''PR''.  If [queue-name] is given, it can optionally be foll';
+   'owed  '
+ S 'with a forward slash and a banner-id.  The banner-id will be placed in  '
+ S 'field 5 of the @SYM image submitted to CSF$ to queue the file.  '
+ S '    '
+ S 'Records which exceed the printer width are broken down into consecutive '
+ S 'output lines so that truncation will not occur.  The default printer wid';
+   'th  '
+ S 'is 132 characters, but can be set within the range of 80-200 characters '
+ S 'with the <WIDTH,P> command. '
+-1020
+  P1  'TOTal   '
+ S 'This command is used to request one or more field totals.  Totals are   '
+ S 'computed when the COUNT command is given.   '
+ S ''
+ S '  TOT(AL)[+] field1 ... [fieldn]'
+ S '  TOT(AL)?  '
+ S ''
+ S 'Each field is specified in standard field syntax (or a symbol can be use';
+   'd   '
+ S 'in place of a field).  The first field is required, others are optional.'
+ S ''
+ S 'To append additional fields to an existing field sequence, use the <TOTA';
+   'L+> '
+ S 'command.  The <TOTAL?> command is used to display the current total fiel';
+   'ds, '
+ S 'and the most recent accumulated totals. '
+ S ''
+ S 'Totals are always computed against the unformatted record, even if a RE-'
+ S 'FORMAT is active.  The numeric value of a computational field is its bin';
+   'ary '
+ S 'value.  The numeric value of an alphanumeric field is determined by the '
+ S 'first continuous sequence of digits (0-9) in the field.  Embedded commas'
+ S 'and periods are ignored.  If a field contains no digits, its value is ze';
+   'ro. '
+ S 'Negative numbers in alphanumeric fields are currently unsupported.  '
+$(3)  +  0,H$FIELD
+$(3)  +  0,H$SYMBOL
+-1039,1041
+ S 'as part of an active REFORMAT, SELECT, KEY or TOTAL parameter list, the '
+ S 'affected command(s) will be cancelled.  '
+-1087,1087
+ S 'This command is used to set the terminal or printer width.  '
+-1089,1089
+ S '  WI(DTH)[,P]  width'
+-1091,1092
+ S 'If the ''P'' option is not given, the terminal width is set.  <width> mu';
+   'st'
+ S 'be either 80 or 132.  The default terminal width for interactive use is '
+ S '80.  The default for batch or breakpointed use is 132.  '
+ S ''
+ S 'If the ''P'' option is given, the printer width is set.  This is used to';
+   '  '
+ S 'determine the maximum line length for files which are sent to a printer '
+ S 'via the <LNS> and <SITE> commands.  <width> must be a positive integer  '
+ S 'in the range 80-200.  The default is 132.   '
+-1108
+ S 'Counting & Totaling . COunt  TOTal  '
+-1113,1113
+ S 'Misc ................ Help  SCale  SLv  Stop  REMark'
+-1116,1117
+ S 'ZIP allows command continuation with the SELECT, REFORMAT, KEY and TOTAL'
+ S 'commands.  When a semicolon (;) is encountered anywhere except within a '
+-1128,1130
+ S '<SEL+>, <REF+>, <KEY+> and <TOT+> will do the same thing - but it is'
+ S 'required when a complex parenthetical SELECT expression is needed, as   '
+ S 'parenthesis cannot be broken across a <SEL+> sequence.  For example:'
+-1138,1138
+ S 'The field specifications used by REFORMAT, SELECT, KEY, TOTAL and DEFINE'
+-1313,1313
+ S 'SELECT, KEY and TOTAL commands.  Symbols are 1-12 alphanumeric character';
+   's,  '
+@ELT,W ZIPOUT.LOGSUB,.LOGSUB
+-5
+          $IF       $PAR(0)**(1*/('Z'-'L')++1*/('Z'-'Y'))  . X-REF REQUESTED?
+          $CROSSREF,1 1               .   YES, SINGLE SPACE, NO REGISTERS
+          $ENDF
+-343,343
+          DL        A0,015,X5         . TOTAL SUPS USED BY TRANSACTION
+-409
+.
+.         TYPE 110 - TIP SESSION CONTROL
+.
+L11000    .
+          L,U       A0,TSCI           . ASSUME INIT SUBTYPE
+          TNE,U     A5,2              . IS IT CONTINUATION?
+          L,U       A0,TSCC           . YES, LOAD ADDRESS
+          TNE,U     A5,3              . OR IS IT TERMINATION?
+          L,U       A0,TSCT           . YES, LOAD ADDRESS
+          A$EMSG                      . EDIT RECORD TYPE
+          A$EDECF   2,027,X5,S6       . ADD IN APPLICATION GROUP NO
+          A$EMSGR                     . ADD IN MORE TEXT.
+          A$EOCTF   7,023,X5,H1       . EDIT SESSION ID.
+          A$ECOPY   7,(', PID: 'L)    . ADD MORE VERBAGE.
+          A$EDECV   023,X5,H2         . EDIT PID NUMBER (DECIMAL).
+          A$ECOPY   7,(', UID: 'L)    . ADD MORE VERBAGE.
+          A$EFD2    024,X5            . STUFF IN USER ID (CHARS 1-8)
+          A$EFD1    024+2,X5          . STUFF IN USER ID (CHARS 9-12)
+          J         LS700             . FINISHED WITH TYPE-110
+-506
+.         TYPE  407 REPLACES TYPE 404 AS OF SB 5R3  (EXEC 44R3).
+-511
+L40700
+-519,519
+          AND       A3,(0264713776)   . A C D F I J K N P Q R S T U V W X Y
+-529
+          OPTEDT    A4,'I'            .
+-553,553
+          J         L40380            .  YES, EDIT IN HTW
+-578,578
+          J         L40335            .  NO, CHECK FOR TYPE 407
+-581
+L40335
+          TE,U      A0,407            . IS IT A 407 ENTRY?
+          J         L40390            .  NO, FINISHED
+          A$ECHAR   ','               .  YES, INCLUDE FIRST PACKID
+          A$EFD2    0102,X5           . EDIT IT IN
+          J         L40390            . FINISHED WITH MASS STORAGE EDIT
+-603
+          LA,H2     A0,051,X5         . UNIT COUNT
+          TLE,U     A0,2              . MORE THAN ONE UNIT?
+          J         L40390            .  NO, SKIP
+          LA        A0,057,X5         . GET 2ND UNIT NAME (IF ANY)
+          TE        A0,('    ')       .
+          TNE       A0,('@@@@')       .
+          J         L40390            .
+          JZ        A0,L40390         . SKIP IF SPACES, FD/ASCII ZEROES
+          A$ECHAR   '/'               . UNIT SEPARATOR
+          A$EFD2    057,X5            . EDIT 2ND UNIT NAME
+-615
+          J         L40390            . FINISHED UP
+L40380    .
+          L,H1      A0,4,X5           . GET LOG TYPE AGAIN.
+          TNE,U     A0,403            . FIXED M/S?
+          J         L40385            . YES, CONTINUE
+          TNE,U     A0,404            . REMOVABLE (PRE-SB5R3) M/S?
+          J         L40385            . YES, CONTINUE
+          TE,U      A0,407            . REMOVABLE (SB5R3+UP) M/S?
+          J         L40390            . NO, FINISH UP
+L40385    .
+          LA        A0,027,X5         . STATE FLAGS
+          TOP       A0,(1*/19)        . CHANGED THIS ASG?
+          J         L40390            .  NO, DON'T INCLUDE HTW
+          A$ECOPY   7,('   HTW= ')    .
+          L         A0,047,X5         . GET HIGHEST WORD WRITTEN
+          DSL       A0,36             . PREPARE FOR DIVIDE
+          DI,U      A0,1792           . CONVERT TO TRACKS
+          TZ        A1                . NEED TO ROUND UP?
+          A,U       A0,1              . YES
+          TZ        A0                . ANYTHING WRITTEN?
+          AN,U      A0,1              . YES, ADJUST FOR ZERO RELATIVE
+          A$EDECV                     . PUT INTO STRING
+-911
+          +         407,L40700        . TYPE 407 - REMOV MASS STORAGE (SB5R3+)
+-915
+          +         110,L11000        . TYPE 110 - TIP SESSION CONTROL
+-932,932
+.
+-943
+TSCI      ' TSC/I A: &, SES ID: &'    . TIP SESSION CONTROL INITIALIZATION
+TSCC      ' TSC/C A: &, SES ID: &'    . TIP SESSION CONTROL CONTINUATION
+TSCT      ' TSC/T A: &, SES ID: &'    . TIP SESSION CONTROL TERMINATION
+@ELT,W ZIPOUT.ZIP,.ZIP
+-5
+          $IF       $PAR(0)**(1*/('Z'-'L')++1*/('Z'-'Y'))  . X-REF REQUESTED?
+          $CROSSREF,1 1               .   YES, SINGLE SPACE, NO REGISTERS
+          $ENDF
+-25
+MAXTOT    EQU       25                . MAX TOTAL FIELDS
+-32,32
+ZLFSEC    EQU       0                 . 0=NO SECURITY, 1=CURR LVL, 2=MIN LVL
+                                      . (SEE RELEASE DOC FOR PROPER SETTING)
+-99
+.         TOTAL RECORD DEFINITIONS
+.
+TRACCM    EQUF      0                 . ACCUMULATOR FOR THIS FIELD
+TRFLDW    EQU       1                 . START OF FIELD DESCRIPTOR
+TRSIZE    EQU       TRFLDW+FLSIZE     . SIZE OF TOTAL RECORD
+.
+-306
+          TNE,U     A1,$CFS('X')      . IS INPUT A PCIOS FILE?
+          SP1       PCSINF            .  YES, SET FLAG
+-861
+          LA        A0,TOTCNT         . COUNT OF 'TOTAL' FIELDS
+          JGD       A0,$+2            . DECR FOR LOOP AND SKIP
+          J         CN110             . SKIP AHEAD IF NO TOTALS REQUESTED
+          LA        A1,(TRSIZE,TOTTAB) . POINTER TO TOTAL PARAM TABLE
+CN100
+          SZ        TRACCM,*A1        . ZERO ACCUMULATOR FOR EACH FIELD
+          JGD       A0,CN100          . BACK UNTIL ALL FIELDS ZEROED
+          J         CN120             . DON'T DO SELECT-ACTIVE CHECK
+CN110
+-864,864
+CN120
+          SZ        MATCNT            . ZERO MATCHING-RECORD COUNT
+-917
+          SA        A0,SITDEV         . INITIALIZE WITH DEFAULT
+          SZ        SITBAN            . SET BANNER-ID = NULL (OMIT)
+-922,922
+          SA        A4,SITDEV         . SAVE USER-SPEC SITEID
+          JUMPNB,,PC900  '/',PC133  'EN',PC135  . NEXT MUST BE SEP OR EOL
+PC133
+          GNCHNB,,PC900  'AL',PC134   . NEXT MUST BE ALPHA (BANNER)
+PC134
+          DS        A4,SITBAN         . SAVE BANNER-ID
+-925,925
+-1050
+          TZ        TOTCNT            . ANY TOTAL FIELDS DEFINED?
+          LMJ       X11,TOTINC        . YES, INCR ACCUMULATORS FOR THIS REC
+-1082,1082
+          E$MSG     CNTTOT            . ' RECORDS WERE COUNTED.'
+-1090,1090
+          TZ        MATCNT            . ANY RECORDS COUNTED,
+          TNZ       TOTCNT            . AND TOTAL FIELD(S) DEFINED?
+          J         PR150             .  NO, BACK FOR NEXT COMMAND
+          P$RINT    ERRPRT(86)        . 'FIELD TOTALS FOLLOW:'
+          P$RINT    (0100,$)          . SKIP A LINE FOR READABILITY
+          J         TC610             . DISPLAY TOTAL FIELDS, ACCUMULATORS
+-1118,1118
+          E$DIT     EPKT              .  YES, SET UP TO EDIT @SYM CMD
+          E$MSG     CSFSYM            . '@SYM ZPF$'
+          E$FD1     SITUSE+4          . 2ND PART OF FILENAME (TIME OF DAY)
+          E$MSGR                      . ',,'
+          E$FD1     SITDEV            . TARGET DEVICE NAME
+          TNZ       SITBAN            . WAS BANNER SPECIFIED?
+          J         PC895             .  NO, SKIP
+          E$MSGR                      .  YES, INSERT ',,'
+          E$FD2     SITBAN            .   AND USER-SPECIFIED BANNER-ID
+PC895
+          E$COPY    3,($CFS(' .    ')) . CSF$ TERMINATOR
+          LA,U      A0,LINE           . ADDRESS OF SYM CONTROL STATEMENT
+-1130,1130
+          P$RINT    ERRPRT(52)        . 'COUNT ALLOWED ONLY IF SEL,TOT ACTIVE'
+-1792,1792
+          J         TR100             .
+-1795,1795
+TR100
+-1798,1798
+          JUMPNB    'EN',TR200        . SKIP IF END-OF-IMAGE
+-1801,1802
+          JUMPNB,,TR150  'AL',TR120   . TEST FOR KEYWORD
+TR120
+-1807,1809
+TR150
+          GNCHNB,,PR900  'EN',TR200   . ERROR IF GARBAGE CHAR(S) FOLLOW
+TR200
+-2723
+.         TOTAL COMMAND PROCESSING
+.
+TOTCMD
+          JUMP,,TC900  '+',TC070  ' ',TC080  '?',TC600  'EN',TC090 .
+TC070
+          GNCH                        . EAT '+' IF FOUND
+          SP1       PLSFLG            . SET 'TOT+' FLAG
+TC080
+          LMJ       X10,CONTLN        . CHECK FOR CONTINUATION LINES
+          J         TC920             . ERROR RETURNED FROM CONTLN - ABORT
+TC090
+          LA        A0,TOTCNT         . CURRENT COUNT OF TOTAL FIELDS
+          MSI,U     A0,TRSIZE         .  TIMES RECORD SIZE = OFFSET
+          LX        X8,(TRSIZE,TOTTAB) . POINTER TO TOTAL PARAMETER TABLE
+          AX,U      X8,,A0            .  + OFFSET = ADDRESS FOR NEW PARAMS
+          LA,U      A8,0              . ZERO NEW PARAMETER COUNT
+TC100
+          AU        A8,TOTCNT         . A9 = TOTAL COUNT OF TOT PARAMS
+          TG,U      A9,MAXTOT+1       . TOTAL TABLE OVERFLOW?
+          J         TC940             .  YES, ERROR
+          JUMPNB    'EN',TC300        .  NO, CONTINUE UNTIL END-IMAGE FOUND
+          LX,U      X10,TRFLDW,X8     . X10 = ADDRESS OF NEXT PARAM TABLE ENTRY
+          LNA,U     A0,1              . SET USER SYMBOLS OK, NO RESV SYMS
+          LMJ       X11,FLDGET        . PARSE AND STORE NEXT TOTAL FIELD
+          J         TC920             .  ABORT COMMAND IF ERROR RETURNED
+          SZ        TRACCM,*X8        . ZERO ACCUMULATOR FOR THIS FIELD
+          AA,U      A8,1              . INCREMENT PARAMETER COUNT
+          J         TC100             . BACK FOR NEXT TOTAL PARAMETER
+TC300
+          JZ        A8,TC400          . SKIP IF NO NEW PARAMETERS
+          TZ        PLSFLG            . NEW PARAM(S) GIVEN, IS THIS TOT+ ?
+          J         TC400             .  YES, DON'T REMOVE EXISTING ONES
+          LA        A0,TOTCNT         .  NO, A0 = PREVIOUS PARAMETER COUNT
+          JZ        A0,TC400          . SKIP IF ZERO
+          MSI,U     A0,TRSIZE         .  TIMES REC SIZE = PREVIOUS PARAM COUNT
+          LA        A2,(1,TOTTAB)     . POINTER TO PARAMETER TABLE
+          AU,U      A2,,A0            . A3 = POINTER TO NEW PARAMETERS
+          LA        A0,A8             . NEW PARAMETER COUNT
+          MSI,U     A0,TRSIZE         .  TIMES REC SIZE = NEW PARAM WORD COUNT
+          LR,U      R1,,A0            . INTO R1 FOR TRANSFER
+          BT        A2,,*A3           . MOVE NEW PARAMS TO TOP OF TABLE
+          SZ        TOTCNT            . ZERO PREVIOUS TOTAL PARAM COUNT
+TC400
+          AA        A8,TOTCNT         . A8 = TOTAL PARAMETER COUNT
+          SA        A8,TOTCNT         .  REPLACE FOR LATER USE
+          J         PR150             . GET NEXT COMMAND
+.
+.         DISPLAY CURRENT TOTAL FIELD PARAMETERS
+.
+TC600
+          GNCHNB,,TC900  'EN',TC610   . ERROR IF UNWANTED CHAR(S) FOLLOW '?'
+TC610
+          LR        R7,TOTCNT         . COUNT OF TOTAL FIELD PARAMETERS
+          JGD       R7,TC620          . DECREMENT FOR LOOP AND SKIP
+          J         TC980             .  ERROR IF COUNT = ZERO
+TC620
+          A$EDIT    AEPKT             . OPEN ASCII EDIT
+          LX        X7,(TRSIZE,TOTTAB) . POINTER TO TOT PARAMETER TABLE
+          P$RINT    ERRPRT(87)        . '    FIELD     FORMAT   LAST TOTAL'
+          P$RINT    (0100,$)          . SKIP A LINE FOR READABILITY
+TC630
+          A$ECLEAR                    . CLEAR EDIT
+          LX,U      X6,TRFLDW,X7      . X6 = ADDRESS OF NEXT TOTAL PARAMETER
+          LMJ       X10,FLDDSP        . CALL FLDDSP TO FORMAT AND DISPLAY
+          A$ECOL    20                . SKIP OVER A LITTLE
+          LA        A0,FLDFMT,X6      . GET INTERNAL FORMAT CODE
+          TG,U      A0,FMTLEN+2       . WITHIN RANGE ALPHA OR COMP?
+          J         TC640             .  NO, DON'T EDIT FORMAT TYPE
+          A$ECOPY   3,FMTTAS-1,A0     .  YES, COPY TYPE CODE FROM INDEX TABLE
+TC640
+          A$ECOL    25                . MOVE OVER A LITTLE
+          A$EDECF   11,TRACCM,*X7     . INSERT MOST RECENT ACCUMULATED TOTAL
+          A$PRINT   (0100+10,LINE)    . PRINT EDITED PARAMETER FIELD, FORMAT
+          JGD       R7,TC630          . BACK FOR NEXT PARAMETER
+          P$RINT    (0100,$)          . SKIP ANOTHER LINE WHEN FINISHED
+          J         PR150             . GO SOLICIT NEXT COMMAND
+TC900
+          J         PR900             . PRINT ERROR MESSAGE, 'SYNTAX ERROR'
+TC920
+          J         PR920             . GET NEXT COMMAND
+TC940
+          P$RINT    ERRPRT(85)        . 'TOTAL PARAMETER TABLE OVERFLOW'
+          SZ        TOTCNT            . ZERO COUNT OF TOTAL PARAMETERS
+          J         PR920             .  AND GET NEXT COMMAND
+TC980
+          P$RINT    ERRPRT(20)        . 'NO ACTIVE PARAMS FOR THIS COMMAND'
+          J         PR920             .
+/.
+-2976,2981
+          $IF       MAXLOG>0          . THIS CODE FOR LOG-ENABLED ONLY
+          TOP,U     A14,1*/('Z'-'L')  . IS THIS 'DEF,L'?
+          J         DC900             .  NO, SYNTAX ERROR
+          TZ        SRTFLG            . IS SORTED OUTPUT REQUESTED?
+          J         DC930             .  YES, CANNOT DEFINE AT THIS TIME
+          LMJ       X10,DEFLOG        .  NO, DEFINE LOG FILE SYMBOLS
+-2985,2985
+          $ELSE                       . THIS CODE FOR LOG-DISABLED
+          J         DC900             . TREAT 'DEF,L' AS SYNTAX ERROR
+          $ENDF                       . END OF LOG-DEPENDENT CODE
+-3169
+          LA,U      A9,0              . ONLY READ ACCESS REQUIRED HERE
+-3275
+          LA,U      A9,1              . READ AND WRITE ACCESS REQUIRED HERE
+-3503
+          TEP,U     A14,1*/('Z'-'P')  . DEFINE PRINT WIDTH?
+          J         WC300             .  YES, SKIP
+-3514
+WC300
+          TG,U      A5,80             . PRINT WIDTH MUST BE IN RANGE 80-200
+          TG,U      A5,200+1          .
+          J         PR900             .  IF NOT, ERROR
+          ANU,U     A5,9              . PRINT WIDTH (CHARS) - 9
+          SA        A6,EXCCL9         . SAVE FOR LATER USE
+          SSL       A5,2              . A5 = PRINT WIDTH (ASCII WORDS)
+          SA        A5,EXLCAW         . SAVE FOR LATER USE
+          DSL       A5,36-2           . PREPARE FOR DIVIDE
+          DI,U      A5,6              . A5 = PRINT WIDTH (FIELDATA WORDS)
+          SA        A5,EXLCFW         . SAVE FOR LATER USE
+          J         PR150             .  GET NEXT COMMAND
+-3733,3734
+/.        PICK UP A FIELD SPECIFICATION FROM A COMMAND LINE
+-3737,3738
+.                A0 = 1  SYMBOL SUBSTITUTION + RESERVED SYMBOLS ALLOWED
+.                A0 = -1  SYMBOL SUBSTITUTION ALLOWED, NO RESERVED SYMBOLS
+.                A0 = 0  SYMBOL SUBSTITUTION AND RESERVED SYMBOLS NOT ALLOWED
+-3740,3741
+.         RETURNS  1,X11= SUCCESSFUL COMPLETION   0,X11= ERROR
+-3808
+          TP        SYMSUB            . ARE RESERVED SYMBOLS ALLOWED?
+          J         FG900             .  NO, FIELD FORMAT ERROR
+-4031,4031
+          SA        A3,KRFLDW+FLDADR,A2 . FIND - UPDATE LINK IN KEY RECORD
+-4040
+          LR        R2,TOTCNT         . COUNT OF TOTAL FIELDS
+          JGD       R2,$+2            . DECR FOR LOOP AND SKIP
+          J         SS700             . SKIP AHEAD IF NO TOTAL FIELDS DEFINED
+          LA        A2,(TRSIZE,TOTTAB-TRSIZE) . POINTER TO TOT PARAM TABLE
+SS620
+          TZ        TRFLDW+FLDFMT+TRSIZE,*A2 . DOES NEXT PARAM REF A SYMBOL?
+          J         SS640             .  NO, SKIP
+          DL        A4,TRFLDW+FLDSYM,A2 .  YES, LOAD NAME INTO A4,A5
+          LMJ       X11,SYMGET        . LOOKUP IN SORTED SYMBOL TABLE
+          J         SS650             . NO FIND - TOO BAD
+          SA        A3,TRFLDW+FLDADR,A2 . FIND - UPDATE LINK IN TOT RECORD
+SS640
+          JGD       R2,SS620          . BACK FOR NEXT TOTAL FIELD PARAMETER
+          J         SS700             . ALL PARAMETERS VERIFIED
+SS650
+          P$RINT    ERRPRT(88)        . 'TOTAL PARAMETERS CANCELLED'
+          SZ        TOTCNT            . ZERO COUNT OF TOTAL FIELD PARAMETERS
+SS700
+-4334,4334
+          JN        A0,GL255          . SKIP IF CONTROL RECORD
+          TNZ       PCSINF            . IS INPUT IN PCIOS FORMAT?
+          J         GL280             .  NO, SKIP
+          AND,U     A0,077            .  YES, A1 = SEGMENTATION FLAG
+          TLE,U     A1,2              . MUST BE ONLY OR FIRST SEGMENT
+          J         GL280             .  YES, CONTINUE
+          LMJ       X1,INTERR         .  NO, CONT RECORD SHOULDN'T BE HERE
+GL255
+-4371,4371
+          TZ        PCSINF            . IS INPUT IN PCIOS FORMAT,
+          TG,U      A0,040            .  AND IS THIS A DATA RECORD?
+          J         GL295             .   NO, SKIP
+          LA,S6     A0,,A2            . GET SEGMENTATION FLAG
+          TLE,U     A0,2              . IS THIS ONLY OR 1ST SEGMENT?
+          J         GL295             .  YES, SKIP
+          TLE,U     A0,4              . IS THIS LAST OR INTERMEDIATE SEG?
+          J         GL300             .  YES, PROCESS AS CONTINUATION RECORD
+          LMJ       X1,INTERR         .  NO, INT ERR - UNDEFINED SEG CODE
+GL295
+          SA        A1,GLWDCT         . SAVE WORD COUNT OF THIS RECORD
+-4386
+          AA        A9,A5             . INCREMENT TRANSFERRED WORD COUNT
+          TG,U      A9,MAXREC+1       . IS RECORD WITHIN SIZE LIMIT?
+          LMJ       X1,INTERR         .  NO, ABORT
+-4390,4390
+-4405,4405
+          AA        A9,A4             . INCREMENT TRANSFERRED WORD COUNT
+          TG,U      A9,MAXREC+1       . IS RECORD WITHIN SIZE LIMIT?
+          LMJ       X1,INTERR         .  NO, ABORT
+          LR        R1,A4             . REM WORD COUNT TO TRANSFER
+-4407,4407
+-4411,4413
+          JN        A0,GL382          . SKIP IF CONTROL RECORD
+          TNZ       PCSINF            . IS INPUT IN PCIOS FORMAT?
+-4414
+          DSL       A0,24+36          .  YES, A1 = WORD COUNT
+          LA,S6     A0,,X8            . A0 = SEGMENTATION FLAG
+          TLE,U     A0,2              . IS THIS ONLY OR 1ST SEGMENT?
+          J         GL390             .  YES, SKIP
+          TLE,U     A0,4              . IS THIS LAST OR INTERMEDIATE SEGMENT?
+          J         GL385             .  YES, TREAT AS CONTINUATION RECORD
+          LMJ       X1,INTERR         .  NO, INT ERR - UNDEFINED SEG CODE
+GL382
+          DSL       A0,30             . A0 = RECORD TYPE
+          TE,U      A0,051            . IS THIS A CONTINUATION RECORD?
+          J         GL390             .  NO, SKIP
+-4415
+GL385
+-5364
+.         FIELD TOTAL ACCUMULATION ROUTINES
+.
+TOTINC
+          LA        A8,TOTCNT         . A8 = COUNT OF TOTAL FIELD PARAMS
+          LX        X8,(TRSIZE,TOTTAB-TRSIZE) . X8 = POINTER TO PARAM TABLE
+          JGD       A8,$+2            . DECR PARAM CT FOR LOOP AND SKIP
+          LMJ       X1,INTERR         . INTERNAL ERROR IF LOOP CT = 0
+TI100
+          LA,U      A3,TRSIZE+TRFLDW,*X8 . A3 = ADDRESS OF NEXT PARAMETER
+          LA,U      A0,0              . INIT SUBSCRIPT INDICATOR = 0
+          LA        A1,FLDFMT,A3      . FORMAT CODE FOR PARAMETER
+          JNZ       A1,TI110          . SKIP IF NONZERO (NO SYMBOL SUBSTITUTION)
+          LA        A0,FLDSUB,A3      . THIS IS SYMBOL, A0 = SUBSCRIPT IND
+          LA        A3,FLDADR,A3      . A3 = ADDRESS OF SYMBOL TABLE ENTRY
+          AA,U      A3,STFLD          . ADD OFFSET TO FIELD PARAMETER
+          JZ        A0,TI110          . SKIP IF NO SUBSCRIPT
+          ANA,U     A0,1              . SUBSCRIPT EXISTS, MAKE ZERO-RELATIVE
+          LA        A1,FLDLEN,A3      . LENGTH OF FIELD - 1
+          MSI,U     A0,1,A1           . SUBSCRIPT * FIELD SIZE = OFFSET
+TI110
+          AA        A0,FLDBEG,A3      .  ADD STARTING BYTE OF FIELD (0-REL)
+          TNZ       CCODE             . IS THIS A FIELDATA RECORD?
+          J         TIF115            .  YES, SKIP
+.
+.         ASCII TOTAL ACCUMULATION ROUTINE
+.
+          DSL       A0,2              . DIV BY 4, A0 = WORD OFFSET
+          SSL       A1,34             .           A1 = BYTE OFFSET
+          LX        X5,UFADDR         . X5 = POINTER TO UNFORMATTED RECORD
+          AX,U      X5,,A0            . ADD WORD OFFSET TO START OF FIELD
+          LA        A2,UFWDCT         . A2 = WORD COUNT OF UNFORMATTED RECORD
+          ANA,U     A2,,A0            . SUBTRACT WORD OFFSET = WORDS REMAINING
+          LR        R4,A2             .  INTO R4 FOR CHAR LOOKUP CODE
+          LX        X4,(1,RFGTAS)     . X4 = POINTER TO CHARACTER LOAD TABLE
+          JGD       A1,TIA120         . DECREMENT BYTE OFFSET AND SKIP
+          J         TIA140            .  SKIP AHEAD IF OFFSET = 0
+TIA120
+          EX        0,*X4             . GET NEXT CHAR FROM RECORD (SKIP CHAR)
+          JGD       A1,TIA120         . LOOP BACK UNTIL POINTED AT 1ST FLD CHAR
+TIA140
+          LA        A4,FLDLEN,A3      . LENGTH OF FIELD - 1 (LOOP COUNTER)
+          LA,U      A5,0              . RETURN ZERO IF OUTSIDE OF RECORD
+          LA,U      A1,0              . INIT ACCUMULATOR = 0
+          LA        A3,FLDFMT,A3      . FORMAT CODE FOR FIELD
+          TG,U      A3,1              . CHECK FOR VALID RANGE
+          TG,U      A3,FMTLEN+2       .
+          LMJ       X1,INTERR         .  OUT-OF-RANGE, INTERNAL ERROR
+          TLE,U     A3,FLFMAP+1       . IS FIELD DEFINED AS ALPHA?
+          J         TIA160            .  YES, SKIP
+          TLE,U     A3,FLFMUC         .  NO, IS FIELD BINARY?
+          LMJ       X1,INTERR         .   NO, INTERNAL ERROR
+          LA        A2,A4             . INITIAL FIELD SIZE - 1
+TIA150
+          EX        0,*X4             . A0 = NEXT CHARACTER FROM RECORD
+          LSSL      A0,27             . SHIFT TO A0 UPPER
+          LDSC      A0,9              . INTO LOW-ORDER PORTION OF BIN ACCUM
+          JGD       A4,TIA150         . BACK FOR NEXT CHAR
+          TG,U      A2,6              . DOES FIELD CONTAIN MORE THAN 6 CHARS?
+          LA,U      A2,5              .  YES, SET FIELD SIZE = 6 (-1)
+          LA,H1     A2,SHFTAB,A2      . NUMBER OF UNUSED HIGH-ORDER BITS
+          J         TI200             . BACK TO COMMON CODE
+TIA160
+          EX        0,*X4             . A0 = NEXT CHARACTER FROM RECORD
+          TG,U      A0,'0'            . IS CHARACTER NUMERIC?
+          TG,U      A0,'9'+1          .
+          J         $+2               .  NO, CONTINUE
+          J         TIA170            .  YES, FIRST NUMERIC IN FIELD
+          JGD       A4,TIA160         . BACK FOR NEXT
+          J         TI250             . NO NUMERICS IN FIELD, VALUE = ZERO
+TIA170
+          ANA,U     A0,'0'            . CONVERT TO BINARY
+          MSI,U     A1,10             . MULT ACCUMULATOR BY TEN
+          AA,U      A1,,A0            .  AND ADD CURRENT DIGIT
+TIA180
+          JGD       A4,$+2            . MORE CHARS IN FIELD?
+          J         TI250             .  NO, ENTER COMMON CODE, A1 = VALUE
+          EX        0,*X4             .  YES, GET NEXT CHARACTER
+          TG,U      A0,'0'            . IS CHARACTER NUMERIC?
+          TG,U      A0,'9'+1          .
+          J         $+2               .  NO, CONTINUE
+          J         TIA170            .  YES, INCLUDE IN VALUE FOR THIS FIELD
+          TE,U      A0,'.'            . IS CHARACTER A PERIOD OR COMMA
+          TNE,U     A0,','            .  (THESE MAY BE EMBEDDED IN NUMERIC FLD)
+          J         TIA180            .   YES, IGNORE CHAR BUT CHECK NEXT
+          J         TI250             .  NO, ENTER COMMON CODE, A1 = VALUE
+.
+.         FIELDATA TOTAL ACCUMULATION ROUTINE
+.
+TIF115
+          DSL       A0,36             . PREPARE FOR DIVIDE
+          DI,U      A0,6              . DIV BY 6, A0=WORD OFFSET, A1=BYTE OFFSET
+          LX        X5,UFADDR         . X5 = POINTER TO UNFORMATTED RECORD
+          AX,U      X5,,A0            . ADD WORD OFFSET TO START OF FIELD
+          LA        A2,UFWDCT         . A2 = WORD COUNT OF UNFORMATTED RECORD
+          ANA,U     A2,,A0            . SUBTRACT WORD OFFSET = WORDS REMAINING
+          LR        R4,A2             .  INTO R4 FOR CHAR LOOKUP CODE
+          LX        X4,(1,RFGTFD)     . X4 = POINTER TO CHARACTER LOAD TABLE
+          JGD       A1,TIF120         . DECREMENT BYTE OFFSET AND SKIP
+          J         TIF140            .  SKIP AHEAD IF OFFSET = 0
+TIF120
+          EX        0,*X4             . GET NEXT CHAR FROM RECORD (SKIP CHAR)
+          JGD       A1,TIF120         . LOOP BACK UNTIL POINTED AT 1ST FLD CHAR
+TIF140
+          LA        A4,FLDLEN,A3      . LENGTH OF FIELD - 1 (LOOP COUNTER)
+          LA,U      A5,0              . RETURN ZERO IF OUTSIDE OF RECORD
+          LA,U      A1,0              . INIT ACCUMULATOR = 0
+          LA        A3,FLDFMT,A3      . FORMAT CODE FOR FIELD
+          TG,U      A3,1              . CHECK FOR VALID RANGE
+          TG,U      A3,FMTLEN+2       .
+          LMJ       X1,INTERR         .  OUT-OF-RANGE, INTERNAL ERROR
+          TLE,U     A3,FLFMAP+1       . IS FIELD DEFINED AS ALPHA?
+          J         TIF160            .  YES, SKIP
+          TLE,U     A3,FLFMUC         .  NO, IS FIELD BINARY?
+          LMJ       X1,INTERR         .   NO, INTERNAL ERROR
+          LA        A2,A4             . INITIAL FIELD SIZE - 1
+TIF150
+          EX        0,*X4             . A0 = NEXT CHARACTER FROM RECORD
+          LSSL      A0,30             . SHIFT TO A0 UPPER
+          LDSC      A0,6              . INTO LOW-ORDER PORTION OF BIN ACCUM
+          JGD       A4,TIF150         . BACK FOR NEXT CHAR
+          TG,U      A2,6              . DOES FIELD CONTAIN MORE THAN 6 CHARS?
+          LA,U      A2,5              .  YES, SET FIELD SIZE = 6 (-1)
+          LA,H2     A2,SHFTAB,A2      . NUMBER OF UNUSED HIGH-ORDER BITS
+          J         TI200             . BACK TO COMMON CODE
+TIF160
+          EX        0,*X4             . A0 = NEXT CHARACTER FROM RECORD
+          TG,U      A0,'0'            . IS CHARACTER NUMERIC?
+          TG,U      A0,'9'+1          .
+          J         $+2               .  NO, CONTINUE
+          J         TIF170            .  YES, FIRST NUMERIC IN FIELD
+          JGD       A4,TIF160         . BACK FOR NEXT
+          J         TI250             . NO NUMERICS IN FIELD, VALUE = ZERO
+TIF170
+          ANA,U     A0,'0'            . CONVERT TO BINARY
+          MSI,U     A1,10             . MULT ACCUMULATOR BY TEN
+          AA,U      A1,,A0            .  AND ADD CURRENT DIGIT
+TIF180
+          JGD       A4,$+2            . MORE CHARS IN FIELD?
+          J         TI250             .  NO, ENTER COMMON CODE, A1 = VALUE
+          EX        0,*X4             .  YES, GET NEXT CHARACTER
+          TG,U      A0,'0'            . IS CHARACTER NUMERIC?
+          TG,U      A0,'9'+1          .
+          J         $+2               .  NO, CONTINUE
+          J         TIF170            .  YES, INCLUDE IN VALUE FOR THIS FIELD
+          TE,U      A0,$CFS('.')      . IS CHARACTER A PERIOD OR COMMA
+          TNE,U     A0,$CFS(',')      .  (THESE MAY BE EMBEDDED IN NUMERIC FLD)
+          J         TIF180            .   YES, IGNORE CHAR BUT CHECK NEXT
+          J         TI250             .  NO, ENTER COMMON CODE, A1 = VALUE
+.
+.         COMMON RETURN POINTS FOR ASCII/FIELDATA TOTAL ACCUMULATION
+.
+TI200
+          JZ        A2,TI250          . SKIP IF FIELD SIZE >= 36 BITS
+          TNZ       SGNFLG,A3         . IS THIS A SIGNED FIELD?
+          J         TI250             .  NO, SKIP
+          LSSL      A1,,A2            .  YES, SHIFT LEFT
+          SSA       A1,,A2            .   AND BACK RIGHT (SIGN-EXTENDED)
+TI250
+          AA        A1,TRACCM,X8      . ADD CURRENT VALUE TO FIELD ACCUMULATOR
+          SA        A1,TRACCM,X8      .  AND REPLACE
+          JGD       A8,TI100          . BACK FOR NEXT FIELD
+          J         0,X11             . RETURN TO CALLER
+/.
+-6154,6154
+          TZ        CCODE             . ASCII SORT, IS THIS RECORD IN ASCII?
+-6367,6367
+-6470,6470
+          LR        R14,EXLCAW        . MAX OUTPUT SIZE (ASCII WORDS)
+-6472,6472
+          LR        R14,EXLCFW        .  YES, USE MAX FD WORD SIZE
+-6510,6510
+          LR        R6,EXCCL9         . LOOP COUNTER FOR ONE LINE
+-6519,6519
+          LA        A6,EXLCAW         . SET LINE LENGTH = MAX ASCII WORDS
+-6529,6529
+          LR        R6,EXCCL9         . LOOP COUNTER FOR ONE LINE
+-6547,6547
+          LR        R6,EXCCL9         . LOOP COUNTER FOR ONE LINE
+-6554,6554
+          LA        A6,EXLCFW         . SET LINE LENGTH = MAX FD WORDS
+-6564,6564
+          LR        R6,EXCCL9         . LOOP COUNTER FOR ONE LINE
+-6728
+          SZ        EXCODE            . ZERO PCIOS CONTROL FLAG(S)
+-6743,6744
+          AA        A0,(04400,07700,0) . NEW TYPE = END-OF-FILE
+          LSSC      A0,12             . SHIFT, T1=EOF, T2=PREVIOUS, T3 = FLAG
+-6803,6804
+          E$FD1     SITDEV            . DESTINATION SITE-ID
+          TNZ       SITBAN            . WAS BANNER SPECIFIED?
+          J         EC280             .  NO, SKIP
+          E$MSGR                      . ' (BANNER=<'
+          E$FD2     SITBAN            . BANNER-ID
+          E$MSGR                      . '>)'
+EC280
+          P$RINT    (0112,LINE)       . DISPLAY INFO MESSAGE
+-6872
+          JNZ       A0,DS150          . SKIP, NO SEGMENTATION IF CTL IMAGE
+          SZ,S6     EXCODE            . ZERO SEGMENT NUMBER
+          LA,H2     A7,HDRSAV+9       . A7 = SEGMENT SIZE (WORDS)
+          JZ        A7,DS150          . SKIP IF ZERO
+          TG        A7,A6             . WILL RECORD FIT IN ONE SEGMENT?
+          J         DS150             .  YES, SKIP
+          SP1,S6    EXCODE            .  NO, SET SEG CODE = 1 (FIRST SEG)
+DS130
+          ANA       A6,A7             . DECR IMAGE WORD CT BY SEG SIZE
+          LA        A1,EXWDC1         . TOTAL WORDS WRITTEN
+          AA        A1,A7             .  PLUS SIZE OF THIS SEGMENT
+          AA,U      A1,1              .  PLUS ONE FOR CONTROL WORD
+          SA        A1,EXWDC1         . SAVE NEW TOTAL WORD COUNT
+          LA        A1,A7             . SET A1 = WORDS THIS SEGMENT
+          J         DS220             . OUTPUT DATA IMAGE NOW
+-6901
+          TZ        EXPCSF            . IS OUTPUT IN PCIOS FORMAT?
+          J         DS270             .  YES, SKIP
+-6904
+DS270
+          LA,U      A0,0              . SET IMAGE TYPE = DATA
+          LA        A2,SDFICW         . A2 = PREVIOUS CONTROL WORD
+          SSL       A2,24             .  SHIFT T1 TO A2 LOWER
+          TG        A7,A6             . WILL REMAINDER OF REC FIT IN ONE SEG?
+          J         DS280             .  YES, SKIP
+          LA,U      A1,3              .  NO, SET SEG CODE = 3
+          SA,S6     A1,EXCODE         .   (INTERMEDIATE SEGMENT)
+          J         DS130             . GO BACK TO OUTPUT NEXT SEGMENT
+DS280
+          LA,U      A1,2              . SET SEG CODE = 2
+          SA,S6     A1,EXCODE         .  (FINAL SEGMENT)
+          J         DS150             . GO BACK TO OUTPUT FINAL SEGMENT
+-6935,6935
+          SP1       5,A2              . DESTROY READ ADDRESS (FORCE RE-READ)
+-6998,6999
+          E$DIT     EPKT              . OPEN EDIT
+          E$MSG     ZLFUSE            . '@USE ZIP$PF,SYS$*ZIPLIB$'
+          $IF       ZLFSEC>0          . THIS CODE ON FOR SECURITY SITES
+          LA,U      A0,ZLFFAC+7       . USE FITEM$ PKT FOR PCT BUFFER
+          LA        A1,(1,0121)       . FETCH SECURITY BUFFER ADDRESS
+          ER        PCT$              .  FROM THE PCT
+          LA,H2     A1,ZLFFAC+7       . SECURITY BUFFER ADDRESS (PCT-REL)
+          JZ        A1,AZ050          . SKIP IF ZERO, NO SECURITY BUFFER
+          LXI,U     A1,2              . FETCH 1ST TWO WORDS OF SECURITY BUFFER
+          ER        PCT$              .
+          $IF       ZLFSEC=1          . THIS CODE ON FOR CURRENT-LEVEL
+          LA,S3     A1,ZLFFAC+8       . A1 = CURRENT CLEARANCE LEVEL
+          $ELSE                       . THIS CODE ON FOR MINIMUM-LEVEL
+          LA,S2     A1,ZLFFAC+7       . A1 = MINIMUM CLEARANCE LEVEL
+          $ENDF                       . END OF LEVEL-DEPENDENT CODE
+AZ050
+          E$DECV    A1,,W             . APPEND CLEARANCE LEVEL TO EXT FILENAME
+          $ENDF                       . END OF SECURITY CODE
+          E$MSGR                      . ' . '
+          LA,U      A0,LINE           . ADDRESS OF TEXT FOR @USE
+          ER        CSF$              .  @USE ZIP$PF,SYS$*ZIPLIB$<X>
+-7021,7022
+          AND,U     A0,022            . A1 > 0 IF CANNOT READ
+          JNZ       A1,AZ920          .  ERROR IF READ DISABLED
+-7031,7031
+          J         AZ250             .  YES, FILE IS GOOD
+-7036
+AZ250
+          SP1       ZLFFLG            . SET FILE-ASSIGNED AND READ-OK FLAG
+          LA,S2     A0,ZLFFAC+6       . GET R/W PERMISSION BITS
+          AND,U     A0,014            . A1 > 0 IF CANNOT WRITE
+          TE,U      A1,0              . IS WRITE ACCESS ALLOWED?
+          SP1       ZLFWIN            .  NO, SET WRITE-INHIBIT FLAG
+-7038,7038
+          TZ        ZLFWIN            . IS WRITE ACCESS TO FILE ALLOWED?
+          JNZ       A9,AZ960          .  NO, RETURN ERROR STATUS IF WRITE REQ
+-7044,7044
+          LA        A0,ERRPRT(58)     . 'SYS$*ZIPLIB$ IS READ INHIBITED'
+-7047
+          J         AZ990             .
+AZ960
+          LA        A0,ERRPRT(84)     . 'SYS$*ZIPLIB$ IS WRITE INHIBITED'
+-7373,7373
+ERR(52)   'THIS COMMAND IS ALLOWED ONLY WHEN SELECTION OR TOTALING IS IN EFFECT'
+-7379,7379
+ERR(58)   'SYS$*ZIPLIB$ IS READ-INHIBITED'
+-7405,7405
+ERR(84)   'SYS$*ZIPLIB$ IS WRITE-INHIBITED'
+ERR(85)   'TOTAL PARAMETER TABLE OVERFLOW - INCREASE <MAXTOT>'
+ERR(86)   '***FIELD TOTALS FOLLOW:'
+ERR(87)   '      FIELD       FORMAT    LAST TOTAL'
+ERR(88)   '*TOTAL PARAMETERS CANCELLED - REFERENCED UNDEFINED SYMBOL(S)*'
+NERR      EQU       88
+-7422
+CSFSYM    '@SYM ZPF$&,,&,,&'
+-7424,7424
+SYMMSG    ' PAGES SENT TO: & (BANNER=<&>)&'
+-7436,7437
+CNTTOT    ' RECORDS WERE COUNTED.&'
+ZLFUSE    '@USE ZIP$PF,SYS$*ZIPLIB$& . &'
+-7500,7500
+          CF        'SAV',0,SAVCMD    . SAVE
+-7503
+          CF        'TOT',0,TOTCMD    . TOTAL
+-7512,7512
+          CF        'WID',1,WIDCMD    . WIDTH
+-7608
+PCSINF    +         0                 . SET IF READING A PCIOS-FORMAT FILE
+-7698
+TOTCNT    +         0                 . COUNT OF <TOTAL> PARAMETERS
+-7742
+EXCCL9    +         132-9             . MAX PRINT FILE CHAR COUNT LESS 9
+EXLCAW    +         132/4             . MAX PRINT FILE LINE CT (ASCII WORDS)
+EXLCFW    +         132/6             . MAX PRINT FILE LINE CT (FD WORDS)
+-7794,7794
+IDPKT     I$DPKT    33,COMMAND  'ZIP 3R1B'  020 . ID$ CONTROL PACKET
+-7797,7797
+IDPKT     I$DPKT    33,COMMAND  'UZIP 3R1B'  020 . ID$ CONTROL PACKET
+-7824,7824
+SITDEV    +         0                 . DESTINITION SITE-ID FOR SITE/LNS
+SITBAN    +         0D                . BANNER-ID FOR SITE/LNS
+-7844
+ZLFWIN    +         0                 . SET IF SYS$*ZIPLIB$ IS WRITE INHIBITED
+-7889
+TOTTAB    RES       (MAXTOT+1)*TRSIZE . <TOTAL> PARAMETER TABLE
+@FREE ZIPIN
+@FREE ZIPOUT
+@PRT,I
+@START ZIP*RELEASE.RUN/ZIPGEN
+@FIN

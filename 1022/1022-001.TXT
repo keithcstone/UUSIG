@@ -1,0 +1,454 @@
+@CAT,P    1022-001-001.,///10000
+@ASG,T    TEMP.,///10000
+@ELT,OI TEMP.1022-001-001,,,130170053241,000
+)@@G@@*[S@@@*SDFF*@ @@@@C-----NAME OF PROGRAM  COSLOP2@F@@@@C-----COMPREHENSIVAA
+)@@G@@E PROCESS-RESPONSE MODEL OF SLOPE DEVELOPMENT   @C@@@@C-----BY FRANK AHNAB
+)@@G@@ERT,    UNIVERSITY OF MARYLAND@[@@@@C     @D@@@@C-----     M A I N   P RAC
+)@@G@@ O G R A M     -------------  @[@@@@C     @G@@@@C-----MAIN PROGRAM REGULAD
+)@@G@@ATES SEQUENCE OF EVENTS, CALLS SUBROUTINES,     @D@@@@C     AND RECOMPUTAE
+)@@G@@ES THE CHANGING SLOPE PARAMETERS    @G@@@@      DIMENSION X(100),Y(100),AF
+)@@G@@BX(100),BY(100),TX(100),TY(100),C(100),   @G@@@@     1CC(100),W(100),V(1AG
+)@@G@@00),SLOP(100),BSLOP(100),EQUI(100),DOWN(100),   @#@@@@     2STAT(100)   AH
+)@@G@@@C@@@@C-----INTRODUCTION OF FLOATING-POINT CONSTANTS  @G@@@@      READ (AI
+)@@G@@5,1) WE1,WE2,WE3,WCON,COPT,P,BED1L,BED1U,BED2L,BED2U,DIP,   @G@@@@     1AJ
+)@@G@@XLEFT,XRIGHT,YCUT1L,YCUT1R,YCUT2L,YIC2L,YCUT2R,YIC2R,YCUT3L,YDC3L,@B@@@@AK
+)@@G@@     2YCUT3R,YDC3R,FLU,COH,TW1,TW2,TWW2   @^@@@@    1 FORMAT (F10.4)    AL
+)@@G@@@B@@@@C-----INTRODUCTION OF INTEGER CONSTANTS   @F@@@@      READ (5,2) NAM
+)@@G@@,M,IWR,IPT,NOCUT,ICUT,ISID,NRECUT,IREC,ISTR,    @^@@@@     1ITRANS,NUMBEAN
+)@@G@@R     @#@@@@    2 FORMAT  (I8)@D@@@@C-----LISTING OF VALUES OF CONSTANTSAO
+)@@G@@ IN THE PRINTOUT  @G@@@@      WRITE (6,3) WE1,WE2,WE3,WCON,COPT,P,BED1L,AP
+)@@G@@BED1U,BED2L,BED2U,DIP,  @G@@@@     1XLEFT,XRIGHT,YCUT1L,YCUT1R,YCUT2L,YIAQ
+)@@G@@C2L,YCUT2R,YIC2R,YCUT3L,YDC3L,@B@@@@     2YCUT3R,YDC3R,FLU,COH,TW1,TW2,TAR
+)@@G@@WW2   @E@@@@    3 FORMAT (10X,24HFLOATING-POINT CONSTANTS//(20X,F10.4)) AS
+)@@G@@@F@@@@      WRITE (6,4) N,M,IWR,IPT,NOCUT,ICUT,ISID,NRECUT,IREC,ISTR,   AT
+)@@G@@@^@@@@     1ITRANS,NUMBER     @D@@@@    4 FORMAT (10X,17HINTEGER CONSTANAU
+)@@G@@TS//(17X,I8))     @A@@@@C-----DEFINITION OF INITIAL PROFILE @B@@@@      AV
+)@@G@@IF (IPT.EQ.1) CALL PROFI1 (X,Y,N)   @B@@@@      IF (IPT.EQ.2) CALL PROFIAW
+)@@G@@2 (X,Y,N)   @B@@@@      IF (IPT.EQ.3) CALL PROFI3 (X,Y,N)   @G@@@@C-----AX
+)@@G@@THIS CALL PATTERN MAY BE EXTENDED FOR ADDITIONAL INITIAL PROFILES @B@@@@AY
+)@@G@@C-----DEFINITION OF ADDITIONAL PARAMETERS @#@@@@      DO 14 J=1,N @#@@@@AZ
+)@@G@@      BX(J)=X(J)  @#@@@@      BY(J)=Y(J)  @#@@@@      TX(J)=X(J)  @#@@@@BA
+)@@G@@      TY(J)=Y(J)  @#@@@@      DOWN(J)=0.0 @#@@@@      EQUI(J)=0.0 @#@@@@BB
+)@@G@@      C(J)=0.0    @#@@@@   14 CC(J)=0.0   @]@@@@      WE=WE1@#@@@@      BC
+)@@G@@XM1=0.0     @]@@@@      ITIM=1@#@@@@      DO 15 J=2,N @ @@@@      SLOP(JBD
+)@@G@@)= Y(J)-Y(J-1)    @^@@@@      BSLOP(J)=SLOP(J)  @#@@@@   15 CONTINUE    BE
+)@@G@@@^@@@@      SLOP(1)=SLOP(2)   @^@@@@      BSLOP(1)=BSLOP(2) @#@@@@      BF
+)@@G@@SLS=0.0     @#@@@@      SWE=0.0     @]@@@@      SC=0.0@#@@@@      SEQ=0.BG
+)@@G@@0     @#@@@@      DENU=0.0    @[@@@@C     @ @@@@C-----BEGINNING OF MAIN BH
+)@@G@@LOOP  @[@@@@C     @^@@@@      DO 1000 I=1,M     @]@@@@      WE=WE1@C@@@@BI
+)@@G@@C-----WASTE PRODUCTION BY BEDROCK WEATHERING    @G@@@@      CALL WEATH (BJ
+)@@G@@BX,BY,C,W,WE,WE1,WE2,WE3,WCON,COPT,P,BED1L,BED1U,BED2L@B@@@@     1,BED2UBK
+)@@G@@,DIP,XLEFT,XRIGHT,ISTR,N)     @ @@@@      IF (I.LT.NOCUT) GO TO 20@A@@@@BL
+)@@G@@      IF (I.GE.NRECUT) GO TO 20     @G@@@@C-----WHEN THE BASE LEVEL IS FBM
+)@@G@@IXED (NO DOWNCUTTING), THEN THERE IS NO   @C@@@@C     WEATHERING AT THE BN
+)@@G@@FOOTPOINT OF THE PROFILE@#@@@@      W(1)=0.0    @ @@@@      IF (ISID.EQ.BO
+)@@G@@2) W(N)=0.0 @#@@@@   20 CONTINUE    @C@@@@C-----RECOMPUTATION OF BY AND BP
+)@@G@@C AFTER WEATHERING@D@@@@C-----W(J) IS REPORTED BACK FROM SUBROUTINE WEATBQ
+)@@G@@H     @#@@@@      DO 25 J=1,N @B@@@@      BY(J)=BY(J)-W(J)/COS(ATAN(BSLOBR
+)@@G@@P(J)))@#@@@@   25 CONTINUE    @#@@@@      BCY=Y(1)    @#@@@@      BCX=BXBS
+)@@G@@(1)   @D@@@@C-----DETERMINATION OF HEIGHT AND LOCATION OF SUMMIT  @#@@@@BT
+)@@G@@      DO 27 J=2,N @A@@@@      IF (Y(J).GT.BCY) GO TO 26     @#@@@@      BU
+)@@G@@GO TO 27    @#@@@@   26 CONTINUE    @#@@@@      BCY=Y(J)    @#@@@@      BV
+)@@G@@BCX=X(J)    @#@@@@   27 CONTINUE    @G@@@@C-----LOCAL BASE LEVEL CONTROLBW
+)@@G@@ OF WEATHERING - NO POINT ON THE BEDROCK  @G@@@@C     SURFACE CAN WEATHEBX
+)@@G@@R BELOW THE ELEVATION OF THE NEXT DOWNSLOPE     @]@@@@C     POINT @#@@@@BY
+)@@G@@      DO 50 J=2,N @ @@@@      IF (ISID.EQ.2) GO TO 32 @#@@@@   28 CONTINBZ
+)@@G@@UE    @A@@@@      IF (BY(J).GT.BY(J-1)) GO TO 30@A@@@@      W(J)=W(J)-(BCA
+)@@G@@Y(J-1)-BY(J))     @A@@@@      IF (W(J).LT.0.0)  W(J)=0.0    @^@@@@      CB
+)@@G@@BY(J)=BY(J-1)     @#@@@@      BSLOP(J)=0.0@#@@@@   30 CONTINUE    @#@@@@CC
+)@@G@@      GO TO 40    @#@@@@   32 CONTINUE    @A@@@@      IF (BX(J).LE.BCX) CD
+)@@G@@GO TO 28    @A@@@@      IF (BY(J).LT.BY(J-1)) GO TO 40@A@@@@      W(J-1)CE
+)@@G@@=W(J-1)-(BY(J)-BY(J-1)) @A@@@@      IF (W(J-1).LT.0.0) W(J-1)=0.0 @^@@@@CF
+)@@G@@      BY(J-1)=BY(J)     @#@@@@      BSLOP(J)=0.0@ @@@@      CC(J-1)=C(J-CG
+)@@G@@1)+W(J-1)   @#@@@@   40 CONTINUE    @^@@@@      CC(J)=C(J)+W(J)   @#@@@@CH
+)@@G@@   50 CONTINUE    @^@@@@      CC(1)=C(1)+W(1)   @ @@@@C-----CHOICE OF DOCI
+)@@G@@WNCUTTING   @ @@@@      IF (I.GE.NOCUT) GO TO 70@#@@@@   60 CONTINUE    CJ
+)@@G@@@B@@@@C-----DOWNCUTTING ON LEFT END OF PROFILE  @C@@@@      IF (ICUT.EQ.CK
+)@@G@@1) CALL CUT1L (TY,YCUT1L)     @D@@@@      IF (ICUT.EQ.2) CALL CUT2L (TY,CL
+)@@G@@YCUT2L,XM1,YIC2L) @D@@@@      IF (ICUT.EQ.3) CALL CUT3L (TY,YCUT3L,XM1,YCM
+)@@G@@DC3L) @ @@@@      IF (ISID.EQ.1) GO TO 70 @B@@@@C-----DOWNCUTTING ON RIGCN
+)@@G@@HT END OF PROFILE @C@@@@      IF (ICUT.EQ.1) CALL CUT1R (TY,YCUT1R,N)   CO
+)@@G@@@E@@@@      IF (ICUT.EQ.2) CALL CUT2R (TY,YCUT2R,XMN,YIC2R,N)     @E@@@@CP
+)@@G@@      IF (ICUT.EQ.3) CALL CUT3R (TY,YCUT3R,XMN,YDC3R,N)     @#@@@@      CQ
+)@@G@@GO TO 75    @#@@@@   70 CONTINUE    @A@@@@      IF (I.LT.NRECUT) GO TO 7CR
+)@@G@@5     @A@@@@      IF (I.GT.NRECUT) GO TO 72     @F@@@@C-----RESETTING OFCS
+)@@G@@ ITERATION COUNTERS WHEN DOWNCUTTING IS RENEWED @#@@@@      XM1=0.0     CT
+)@@G@@@#@@@@      XMN=0.0     @C@@@@C-----DEFINITION OF MODE OF RENEWED DOWNCUCU
+)@@G@@TTING @#@@@@      ICUT=IREC   @#@@@@   72 GO TO 60    @#@@@@   75 CONTINCV
+)@@G@@UE    @G@@@@C-----RECOMPUTATION OF WASTE THICKNESS AT SLOPE FOOT AFTER DCW
+)@@G@@OWNCUTTING  @D@@@@      CC(1)=CC(1)-(Y(1)-TY(1))*COS(ATAN(BSLOP(1)))    CX
+)@@G@@@A@@@@      IF (CC(1).LE.0.0)  CC(1)=0.0  @B@@@@      IF (TY(1).LE.BY(1)CY
+)@@G@@) BY(1)=TY(1)     @D@@@@      CC(N)=CC(N)-(Y(N)-TY(N))*COS(ATAN(BSLOP(N)CZ
+)@@G@@))    @A@@@@      IF (CC(N).LE.0.0)  CC(N)=0.0  @B@@@@      IF (TY(N).LEDA
+)@@G@@.BY(N)) BY(N)=TY(N)     @D@@@@C-----RECOMPUTATION OF BEDROCK SLOPE AT EADB
+)@@G@@CH POINT    @#@@@@      DO 90 J=2,N @ @@@@      BSLOP(J)=BY(J)-BY(J-1)  DC
+)@@G@@@#@@@@   90 CONTINUE    @^@@@@      BSLOP(1)=BSLOP(2) @ @@@@      SLOP(2DD
+)@@G@@)=TY(2)-TY(1)     @^@@@@      SLOP(1)=SLOP(2)   @ @@@@      SLOP(N)=TY(NDE
+)@@G@@)-TY(N-1)   @E@@@@C-----COMPUTATION OF V(J) AS A FACTOR IN WASTE TRANSPODF
+)@@G@@RT    @#@@@@      DO 95 J=1,N @ @@@@      V(J)=SIN(ATAN(SLOP(J))) @#@@@@DG
+)@@G@@   95 CONTINUE    @D@@@@C-----CORRECTION AT RIGHT END OF PROFILE IF ISIDDH
+)@@G@@=1    @ @@@@      IF (ISID.EQ.2) GO TO 98 @A@@@@      IF (BY(N).GE.BY(N-DI
+)@@G@@1)) GO TO 98@A@@@@      W(N)=W(N)-(BY(N-1)-BY(N))     @^@@@@      BY(N)=DJ
+)@@G@@BY(N-1)     @^@@@@      CC(N)=CC(N)+W(N)  @#@@@@      BSLOP(N)=0.0@#@@@@DK
+)@@G@@   98 CONTINUE    @ @@@@      IF (ISID.EQ.2) GO TO 99 @A@@@@      IF (TYDL
+)@@G@@(N).LE.TY(N-1)) V(N)=0.0@#@@@@   99 CONTINUE    @A@@@@C-----CHOICE OF WADM
+)@@G@@STE TRANSPORT     @G@@@@      IF (ITRANS.EQ.1) CALL FLOW1 (V,CC,FLU,COH,DN
+)@@G@@STAT,N,NOCUT,NRECUT,I)  @F@@@@      IF (ITRANS.EQ.2) CALL WASH1 (V,CC,TWDO
+)@@G@@1,N,NOCUT,NRECUT,I)     @G@@@@      IF (ITRANS.EQ.3) CALL WASH2 (TX,TY,VDP
+)@@G@@,CC,TW2,TWW2,ISID,N,NOCUT,    @#@@@@     1NRECUT,I)   @A@@@@      IF (ITDQ
+)@@G@@RANS.EQ.4) GO TO 104    @A@@@@      IF (ITRANS.EQ.5) GO TO 105    @F@@@@DR
+)@@G@@C-----THIS CALL PATTERN CAN BE EXPANDED FOR ADDITIONAL PROCESSES  @#@@@@DS
+)@@G@@      GO TO 110   @D@@@@  104 CALL FLOW1 (V,CC,FLU,COH,STAT,N,NOCUT,NRECDT
+)@@G@@UT,I) @C@@@@      CALL WASH1 (V,CC,ISID,N,NOCUT,NRECUT,I)   @#@@@@      DU
+)@@G@@GO TO 110   @D@@@@  105 CALL FLOW1 (V,CC,FLU,COH,STAT,N,NOCUT,NRECUT,I) DV
+)@@G@@@E@@@@      CALL WASH2 (TX,TY,V,CC,TW2,TWW2,ISID,N,NOCUT,NRECUT,I)@#@@@@DW
+)@@G@@  110 CONTINUE    @E@@@@C-----RECOMPUTATION OF PARAMETERS AFTER WASTE TRDX
+)@@G@@ANSPORT     @]@@@@      N1=N-1@^@@@@      DO 150 J=1,N1     @B@@@@      DY
+)@@G@@IF (BSLOP(J+1).LT.0.0) GO TO 135    @ @@@@C-----ON LEFT-FACING SLOPE    DZ
+)@@G@@@C@@@@      IF (BSLOP(J+1).GE.BSLOP(J)) GO TO 130     @^@@@@C-----ON CONEA
+)@@G@@VEX SLOPE   @C@@@@      TY(J)=BY(J)+CC(J)/COS(ATAN(BSLOP(J+1)))   @#@@@@EB
+)@@G@@      GO TO 145   @A@@@@C-----ON STRAIGHT OR CONCAVE SLOPE  @C@@@@  130 EC
+)@@G@@TY(J)=BY(J)+CC(J)/COS(ATAN(BSLOP(J)))     @#@@@@      GO TO 145   @ @@@@ED
+)@@G@@C-----ON RIGHT-FACING SLOPE   @C@@@@  135 IF (BSLOP(J+1).LE.BSLOP(J)) GOEE
+)@@G@@ TO 140     @^@@@@C-----ON CONVEX SLOPE   @C@@@@      TY(J)=BY(J)+CC(J)/EF
+)@@G@@COS(ATAN(BSLOP(J+1)))   @#@@@@      GO TO 145   @A@@@@C-----ON STRAIGHT EG
+)@@G@@OR CONCAVE SLOPE  @C@@@@  140 TY(J)=BY(J)+CC(J)/COS(ATAN(BSLOP(J)))     EH
+)@@G@@@#@@@@  145 CONTINUE    @B@@@@      IF (TY(J).GE.500.0) TY(J)=500.0     EI
+)@@G@@@G@@@@C-----THIS CORRECTION TO 500.0 IS ONLY NEEDED WITH DIPPING STRUCTUEJ
+)@@G@@RES.  @#@@@@  150 CONTINUE    @C@@@@      TY(N)=BY(N)+CC(N)/COS(ATAN(BSLEK
+)@@G@@OP(N)))     @D@@@@C-----RECOMPUTATION OF SURFACE SLOPE AT EACH POINT    EL
+)@@G@@@#@@@@      DO 180 J=2,N@ @@@@  180 SLOP(J)=TY(J)-TY(J-1)   @^@@@@      EM
+)@@G@@SLOP(1)=SLOP(2)   @#@@@@      DO 250 J=2,N@D@@@@C-----TEST FOR OVERSTEEPEN
+)@@G@@ENING ON LEFT-FACING PROFILE  @A@@@@      IF (SLOP(J).LE.1.0) GO TO 220 EO
+)@@G@@@F@@@@C-----IF STEEPER THAN 45 DEGREES, LANDSLIDE OF WASTE COVER OCCURS EP
+)@@G@@@A@@@@      CALL SLIDL (TY,BY,CC,SLOP,J,N)@^@@@@      WRITE (6,215) I,J EQ
+)@@G@@@G@@@@  215 FORMAT (10X,38HLANDSLIDE TO THE LEFT AT      I      J/34X,2IER
+)@@G@@5)    @#@@@@      GO TO 250   @#@@@@  220 CONTINUE    @ @@@@      IF (ISES
+)@@G@@ID.EQ.1) GO TO 250@D@@@@C-----TEST FOR OVERSTEEPENING ON RIGHT-FACING PRET
+)@@G@@OFILE @B@@@@      IF (SLOP(J).GE.(-1.0)) GO TO 250    @F@@@@C-----IF STEEU
+)@@G@@EPER THAN 45 DEGREES, LANDSLIDE OF WASTE COVER OCCURS @A@@@@      CALL SEV
+)@@G@@LIDR (TY,BY,CC,SLOP,J,N)@^@@@@      WRITE (6,225) I,J @G@@@@  225 FORMATEW
+)@@G@@ (10X,39HLANDSLIDE TO THE RIGHT AT      I      J/35X,2I5)   @#@@@@  250 EX
+)@@G@@CONTINUE    @ @@@@C-----COMPUTATION OF RELIEF   @#@@@@      TR=TY(1)    EY
+)@@G@@@A@@@@      IF (TY(1).GT.TY(N)) TR=TY(N)  @^@@@@      RELIEF=TY(2)-TR   EZ
+)@@G@@@#@@@@      DO 255 J=2,N@^@@@@      REL1=TY(J)-TR     @B@@@@      IF (REFA
+)@@G@@L1.GE.RELIEF) RELIEF=REL1     @#@@@@  255 CONTINUE    @#@@@@  260 DO 800FB
+)@@G@@ J=1,N@D@@@@C-----COMPUTATION OF LOCAL MASS BALANCE AND DENUDATION@^@@@@FC
+)@@G@@      EQUI(J)=CC(J)-C(J)@^@@@@      DOWN(J)=Y(J)-TY(J)@C@@@@C-----COMPUTFD
+)@@G@@ATION OF PARAMETER SUMS FOR MEANS   @ @@@@      SLS=SLS+ABS(SLOP(J))    FE
+)@@G@@@#@@@@      SWE=SWE+W(J)@#@@@@      SC=SC+CC(J) @^@@@@      SEQ=SEQ+EQUIFF
+)@@G@@(J)   @^@@@@      DENU=DENU+DOWN(J) @#@@@@      Y(J)=TY(J)  @#@@@@      FG
+)@@G@@C(J)=CC(J)  @#@@@@  800 CONTINUE    @#@@@@      ITIM=ITIM-1.@ @@@@      FH
+)@@G@@IF (ITIM.NE.0)GO TO 950 @]@@@@      YN=N  @A@@@@C-----COMPUTATION OF MEAFI
+)@@G@@N VALUES    @#@@@@      AVEQ=SEQ/YN @^@@@@      AVDEN=DENU/YN     @#@@@@FJ
+)@@G@@      AVSL=SLS/YN @#@@@@      AVC=SC/YN   @#@@@@      AVWE=SWE/YN @F@@@@FK
+)@@G@@C-----WRITEOUT OF SLOPE PARAMETERS AFTER EVERY IWR ITERATIONS     @G@@@@FL
+)@@G@@      WRITE (6,900) NUMBER,I,(X(J),Y(J),SLOP(J),BX(J),BY(J),BSLOP(J),   FM
+)@@G@@@B@@@@     1C(J),W(J),DOWN(J),EQUI(J),J=1,N)    @G@@@@  900 FORMAT (5X,7FN
+)@@G@@HCOSLOP2//5X,18HSLOPE MODEL NUMBER,I8/5X,I5,1X,10HITER@G@@@@     1ATIONSFO
+)@@G@@/5X,89H  X(J)     Y(J)    SLOP(J)   BX(J)    BY(J)  BSLOP(J)@E@@@@     2FP
+)@@G@@   C(J)     W(J)    DOWN(J)  EQUI(J)/(5X,10F9.4))     @C@@@@      WRITE FQ
+)@@G@@(6,920) AVSL,AVC,AVWE,AVDEN,AVEQ    @G@@@@  920 FORMAT (10X,70HMEANS OF FR
+)@@G@@     SLOPE   THICKNESS  WEATHERING   DENUD@B@@@@     1ATION  MASS BALANCFS
+)@@G@@E/18X,5F12.4)     @ @@@@      WRITE (6,925) RELIEF    @A@@@@  925 FORMATFT
+)@@G@@ (10X,6HRELIEF/10X,F9.4)@#@@@@      ITIM=IWR    @#@@@@  950 CONTINUE    FU
+)@@G@@@#@@@@      SLS=0.0     @#@@@@      SWE=0.0     @]@@@@      SC=0.0@#@@@@FV
+)@@G@@      SEQ=0.0     @#@@@@      DENU=0.0    @^@@@@C-----END OF MAIN LOOP  FW
+)@@G@@@#@@@@ 1000 CONTINUE    @]@@@@      END   @[@@@@C     @C@@@@C-----   S UFX
+)@@G@@ B R O U T I N E S  --------------- @A@@@@      SUBROUTINE PROFI1 (X,Y,NFY
+)@@G@@)     @[@@@@C     @A@@@@C-----I N I T I A L  P R O F I L E S@[@@@@C     FZ
+)@@G@@@A@@@@C-----SLOPE WITH PLATEAU AT TOP     @ @@@@      DIMENSION X(N),Y(NGA
+)@@G@@)     @#@@@@      X(1)=0.0    @#@@@@      Y(1)=480.0  @#@@@@      DO 1 JGB
+)@@G@@=2,21 @^@@@@      X(J)=X(J-1)+1.0   @^@@@@      Y(J)=Y(J-1)+0.8   @#@@@@GC
+)@@G@@    1 CONTINUE    @#@@@@      DO 5 J=22,N @^@@@@      X(J)=X(J-1)+1.0   GD
+)@@G@@@#@@@@      Y(J)=Y(J-1) @#@@@@    5 CONTINUE    @]@@@@      RETURN@]@@@@GE
+)@@G@@      END   @[@@@@C     @A@@@@      SUBROUTINE PROFI2 (X,Y,N)     @F@@@@GF
+)@@G@@C-----STEEP CLIFF WITH LEVEL PLATFORM AT BASE AND PLATEAU AT TOP  @ @@@@GG
+)@@G@@      DIMENSION X(N),Y(N)     @#@@@@      X(1)=0.0    @#@@@@      Y(1)=4GH
+)@@G@@80.0  @#@@@@      DO 1 J=2,15 @^@@@@      X(J)=X(J-1)+1.0   @#@@@@      GI
+)@@G@@Y(J)=Y(J-1) @#@@@@    1 CONTINUE    @#@@@@      DO 2 J=16,23@^@@@@      GJ
+)@@G@@X(J)=X(J-1)+1.0   @^@@@@      Y(J)=Y(J-1)+2.5   @#@@@@    2 CONTINUE    GK
+)@@G@@@#@@@@      DO 3 J=24,N @^@@@@      X(J)=X(J-1)+1.0   @#@@@@      Y(J)=YGL
+)@@G@@(J-1) @#@@@@    3 CONTINUE    @]@@@@      RETURN@]@@@@      END   @[@@@@GM
+)@@G@@C     @A@@@@      SUBROUTINE PROFI3 (X,Y,N)     @E@@@@C-----HORIZONTAL PGN
+)@@G@@ROFILE, FOR MODELS INVOLVING DOWNCUTTING  @ @@@@      DIMENSION X(N),Y(NGO
+)@@G@@)     @#@@@@      X(1)=0.0    @#@@@@      Y(1)=500.0  @#@@@@      DO 1 JGP
+)@@G@@=2,N  @^@@@@      X(J)=X(J-1)+1.0   @#@@@@      Y(J)=Y(J-1) @#@@@@    1 GQ
+)@@G@@CONTINUE    @]@@@@      RETURN@]@@@@      END   @[@@@@C     @[@@@@C     GR
+)@@G@@@A@@@@      SUBROUTINE CUT1L (TY,YCUT1L)  @C@@@@C-----M O D E S  O F  D GS
+)@@G@@O W N C U T T I N G     @B@@@@C-----UNIFORM DOWNCUTTING AT LEFT END     GT
+)@@G@@@^@@@@      DIMENSION TY(1)   @^@@@@      TY(1)=TY(1)-YCUT1L@]@@@@      GU
+)@@G@@RETURN@]@@@@      END   @[@@@@C     @A@@@@      SUBROUTINE CUT1R (TY,YCUGV
+)@@G@@T1R,N)@B@@@@C-----UNIFORM DOWNCUTTING AT RIGHT END    @^@@@@      DIMENSGW
+)@@G@@ION TY(1)   @^@@@@      TY(N)=TY(N)-YCUT1R@]@@@@      RETURN@]@@@@      GX
+)@@G@@END   @[@@@@C     @C@@@@      SUBROUTINE CUT2L (TY,YCUT2L,XM1,YIC2L)    GY
+)@@G@@@A@@@@C-----WAXING DOWNCUTTING AT LEFT END@^@@@@      DIMENSION TY(1)   GZ
+)@@G@@@ @@@@      CUT=YCUT2L+XM1*YIC2L    @^@@@@      TY(1)=TY(1)-CUT   @#@@@@HA
+)@@G@@      XM1=XM1+1.0 @]@@@@      RETURN@]@@@@      END   @[@@@@C     @C@@@@HB
+)@@G@@      SUBROUTINE CUT2R (TY,YCUT2R,XMN,YIC2R,N)  @B@@@@C-----WAXING DOWNCHC
+)@@G@@UTTING AT RIGHT END     @^@@@@      DIMENSION TY(1)   @ @@@@      CUT=YCHD
+)@@G@@UT2R+XMN*YIC2R    @^@@@@      TY(1)=TY(1)-CUT   @#@@@@      XMN=XMN+1.0 HE
+)@@G@@@]@@@@      RETURN@]@@@@      END   @[@@@@C     @C@@@@      SUBROUTINE CHF
+)@@G@@UT3L (TY,YCUT3L,XM1,YDC3L)    @A@@@@C-----WANING DOWNCUTTING AT LEFT ENDHG
+)@@G@@@^@@@@      DIMENSION TY(1)   @ @@@@      CUT=YCUT3L-XM1*YDC3L    @^@@@@HH
+)@@G@@      TY(1)=TY(1)-CUT   @#@@@@      XM1=XM1+1.0 @]@@@@      RETURN@]@@@@HI
+)@@G@@      END   @[@@@@C     @C@@@@      SUBROUTINE CUT3R (TY,YCUT3R,XMN,YDC3HJ
+)@@G@@R,N)  @B@@@@C-----WANING DOWNCUTTING AT RIGHT END     @^@@@@      DIMENSHK
+)@@G@@ION TY(1)   @ @@@@      CUT=YCUT3R-XMN*YDC3R    @^@@@@      TY(N)=TY(N)-HL
+)@@G@@CUT   @#@@@@      XMN=XMN+1.0 @]@@@@      RETURN@]@@@@      END   @[@@@@HM
+)@@G@@C     @[@@@@C     @G@@@@      SUBROUTINE WEATH (BX,BY,C,W,WE,WE1,WE2,WE3HN
+)@@G@@,WCON,COPT,P,BED1L,BED1U@C@@@@     1,BED2L,BED2U,DIP,XLEFT,XRIGHT,ISTR,NHO
+)@@G@@)     @ @@@@C----- W E A T H E R I N G    @B@@@@      DIMENSION BX(N),BYHP
+)@@G@@(N),C(N),W(N)     @#@@@@      DO 320 J=1,N@E@@@@C-----IDENTIFICATION OF HQ
+)@@G@@EFFECT OF GEOLOGIC STRUCTURE, IF ANY@G@@@@      IF (ISTR.EQ.1) CALL STRUHR
+)@@G@@C1 (BX,BY,BED1L,BED1U,BED2L,BED2U,DIP,WE, @^@@@@     1WE1,WE2,WE3,J)    HS
+)@@G@@@F@@@@      IF (ISTR.EQ.2) CALL STRUC2 (BX,XLEFT,XRIGHT,WE,WE1,WE2,J)   HT
+)@@G@@@C@@@@C----RATE TWA FOR PURE MECHANICAL WEATHERING    @^@@@@      TWA=WEHU
+)@@G@@/EXP(C(J))  @A@@@@      IF (C(J).GT.COPT) GO TO 310   @C@@@@C-----RATE THV
+)@@G@@WB FOR PURE CHEMICAL WEATHERING     @D@@@@      TWB=WE*(1.0+WCON*C(J)/COHW
+)@@G@@PT-(C(J)/COPT)**2.0)    @#@@@@      GO TO 315   @A@@@@  310 TWB=WE*WCON/HX
+)@@G@@EXP(C(J)-COPT)    @#@@@@  315 CONTINUE    @G@@@@C-----RATE W(J) FOR ACTUHY
+)@@G@@AL WEATHERING AT POINT J, COMBINES TWA AND TWB  @E@@@@C     ACCORDING TOHZ
+)@@G@@ THE VALUE OF THE 'CLIMATIC' COEFFICIENT P@ @@@@      W(J)=P*TWA+(1.0-P)IA
+)@@G@@*TWB  @#@@@@  320 CONTINUE    @]@@@@      RETURN@]@@@@      END   @[@@@@IB
+)@@G@@C     @[@@@@C     @G@@@@      SUBROUTINE STRUC1 (BX,BY,BED1L,BED1U,BED2LIC
+)@@G@@,BED2U,DIP,WE,WE1,WE2,  @]@@@@     1WE3,J)@[@@@@C     @B@@@@C-----G E O ID
+)@@G@@L O G I C  S T R U C T U R E  @[@@@@C     @G@@@@C-----ONE OR TWO RESISTAIE
+)@@G@@NT BEDS AT ANY DESIRED ANGLE OF DIP (EXCEPT     @#@@@@C     VERTICAL)   IF
+)@@G@@@ @@@@      DIMENSION BX(1),BY(1)   @#@@@@C-----LOWER BED   @ @@@@      IG
+)@@G@@YBOT1=BED1L+DIP*BX(J)   @ @@@@      YTOP1=BED1U+DIP*BX(J)   @#@@@@C-----IH
+)@@G@@UPPER BED   @ @@@@      YBOT2=BED2L+DIP*BX(J)   @ @@@@      YTOP2=BED2U+II
+)@@G@@DIP*BX(J)   @A@@@@      IF (BY(J).GT.YTOP2) GO TO 360 @A@@@@      IF (BYIJ
+)@@G@@(J).LT.YBOT2) GO TO 355 @]@@@@      WE=WE3@#@@@@      GO TO 365   @A@@@@IK
+)@@G@@  355 IF (BY(J).GT.YTOP1) GO TO 360 @A@@@@      IF (BY(J).LT.YBOT1) GO TIL
+)@@G@@O 360 @]@@@@      WE=WE2@#@@@@      GO TO 365   @]@@@@  360 WE=WE1@#@@@@IM
+)@@G@@  365 CONTINUE    @]@@@@      RETURN@]@@@@      END   @[@@@@C     @D@@@@IN
+)@@G@@      SUBROUTINE STRUC2 (BX,XLEFT,XRIGHT,WE,WE1,WE2,J)@D@@@@C-----RESISTIO
+)@@G@@ANT ROCK MASS WITH VERTICAL BOUNDARIES    @^@@@@      DIMENSION BX(1)   IP
+)@@G@@@]@@@@      WE=WE2@A@@@@      IF (BX(J).LT.XLEFT) WE=WE1    @A@@@@      IQ
+)@@G@@IF (BX(J).GT.XRIGHT) WE=WE1   @]@@@@      RETURN@]@@@@      END   @[@@@@IR
+)@@G@@C     @[@@@@C     @E@@@@      SUBROUTINE FLOW1 (V,CC,FLU,COH,STAT,N,NOCUIS
+)@@G@@T,NRECUT,I) @[@@@@C     @D@@@@C-----D O W N S L O P E  W A S T E  T R A IT
+)@@G@@N S P O R T @[@@@@C     @F@@@@C-----POINT-TO-POINT TRANSFER BY VISCOUS-PIU
+)@@G@@LASTIC FLOW.  FLU IS A  @F@@@@C     FLUIDITY COEFFICIENT, AND COH IS A CIV
+)@@G@@OHESION COEFFICIENT.    @A@@@@      DIMENSION V(N),CC(N),STAT(N)  @#@@@@IW
+)@@G@@      DO 410 J=1,N@B@@@@      IF (CC(J).LE.0.01) STAT(J)=100.0    @B@@@@IX
+)@@G@@      IF (CC(J).GT.0.01) STAT(J)=COH/CC(J)@#@@@@  410 CONTINUE    @]@@@@IY
+)@@G@@      N1=N-1@^@@@@      DO 435 J=2,N1     @ @@@@      R=FLU*(V(J)-STAT(JIZ
+)@@G@@))    @A@@@@      RR=FLU*(ABS(V(J+1))-STAT(J))  @ @@@@      A=FLU*(V(J+1JA
+)@@G@@)-STAT(J+1))@A@@@@      AA=FLU*(ABS(V(J))-STAT(J-1))  @A@@@@      IF (V(JB
+)@@G@@J).GE.0.0) GO TO 420    @A@@@@      IF (V(J+1).LT.0.0) GO TO 415  @G@@@@JC
+)@@G@@C-----WASTE CONVERGING IN HOLLOW OF PROFILE, NO REMOVAL FROM POINT J    JD
+)@@G@@@A@@@@      IF (A.GT.CC(J+1)) A=CC(J+1)   @A@@@@      IF (AA.GT.CC(J-1))JE
+)@@G@@ AA=CC(J-1) @]@@@@      R=0.0 @]@@@@      RR=0.0@#@@@@      GO TO 430   JF
+)@@G@@@D@@@@C-----WASTE TO BE TRANSFERRED ON RIGHT-FACING SLOPE   @A@@@@  415 JG
+)@@G@@IF (RR.GT.CC(J)) RR=CC(J)     @A@@@@      IF (AA.GT.CC(J-1)) AA=CC(J-1) JH
+)@@G@@@]@@@@      R=0.0 @]@@@@      A=0.0 @#@@@@      GO TO 430   @A@@@@  420 JI
+)@@G@@IF (V(J+1).GE.0.0) GO TO 428  @E@@@@C-----WASTE TO BE REMOVED FROM SUMMIJJ
+)@@G@@T OF TWO-FACED PROFILE  @A@@@@      IF ((R+RR).LT.CC(J)) GO TO 425@^@@@@JK
+)@@G@@      R=R*CC(J)/(R+RR)  @#@@@@      RR=CC(J)-R  @]@@@@  425 A=0.0 @]@@@@JL
+)@@G@@      AA=0.0@#@@@@      GO TO 430   @D@@@@C-----WASTE TO BE TRANSFERRED JM
+)@@G@@ON LEFT-FACING PROFILE  @ @@@@  428 IF (R.GT.CC(J)) R=CC(J) @A@@@@      JN
+)@@G@@IF (A.GT.CC(J+1)) A=CC(J+1)   @]@@@@      RR=0.0@]@@@@      AA=0.0@#@@@@JO
+)@@G@@  430 CONTINUE    @ @@@@      IF (R.LE.0.0) R=0.0     @ @@@@      IF (RRJP
+)@@G@@.LE.0.0) RR=0.0   @ @@@@      IF (A.LE.0.0) A=0.0     @ @@@@      IF (AAJQ
+)@@G@@.LE.0.0) AA=0.0   @D@@@@C-----WASTE THICKNESS CHANGE DUE TO WASTE TRANSFJR
+)@@G@@ER    @ @@@@      CC(J)=CC(J)+A+AA-R-RR   @#@@@@  435 CONTINUE    @E@@@@JS
+)@@G@@C-----COMPUTATION OF WASTE TRANSFER AT RIGHT END OF PROFILE @A@@@@      JT
+)@@G@@IF (V(N).GE.0.0) GO TO 440    @A@@@@      RR=FLU*(ABS(V(N))-STAT(N))    JU
+)@@G@@@A@@@@      IF (RR.GT.CC(N)) RR=CC(N)     @ @@@@      IF (RR.LE.0.0) RR=JV
+)@@G@@0.0   @ @@@@      IF (I.LT.NOCUT) RR=0.0  @ @@@@      IF (I.GE.NRECUT) RJW
+)@@G@@R=0.0 @A@@@@      AA=FLU*(ABS(V(N))-STAT(N-1))  @A@@@@      IF (AA.GT.CCJX
+)@@G@@(N-1)) AA=CC(N-1) @ @@@@      IF (AA.LE.0.0) AA=0.0   @^@@@@      CC(N)=JY
+)@@G@@CC(N)+AA-RR @#@@@@      GO TO 445   @ @@@@  440 R=FLU*(V(N)-STAT(N))    JZ
+)@@G@@@ @@@@      IF (R.GT.CC(N)) R=CC(N) @ @@@@      IF (R.LE.0.0) R=0.0     KA
+)@@G@@@^@@@@      CC(N)=CC(N)-R     @#@@@@  445 CONTINUE    @E@@@@C-----COMPUTKB
+)@@G@@ATION OF WASTE TRANSFER AT LEFT END OF PROFILE  @ @@@@      R=FLU*(V(1)-KC
+)@@G@@STAT(1))    @ @@@@      IF (R.GT.CC(1)) R=CC(1) @ @@@@      A=FLU*(V(2)-KD
+)@@G@@STAT(2))    @ @@@@      IF (A.GT.CC(2)) A=CC(2) @ @@@@      IF (R.LE.0.0KE
+)@@G@@) R=0.0     @ @@@@      IF (A.LE.0.0)  A=0.0    @ @@@@      IF (I.LT.NOCKF
+)@@G@@UT) R=0.0   @ @@@@      IF (I.GE.NRECUT) R=0.0  @^@@@@      CC(1)=CC(1)+KG
+)@@G@@A-R   @]@@@@      RETURN@]@@@@      END   @[@@@@C     @D@@@@      SUBROUKH
+)@@G@@TINE WASH1 (V,CC,TW1,N,NOCUT,NRECUT,I)    @F@@@@C-----WASTE REMOVAL BY SKI
+)@@G@@IMPLE WASH, DEPENDENT UPON SINE OF SLOPE  @ @@@@      DIMENSION V(N),CC(KJ
+)@@G@@N)    @D@@@@C-----COMPUTATION OF REMOVAL AT RIGHT END OF PROFILE  @^@@@@KK
+)@@G@@      R=TW1*ABS(V(N))   @A@@@@      IF (V(N).GE.0.0) GO TO 455    @ @@@@KL
+)@@G@@      IF (I.LT.NOCUT) R=0.0   @ @@@@      IF (I.GE.NRECUT) R=0.0  @#@@@@KM
+)@@G@@  455 CONTINUE    @^@@@@      CC(N)=CC(N)-R     @A@@@@      IF (CC(N).LEKN
+)@@G@@.0.0) CC(N)=0.0   @]@@@@      N1=N-1@F@@@@C-----COMPUTATION OF REMOVAL AKO
+)@@G@@T ALL POINTS EXCEPT AT RIGHT END    @^@@@@      DO 480 J=1,N1     @A@@@@KP
+)@@G@@      IF (V(J).GE.0.0) GO TO 460    @A@@@@      IF (V(J+1).GE.0.0) GO TOKQ
+)@@G@@ 465  @A@@@@C-----REMOVAL ON RIGHT-FACING SLOPE @^@@@@      R=TW1*ABS(V(KR
+)@@G@@J+1)) @#@@@@      GO TO 475   @A@@@@  460 IF (V(J+1).GE.0.0) GO TO 470  KS
+)@@G@@@C@@@@C-----REMOVAL FROM SUMMIT OF TWO-FACED PROFILE  @B@@@@      R=TW1*KT
+)@@G@@(ABS(V(J))+ABS(V(J+1)))/2.0   @#@@@@      GO TO 475   @A@@@@C-----ACCUMUKU
+)@@G@@LATION IN SLOPE HOLLOW  @B@@@@  465 R=(-TW1)*(ABS(V(J))+ABS(V(J+1)))    KV
+)@@G@@@#@@@@      GO TO 475   @#@@@@  470 R=TW1*V(J)  @#@@@@  475 CONTINUE    KW
+)@@G@@@A@@@@C-----REMOVAL ON LEFT-FACING SLOPE  @ @@@@      IF (J.GT.1) GO TO KX
+)@@G@@478   @ @@@@      IF (I.LT.NOCUT) R=0.0   @ @@@@      IF (I.GE.NRECUT) RKY
+)@@G@@=0.0  @#@@@@  478 CONTINUE    @C@@@@C-----RECOMPUTATION OF WASTE COVER TKZ
+)@@G@@HICKNESS    @^@@@@      CC(J)=CC(J)-R     @A@@@@      IF (CC(J).LE.0.0) LA
+)@@G@@CC(J)=0.0   @#@@@@  480 CONTINUE    @]@@@@      RETURN@]@@@@      END   LB
+)@@G@@@[@@@@C     @F@@@@      SUBROUTINE WASH2 (TX,TY,V,CC,TW2,TWW2,ISID,N,NOCLC
+)@@G@@UT,NRECUT,I)@G@@@@C-----WASTE REMOVAL BY COMPLEX WASH, DEPENDENT UPON WALD
+)@@G@@STE COVER THICK-  @G@@@@C     NESS (CC), SINE OF SLOPE (V), AND DISTANCELE
+)@@G@@ FROM SUMMIT (DIST)     @B@@@@      DIMENSION TX(N),TY(N),V(N),CC(N)    LF
+)@@G@@@#@@@@      DO 500 J=3,N@B@@@@      IF (TY(J).GT.TY(J-1)) CREST=TX(J)   LG
+)@@G@@@#@@@@  500 CONTINUE    @D@@@@C-----COMPUTATION OF REMOVAL AT RIGHT END LH
+)@@G@@OF PROFILE  @^@@@@      TRW=TW2*CC(N)+0.01@^@@@@      TDIST=TX(N)-TX(1) LI
+)@@G@@@ @@@@      IF (ISID.EQ.2) GO TO 505@#@@@@      R=TRW*V(N)  @#@@@@      LJ
+)@@G@@GO TO 510   @ @@@@  505 DIST=(TX(N)-CREST)/TDIST@B@@@@      R=TRW*ABS(V(LK
+)@@G@@N))*(1.0+DIST**TWW2)    @A@@@@      IF (V(N).GE.0.0) GO TO 510    @ @@@@LL
+)@@G@@      IF (I.LT.NOCUT) R=0.0   @ @@@@      IF (I.GE.NRECUT) R=0.0  @^@@@@LM
+)@@G@@  510 CC(N)=CC(N)-R     @A@@@@      IF (CC(N).LE.0.0) CC(N)=0.0   @]@@@@LN
+)@@G@@      N1=N-1@F@@@@C-----COMPUTATION OF REMOVAL AT ALL POINTS EXCEPT AT RLO
+)@@G@@IGHT END    @^@@@@      DO 540 J=1,N1     @^@@@@      TRW=TW2*CC(J)+0.01LP
+)@@G@@@A@@@@      DIST=(ABS(TX(J)-CREST))/TDIST @A@@@@      IF (V(J).GE.0.0) GLQ
+)@@G@@O TO 515    @A@@@@      IF (V(J+1).GE.0.0) GO TO 520  @A@@@@C-----REMOVALR
+)@@G@@L ON RIGHT-FACING SLOPE @B@@@@      R=TRW*ABS(V(J+1))*(1.0+DIST**TWW2)  LS
+)@@G@@@#@@@@      GO TO 535   @A@@@@  515 IF (V(J+1).GE.0.0) GO TO 525  @C@@@@LT
+)@@G@@C-----REMOVAL FROM SUMMIT OF TWO-FACED PROFILE  @B@@@@      R=TRW*(ABS(VLU
+)@@G@@(J))+ABS(V(J+1)))/2.0   @#@@@@      GO TO 535   @A@@@@C-----ACCUMULATIONLV
+)@@G@@ IN SLOPE HOLLOW  @B@@@@  520 R=(-TRW)*(ABS(V(J))+ABS(V(J+1)))    @#@@@@LW
+)@@G@@      GO TO 535   @A@@@@C-----REMOVAL ON LEFT-FACING SLOPE  @A@@@@  525 LX
+)@@G@@R=TRW*V(J)*(1.0+DIST**TWW2)   @#@@@@  535 CONTINUE    @ @@@@      IF (J.LY
+)@@G@@GT.1) GO TO 538   @ @@@@      IF (I.LT.NOCUT) R=0.0   @ @@@@      IF (I.LZ
+)@@G@@GE.NRECUT) R=0.0  @#@@@@  538 CONTINUE    @C@@@@C-----RECOMPUTATION OF WMA
+)@@G@@ASTE COVER THICKNESS    @^@@@@      CC(J)=CC(J)-R     @A@@@@      IF (CCMB
+)@@G@@(J).LE.0.0) CC(J)=0.0   @#@@@@  540 CONTINUE    @]@@@@      RETURN@]@@@@MC
+)@@G@@      END   @[@@@@C     @B@@@@      SUBROUTINE SLIDL (TY,BY,CC,SLOP,J,N)MD
+)@@G@@@B@@@@C-----DEBRIS SLIDE ON LEFT-FACING SLOPE   @B@@@@      DIMENSION TYME
+)@@G@@(N),BY(N),CC(N),SLOP(N) @]@@@@      J1=J-1@^@@@@      DO 620 K=1,J1     MF
+)@@G@@@ @@@@C-----TEST FOR OVERSTEEPENING @A@@@@      SLOP(J+1-K)=TY(J+1-K)-TYMG
+)@@G@@(J-K) @B@@@@      IF (SLOP(J+1-K).LT.1.0) GO TO 620   @G@@@@C-----COMPUTMH
+)@@G@@ATION OF WASTE TRANSFER TO REDUCE WASTE SURFACE SLOPE TO    @#@@@@C-----MI
+)@@G@@45 DEGREES  @A@@@@      SY=(TY(J+1-K)-TY(J-K)-1.0)/2.0@^@@@@      TTY= TMJ
+)@@G@@Y(J+1-K)-SY @B@@@@      IF (TTY.GT.BY(J+1-K)) GO TO 605     @ @@@@      MK
+)@@G@@SY=TY(J+1-K)-BY(J+1-K)  @^@@@@      TTY=BY(J+1-K)     @^@@@@  605 TY(J+1ML
+)@@G@@-K)=TTY     @^@@@@      TY(J-K)=TY(J-K)+SY@A@@@@      SLOP(J+1-K)=TY(J+1MM
+)@@G@@-K)-TY(J-K) @A@@@@      SLOP(J-K)=TY(J-K)-TY(J-1-K)   @B@@@@      IF ((JMN
+)@@G@@-K).EQ.1) SLOP(1)=SLOP(2)     @C@@@@C-----RECOMPUTATION OF WASTE COVER TMO
+)@@G@@HICKNESS    @D@@@@      CC(J-K)=(TY(J-K)-BY(J-K))*COS(ATAN(SLOP(J-K)))  MP
+)@@G@@@E@@@@      CC(J+1-K)=(TY(J+1-K)-BY(J+1-K))*COS(ATAN(SLOP(J+1-K)))@#@@@@MQ
+)@@G@@  620 CONTINUE    @]@@@@      RETURN@]@@@@      END   @[@@@@C     @B@@@@MR
+)@@G@@      SUBROUTINE SLIDR (TY,BY,CC,SLOP,J,N)@B@@@@C-----DEBRIS SLIDE ON RIMS
+)@@G@@GHT-FACING SLOPE  @B@@@@      DIMENSION TY(N),BY(N),CC(N),SLOP(N) @]@@@@MT
+)@@G@@      J1=J-1@^@@@@      DO 650 K=1,J1     @ @@@@C-----TEST FOR OVERSTEEPMU
+)@@G@@ENING @B@@@@      IF (SLOP(J+1-K).GT.(-1.0)) GO TO 650@G@@@@C-----COMPUTMV
+)@@G@@ATION OF WASTE TRANSFER TO REDUCE WASTE SURFACE SLOPE TO    @#@@@@C-----MW
+)@@G@@45 DEGREES  @A@@@@      SY=(TY(J-K)-TY(J+1-K)-1.0)/2.0@^@@@@      TTY=TYMX
+)@@G@@(J-K)-SY    @A@@@@      IF (TTY.GT.BY(J-K)) GO TO 630 @^@@@@      SY=TY(MY
+)@@G@@J-K)-BY(J-K)@#@@@@      TTY=BY(J-K) @#@@@@  630 TY(J-K)=TTY @ @@@@      MZ
+)@@G@@TY(J+1-K)=TY(J+1-K)+SY  @A@@@@      SLOP(J-K)=TY(J-K)-TY(J-1-K)   @A@@@@NA
+)@@G@@      SLOP(J+1-K)=TY(J+1-K)-TY(J-K) @C@@@@C-----RECOMPUTATION OF WASTE CNB
+)@@G@@OVER THICKNESS    @D@@@@      CC(J-K)=(TY(J-K)-BY(J-K))*COS(ATAN(SLOP(J-NC
+)@@G@@K)))  @E@@@@      CC(J+1-K)=(TY(J+1-K)-BY(J+1-K))*COS(ATAN(SLOP(J+1-K)))ND
+)@@G@@@#@@@@  650 CONTINUE    @]@@@@      RETURN@[@@@@C     @G@@@@C-----BELOW NE
+)@@G@@FOLLOWS A LISTING OF ALL FLOATING-POINT CONSTANTS AND ALL   @G@@@@C     NF
+)@@G@@INTEGER CONSTANTS  IN THE SEQUENCE INDICATED BY WRITE (6,3) AND   @E@@@@NG
+)@@G@@C     WRITE (6,4) NEAR THE BEGINNING OF THE MAIN PROGRAM    @[@@@@C     NH
+)@@G@@@]@@@@      END   ___@@@      GO TO 535   @A@@@@C-----REMOVAL ON LEFT-FANI
+)@@G@@CING SLOPE  @A@@@@  525 R=TRW*V(J)*(1.0+DIST**TWW2)   @#@@@@  535 CONTINNJ
+)@@G@@UE    @ @@@@      IF (J.GT.1) GO TO 538   @ @@@@      IF (I.LT.NOCUT) R=NK
+)@@G@@0.0   @ @@@@      IF (I.GE.NRECUT) R=0.0  @#@@@@  538 CONTINUE    @C@@@@NL
+)@@G@@C-----RECOMPUTATION OF WASTE COVER THICKNESS    @^@@@@      CC(J)=CC(J)-NM
+)@@G@@R     @A@@@@      IF (CC(J).LE.0.0) CC(J)=0.0   @#@@@@  540 CONTINUE    NN
+)@@G@@@]@@@@      RETURN@]@@@@      END   @[@@@@C     @B@@@@      SUBROUTINE SNO
+)@@G@@LIDL (TY,BY,CC,SLOP,J,N)@B@@@@C-----DEBRIS SLIDE ON LEFT-FACING SLOPE   NP
+)@@G@@@B@@@@      DIMENSION TY(N),BY(N),CC(N),SLOP(N) :8@@@]/K@^KAC8)#M@:8@@@#NQ
+)@@G@@/K@^KAC8)#U@[C!@@@C8@@@D*@F)@@[?H@@@C@F)@@[OH)@@/SH)@@/K@^KLMORE THAN 40NR
+)@@G@@ KEYS C@@B5:%@F@@@/K@^J2C@@B=4[@H@@@C80B<D/,0[+@@@@@@@A]0^K1C@F@@@&#FK@[NS
+)@@G@@/,0];[R]0^K1/KF@@#/,0]/[A]0^K1*CF@@#*4F@@#/K@^K2C@F@@][@@^K$/,0]./@@@@@@NT
+)@@G@@R]0^K1[@@^K1&;@@@[NCK^K1^@VK@[R#V@@@&;K@@[M#W)@@/KF@@^@@@@@@C@@B5O'=@@@INU
+)@@G@@R]0^K1N@0B50'^@]YJ@@@@@]C@@A-$[@@B53C@)A-*[@)B54/,0[:@@@@B5;@@@B51@[FB6[NV
+)@@G@@*@@B*$/K@^L^C@@B5/[@@B*$/,0]-$@]@B5.@@@B*$@[IB6[@@]^LQC.)__"G[)A--R@KB5"NW
+)@@G@@[[)@[JC/[&<C'^K#YK8N0^LH'^@#YN/,0^KT@@@A<D@@@A--@[OB6[/K@^L^/,0]*@@[@B5.NX
+)@@G@@@[QB6[/,0[:@@@@B5;@@@B57@[RB6[/,0^KZ@[SB6[N@0^L-/K@^L+@[SB6[R]0B6]9!)B6#NY
+)@@G@@R@KB6 N#0B6A*4@R5_/K@R5_/K@]Z%AA0B6]9()B6#A@KB6 ^#0B6A/K@^K8C@@A-([@@B6DNZ
+)@@G@@C@)A-%[@)B6E/,0[:@@@@B6R@@@B6B@[FB6Y*@@B*$/K@^L'C@@B6S[@@B*$/,0^K)@@@A<DOA
+)@@G@@@@@B6G/K@^MG@[IB6Y/,0]XJ@[@B6T@@@B*$@[JB6YC.)__"G[)B6GR@KB6U[[)@[JC/[&<COB
+)@@G@@'^K#YK8N0^MB'^@#YN/K@^L'/,0#=W@[@B6T@[QB6Y/,0]*@@[@B6T@[RB6Y/,0[:@@@@B6ROC
+)@@G@@@@@B6I@[SB6Y/,0]XJ@[@B6R@@@B6N@[TB6Y'^@#YN/,0]X[@@@B6VN@0^MZ/K@^M)@[WB6YOD
+)@@G@@R]0B6Z9!)B6)R@KB6+N#0B6<*4@R6W/K@R6W/K@]Z%AA0B6Z9()B6)A@KB6+^#0B6</K@^L,OE
+)@@G@@C@@B8#'=@@@JC@@B8^'=@@@JR;@B6''=@@[GN8K@@[R#@A-:+8@@@^*@@@@HN8K@@]R;@^M9OF
+)@@G@@/K@^J N@@B6/^@@B7#2           @@@@@@@+@@@@@@[^NG2           @@@B9O@K@@@@OG
+)@@G@@@@@@@@2           @@@B9O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1^NL@@]^NKOH
+)@@G@@@@@@@@MOUNT NEXT INPUT TAPE ON REWINDING UNIT-ANSWER G0     @@@@@@@@@@@@OI
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@0@@@@@1@@@@@2@@@@@3@@@@@4@@@@@5@@@@@6@@@@@7OJ
+)@@G@@@@@@@8@@@@@9@@@@@0@@@@@=@@@@@ @@@@@ @@@@@ @@@@@ @@@@@+@@@@@A@@@@@B@@@@@COK
+)@@G@@@@@@@D@@@@@E@@@@@F@@@@@G@@@@@H@@@@@I@@@@@ @@@@@.@@@@@)@@@@@ @@@@@ @@@@@ OL
+)@@G@@@@@@@-@@@@@J@@@@@K@@@@@L@@@@@M@@@@@N@@@@@O@@@@@P@@@@@Q@@@@@R@@@@@ @@@@@$OM
+)@@G@@@@@@@*@@@@@ @@@@@ @@@@@ @@@@@ @@@@@/@@@@@S@@@@@T@@@@@U@@@@@V@@@@@W@@@@@XON
+)@@G@@@@@@@Y@@@@@Z@@@@@ @@@@@,@@@@@(@@@@@ @@@@@ @@@@@ @@@@@ @@@@@!@@@@@ @@@@@#OO
+)@@G@@@@@@@$@@@@@%@@@@@&@@@@@ @@@@@(@@@@@)@@@@@*@@@@@+@@@@@,@@@@@-@@@@@.@@@@@/OP
+)@@G@@@@@@@0@@@@@1@@@@@2@@@@@3@@@@@4@@@@@5@@@@@6@@@@@7@@@@@8@@@@@9@@@@@:@@@@@]OQ
+)@@G@@@@@@@<@@@@@=@@@@@>@@@@@?@@@@@ @@@@@A@@@@@B@@@@@C@@@@@D@@@@@E@@@@@F@@@@@GOR
+)@@G@@@@@@@H@@@@@I@@@@@J@@@@@K@@@@@L@@@@@M@@@@@N@@@@@O@@@@@P@@@@@Q@@@@@R@@@@@SOS
+)@@G@@@@@@@T@@@@@U@@@@@V@@@@@W@@@@@X@@@@@Y@@@@@Z@@@@@[@@@@@ @@@@@%@@@@@ @@@@@-OT
+)@@G@@@@@@@@@@@@@A@@@@@B@@@@@C@@@@@D@@@@@E@@@@@F@@@@@G@@@@@H@@@@@I@@@@@J@@@@@KOU
+)@@G@@@@@@@L@@@@@M@@@@@N@@@@@O@@@@@P@@@@@Q@@@@@R@@@@@S@@@@@T@@@@@U@@@@@V@@@@@WOV
+)@@G@@@@@@@X@@@@@Y@@@@@Z@@@@@ @@@@@A@@@@@B@@@@@C@@@@@D@@@@@E@@@@@F@@@@@G@@@@@HOW
+)@@G@@@@@@@I@@@@@ @@@@@.@@@@@)@@@@@(@@@@@+@@@@@ @@@@@ @@@@@J@@@@@K@@@@@L@@@@@MOX
+)@@G@@@@@@@N@@@@@O@@@@@P@@@@@Q@@@@@R@@@@@ @@@@@$@@@@@*@@@@@)@@@@@;@@@@@ @@@@@-OY
+)@@G@@@@@@@/@@@@@S@@@@@T@@@@@U@@@@@V@@@@@W@@@@@X@@@@@Y@@@@@Z@@@@@ @@@@@,@@@@@(OZ
+)@@G@@@@@@@-@@@@@ @@@@@ @@@@@0@@@@@1@@@@@2@@@@@3@@@@@4@@@@@5@@@@@6@@@@@7@@@@@8PA
+)@@G@@@@@@@9@@@@@:@@@@@#@@@@@@@@@@@'@@@@@=@@@@@ @@@@@&@@@@@1@@@@@2@@@@@3@@@@@4PB
+)@@G@@@@@@@5@@@@@6@@@@@7@@@@@8@@@@@9@@@@@0@@@@@=@@@@@'@@@@@:@@@@@>@@@@@@@@@@@ PC
+)@@G@@@@@@@/@@@@@S@@@@@T@@@@@U@@@@@V@@@@@W@@@@@X@@@@@Y@@@@@Z@@@@@_@@@@@,@@@@@(PD
+)@@G@@@@@@@%@@@@@\@@@@@"@@@@@-@@@@@J@@@@@K@@@@@L@@@@@M@@@@@N@@@@@O@@@@@P@@@@@QPE
+)@@G@@@@@@@R@@@@@!@@@@@$@@@@@*@@@@@]@@@@@;@@@@@^@@@@@+@@@@@A@@@@@B@@@@@C@@@@@DPF
+)@@G@@@@@@@E@@@@@F@@@@@G@@@@@H@@@@@I@@@@@?@@@@@.@@@@@)@@@@@[@@@@@<@@@@@#@@@@@[PG
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@PH
+)@@G@@CCJ@@D/@F@@@ ^G@@@;/J@@Q(CJ@@H/K@^SSRFZ@@HABH@@@[CJ@@H 4J@@Q/KF@@@[^J@@HPI
+)@@G@@[CJ@@H/K@^SQRFZ@@F;/H@@[RBH@@@/@@^S-C W@@@[ X@@@ 4H@@[/KF@@@;/J@@QRBJ@@HPJ
+)@@G@@/@@^S%RBW@@@/^K^S([CZ@@H[^Z@@H 4J@@Q/KF@@@RF\@@D CJ@@D/@:@@@RFJ@@F;/G@@[PK
+)@@G@@RBW@@@AB?@@@ABY@@@ 4G@@[/KF@@@O;@@@[;G@@@=W8@@@W*@@@@HO;@@@[[@J@@M/KF@@@PL
+)@@G@@R;@@@\A<J@@KN8V@@@/,0^UH/,0^S</@@^TA[@@@@I/,0^S,/K@^T[/,0^S? @J@@H CJ@@DPM
+)@@G@@ ^J@@AR]0@[[/KF@@@&FJ@@JQFJ@@I&A_@@F0CJ@@S/K@^T+*CJ@@S/K@^TV9?)^S^9!@^SAPN
+)@@G@@N@K^SCN@)^SDN@0^SER#K^S# 4@^S]/K@^T+QFZ@@S9?!@@[9!H@@#N@X@@ N@!@@AN@.@@BPO
+)@@G@@R#X@@@Q'0@@@/VF)@@&'0@@@/KF@@@&]0@@FQ]/@@@0@F@@S/K@^T6(CF@@S/K@^T,QE;@@SPP
+)@@G@@/K@^T0;/@^S]Q'0^S#A#V@@@9*:@@[9(F@@#^@V@@ ^@:@@A^@;@@BRB/@@@;@@@@MABJ@@FPQ
+)@@G@@;C@@@MQ'0@@@/VF)@@/KF@@@;/J@@QC9@@@[[>J@@KR;J@@@/C0^U  )J@@N 4J@@Q'=@@@PPR
+)@@G@@ 4J@@Q'=@@@]/KF@@@;/J@@Q =J@@K )J@@N 4J@@Q/KF@@@;/J@@Q*=J@@K/K@^UM 4J@@QPS
+)@@G@@/KF@@@C9@@@[[-J@@N 4J@@Q()J@@N/KF@@@0@J@@#'=@@@AC5J@@#!9@@@K:9@@@)/K@^UPPT
+)@@G@@'=@@@)/,0^U)/,0^U)R;:@@@H8)@@[C8@@#0+CI@@@;CK@@^RBI@@@H8@^UY;@@@@ZO;H@@@PU
+)@@G@@0GI@@@O;@@@K&;W@@@/G0^U,/K@^U7A7J@@#A$J@@B/,0^UC'=@@@DCDJ@@C&7Z@@#QFJ@@IPV
+)@@G@@&FJ@@J/K@^U8C J@@C&]0@@KQBZ@@FR$\@@B =J@@BA$\@@N0@J@@S/K@^VI*CJ@@S/K@^VCPW
+)@@G@@9?)^S^9!@^SAN@K^SCN@)^SDN@0^SE 4@^S]/K@^VIQE_@@S9?:@@[9!F@@#N@V@@ N@:@@APX
+)@@G@@N@;@@BQ'0@@@/VF)@@(@@@@F'=@@@)&'0@@@/KF@@@/,0^UH&FJ@@JQFJ@@IC J@@DR$Z@@BPY
+)@@G@@%8K@@K/K@^VX&;K@@[/K@^V:%8K@@^/K@^V-&;K@@A/K@^U8%8K@@)/K@^V>&;K@@A/K@^U7PZ
+)@@G@@:8K@@[/K@^U2C9X@@@&7Z@@#%9K@@]/K@^U7/K@^U8@@@@@K@@@@@@@@@@@@@W[^V1@@@@@@QA
+)@@G@@*4J@@A'-@^UYR<J@@B%8@@@+'-)^UY*?J@@N/K@^WS/,0^S?/\@^Y1/,0^W2 ?J@@NR$J@@BQB
+)@@G@@/@@^TG%8@@@K/K@^VOC8@@@)A\J@@A/K@^VO(4J@@A/K@^W(/,0^XH/,0^UH/,0^XM/,0^S?QC
+)@@G@@/,0^*I/^@^TG'+K^UY CJ@@LR$J@@B/^@^WU/,0^XH/,0^UH/,0^W2C8@@@[[?J@@N/K@^TGQD
+)@@G@@A]0@[]C1J@@#:9@@@C/K@^W/R#J@@MO#J@@ A#J@@ /\@^Y1/K@^W/A]0@[]/,0^- /,0^UHQE
+)@@G@@C@J@@GO;@@@[[@J@@GC)J@@KH8@@@[[)J@@K/K@^XBA]0@[]/,0^UH/,0^S<[CJ@@DR#W@@[QF
+)@@G@@/,0^*SR]0@[]/KF@@@R;@^&/[^J@@]C8@@@C[WJ@@#/K@^T.C4J@@A%8@@@['-@^UY 4J@@AQG
+)@@G@@R<J@@B/)@^XWC8@@@)A\J@@AC@J@@P[@J@@ /KF@@@()J@@B'-0^UYC9W@@@*4J@@A/,0^XMQH
+)@@G@@R#@@@LC(J@@B>9@@@['+@^UYN@?@@]^@\@@GN??@@@/KI@@@&#@@@F/,0^T&/\)^XXR\J@@AQI
+)@@G@@:8@@@)/K@^X5%8@@@-'<K^UY/,0^Y!/,0^X8/K@^W(/,0^UH/,0^Y!/K@^&# =J@@B1@J@@RQJ
+)@@G@@*@J@@R/KF@@@R#J@@ %@J@@P/K@^Y]R;@@@KA$J@@B/K@^VO!@J@@P'+)^UY/KF@@@&#@@@FQK
+)@@G@@/,0^T&/\)^XXR\J@@A=8@@@]/K@^YY:8@@@-/K@^YS(4J@@K'<)^UY/,0^S./,0^Y!/,0^- QL
+)@@G@@/,0^UHC^J@@A ^J@@A/,0^SI/,0^X /K@^Y*CDJ@@LRBJ@@F*@@@[]AFJ@@L*@@@@K/,0^Y5QM
+)@@G@@/,0^S.R\J@@A[)J@@K%8@@@- )J@@K/,0^Y!/,0^X8/,0^- /,0^X  ?J@@NR$J@@B/@@^TGQN
+)@@G@@:8@@@[/K@^U2/K@^TGC[J@@MT[J@@G[[J@@ /KF@@@(CJ@@L/KG@@@R'/@@@ CJ@@LC9@@@QQO
+)@@G@@[XJ@@#R;J@@@'=@@@#/KF@@@C9@@@[[(E@@BC[@^Z6[[E@@EC[@^Z7[[E@@R;D@@@G[[E@@PQP
+)@@G@@/GH@@@Q;@^5;C9@@@JC9K@@Z,5G@@A/KH@@@CDE@@Y?9@@@ /K@^Z!G9@@@[N@K@@KCDJ@@BQQ
+)@@G@@;H@@@=W[@@[[N@K@@KCDJ@@B;H@@@=W9@@@W*@@@@LG9@@@[C9K@[@*?G@@AC9K[@@T W@@CQR
+)@@G@@N@)@@K @@@@KW[@@[]H9@@@[T[@@[[R]0@@K;H@@@=*^E@[MW9@@@ P'0@@[A]'@[^P]0@@KQS
+)@@G@@A]'@@6P'0@@[A]'@@4NWW@@^^WY@@]^WU@@4/KH@@@R;@@K]/K@^/$C9@@@[[(E@@BC[@^Z7QT
+)@@G@@[[E@@R;D@@@G[[E@@P/KH@@@1HDR  ______&#@@@F/,0^T&R\J@@A:8@@@-/K@^WI*4J@@AQU
+)@@G@@'-@^UY:8@@@)')@=UY(CJ@@D/K@^)D/,0^S?;/J@@QC)Z@@KH8K@@[[)Z@@K/K@^)E;/J@@QQV
+)@@G@@R'0^)O(^J@@H/K@^)J 4J@@Q/K@^)O*=J@@K/K@^UM 4J@@Q/,0^- /,0^UH/,0^S</^@^)TQW
+)@@G@@(=J@@B/K@^)O/K@^VO[CJ@@D(4@^=I/K@^)*R#Z@@^A#K^=IP;K@@[ABZ@@^RFZ@@^P;K@@[QX
+)@@G@@AFZ@@^RBZ@@#P;K@@[ABZ@@#AFW@@[ 4@^=IRFW@@@()J@@BA3Z@@KR#W@@[/,0^*SC@Z@@GQY
+)@@G@@O;K@@[[@Z@@G(=J@@B/K@^)5*^J@@H/K@^TG/K@^VO;/J@@QR$J@@K 4J@@Q/^@^TG/,0^)_QZ
+)@@G@@/K@^TG/,0^SV/@@^TG/,0^-H/K@^TG*=J@@B/KF@@@C0J@@A?)J@@K/KF@@@/KF@@[N8V@@@RA
+)@@G@@C9@@@[/,0^SV/^@^-I0@J@@#'=@@@A8^@^-B'+K^UYA]0@[[ABJ@@AC9@^+IC!Z@@A:9K@@)RB
+)@@G@@C9@^&/[ J@@]&FJ@@BK8@@@]()J@@B/K@^-8A#W@@[0@J@@ /K@^-&1@J@@R*@J@@R/K@^-?RC
+)@@G@@C@J@@ %@J@@P/K@^-?(4J@@K/K@^-&R\J@@A:8@@@)/K@^-?C8@@@KA$J@@BC^J@@A ^J@@ARD
+)@@G@@R]0@[[/K@^SI[^Z@@^CCJ@@BR:Z@@B>8K@@[O;@@@[[CJ@@^R;K@@P(CJ@@LR;K@@K[WZ@@#RE
+)@@G@@R]0@[[/K@^T.C!J@@A%9@@@]/K@^-"A#W@@[[@Z@@^/K@^-4OFZ@@BH@K^=J[@Z@@^ABW@@[RF
+@EOF
+@COPY,IO  TEMP.1022-001-001,1022-001-001.
+@FREE     TEMP.

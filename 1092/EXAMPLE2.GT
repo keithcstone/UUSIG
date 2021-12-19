@@ -1,0 +1,111 @@
+@G.GT,LM G.EXAMPLE2/ECL
+
+RONCO's Scan-O-Matic - 2R1, 10/02/91  13:51:57
+*REMARK - *******************
+*REMARK - This Version of Scan-O-Matic is Beta Test only!
+*REMARK - Please report descrepancies to Tech Staff, Rick Ireland, 6-3043
+*REMARK - Include all listings generated, and file name of ECL scanned.
+*REMARK - This version of Scan-O-Matic was written IAW UP-11563.6, ECL Guide.
+*REMARK - N Option - Suppresses all output listings.
+*REMARK - S Option - Generates short listing of ECL and Errors (Default).
+*REMARK - L Option - Generates Summary Tables along with short listings.
+*REMARK - M Option - Verifies input against MCT, MFD and STAR-1100.
+*REMARK - T Option - Scans an # sign as an @ sign - used during Testing.
+*REMARK - A Option - Suppresses File Assigned/Not Assigned Messages.
+*REMARK - H Option - SUPPRESSES THIS HELP BLURB.
+*REMARK - Standard SIR$ options apply (I,U,E...)
+*REMARK - (NOTE: Options D,V,W,X,Y and Z are for Testing Only,
+*REMARK - and generate a large, meaningless volume of output)
+*REMARK - *******************
+*REMARK - Summary Tables On.
+*REMARK - Media Listing On.
+      1             @RUN,A/JKL RELOAD,DCPRODX,DC-MUP3,999,999
+      2             @BK11  . DOESN'T KNOW WHAT TO PROCESS
+*WARNING 303 :   2.4 Period missing from file name.
+      3             @UTIL*PGM.PRTBIG
+      4             @HDG
+*WARNING 206 :   4.2 Text or Message Missing... (!)
+      5             @TEST TX/0  . INVALID TEST OPERATOR
+*ERROR   446 :   5.5 Entire Test Operand has Invalid Format.
+*WARNING 210 :   5.5 Invalid Comments - Use Space-Period-Space Sequence.
+      6             @JUMP BAX   . NO WHERE TO JUMP TO, NO WHERE TO HIDE
+      7             @ASG,AX      IRS*RLIB.
+      8             @ASG,AX      IRS*PLIB     . NO PERION ON FILENAME
+*WARNING 303 :   8.17 Period missing from file name.
+      9             @ASG,TF      SYS$*SYS$BACKUP$.,U9K,I12342   . INVALID DEVICE
+*ERROR   304 :   9.29 Invalid entry for Device ID.
+*WARNING 210 :   9.29 Invalid Comments - Use Space-Period-Space Sequence.
+     10             @CAT,Z       IRS*NEWMERGE.,F70M///100,REMH1
+     11             @USE,Z       TAPE.,SYS$*SYS$BACKUP$. . NO OPTIONS FOR THIS COMMAND
+*WARNING 204 :   11.25 The Option <Z> Does Not Apply to This Control Statement.
+     12             @FREE        TPF$.
+     13             @ASG,T       TPF$.,//TRL/5000      . INVALID GRANULARITY
+*ERROR   306 :   13.19 Invalid entry for Granularity - POS or TRK only.
+*WARNING 210 :   13.19 Invalid Comments - Use Space-Period-Space Sequence.
+     14             @ERS,Z       TPF$.
+     15             @COPY,G      TAPE.,IRS*RLIB. . TAPE IS CONSIDERED DISC BY ERROR ABOVE...
+*ERROR   395 :   15.24 Files Specified Cannot be Both Tape or Disc.
+     16             @COPY,G      TAPE.,IRS*PLIB.
+*ERROR   395 :   16.24 Files Specified Cannot be Both Tape or Disc.
+     17             @UOM*ABS.TIME,ABC
+     18             @XQT,XYZ   UOM*ABS.MERGEFILES
+     19             IRS*RLIB.
+     20             IRS*PLIB.
+     21             IRS*NEWMERGE.
+     22             @EOF
+     23             @UOM*ABS.TIME,R
+     24             @FREE        TAPE.
+     25             @FREE        IRS*RLIB.
+     26             @FREE        IRS*PLIB.
+     27             @JUMP        ALDONE .
+     28             @BAD:ASG,AX  IRS*XLIB.
+     29             @ASG,TF      TAPE.,U9S,X12342
+     30             @COPY,G      TAPE.,IRS*XLIB.
+     31             @FREE        TAPE.
+     32             @FREE        IRS*XLIB.
+     33             @ALDONE:BK2 PR
+     34             @FIN
+*WARNING 403 :   Label BAX    Line 6 Referenced but Not Defined!
+*WARNING 404 :   Label BAD    Line 28 Defined but Never Referenced!
+
+----------------------------------------------------------------------
+ FILE ACCESS CROSS REFERENCE LISTING
+----------------------------------------------------------------------
+   1. DC-MUP3     *PRINT$      (  0) ASSIGN DISC   TEMP   TUVXY
+   2. DC-MUP3     *TPF$        (  0) ASSIGN DISC   TEMP   T
+   3. DC-MUP3     *DIAG$       (  0) ASSIGN DISC   TEMP   TUVXY
+   4. UTIL        *PGM         (  1) ASSIGN DISC   EXISTS
+   5. IRS         *RLIB        (  1) FREED  DISC   EXISTS AX
+   6. IRS         *PLIB        (  1) FREED  DISC   EXISTS AX
+   7. DC-MUP3     *TAPE        (  0) FREED  TAPE   TEMP   FT
+   8. IRS         *NEWMERGE    (  1) ACCESS DISC   NO MFD Z
+   9. UOM         *ABS         (  1) ASSIGN DISC   EXISTS
+  10. IRS         *XLIB        (  1) FREED  DISC   NO MFD AX
+
+----------------------------------------------------------------------
+ LABEL CROSS REFERENCE LISTING
+----------------------------------------------------------------------
+   1. BAX       0D         6
+   2. ALDONE   33D        27
+   3. BAD      28D     ... No References
+
+----------------------------------------------------------------------
+ USE NAME CROSS REFERENCE LISTING
+----------------------------------------------------------------------
+   1. TAPE        ...   DC-MUP3     *TAPE         (  0)
+
+----------------------------------------------------------------------
+ LOCAL PROGRAMS REFERENCE LISTING
+----------------------------------------------------------------------
+   1. PRTBIG       Process                       UTIL        *PGM
+   2. TIME         Process  ABC                  UOM         *ABS
+   3. MERGEFILES   Program  XYZ                  UOM         *ABS
+
+----------------------------------------------------------------------
+ MEDIA ACCESS CROSS REFERENCE LISTING
+----------------------------------------------------------------------
+   1. F70M    REMH1   Pass
+   2. U9S     X12342    FAIL
+
+END - Scan-O-Matic    5 Errors    9 Warnings    34 Lines Scanned
+

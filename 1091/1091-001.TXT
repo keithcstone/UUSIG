@@ -1,0 +1,1808 @@
+@ELT,IQD UUSIG*1091-001-001.INSTALL/DOC,,SENT,,DOC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    LOOKPRINT$ Installation and Maintenance
+
+                                    Manual
+
+
+
+
+
+
+                                Peter G. Madsen
+                              MAPPER Coordinator
+
+
+                             FREDERICK and NELSON
+                                (206) 235-8844
+
+
+
+
+
+
+
+                                    10/18/91
+10/18/91                                                             Page   2
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+                               TABLE OF CONTENTS
+
+1.   SYSTEM SUMMARY.....................................................  3
+1.1.     PURPOSE........................................................  3
+1.2.     NOMENCLATURE...................................................  3
+1.3.     TASKS AND PROCEDURES...........................................  3
+1.4.     DATA BASE DESCRIPTION..........................................  3
+1.5.     SYSTEM ACCESS..................................................  4
+1.5.1.       WHO USES THE SYSTEM........................................  4
+1.5.2.       SECURITY RESTRICTIONS......................................  4
+
+2.   INSTALLATION OF THE SYSTEM.........................................  5
+2.1.     GENERATION OF A DRAWER.........................................  5
+2.2.     COPY THE DISKETTE FILES........................................  5
+2.2.1.   DISKETTE CONTENTS..............................................  6
+2.3.     TRANSLATING THE RUNS AND TABLES................................  6
+2.4.     RUN REGISTRATION...............................................  7
+2.4.1.   SENDPRINT$ REGISTRATION........................................  7
+2.4.2.   LOOKPRINT$ REGISTRATION........................................  7
+2.4.3.   FORMPRINT$.....................................................  8
+2.4.4.   MREGPRINT$ REGISTRATION........................................  8
+2.4.5.   REGPRINT$ REGISTRATION.........................................  8
+2.4.6.   CALLED SUBROUTINE 7B...........................................  8
+2.4.7.   CALLED SUBROUTINE 10B..........................................  9
+2.4.8.   CALLED SUBROUTINE 13B..........................................  9
+2.4.9.   SCREEN 5B......................................................  9
+2.4.10.  SCREEN 11B.....................................................  9
+2.4.11.  SCREEN 14B.....................................................  9
+2.5.     TABLES.........................................................  9
+2.5.1.   INDEX REPORT...................................................  9
+
+3.   OPERATION OF THE SYSTEM............................................ 10
+3.1.     EXECUTING REGPRINT$............................................ 10
+3.2.     EXECUTING MREGPRINT$........................................... 10
+3.3.     MISCELLANEOUS NOTE............................................. 10
+
+10/18/91                                                             Page   3
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+
+1.   SYSTEM SUMMARY
+
+
+1.1.     PURPOSE
+This document provides the some of the knowledge required to install,
+register, and maintain the LOOKPRINT$ system.  The target audience is MAPPER
+Coordinators.  A separate document, called LOOKPRINT$ User Manual, describes
+the operation of the LOOKPRINT$ system.
+
+The LOOKPRINT$ system is named after the principal run used to access the
+PRINT$ listings.
+
+
+1.2.     NOMENCLATURE
+First we should make note of the terms used in this document.  All OS-1100
+runs are called "jobs" to distinguish them from MAPPER runs.  In practice, we
+also use the term "job" to refer to the name given to a PRINT$ when it is
+registered.  We use the term "register a job" to describe the process by which
+we identify a job and the parameters for its storage.  Jobs are registered.
+
+
+1.3.     TASKS AND PROCEDURES
+Two categories of tasks are described below -  1) the installation and 2) the
+registration of jobs once the system is in place.
+
+Several steps are involved in the installation of this system.  The process is
+not automated but neither is it complicated.  First a cabinet must be assigned
+and a drawer generated for the runs.  Next, the runs must be loaded and
+registered.  Last, some sample PRINT$s must be registered and tested.
+
+The "daily maintenance" procedures consists of registering new PRINT$s.  The
+registration process may include selection  of a drawer for storage.  The
+registration request procedure performed by the end user (programmer or
+analyst) is described in the user manual.
+
+
+1.4.     DATA BASE DESCRIPTION
+The data base requirements are extremely simple.  The system requires a
+minimum of one 132 character wide FCS drawer.  Additional drawers (also 132
+chars, FCS) will be required when the system is accepted by your users; plan
+ahead.  We suggest you assign a full cabinet (or set of cabinets) and reserve
+a few files.  Factors that will determine the number of drawers required at
+your site are: the number of batch jobs, their execution frequency, and how
+many copies are retained.  Initial response at Frederick and Nelson was low
+key, followed by exponential growth as the concept was accepted.  We are now
+back to modest linear growth.
+
+
+10/18/91                                                             Page   4
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+1.5.     SYSTEM ACCESS
+
+1.5.1.       WHO USES THE SYSTEM
+The principal users of the LOOKPRINT$ system at Frederick and Nelson are data
+center personnel.  The heavy users are our programming staff and those
+responsible for monitoring production jobs.
+
+
+1.5.2.       SECURITY RESTRICTIONS
+The MAPPER coordination staff controls the LOOKPRINT$ system at our site.  We
+do not anticipate that this will change since the the system can have a large
+impact on disk use.  You may consider assigning the job registration function
+to another DP organization such as Production Control or Data Control.
+
+The Operations staff and the Production Control staff have access to all
+PRINT$s.  All other users are restricted to jobs registered under their MAPPER
+department number.
+
+The end user is never allowed update access to the PRINT$s.
+
+
+10/18/91                                                             Page   5
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+2.   INSTALLATION OF THE SYSTEM
+
+Installation of the system can be separated into four steps.  You will first
+create a drawer for the runs and the initial data.  Next you will copy the
+diskette files to your MAPPER system.  Third, you store and register the
+runs.  Fourth, you store the tables.
+
+You will also be required to provide a name for your system.  At Frederick and
+Nelson, we have two copies installed.  The first is called the LOOKPRINT$
+system and is primarily for PRINT$ listings.  The second copy is called the
+LOOKREPORT system and is used for storing user reports.
+
+After installation you will create some test jobs and register them.  Last,
+you declare victory and let a couple of your best users pilot the new system.
+
+
+2.1.     GENERATION OF A DRAWER
+The runs will execute, without modification, anywhere in the system.  Choose a
+cabinet and generate a drawer for the runs.  Generate it 132 characters wide,
+with a an FCS character set, and no edits (line 32 of RID 0 must be blank).
+If you limit the drawer to less than 2000 RIDs, then you must revise the
+called routine 7B.
+
+Data storage drawers can also be generated to these specifications.  The first
+drawer may serve as your first PRINT$ storage drawer.  Be careful to generate
+the drawer in a file that can accept a lot of RIDs - a new file should be
+considered.
+
+Note: If you choose to use the run drawer for data storage also, you must
+change the value of the <minrid> variable in the called routine (7B).  See the
+run description section for 7B for further details.
+
+
+2.2.     COPY THE DISKETTE FILES
+This you must do with the tools available at your site and your own wits.
+
+The software resides in MS-DOS diskette ASCII files.  Copy the files into your
+MAPPER system by any means available to you.
+
+The names of the file indicate the original RID.  Place them into the
+equivalent RID in the drawer you created above.  You can change the drawer
+without modifying the runs.  If you change the RID NUMBER, then you will need
+to make changes to variables (these required changes are noted in the runs).
+
+The TXT files are manuals.  Copy them into a word processor file for revision
+and publication.
+
+10/18/91                                                             Page   6
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+2.2.1.   DISKETTE CONTENTS
+The files which reside on the diskette are:
+
+     FILE    TYPE    FUNCTION
+     ------  ------  -------------------------------
+     1B      Run     SENDPRINT$
+     2B      Table   Index of PRINT$ locations
+     3B      Run     LOOKPRINT$
+     4B      Table   Description of fields in 2B.
+     5B      Screen  Help for FORMPRINT$.
+     6B      Run     FORMPRINT$.
+     7B      Run     called subroutine.
+     8B      Run     MREGPRINT$.
+     9B      Run     REGPRINT$.
+     10B     Run     called subroutine.
+     11B     Screen  for called subroutine in 10B.
+     13B     Run     called subroutine.
+     14B     Screen  for called subroutine in 13B.
+
+     INSTALL.TXT is the file that contains this document.  It describes
+     installation and maintenance of the system.
+
+     USERMAN.TXT is a text file that contains the User Manual for SENDPRINT$
+     and LOOKPRINT$ runs.
+
+
+To assist in diagnosing possible data transfer problems, here is how the files
+were created.  First each report was processed by a run that performed the
+@LCH command to change tabs to a right brace (}) character.    The result was
+printed with an AUX command on an OFIS Link PC which captured all the reports
+in a text file.  The text file was split into separate files (and page eject
+characters removed) with a word processor called PC Write.
+
+The manuals where written in OFIS Link and printed to an ASCII file.  The
+output was cleaned up with PC Write to eliminate printer specific control
+characters.
+
+
+2.3.     TRANSLATING THE RUNS AND TABLES
+When you retrieve each file into MAPPER, you must process it with two CHG
+commands.  Change all right braces (}) to tab characters.  Remember that the
+CHG command does not change characters in the headers.  Before replacing the
+RID, remove the ".DATE" and "..... END REPORT ....." lines.  These lines were
+left in the the ASCII files for identification.  A wise person would perform a
+BLT function before storing the RID.
+
+When you copy the files to the your run drawer, each file should be placed in
+the RID corresponding to the number in the file name.
+
+10/18/91                                                             Page   7
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+2.4.     RUN REGISTRATION
+
+2.4.1.   SENDPRINT$ REGISTRATION
+This is the batch port run that processes the PRINT$ as it comes into MAPPER.
+
+Register the SENDPRINT$ run (1B) in department 104, executable by a user
+called BPORT-104.  Provide access to all cabinets that may contain PRINT$s.
+At our site, we gave access to all cabinets.  Limits on IOs and LLPs is a
+matter for your review - when one of these limits is exceeded, the  PRINT$ is
+tossed in the bit bucket.  At what size PRINT$ do you wish this to happen?
+
+The run is restricted from storing RIDs in in cabinets 200-310.  You may wish
+to change that code.
+
+You must also register user BPORT-104 with a password of BPORT.  You may elect
+something else, in which case you must update the user manual to reflect the
+proper user-id and password.
+
+At the end of the run is a documentation result which displays when the user
+executes the run as follows:  SENDPRINT$,HELP.  You should rewrite this result
+to meet your site's standards and procedures.
+
+At label 002 is a subroutine that contains the RID numbers of all non-
+registered subroutines and screens.  With the exception of the FORMPRINT$ help
+screens (5B) this is the only place you must make changes if you plan to move
+RIDs around.
+
+
+2.4.2.   LOOKPRINT$ REGISTRATION
+This run provides on-line access to the PRINT$s.
+
+Register the LOOKPRINT$ run (3B) in your master run registration department.
+Provide access to all cabinets where PRINT$s may be registered.
+
+At the end of this run is a documentation result that is displayed when the
+user executes the run as follows:  LOOKPRINT$,HELP.  You should rewrite this
+result to meet your site's standards and procedures.
+
+
+10/18/91                                                             Page   8
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+2.4.3.   FORMPRINT$
+This run creates a PRINT$ registration form and sends it to the user in charge
+of the PRINT$ system.  FORMPRINT$ CALLs the 10B RID which in turn uses 11B.
+
+Register the FORMPRINT$ run (6B) in the master run registration department.
+Provide access to the cabinet it is registered in.
+
+Update the "duty roster" with the user(s) in charge of registration at your
+site.  The delivered run shows two people who alternate "on call" duties based
+on the day of the month.
+
+
+2.4.4.   MREGPRINT$ REGISTRATION
+This run registers PRINT$s listed in a registration request form created by
+FORMPRINT$.  MREGPRINT$ CALLs the 7B RID.  Originally the "MREG" stood for
+multiple registration but at our site it become known as "mega-reg" during the
+time when we converted the bulk of our jobs.
+
+Register the MREGPRINT$ run (8B) in the department of, and restricted to, the
+person assigned to control the job registration process.
+
+MREGPRINT$ CALLs 7B so the actual registration code is common with REGPRINT$.
+
+
+2.4.5.   REGPRINT$ REGISTRATION
+This run provides a method of registering PRINT$s one at a time.  The run
+CALLs the 7B RID.
+
+Register the REGPRINT$ run (9B) in the department of, and restricted to, the
+person assigned to control the job registration process.
+
+REGPRINT$ CALLs 7B so the actual registration code is common with MREGPRINT$.
+
+
+2.4.6.   CALLED SUBROUTINE 7B
+This routine the the code that performs the actual registration for the two
+runs which call it (REGPRINT$ and MREGPRINT$).
+
+This RID is not registered; its location is defined at label 002 in SENDPRINT$
+(1B).  This routine is called by REGPRINT$ and MREGPRINT$.
+
+SPECIAL NOTICE:  A mechanism was created to avoid registering a PRINT$ that
+will be stored in RIDs reserved for runs or tables (RIDs 1-20).  The variable
+<minrid> is used to establish the minimum allowed RID.  The run contains a
+commented line that should be activated (take the period off) when you
+register the first PRINT$ in the drawer where the runs reside.  Once
+registration is complete for the first PRINT$, the line can be commented out
+again to allow complete use of other data storage drawers.
+
+
+10/18/91                                                             Page   9
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+2.4.7.   CALLED SUBROUTINE 10B
+This is the job menu routine for the LOOKPRINT$ run.  This RID is not
+registered; its location is defined at label 002 in SENDPRINT$ (1B).
+
+
+2.4.8.   CALLED SUBROUTINE 13B
+This is the date and time window routine for the LOOKPRINT$ run.  This RID is
+not registered; its location is defined at label 002 in SENDPRINT$ (1B).
+
+
+2.4.9.   SCREEN 5B
+The HELP screens for FORMPRINT$ reside here.  The location of this report is
+defined at label two in SENDPRINT$ (1b).  There are also internal references,
+to this rid, on the DSPFORM commands in 5B.
+
+
+2.4.10.  SCREEN 11B
+This is the job menu screen for the jobs menu routine in 10B.  Its location is
+defined at label 002 in SENDPRINT$ (1B).
+
+
+2.4.11.  SCREEN 14B
+This is the date and timewindow screen for the date and time routine in 13B.
+Its location is defined at label 002 in SENDPRINT$ (1B).
+
+
+2.5.     TABLES
+
+2.5.1.   INDEX REPORT
+The PRINT$ index (2B) is where the locations of the PRINT$ reports are
+recorded.  It is where PRINT$s are registered by MREGPRINT$ and REGPRINT$ and
+where SENDPRINT$ looks to determine where to place an incoming PRINT$.
+SENDPRINT$ increments the "current" RID through the circular list defined by
+the LOW and HIGH fields.
+
+The time stamp of the most recently received item is recorded in the table; it
+is only used for displaying the latest activity on the job menu (in
+LOOKPRINT$).
+
+Documentation for this report is found in 4B.
+
+10/18/91                                                             Page  10
+Rev. 16              LOOKPRINT$ Installation and Maintenance
+______________________________________________________________________________
+
+
+3.   OPERATION OF THE SYSTEM
+
+
+Only the instructions for the registration functions are described here.
+Instructions for using the system (from the programmer's perspective) are in a
+separate document (USERMAN.TXT).
+
+
+3.1.     EXECUTING REGPRINT$
+This run adds one line at the top of the PRINT$ index (2B).  It uses MAPPER 35
+screen commands to build the input screen.  The input screen includes a help
+function (F8) to describe each input field.  Before executing this run, you
+should read the "REGISTERING JOBS" section of the user manual.
+
+To operate it, start the run, fill in the form and transmit.  The screen will
+be erased when the job is registered.  You may then register another PRINT$ or
+press function key 10 to stop the run.
+
+
+3.2.     EXECUTING MREGPRINT$
+When you receive the registration request from FORMPRINT$, mode switch to 0
+and duplicate the message.
+
+Check the report for completeness and ensure that the "ERR FLD" and "ERROR"
+fields are blank.
+
+If the requestor left the mode and type fields blank, you will have to fill in
+these values.  If you wish to review the highest registered RIDs in
+production, enter "LOOKPRINT$,TYPES".
+
+Display the request form and execute the MREGPRINT$ run.  Each line will be
+read and the PRINT$ registered.
+
+When the request form is re-displayed, check the "ERR FLD" and "ERROR"
+fields.  "ERR FLD" will display the field number if an error occurs and
+"ERROR" will hint at the problem.
+
+
+3.3.     MISCELLANEOUS NOTE
+When registering a PRINT$, you have the option of having SENDPRINT$ initiate a
+run each time that PRINT$ is received.  The optional run must be registered
+for use by BPORT-104.  You should review this matter for compliance with your
+own security policy.
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.USERMAN/DOC,,SENT,,DOC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    LOOKPRINT$
+
+                                    User Manual
+
+
+
+
+
+
+                                  Peter G. Madsen
+                                MAPPER Coordinator
+
+
+                               FREDERICK and NELSON
+
+
+
+
+
+
+
+
+                                     08/21/91
+08/21/91                                                               Page   2
+Rev. 48                              LOOKPRINT$
+_________________________________________________________________________________
+
+
+                                 TABLE OF CONTENTS
+
+1.  OVERVIEW OF THE SYSTEM...................................................  3
+
+1.1.     WHO CAN USE THE SYSTEM..............................................  4
+1.2.     REGISTERING JOBS....................................................  4
+1.2.1.   REGISTRATION FORM...................................................  4
+
+
+2.  OPERATION OF SENDPRINT$ AND LOOKPRINT$...................................  5
+
+2.1.     SENDING THE PRINT$ FILE TO MAPPER...................................  5
+2.1.1.        BUILDING YOUR ECL..............................................  5
+2.1.2.        SAMPLE ECL.....................................................  5
+2.1.3.        BUILDING YOUR ECL IN MAPPER....................................  6
+2.1.4.        EXAMPLE MAPPER CODE............................................  6
+
+
+3.  VIEWING STORED PRINT$ LISTINGS...........................................  7
+
+
+08/21/91                                                               Page   3
+Rev. 48                              LOOKPRINT$
+_________________________________________________________________________________
+
+
+
+
+1.  OVERVIEW OF THE SYSTEM
+
+This system, called LOOKPRINT$ (or SENDPRINT$) makes it possible to easily send
+job listings to MAPPER terminals or to the MAPPER data base.  People who use this
+system can reduce printing expenses and paper storage.  They also have on-line
+access to their PRINT$s via a menu.
+
+By including a simple ECL addition, a PRINT$ is sent to MAPPER rather than the
+printer.  With proper placement of the @SYM statement, you can choose to have
+aborted jobs produce printed listings.  You may also print the PRINT$ through
+standard MAPPER functions.
+
+A MAPPER run called SENDPRINT$ handles the incoming PRINT$ and sends it to a
+station or stores it in a registered location.  When registering a job in the
+SENDPRINT$ list, you may specify the number of retained cycles and retention
+days.  The number of retained PRINT$s should reflect the frequency of inquiry.
+
+You may also instruct SENDPRINT$ to initiate a MAPPER run which will process the
+PRINT$ or perform a given task each time the batch job is run.
+
+A MAPPER run called LOOKPRINT$ provides access to the stored PRINT$ reports.  Each
+job is registered to a specific MAPPER department and access is restricted to
+users in that department.  To assist in selecting a PRINT$, LOOKPRINT$ provides a
+menu of job names and job descriptions.
+
+
+08/21/91                                                               Page   4
+Rev. 48                              LOOKPRINT$
+_________________________________________________________________________________
+
+
+1.1.     WHO CAN USE THE SYSTEM
+
+One of our goals for this system was to have few restrictions.
+
+Any person with authority to create and execute batch jobs can send their ECL
+listings to MAPPER.  You can send a PRINT$ to your MAPPER station without
+registering it.
+
+If you wish to automatically save the PRINT$, you must have the MAPPER Coordinator
+register the job (see "REGISTERING JOBS").
+
+All MAPPER users can run LOOKPRINT$ but people only have access to PRINT$s
+registered in their current department.  This reduces the size of job menus and
+provides a measure of security.
+
+
+1.2.     REGISTERING JOBS
+
+The MAPPER staff will register jobs for you.  Both production and test (personal)
+jobs can be registered.
+
+To make this task simple for both you and the MAPPER support people, we created a
+run for entering the information required to register a job.
+
+1.2.1.   REGISTRATION FORM
+
+To display the registration form (report), enter FORMPRINT$ and transmit.  The
+report contains the following fields:
+
+    DEPT:     MAPPER department of users who will use LOOKPRINT$
+    JOB NAME: Unique job identifier
+    MOD:      Mode (cabinet) where data is to be placed (optional)
+    T:        Type (drawer) where data is to be placed (optional)
+    RIDS:     Number of Reports to keep (number of cycles)
+    RUN:      Name of MAPPER run which will process the PRINT$ (optional)
+    SAV DAY:  Number of days that the PRINT$ is safe from deletion
+              (the default is seven days at our site)
+    COMMENTS: Description of job for LOOKPRINT$ menu
+
+When you are finished entering the required information, press function key 1 (F1)
+to send it to the MAPPER staff.  The run will send the request to the person on
+duty for registering PRINT$s.  He or she will notify you when the registration is
+complete.
+
+08/21/91                                                               Page   5
+Rev. 48                              LOOKPRINT$
+_________________________________________________________________________________
+
+
+2.  OPERATION OF SENDPRINT$ AND LOOKPRINT$
+
+
+2.1.     SENDING THE PRINT$ FILE TO MAPPER
+
+This section describes ECL requirements and how to direct your PRINT$ to a MAPPER
+terminal and/or save it.
+
+
+2.1.1.        BUILDING YOUR ECL
+
+Examine the sample ECL below.  It contains two parameters for which you may
+provide values.  The parameters are called <station> and <job>.
+
+The <station> parameter may be up to four (4) characters long and must be
+numeric.  If a valid station number (also called UNIT or PID) is entered, the
+PRINT$ file will be sent to the station.  If the station number is not valid, the
+file will be sent to the MAPPER Coordinator's station.  If the station number is
+not to be used, then just enter the comma to terminate the parameter (spaces are
+not allowed).
+
+The <job> parameter is used to identify a storage location to receive the PRINT$
+listing.  Before this parameter can be used, the job name must be registered by
+the MAPPER Coordinator.  The job name must be unique and we advise you to make it
+the same as, or similar to, the batch run id.
+
+The <station> parameter takes precedence over the <job> parameter.
+
+The second @MSG,N command and the ENDRD$ line terminate the scan of the batch port
+queue by the batch port process.  If the @MSG,N/ENDRD$ sequence is not included,
+extra lines may occasionally be appended to the end of your PRINT$.  The extra
+lines are the lines preceding the BPRUN$ in the next file queued to MAPPER's batch
+port.  The lines are harmless but occasionally raise a question about their
+origin.
+
+
+2.1.2.        SAMPLE ECL
+
+  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+  ³@RUN             <===== Your run card goes here                           ³
+  ³@MSG,N ;                                                                  ³
+  ³BPRUN$ SENDPRINT$,<station>,<job>  BPORT-104,104,BPORT  000,OPEN,F        ³
+  ³@SYM     PRINT$.,,MAPPER                                                  ³
+  ³ .                                                                        ³
+  ³ .               <===== Put ECL for your job here                         ³
+  ³ .                                                                        ³
+  ³@MSG,N ;                                                                  ³
+  ³ENDRD$                                                                    ³
+  ³ .               <===== Move the SYM statement down here if you want the  ³
+  ³                        PRINT$ printed in case the job aborts             ³
+  ³@FIN                                                                      ³
+  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                                 2-1   Sample ECL
+
+
+08/21/91                                                               Page   6
+Rev. 48                              LOOKPRINT$
+_________________________________________________________________________________
+
+
+2.1.3.        BUILDING YOUR ECL IN MAPPER
+
+With the SENDPRINT$ run, it is convenient to start batch jobs from MAPPER and have
+the listing returned to the station that initiated the job.
+
+To accomplish this, your MAPPER run must capture the station number and insert it
+into the ECL.  Refer to the example below which illustrates the following four
+steps:
+
+    First, compose and store your ECL in a MAPPER report.  Use the the sample ECL,
+    shown above, as a guide.  In the BPRUN$ statement, substitute the character
+    string "#unit" for the <station> parameter and leave the <job> parameter
+    blank.  The RID with the ECL  must have proper MAPPER headers for the LCH
+    command to work.
+
+    Second, in the MAPPER run which starts the batch job, insert code similar to
+    the example MAPPER code shown below.
+
+    Third, execute the MAPPER run.  The ECL will be executed and the PRINT$ will
+    be routed back to MAPPER.
+
+    Fourth, press the Message Waiting key when the terminal beeps.
+
+
+2.1.4.        EXAMPLE MAPPER CODE
+
+In this sample, replace the "m,t,r" in the LCH command with the location of the
+report containing your ECL.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³@    Ldv,w <station>i4=STNUM$ .                  Capture the station number   ³
+³@    Ldv,p <station>=<station> .                 Remove any spaces            ³
+³@    Lch,m,t,r AF 2-79  '#unit'/<station> .      Insert station number        ³
+³@    Ln-,-0,2,4 .                                Remove headers               ³
+³@    Str,-0 .                                    Initiate the batch job       ³
+³@    Brk,0,a .                                   Display a start message and  ³
+³                                                                              ³
+³     The job has been started.                                                ³
+³     You will receive a message when it is complete.                          ³
+³                                                                              ³
+³@    Gto End .                                   Terminate the run            ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                             2-2   Example MAPPER code
+
+
+08/21/91                                                               Page   7
+Rev. 48                              LOOKPRINT$
+_________________________________________________________________________________
+
+
+3.  VIEWING STORED PRINT$ LISTINGS
+
+A.  Sign on to MAPPER.
+
+B.  On the top line, enter "LOOKPRINT$" and transmit.
+
+    A menu of all jobs registered in your MAPPER department will appear.
+
+    To bypass the menu, you may enter "LOOKPRINT$,job".
+
+C.  If the job you want is shown, tab to it and transmit.
+
+    The most recently stored PRINT$ will be displayed.  If more than one PRINT$ is
+    retained in MAPPER, the function keys can be used to display earlier or later
+    listings.  Since the PRINT$s are in a circular list, the RollFw and RollBk
+    functions will wrap around when they reach the end of the list.  For example,
+    with the most recent PRINT$ in display, you go direct to the oldest PRINT$ by
+    selecting the RollFw function key.
+
+    When you are done, press function key 10, then sign off of MAPPER.
+
+D.  To limit the jobs appearing on the menu, you may tab to the LOCATE field and
+    enter a string of characters which appear in the menu lines desired.  You may
+    enter a portion of the job name, a word in the description, or a portion of
+    the time stamp (Last run).  Press transmit after entering your locate
+    parameter.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³                                                                                ³
+³ ___________________________________ PRINT$ ___________________________________ ³
+³|Locate:                                                  Last run             |³
+³|   PETER        Personal test job for Madsen             910729 120502        |³
+³|   SALLY        Personal test job for Coates             910811 120601        |³
+
+
+³|   JOHN         Personal test job for Ahlers             910315 120523        |³
+³|                                                                              |³
+³|                                                                              |³
+³|______________________________________________________________________________|³
+³ 1       2RollFw 3RollBk 4Menu   5       6       7       8Help   9      10Quit  ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                           3-1   Sample LOOKPRINT$ menu
+
+
+Functions:
+(F2)  RollFw - Advances the PRINT$ menu to the next screen of jobs.
+(F3)  RollBk - Returns the PRINT$ menu to the previous screen of jobs.
+(F4)  Menu   - Returns to entire list of PRINT$s if a subset was selected.
+(F8)  Help   - Displays message to select a job by pressing transmit.
+(F10) QUIT   - Terminates the run.
+
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.1B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:40  RID      1B   18 OCT 91  MADSEN
+.@991231 RUN: SENDPRINT$                                          Author: Madsen
+*PURPOSE: Send the PRINT$ to a terminal
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+:L1=11,2=18,3=26,90=80,120=87,130=88,140=89,150=90,161=95,162=98,163=101,164=104,165=107,169=110,170=117,180=123
+@    Rnm -1 .                                   }Save result while setting up
+@    Rsr 001 .                                  }Application wide variables
+@    Gto 003 .                                  }Skip over subroutine
+@.   *** Application wide variables             }
+@001 Rsr 002 .                                  }Application RID variables
+@    Dvs,ETYPE$,<prindex> \                     }
+       'DEPT','JOB','MOD','T','RID','LOW','HIGH','RUN','SAV',\
+       'COMMENTS','DATE','TIME' \
+       <dept>i,<job>a,<mode>i,<type>a,<rid>i,<low>i,<high>i,<run>h,<sav>i,\
+       <com>s,<date>a,<time>a .
+@    Esr .                                      }
+@002 Ldv <prindex>i4=0002 .                     }PRINT$ Index
+@    Ldv <regrun>i4=0007 .                      }Registration Subroutine
+@    Ldv <joblov>i4=0010 .                      }Job List of values routine
+@    Ldv <jobscrn>i4=0011 .                     }Job List of values screen
+@    Ldv <timelov>i4=0013 .                     }Time List of values routine
+@    Ldv <timescrn>i4=0014 .                    }Time List of values screen
+@    Esr .                                      }
+@.                                              }
+@003 Chg INPUT$ <station>i5,<job> .             }Station, Job from run call
+@    Chg INPUT$ <help>h4 .                      }Access Help Documentation
+@    If <help> = '?','HELP',(180) .             }HELP = Display documentation
+@.                                              }
+@    Dc  D1=TODAY;T2=TIME  <date>,<time> .      }Time stamp for receiving PRINT$
+@    Dc  D2=D1(<date>);T0=T2(<time>) <titledt>a9,<titletm>a8 .}For title line
+@    Ldv <sflag>a6='' .                         }Blank save flag
+@    Lzr,-1  <brksiz>i6 .                       }Establish result size
+@    Brk,ETYPE$,<brksiz> .                      }132 char wide FCS
+@.   *** Next we create a header to identify the PRINT$
+@.   *** (if this is changed - save room for save flag)
+.        Job: <job>                                     Station:<station>
+*
+*                    SENDPRINT$ Completion Notification
+*===============================================================================
+@    Rdc,-1,2,,,050  1-132 <string>s .          }Load PRINT$ into output area
+<string>
+@    Brk,0,F,<brksiz> .                         }Prepare for optional run
+@    Rnm -1 .                                   }PRINT$ with standard header
+@.
+@.   *** Presence of STATION over-rides job registration
+@    If <station> NE 0,(120) ; .                }Station?
+@.
+@.   *** If job is blank or wrong then print the result and tell coord.
+@    If <job> = '',(170) ; .                    }Is there a job name?
+@    Lok,ETYPE$,<prindex> .                             }Exclusive use of LIST
+@    Fdr,ETYPE$,<prindex>,,,170 '' 'JOB' },<job>  ,<line>i6 .   }Locate job
+@    Rln   'MOD','T','RID','LOW','HIGH','RUN','SAV','COMMENTS' \  }Found it
+           <mode>,<type>,<rid>,<low>,<high>,<run>,<sav>,<com> .}
+@    If <mode> NE '' If <type> NE '' Lzr,<mode>,<type>,0,165 ; .}Type exist?
+@.
+@.   *** At Frederick and Nelson, modes 300-310 are OFIS Link Modes ***
+@    If <mode> GE 200 IF <mode> LE 310  Gto 164 ; .}Never touch system modes
+@.                                              }
+@.   *** Check the List for uncorrectable errors before storing the PRINT$
+@    If <rid>  =  0 If <low>  = 0 If <high> = 0 If <run> = '' Gto 163 ; . OK?
+@    If <low>  NE 0 If <high> = 0 Gto 162 ; .    }High OK?
+@    If <high> NE 0 If <low>  = 0 Gto 161 ; .    }Low OK?
+@    If <rid>  =  0 Chg <rid> <high> ; .         }Missing RID is correctable
+@.
+@    If <rid>  =  0,(090) ; .                    }Do we store the PRINT$?
+@    If <low>  GT 0 Inc <rid> .                         }RID of next PRINT$
+@    If <high> GT 0 If <rid> GT <high> Chg <rid> <low> .}But not too high
+@    Wrl,ETYPE$,<prindex>,<line>  \                     }Time stamp &
+         'RID','DATE','TIME' },<rid>,<date>,<time> .    }Last RID used
+@    Ulk .                                      }We are done now
+@    Rep,-1,<mode>,<type>,<rid> .               }So we store it
+@    If <sav> LE 0,(090) ; .                    }Skip update if no save flag
+@    Dc D1=TODAY+<sav> <sflag> .                }Save flag is required
+@    Lok,<mode>,<type>,<rid> .                  }Lock for save flag
+@    Wrl,<mode>,<type>,<rid>,2 2-7 .,@<sflag> . }Put save flag on it
+@    Ulk .                                      }
+@.
+@.   *** Do we execute a run for this PRINT$?
+@090 If <run> = '',(140) ; .                    }Stop if no run for the data
+@    Rdc,-0,6,,,140 1-132 <string> .            }Data Only and create -0 for run
+<string>
+@    Brk .                                      }PRINT$ in MODE 0 for run
+@    Ldv,p <run>,<job> .                        }Pack for run statement
+@    Run <run>,<job> .                          }Process the data further
+@.   ***  We will send the message to a terminal
+@120 Stn,<station>,150 .                        }Is the station valid?
+@130 Sen,-1,<station> .                         }Send message to original term
+@140 Gto End .                                  }
+@150 Ldv,w <station>=COORD$ .                   }Bad station so send to coord
+@    Gto 130 .                                  }
+@.                                              }
+@.   *** Various error messages which are sent to the Coordinator
+@.                                              }
+@161 Brk,0,a .                                  }
+               Low RID for range is missing.
+@    Gto 169 .
+@162 Brk,0,a .
+               High RID for range is missing.
+@    Gto 169 .
+@163 Brk,0,a .
+          The RID and Range and Run are all missing.
+@    Gto 169 .
+@164 Brk,0,a .
+          The Mode is restricted for use by SENDPRINT$.
+@    Gto 169 .
+@165 Brk,0,a .
+       The Mode and Type (<mode> <type>) does not exit.
+@    Gto 169 .
+@169.                                           }
+     The above error was detected in the SENDPRINT$ List.
+     SENDPRINT$ job = <job>
+@    Brk .                                      }
+@    Sen,-0,COORD$ .                            }Send to Coordinator station
+@    Gto End .                                  }
+@.   *** An unregistered job name was received. Print it and tattle to Coord.
+@170 Prt,-1,N,0,PR,1,N,1,<JOB> .                }Print on system printer
+@    Brk,0,A .                                  }Notify the Coordinator
+               Unregistered job was sent to SENDPRINT$.
+   The PRINT$ was printed on the system printer with a banner of <JOB>(1-9)
+@    Gto 169 .                                  }
+@.   *** Documentation via SENDPRINT$,HELP      }
+@180 Brk,0,a .                                  }
+.
+.
+.  SENDPRINT$ Documentation:
+.
+.  Documentation for the PRINT$ set of runs may be found in the OFIS Link
+.  on-line HELP file.
+.
+.  To access this document sign on to OFIS Link and look at your host file
+.  list.  Display the document list for the HELP file and select the user
+.  manual for LOOKPRINT$.
+.
+.
+@    Gto End .                                  }
+
+.VARIABLE TABLE
+*    Name    .Vnum.Sq.            Line  Numbers            .      Comment
+*============.====.==.=====================================.====================
+}prindex     }V001}01}18i                                  }PRINT$ Index
+}regrun      }V002}01}19i                                  }Registration routine
+}dept        }V003}01}15i                                  }Department
+}job         }V004}01}15a                                  }PRINT$ name
+}mode        }V005}01}15i                                  }PRINT$ Mode
+}type        }V006}01}15a                                  }PRINT$ Type
+}rid         }V007}01}15i                                  }PRINT$ RID
+}run         }V008}01}15h                                  }Run to execute
+}sav         }V009}01}15i                                  }Days to save PRINT$
+}com         }V010}01}16s                                  }Comment on Menu
+}low         }V011}01}15i                                  }Low RID in range
+}high        }V012}01}15i                                  }High RID in range
+}station     }V013}01}26i                                  }Unit to SEND to
+}help        }V014}01}27h                                  }Help documentation
+}date        }V015}01}16a                                  }Time stamp in Index
+}time        }V016}01}16a                                  }Time stamp in index
+}brksiz      }V017}01}33i                                  }Size of result
+}sflag       }V018}01}32a                                  }Save flag
+}titledt     }V019}01}31a                                  }Date in title
+}titletm     }V020}01}31a                                  }Time in title
+}string      }V021}01}41s                                  }Line buffer (RDC)
+}line        }V022}01}52i                                  }Line number
+}joblov      }V023}01}20i                                  }Job List of Values
+}jobscrn     }V024}01}21i                                  }Job LOV screen
+}timelov     }V025}01}22i                                  }Time List of Values
+}timescrn    }V026}01}23i                                  }Time LOV screen
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.2B,,SENT,,ELT
+.DATE 18 OCT 91  17:09:17  RID      2B   18 OCT 91  MADSEN
+.@991231 SENDPRINT$ Data Locations                                      MODE   8
+*                                                    SAV.
+*DEPT.JOB NAME    .MOD.T.RID . LOW.HIGH. RUN        .DAY. COMMENTS                               . DATE . TIME .
+*====.============.===.=.====.====.====.============.===.========================================.======.======.====================
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.3B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:41  RID      3B   18 OCT 91  MADSEN
+.@991231 RUN: LOOKPRINT$                                          Author: Madsen
+*PURPOSE: View SENDPRINT$ reports
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+:L10=30,20=34,30=36,35=38,40=41,60=46,70=51,100=65,110=68,120=69,150=72,155=82,170=90,180=95,181=97,190=107
+@    Rsr,ETYPE$,1 001 .                         }Application wide variables
+@    Chg INPUT$ <job> .                         }Fast access or help option
+@    If <job> = ?,HELP,(190) ; .                }Go display help
+@    Ldv,wr <dept>=DEPN$ .                      }Department number
+@    Chg <start>i6 6 .                          }First line to look at
+@.   *** BEGIN OF LOCAL CODE *************************************************
+@    If CPRIV$ = 1  If <job> = LIST,(180) ; .   }Access to the JOB LIST
+@    If CPRIV$ = 1  If <job> = TYPES,(170) ; .  }Access to the TYPE SUMMARY
+@.   *** Blanked out departments have access to all PRINT$s
+@    If CPRIV$ = 1  Ldv <dept>='' ; .           }COORDINATOR
+@    IF <DEPT> = 4  LDV <DEPT>='' ; .           }PRODUCTION CONTROL
+@    IF <DEPT> = 8  LDV <DEPT>='' ; .           }COMPUTER OPERATIONS
+@.   *** END OF LOCAL CODE ***************************************************
+@    Brk,0,a .                                  }Function Bar definition
+fkey,2,RollFw,KEY
+fkey,3,RollBk,KEY
+fkey,4,Menu,KEY
+fkey,5,DatTim,KEY
+fkey,10,Quit,^
+@    Brk .                                      }
+@    Rnm -3 .                                   }Function Bar definition
+@.                                              }
+@    If <job> = '',(100) ; .                    }No quick access so show menu
+@010 Fdr,ETYPE$,<prindex>,,,100 '' 'DEPT','JOB' },<dept>,<job> .}Valid job?
+@    Rln  'MOD','T','RID','LOW','HIGH','COMMENT' \
+          <mode>,<type>,<rid>,<low>,<high>,<com> .
+@    Inc <mode> .                               }Read only for all PRINT$s
+@020 Lzr,<mode>,<type>,<rid>,070 .              }Is it there?
+@    Rnm,<mode>,<type>,<rid> -2 .               }DSP must also work for errors
+@030 Fky,-3 .                                   }Function bar
+@    Dsp,-2 .                                   }Show RID or Error message
+@035 If FKEY$ = 2,(060),3,(040),4,(100),5,(150) ; .}Forward Back or Menu
+@    Gto 030 .                                  }Not a valid option - redisplay
+@.   *** Point to previous (earlier) PRINT$     }
+@040 If <low> = 0,(030) .                       }Are there multiple rids?
+@    Dec <rid> .                                }Point to previous rid
+@    If <rid> LT <low>  Chg <rid> <high> ; .    }Circular list - wrap backward
+@    Gto 020 .                                  }Show it
+@.   *** Point to next (later) PRINT$           }
+@060 If <high> = 0,(030) .                      }Are there multiple rids?
+@    Inc <rid> .                                }Point to next rid
+@    If <rid> GT <high>  Chg <rid> <low> ; .    }Circular list - wrap forward
+@    Gto 020 .                                  }Show it
+@.                                              }
+@070.                                           }Missing RID
+                            LOOKPRINT$
+     Job: <job>                    Mode: <mode>   RID: <rid><type>
+          <com>
+
+                      The report does not exist.
+
+     The report may have been removed because it had no save date
+     or it may never have existed.
+
+@    Brk .
+@    Rnm -2 .
+@    Gto 030 .                                  }Show it
+@.                                              }
+@100 If <dept> NE '',(110) ; .                  }Restricted to dept?
+@    Srh,ETYPE$,<prindex>,,,181 DN@ 'JOB' },@@@@@@@@@@@@ ,<maxlins>i6 .}Nope
+@    Gto 120 .                                  }
+@110 Srh,ETYPE$,<prindex>,,,181 D 'DEPT' },<dept> ,<maxlins>i6 .}Restricted
+@120 Call,ETYPE$,<joblov> 100 (<job>) .         }Jobs Menu
+@    Gto 010 .                                  }Display the job
+@.                                              }
+@150 Idu,<mode>,<type>,1,ALL,,,<low>,<high> <nbrrpts>i4 .}Build list of RIDS
+@    If <nbrrpts> GT 0,(155) ; .                }Any reports found?
+@    Fky,-3 .                                   }Function bar
+@    Dsp,-2,,,,,,\                              }Show RID or Error message
+'                 < No reports found for the job '<job>' >' .
+@.   SC,,,,,,0 ic \                             }No other reports found msg
+@.      MSG,1,E,,TIC$'< No reports found for job '<job>' >'TIC$ .
+@.   Wat 1500 .                                 }Wait a bit then
+@.   Gto 030 .                                  }re-display
+@    Gto 035 .                                  }Re-edit
+@155 Loc,-0 AFMo 2-131 lines .                   }Remove blank lines
+@    Dat,-0 '' 'CreateDate','UpdateDate' },C,B= .}We need to sort on YYMMDD
+@    Sor,-0 '' 'UpdateDate','Time'  },1D,2D .    }Youngest at the top
+@    Call,ETYPE$,<timelov> 001 (<rid>,<job>) .   }Select a time stamp
+@    Rnm,<mode>,<type>,<rid> -2 .                }Point to selected report
+@    Gto 030 .                                   }Display it
+@.
+@.
+@170 Cnt,ETYPE$,<prindex>  ''  'MOD','T','RID','HIGH'  },1,2,>,> .
+@    Cal,-0  ''  'RID','HIGH'  },R,H  H=MAX(R,H);R,e=0 .
+@    Dsx,-0 .                                   }
+@.                                              }
+@.                                              }
+@180 Dsx,ETYPE$,<prindex> .                     }Index available only to COORD
+@.                                              }
+@181 Brk,0,a .                                  }
+
+                          LOOKPRINT$  Error
+
+     No PRINT$s are registered in your MAPPER department.
+
+     A possible reason for this condition is that you may be in the
+     wrong department.  You are currently in department <dept> .
+
+@    Gto End .                                  }
+@190 Brk .                                      }
+                  Instructions for LOOKPRINT$
+
+   LOOKPRINT$ is used to display PRINT$ listings that have been routed to
+   MAPPER for storage.  The run allows you to look at all jobs registered
+   in your MAPPER department.
+
+   There are two methods of executing the LOOKPRINT$ run.  The first method
+   is to enter "LOOKPRINT$" on the command line.  This will result in a menu
+   of jobs registered in your department.
+
+   The fast access method is to start the run using this format:
+
+              LOOKPRINT$,job
+
+              where "job" is the name your PRINT$ is registered under.
+
+   Once a job is on display, you can look forward or back in the stack of
+   listings (if more than one copy is retained).  Use the function keys
+   (F1 and F2) to go back and forward.  You may use standard MAPPER functions
+   to view the PRINT$.
+
+   For Coordination staff -
+   You may enter "LOOKPRINT,LIST" to display the registration list.
+
+@    Gto End                                    }
+
+.VARIABLE TABLE
+*    Name    .Vnum.Sq.            Line  Numbers            .      Comment
+*============.====.==.=====================================.====================
+}job         }V001}01}8,9,13,14,29,30,53,69,76,78,85       }PRINT$ name
+}dept        }V002}01}10,16,17,17,18,18,30,65,68,104       }Department
+}start       }V003}01}11i                                  }Line to start read
+}prindex     }V004}01}30,66,68,90,95                       }PRINT$ Index
+}mode        }V005}01}32,33,34,35,53,72,86                 }PRINT$ Mode
+}type        }V006}01}32,34,35,53,72,86                    }PRINT$ Type
+}rid         }V007}01}32,34,35,42,43,43,47,48,48,53,85,86  }PRINT$ RID
+}low         }V008}01}32,41,43,48,72                       }Low RID in range
+}high        }V009}01}32,43,46,48,72                       }High RID in range
+}maxlins     }V010}01}66i,68i                              }Highest line
+}joblov      }V011}01}69                                   }Job List of values
+}nbrrpts     }V012}01}72i,73                               }Number of reports
+}timelov     }V013}01}85                                   }Time List of Values
+}com         }V015}01}32,54                                }Comments on Menu
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.4B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:41  RID      4B   18 OCT 91  MADSEN
+.@991231 SENDPRINT$ Data Location Documentation    Rev. 2.100
+*                                                    SAV.
+*DEPT.JOB NAME    .MOD.T.RID . LOW.HIGH. RUN        .DAY. COMMENTS                               . DATE . TIME .
+*====.============.===.=.====.====.====.============.===.========================================.======.======.====================
+*|    |            |   | |    |    |    |            |   |                                        |      |
+*|    |            |   | |    |    |    |            |   |__ Description of PRINT$                |      |_____ Time of last PRINT$
+*|    |            |   | |    |    |    |            |______ Number of days to save               |____________ Date of last PRINT$
+*|    |            |   | |    |    |    |
+*|    |            |   | |    |    |    |___ Run to execute when PRINT$ received
+*|    |            |   | |    |    |
+*|    |            |   | |    |    |____ Highest RID in range to save PRINT$
+*|    |            |   | |    |_________ Lowest  RID in range to save PRINT$
+*|    |            |   | |               (for single rid- do not use LOW + HIGH)
+*|    |            |   | |
+*|    |            |   | |______________ Last RID in which PRINT$ was saved
+*|    |            |   |________________ Alpha TYPE in which PRINT$ is saved
+*|    |            |____________________ Mode in which PRINT$ is saved
+*|    |_________________________________ Unique identifier for PRINT$
+*|______________________________________ MAPPER department (restrict LOOKPRINT$)
+*
+*
+*SOFTWARE REVISION CALENDAR
+*-------------------------------------------------------------------------------
+*
+*REVISION   DATE    CHANGES
+*-------------------------------------------------------------------------------
+*2.000     6/11/91  New Menu for LOOKxxxxxx.  Menu has LOCATE field and is a
+*                   Called subroutine.  Global variables are defined at
+*                   label 001 in SENDxxxxxx.  Variables defining RIDs are set
+*                   at label 002.
+*
+*2.001     6/12/91  Use Drawer RID limit instead of "2000" when testing maximum
+*                   RID to assign.  Only RID 7 (called subroutine) is changed.
+*
+*2.002     6/14/91  Added: Pass <job> parameter when starting optional run.
+*                   RIDs changed:  SENDPRINT$ Run
+*
+*2.003     6/17/91  Added: Packed <run> and <job> before executing optional run.
+*                   RIDs changed:  SENDPRINT$ Run
+*
+*2.004     7/02/91  Fix registration problems in called subroutine.
+*                   Do not allow <rid>=0.  Lok <prindex> before getting high
+*                   RID number in the type.
+*
+*2.005     7/17/91  Display message if no jobs registered in the department.
+*                   Run aborted on RLN in JOBLOV when no jobs were selected
+*                   by the SRH in the LOOKPRINT$ Run.
+*                   RIDs changed:  LOOKPRINT$ Run
+*
+*2.100     9/05/91  Added selection by time stamp window.
+*                   Created LOV for displaying window with dates and times
+*                   when reports were created.  This allows the user to go
+*                   directly to another report rather than rolling through
+*                   all the reports.
+*
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.5B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:42  RID      5B   18 OCT 91  MADSEN
+.@991231 HELP Screens      For FORMPRINT$                         Author: Madsen
+*PURPOSE: Instruction material for REQUEST FORM for PRINT$ registration
+*VERSION: 2.100 Added selection by time stamp window.
+*==============================================================================.===================================================
+#PAGE,001
+PREP
+def,1,(pr,cya/bla);def,2,(pr,whi/bla);def,3,(pr,whi/blu);def,4,(pr,yel/bla)
+fld,2,1,22,80,ab,(pr,boc);fld,3,2,19,78,,(pr,cya/bla);fld,1,80,1,1,,(li,bla/bla)
+FKEY,2,RollFw,PAGE,+
+FKEY,4,Return,formret,0
+fkey,0,,SELECT
+   1,dspform,5,2,,4               Overview
+   2,dspform,5,100,,4             Request Form Fields
+   3,dspform,5,200,,4             Where the Request Goes
+   4,dspform,5,999,,4             On-line Help Improvement
+FLD,1,45,,35,,,,'Help for FORMPRINT$  - Page  1 (99) '  Index
+dfld,,,(ts,co,cya/bla)
+AREA,,3,2,20,78,,(pr,cya/bla)
+   ~2Move cursor to desired topic and press the XMIT or ENTER key.~1
+
+~2 Page   Title                    ~1
+   2  _ Overview
+   3  _ Request Form Fields
+   4  _ Where the Request Goes
+  99  _ On-line Help Improvement
+
+#PAGE,002
+PREP
+def,1,(pr,cya/bla);def,2,(pr,whi/bla);def,3,(pr,whi/blu);def,4,(pr,yel/bla)
+fld,2,1,22,80,ab,(pr,boc);fld,3,2,19,78,,(pr,cya/bla);fld,1,80,1,1,,(li,bla/bla)
+FLD,1,45,,35,,,,'Help for FORMPRINT$  - Page  2 (99) '  Overview
+FKEY,1,Index,PAGE,001
+FKEY,2,RollFw,PAGE,+
+FKEY,3,RollBk,PAGE,-
+FKEY,4,Return,formret,0
+AREA,,3,2,20,78,,(pr,cya/bla)
+   ~2  Overview                   ~1
+
+     The purpose of the FORMPRINT$ run is to provide an on-line request
+     form which you fill out when you want to have PRINT$ jobs registered
+     for you.  After entering the required information, the run will
+     automatically send the result to the person responsible for the
+     registration process.
+
+     Now, press Function Key 2 to read the field descriptions.
+
+#PAGE,100
+PREP
+def,1,(pr,cya/bla);def,2,(pr,whi/bla);def,3,(pr,whi/blu);def,4,(pr,yel/bla)
+fld,2,1,22,80,ab,(pr,boc);fld,3,2,19,78,,(pr,cya/bla);fld,1,80,1,1,,(li,bla/bla)
+FLD,1,45,,35,,,,'Help for FORMPRINT$  - Page  3 (99) '  Request Form Fields
+FKEY,1,Index,PAGE,001
+FKEY,2,RollFw,PAGE,+
+FKEY,3,RollBk,PAGE,-
+FKEY,4,Return,formret,0
+AREA,,3,2,20,78,,(pr,cya/bla)
+   ~2  Request Form Fields        ~1
+
+     DEPT     - The MAPPER deaprtment which the PRINT$ is to be accessed
+                from.
+     JOB NAME - The unique name by which the PRINT$ will be known.
+
+     MOD      - Mode (Cabinet) in which the PRINT$ will be stored.
+                (optional)
+     T        - Type (Drawer) in which the PRINT$ will be stored.
+                (optional)
+     RIDS     - Number of reports to reserve for storing PRINT$s.
+
+     RUN      - Name of the MAPPER run which is automatically started
+                each time the PRINT$ is received. (optional)
+     SAV DAY  - Number of days to save the PRINT$ (specify if PRINT$
+                is to be saved for more than 7 days)
+     COMMENTS - Description of job in LOOKPRINT$ menu.
+
+#PAGE,200
+PREP
+def,1,(pr,cya/bla);def,2,(pr,whi/bla);def,3,(pr,whi/blu);def,4,(pr,yel/bla)
+fld,2,1,22,80,ab,(pr,boc);fld,3,2,19,78,,(pr,cya/bla);fld,1,80,1,1,,(li,bla/bla)
+FLD,1,45,,35,,,,'Help for FORMPRINT$  - Page  4 (99) '  Where the Request Goes
+FKEY,1,Index,PAGE,001
+FKEY,2,RollFw,PAGE,+
+FKEY,3,RollBk,PAGE,-
+FKEY,4,Return,formret,0
+AREA,,3,2,20,78,,(pr,cya/bla)
+   ~2  Where the Request Goes     ~1
+
+     After you have entered all the required information you will press
+     Function Key 1 (SendIt).  The FORMPRINT$ run will then send the report
+     to the person responsible for registering your PRINT$s.
+
+     Before sending the report, all blank lines will be removed.  We define
+     any line with no JOB NAME to be blank.
+
+     The run will tell you the User-Id of the person to whom the message is
+     sent.  You will receive an acknowledgement when it is received.
+
+#PAGE,999
+PREP
+def,1,(pr,cya/bla);def,2,(pr,whi/bla);def,3,(pr,whi/blu);def,4,(pr,yel/bla)
+fld,2,1,22,80,ab,(pr,boc);fld,3,2,19,78,,(pr,cya/bla);fld,1,80,1,1,,(li,bla/bla)
+FLD,1,45,,35,,,,'Help for FORMPRINT$  - Page 99 (99) '  Improving HELP
+FKEY,1,Index,PAGE,001
+FKEY,3,RollBk,PAGE,-
+FKEY,4,Return,formret,0
+AREA,,3,2,20,78,,(pr,cya/bla)
+   ~2  On-line HELP Improvement   ~1
+
+     This is the last help screen for the FORMPRINT$ run.
+
+     The author of this system could not anticipate all of your
+     questions.  If you know of any additional information that should
+     be added to this documentation, then please inform the MAPPER
+     Coordinator or your manager.
+
+     Adding help screens is simple and will benefit other users so
+     please take the time to help us improve.
+
+ 
+                                         Peter Madsen
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.6B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:42  RID      6B   18 OCT 91  MADSEN
+.@991231 RUN: FORMPRINT$   Request Form                           Author: Madsen
+*PURPOSE: Create REQUEST FORM for PRINT$ registration
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+:L100=72
+@    Brk .
+@.   MAKE SURE THAT THE DAY FIELD IS RIGHT JUSTIFIED AND ZERO FILLED
+@.   This result is used to select the recipient of the request.
+@.
+.Duty Roster for FORMPRINT$
+*
+*Day.User        .
+*===.============.
+} 01}Madsen
+} 02}Madsen
+} 03}Madsen
+} 04}Madsen
+} 05}Madsen
+} 06}Madsen
+} 07}Madsen
+} 08}Madsen
+} 09}Madsen
+} 10}Madsen
+} 11}Madsen
+} 12}Madsen
+} 13}Madsen
+} 14}Madsen
+} 15}Madsen
+} 16}Madsen
+} 17}Madsen
+} 18}Madsen
+} 19}Madsen
+} 20}Madsen
+} 21}Madsen
+} 22}Madsen
+} 23}Madsen
+} 24}Madsen
+} 25}Madsen
+} 26}Madsen
+} 27}Madsen
+} 28}Madsen
+} 29}Madsen
+} 30}Madsen
+} 31}Madsen
+@    Brk .                                      }We will place this in Mode 0
+@    Dc D5=TODAY <day>a2 .                      }Day of the month
+@    Fdr,-0  ''  'DAY'  },' '<day> .            }Who has duty today?
+@    Rln  'USER' <user>h .                      }
+@    Ldv,p <user> .                             }Squeeze out spaces
+FKEY,1,SendIt,KEY
+FKEY,8,Help,dspform,5,1,,0
+FKEY,10,Quit,^
+@    Brk,0,F .                                  }Function Bar for display
+@    Fky,-0 .                                   }
+.@991231 * PRINT$ * Registration         (See OFIS "HELP" file for instructions)
+*                                         .SAV.                                        .ERR.
+*DEPT.JOB NAME    .MOD.T.RIDS.  RUN       .DAY. COMMENTS                               .FLD.ERROR
+*====.============.===.=.====.============.===.========================================.===.=======================================.
+}    }            }   } }    }            }   }
+@    Brk,0,F .                                  }Request form into common mode
+@    Lnx,-0,6,50 .                              }Fifty lines should be enough!
+@    Dsp,-0,,1 .                                }
+@    Srh,-0  DN@  'JOB' },@ .                   }Toss out blanks
+@    Snu,-0,<user>,,,Y,100 .                    }Send the message
+
+           Your PRINT$ request report was sent to: <user>
+
+  You will receive an acknowledgement when <user> OKs the message.
+
+@    Gto End .
+@100.
+
+  Contact the MAPPER Coordinator.  Cannot find user <user>
+
+@    Gto End .
+
+.VARIABLE TABLE
+*    Name    .Vnum.Sq.            Line  Numbers            .      Comment
+*============.====.==.=====================================.====================
+}day         }V001}01}47a                                  }Todays day of month
+}user        }V002}01}49h                                  }User ID
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.7B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:43  RID      7B   18 OCT 91  MADSEN
+.@991231 Run: CALLED Subroutine                                   Author: Madsen
+*PURPOSE: Registers Job in LOOKPRINT$ List.       Called by REGPRINT$ MREGPRINT$
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+:L1=8,70=23,90=27,100=32,110=37,120=43,130=45,140=49,150=50,190=58,191=60,192=63,193=66
+@.   *** entry point when CALLED
+@001 (<dept>,<job>,<mode>,<type>,<rid>,<run>,<sav>,<com>,<err>,<msg>) .
+@.   *** establish variables (do not use label 1 because of passed variables)
+@    Rsr,ETYPE$,1 002 .                         }Application RID variables
+@    Ldv <low>i4='',<high>i4='' .               }Not common to PRINDEX and FORM
+@    Chg <minrid>i4 3  .                        }Lowest RID number assigned
+@.   *** LOCAL CODE ***
+@.   *** See installation manual about this next line.
+@    Chg <minrid>i4 20 .       }Execute this line once if registering in ETYPE$
+@.   *** END OF LOCAL CODE ***
+@    Fnd,ETYPE$,<prindex>,,070 '' 'JOB' },<job> .}Verify name is unique
+@    Chg <err> 2 .                              }
+@    Ldv   <msg>='< Job is not unique >' .
+@    Gto 190 .                                  }
+@.   *** If Mode Type and RID are all blank then OK,  else check them all
+@.   *** Validate Cabinet
+@070 If <mode> LE 2,(192) ; .                   }Mode 0 is out of bounds
+@.   *** LOCAL CODE *** Customize upper limit for your site
+@    If <mode> GE 200 If <mode> LE 311,(192) ; .}System and OFIS modes also out
+@.   *** Validate Drawer
+@090 If <type> EQ B,C,D,E,F,G,H,I,(100) ; .     }Valid types (A not allowed)
+@    Chg <err> 4 .                              }Field for Type
+@    Ldv   <msg>='< Drawer must be B - I >' .
+@    Gto 190 .                                  }
+@.   *** Validate the number of rids to save
+@100 If <rid> GT 0,(110) ; .                    }Must be positive
+@    Chg <err> 5 .                              }Field for RIDs
+@    Ldv   <msg>='< The number of reports to save must be entered. >' .
+@    Gto 190 .                                  }
+@.   *** Validate the drawer exists
+@110 Lok,ETYPE$,<prindex> .                     }Exlusive while we get high rid
+@    Srh,ETYPE$,<prindex>,,,120 DF 'MOD','T' },<mode>,<type> .
+@    Cal,-0 L 'RID','LOW','HIGH' },R,L,H \      }Highest rid registered in Type
+      IF:H=0;THEN:H=R;HIGH=VMAX(H) <maxrid>i4 . }
+@    Inc <maxrid> .                             }We have a previous high
+@    Gto 130 .                                  }
+@120 Chg <maxrid>i4 <minrid> .                  }Default lowest rid
+@.   *** compute the range of rids              }
+@130 If <rid> NE 1,(140) ; .                    }
+@    Ldv  <low>='',<high>='' .                  }Blank the range cuz only one
+@    Chg <rid> <maxrid> .                       }Set to next available rid
+@    Gto 150 .                                  }Skip range computation
+@140 Art <maxrid>;A+<rid>-1;B <low>,<high>,<rid> .
+@150 Drw,<mode>,<type>,191 ,,,,,,,,<ridlmt>i4 . }Is the type there? Max Rids?
+@    If <rid> GE <ridlmt>,(193) ; .             }Not too many rids per type plz
+@.   *** add line to data location list and write info for one job
+@    Ln+,ETYPE$,<prindex>,5,1 .                 }Add a blank line
+@    Wrl,ETYPE$,<prindex>,6 \                   }
+       'DEPT','JOB','MOD','T','RID','LOW','HIGH','RUN','SAV','COMMENTS' \
+       },<dept>,<job>,<mode>,<type>,<rid>,<low>,<high>,<run>,<sav>,<com> .
+@    Ulk .                                      }
+@190 Return .                                   }
+@.   *** error messages for input screen        }
+@191 Chg <err> 4 .                              }Field for Type
+@    Ldv   <msg>='< Drawer does not exist. >' .
+@    Gto 190 .                                  }
+@192 Chg <err> 3 .                              }Field for Mode
+@    Ldv   <msg>='< Mode restricted >' .
+@    Gto 190 .                                  }
+@193 Chg <err> 5 .                              }Field for Rids
+@    Ldv   <msg>='< Too many RIDs >' .
+@    Gto 190 .                                  }
+
+.VARIABLE TABLE
+*    Name    .Vnum.Sq.            Line  Numbers            .      Comment
+*============.====.==.=====================================.====================
+}dept        }V001}01}                                     }Department
+}job         }V002}01}                                     }PRINT$ Name
+}mode        }V003}01}                                     }PRINT$ Mode
+}type        }V004}01}                                     }PRINT$ Type
+}rid         }V005}01}                                     }PRINT$ Rid
+}run         }V006}01}                                     }Run to execute
+}sav         }V007}01}                                     }Days to save PRINT$
+}com         }V008}01}                                     }Comment (for menu)
+}err         }V009}01}                                     }Field number in err
+}msg         }V010}01}                                     }Error description
+}minrid      }V011}01}12i,15i                              }Minimum RID assigned
+}prindex     }V012}01}                                     }PRINT$ Index
+}low         }V013}01}11i                                  }Low RID in range
+}high        }V014}01}11i                                  }High RID in range
+}maxrid      }V015}01}40i,43i                              }Top of the Type
+}ridlmt      }V016}01}50i                                  }RID Limit of Drawer
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.8B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:43  RID      8B   18 OCT 91  MADSEN
+.@991231 Run: MREGPRINT$   Register PRINT$s                       Author: Madsen
+*PURPOSE: Registers many JOBs in the LOOKPRINT$ List.  Uses result for input.
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+:L50=15,100=27,191=29
+@    Rnm -1 .                                   }Save reference to rid on screen
+@    Rsr,ETYPE$,1 001 .                         }Application wide variables
+@    Cal,-1 r1 'DEPT','MOD','RID','SAV' },a,b,c,d a=a*1;b=b*1;c=c*1;d=d*1 .
+@    Rep,-0,-1 .                                }Replace it
+@.   *** Set size of report variables
+@    Dvs,-1,191 'ERRFLD','ERROR' <err>a,<msg>s .}
+@.   *** initialize loop for reading and calling registration routine
+@    Chg <line>i6 5 .                           }Establish read line for loop
+@050 Inc <line> .                               }
+@    Rdl,-1,<line>,100 'DEPT','JOB','MOD','T','RID','RUN','SAV','COMMENTS' \
+       <dept>,<job>,<mode>,<type>,<rid>,<run>,<sav>,<com> .
+@    Ldv <err>=000,<msg>='' .                   }Clear error condition fields
+@    Call,ETYPE$,<regrun> 001 \
+          (<dept>,<job>,<mode>,<type>,<rid>,<run>,<sav>,<com>,<err>,<msg>) .
+@    If <err> EQ 0,(050) .                      }Was there an error?
+@    Lok,-1 .                                   }
+@    Wrl,-1,<line> 'ERRFLD','ERROR'  },<err>,<msg> .}Record status
+@    Ulk .                                      }
+@    Gto 050 .                                  }
+@.   *** termination of run displays input report with any errors
+@100 Dsp,-1 .
+@    Gto LIN -1 .                               }
+@191 Brk,0,a .                                  }
+  The input report fields are not correct.  Contact the MAPPER Coordinator.
+@    Gto End .                                  }
+
+.VARIABLE TABLE
+*    Name    .Vnum.Sq.            Line  Numbers            .      Comment
+*============.====.==.=====================================.====================
+}dept        }V001}01}                                     }Department
+}job         }V002}01}                                     }PRINT$ name
+}mode        }V003}01}                                     }PRINT$ Mode
+}type        }V004}01}                                     }PRINT$ Type
+}rid         }V005}01}                                     }PRINT$ Rid
+}run         }V006}01}                                     }Run to execute
+}sav         }V007}01}                                     }Days to save PRINT$
+}com         }V008}01}                                     }Comment on Menu
+}err         }V009}01}12a                                  }Field number in err
+}msg         }V010}01}12s                                  }Error description
+}line        }V011}01}14i                                  }Next line to read
+}regrun      }V012}01}                                     }Registration routine
+                     ..... END REPORT .....
+@END
+@ELT,IQD UUSIG*1091-001-001.9B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:44  RID      9B   18 OCT 91  MADSEN
+.@991231 Run: REGPRINT$    Register a PRINT$                      Author: Madsen
+*PURPOSE: Registers a JOB in the LOOKPRINT$ List
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+:L10=61,50=63
+@    Rsr,ETYPE$,1 001 .                         }Application wide variables
+@.   *** define local variables
+@    Chg <tab>i2  1 .                           }Tab position in screen
+@    Chg <err>a3 0 .                            }Error field number
+@    Ldv <msg>s80='' .                          }Error message
+@.   *** build input screen and place in -1 .
+@    Brk,0,A .                                  }
+.Screen for input of registration variables
+*
+*
+*===============================================================================
+#PAGE,001
+PREP;TIC,"
+FKEY,8,'Help',dsphelp
+FKEY,10,'Quit',^
+FLD,2,10,12,60,,(pr,rv,whi/blu)
+FLD,2,10,,60,cv,(pr,whi/red),," REGISTRATION "
+DFLD,,U,(ts,ai,fc)
+AREA,,3,12,10,56,,(pr,mc)
+
+ Department: ____
+        Job: ____________
+    Cabinet: ___
+     Drawer: _
+    Reports: ___
+        Run: ____________
+  Save Days: ___
+   Comments: ________________________________________
+                                                     _
+END
+HELP,1 18                                                      }
+ MAPPER department which can see the reports via LOOKPRINT$.
+HELP,2
+ Unique job name which appears on the BPRUN$ statement.
+ It is used by SENDPRINT$ to find where the data is stored.
+HELP,3
+ Cabinet where the reports are to be stored.
+HELP,4
+ Drawer where the reports are to be stored.
+HELP,5
+ The NUMBER of reports which will be kept.
+ NOTE: The actual rid numbers are selected by the run.
+HELP,6
+ The name of a run which will be called to process the report.
+HELP,7
+ The number of days the report is safe from KILLER/PRIMER.
+HELP,8
+ The comment field for the LOOKPRINT$ menu.
+HELP,9
+ This screen will select a range of RIDs in the specified
+ Drawer and register them in the SENDPRINT$ List.
+@    Brk .                                      }
+@    Rnm -1 .                                   }
+@.   *** display the input screen
+@010 Sc,-1,6,,<tab> '' .                        }Display input screen
+@.   *** get input and edit it
+@050 Chg INPUT$ <dept>,<job>,<mode>,<type>,<rid>,<run>,<sav>,<com> .
+@    Ldv <err>=000,<msg>='' .                   }Clear error condition fields
+@    Call,ETYPE$,<regrun> 001 \
+      (<dept>,<job>,<mode>,<type>,<rid>,<run>,<sav>,<com>,<err>,<msg>) .
+@    If <err> = 0,(010) ; .                     }Was there an error?
+@    Ldv,c <msg> .                              }Center the error message
+@    Ldv <tab>=<err> .                          }Error in a field
+@    Sc,,,,,,<tab> '' MSG,1,E,,TIC$<msg>TIC$ .  }
+@    Gto 050 .                                  }Re-input and re-edit
+
+.VARIABLE TABLE
+*    Name    .Vnum.Sq.            Line  Numbers            .      Comment
+*============.====.==.=====================================.====================
+}tab         }V001}01}9i                                   }Tab position on scrn
+}err         }V002}01}10a                                  }Field number in err
+}msg         }V003}01}11s                                  }Error description
+}dept        }V005}01}                                     }Department
+}job         }V006}01}                                     }PRINT$ name
+}mode        }V007}01}                                     }PRINT$ Mode
+}type        }V008}01}                                     }PRINT$ Type
+}rid         }V009}01}                                     }PRINT$ Rid
+}run         }V010}01}                                     }Run to execute
+}sav         }V011}01}                                     }Days to save PRINT$
+}com         }V012}01}                                     }Comment on Menu
+}regrun      }V013}01}                                     }Registration routine
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.10B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:44  RID     10B   18 OCT 91  MADSEN
+.@991231 List Of Values - JOBLOV                                  Author: Madsen
+*PURPOSE: Displays a List Of Values for PRINT$ menu
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+:L100=8,105=17,110=18,120=20,130=25,140=28,145=29,150=43,160=49
+@.   *** List Of Values Routine (Called subroutine) ****************************
+@100 (<choose>) .                               }Entry point for LOV window
+@    Rnm -1 .                                   }Save while we set variables
+@    Rsr,ETYPE$,1 001 .                         }Application wide variables
+@    Sor,-1 '' 'JOB' },1 .                      }In order by job
+@    Rnm -1 .                                   }Subset of REPORT Index
+@    Ldv <size>i2=19 .                          }Size of window
+@    Lda <d>s70[<size>] .                       }Description
+@    Ldv <loc>h18='' .                          }Input field for locate
+@    Chg <i>i2 1 .                              }Index for arrays
+@105 Rnm,-1 -2 .                                }Use the whole Index result
+@110 Chg <start>i6 6 .                          }Line in table to start reading
+@    Lzr,-2  <max>i6 .                          }Last line in the table
+@120 If <start> LT 6  Chg <start> 6 .           }Not too far back
+@    If <start> GT <max>  Chg <start> 6 .       }Wrap at end
+@    Rdl,-2,<start> 'JOB','COMMENTS','DATE','TIME'  <job>,<com>,<date>,<time> .
+@    Ldv <d>[1]=<job>' '<com>' '<date>' '<time> .}Initial array item
+@    Chg <i> 2 .                                }Set for line 2
+@130 Rln,,140  'JOB','COMMENTS','DATE','TIME'  <job>,<com>,<date>,<time> .
+@    Ldv <d>[<i>]=<job>' '<com>' '<date>' '<time> .   }Next array item
+@    Inc <i>  If <i> LE <size>,(130) ; Gto 145 .      }Loop til done
+@140 Ldv <d>[<i>]='' Inc <i>  If <i> LE <size>,(140) .}Blanks
+@145 Sc,ETYPE$,<jobscrn>,6,,1  ST   ' 'RUN$' ','','',<d>[01],\
+     '',<d>[02],'',<d>[03],'',<d>[04],'',<d>[05],'',<d>[06],'',<d>[07],\
+     '',<d>[08],'',<d>[09],'',<d>[10],'',<d>[11],'',<d>[12],'',<d>[13],\
+     '',<d>[14],'',<d>[15],'',<d>[16],'',<d>[17],'',<d>[18],'',<d>[19] .
+@.                                                 }Edit the select & func keys
+@    If FKEY$ = 2  Inc,<size> <start>  Gto 120 ; . }Roll Forward
+@    If FKEY$ = 3  Dec,<size> <start>  Gto 120 ; . }Roll Backward
+@    If FKEY$ = 4  Gto 105 ; .                     }Original menu
+@    Chg INPUT$ <loc> .                            }Capture locate criteria
+@    If <loc> NE '',(150) ; .                      }Must we get a subset?
+@    Chg <line>i6 <start> + FIELD$ -2 .            }Line to read
+@    If <line> GT <max>,(120) ; .                  }Beyond end?  Try again.
+@    If FIELD$ NE 1,(160) ; .                      }Job selected?
+@    Gto 120 .                                     }Cannot select locate field
+@150 Ldv,p <target>h12=<loc> .                     }Squeeze out spaces
+@    Loc,-1,,120  FO  'JOB','COMMENT','DATE','TIME' <target> .}Subset of jobs
+@    Ldv <loc>='' .                                }Blank out for next time
+@    Rnm -2 .                                      }Point to subset of jobs
+@    Gto 110 .                                     }Display from there
+@.                                                 }
+@160 Chg <i> FIELD$ -1 .                           }Point to selected index
+@    Ldv <choose>=<d>[<i>](1-12) .                 }Job name from array
+@    Return .                                      }End of routine
+
+.VARIABLE TABLE
+*    Name    .Vnum.Sq.            Line  Numbers            .      Comment
+*============.====.==.=====================================.====================
+}choose      }V001}01}                                     }Chosen job
+}jobscrn     }V002}01}                                     }Screen RID
+}size        }V003}01}13i                                  }Length of the window
+}d           }V004}01}14s                                  }Description
+}loc         }V005}01}15h                                  }Input locate word(s)
+}i           }V006}01}16i                                  }Index for array (d)
+}start       }V007}01}18i                                  }Line to start read
+}max         }V008}01}19i                                  }Maximum lines
+}job         }V009}01}                                     }REPORT name
+}com         }V010}01}                                     }Comment on Menu
+}date        }V011}01}                                     }Time stamp for index
+}time        }V012}01}                                     }Time stamp for index
+}line        }V013}01}39i                                  }Line in read loop
+}target      }V014}01}43h                                  }Paked locate field
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.11B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:45  RID     11B   18 OCT 91  MADSEN
+.@991231 JOBLOV screen                                            Author: Madsen
+*PURPOSE: Window for a PRINT$ list
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+TIC,";PREP;OPTS,S
+FKEY,2,"RollFw",KEY
+FKEY,3,"RollBk",KEY
+FKEY,4,"Menu",KEY
+FKEY,8,"Help",dsphelp,1
+FKEY,10,"Quit",^
+fld,02,01,22,80,AFB,(pr,WHI/BLU)
+fld,02,01,,80,cvp,(pr,WHI/RED)
+dfld,l,,(ts,ai,BLA/CYA)
+dfld,d,p,(pr,BLA/CYA)
+dfld,,,(ts,co,BLA/CYA)
+area,,03,02,20,78,,(pr,BLA/CYA)
+Locate: _l_________________                              Last run
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+ _ _d____________________________________________________________________
+PC,4,40
+END
+HELP,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18   22   |
+          Tab to your selection and transmit.
+HELP,999
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.13B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:45  RID     13B   18 OCT 91  MADSEN
+.@991231 List Of Values - TIMELOV                                 Author: Coates
+*PURPOSE: Display & select a lookprint$ report
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+@001:(<rid>,<job>) .                            }Line number of -0 r
+@.   *** establish variables (do not use label 1 because of passed variables)
+@    Rsr,ETYPE$,1 002 .                         }Application RID variables
+@    Rnm -1 .                                   }Rename current -0 -1 .
+@    Ldv <Size>i2=15 .                          }
+@    Lda <D>s9[<Size>] .                        }Date of report array
+@    Lda <T>s8[<Size>] .                        }Time or report array
+@    Lda <R>i4[<Size>] .                        }Rid number array
+@    Ldv <i>i2=1 .                              }Index for arrays
+@030 Chg <start>i6 7 .                          }Line in table to start reading
+@    Lzr,-1 <last>i6 .                          }Last line
+@032 If <start> LT 7  Chg <start> 7 .           }Not too far back
+@    If <start> GT <last>  Chg <start> 7 .      }Wrap at end
+@    Rdl,-1,<start> 42-9,18-8,34-4 <D>[1],<T>[1],<R>[1] .
+@    Ldv <i>=2 .                                }
+@    Rln,,034 42-9,18-8,34-4 <D>[<i>],<T>[<i>],<R>[<i>] .
+@    Inc <i>  If <i> LE <Size>,(lin-1) ; Gto 036 .  }Loop til done
+@034 Ldv <T>[<i>]='',<D>[<i>]='',<R>[<i>]='' Inc <i>  If <i> LE <Size>,(034) .}
+@036 Sc,ETYPE$,<timescrn>,6,,1 ST ' SELECT TIME ',<D>[1],<T>[1],\
+     <D>[2],<T>[2],<D>[3],<T>[3],<D>[4],<T>[4],<D>[5],<T>[5],<D>[6],<T>[6],\
+     <D>[7],<T>[7],<D>[8],<T>[8],<D>[9],<T>[9],<D>[10],<T>[10],<D>[11],<T>[11],\
+     <D>[12],<T>[12],<D>[13],<T>[13],<D>[14],<T>[14],<D>[15],<T>[15]  .
+@    If FKEY$ = 2  Dec,<Size> <Start>  Gto 032 ; .   }Roll Forward in time
+@    If FKEY$ = 3  Inc,<Size> <Start>  Gto 032 ; .   }Roll Backward in time
+@    Ldv,w <i>=FIELD$ .                          }Line to read
+@    Art <i>+<start>-1 <end>i6 .                 }Where did we transmit from
+@    If <end> GT <last>,(032) ; .                }Blank was selected
+@    Ldv  <rid>i4=<R>[<i>] .                     }Load the rid number
+@    Return .                                    }End of routine
+                     ..... END REPORT .....
+@END SENT
+@ELT,IQD UUSIG*1091-001-001.14B,,SENT,,ELT
+.DATE 18 OCT 91  17:07:45  RID     14B   18 OCT 91  MADSEN
+.@991231 TIMELOV Screen                                           Author: Coates
+*PURPOSE: Window for selecting a Department Report
+*VERSION: 2.100 Added selection by time stamp window.
+*===============================================================================
+PD
+FKEY,2,'Newer',KEY
+FKEY,3,'Older',KEY
+FKEY,8,'Help',dsphelp,1
+FKEY,10,'Quit',^
+fld,03,53,19,27,AFB,(pr,WHI/BLU)
+fld,03,53,,27,cvp,(pr,WHI/RED),,''
+dfld,c,P,(ts)
+dfld,d,P,(pr)
+area,,04,54,17,25,,(pr)
+
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+  ____c____  ____d___
+
+END
+HELP,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18   21   |
+       Tab to your selection and transmit.
+
+HELP,999
+                     ..... END REPORT .....
+@END SENT
+

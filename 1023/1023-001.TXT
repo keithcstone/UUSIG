@@ -1,0 +1,305 @@
+@CAT,P    1023-001-001.,///10000
+@ASG,T    TEMP.,///10000
+@ELT,OI TEMP.1023-001-001,,,130171053241,000
+)@@G@@*[S@@@*SDFF*@#@@@@@ASG,AX USER*FILE.@#@@@@@USE C.,USER*FILE.@ @@@@@FOR,IAA
+)@@G@@S C.PDP11TAPGEN/DOS     @E@@@@      INTEGER OUTFIL(129),FILNAM(6),EXT(3)AB
+)@@G@@,HEADER(4),FN1,FN2@B@@@@     C ,EX1,LINE(134),UNIFIL(30),S(7)     @^@@@@AC
+)@@G@@      DATA IPC/O233/    @D@@@@      CALL ERTRAN(6,27H@ASG,TH 11,16N/////AD
+)@@G@@/Q,BLANK )  @^@@@@      CALL NTRAN(11,10) @^@@@@      CALL NTRAN(11,22) AE
+)@@G@@@A@@@@    1 READ(5,100)FILNAM,EXT,I1,I2   @A@@@@  100 FORMAT(6A1,1X,3A1,AF
+)@@G@@1X,I3,1X,I3)@A@@@@      WRITE(6,101)FILNAM,EXT,I1,I2  @D@@@@  101 FORMATAG
+)@@G@@(1H1,6A1,1H.,3A1,1H[,I3,1H,,I3,1H],////)  @ @@@@    8 FN1=IRAD50(FILNAM(AH
+)@@G@@1))   @ @@@@      FN2=IRAD50(FILNAM(4))   @^@@@@      EX1=IRAD50(EXT)   AI
+)@@G@@@#@@@@      DO 2 I=1,3  @^@@@@      FILNAM(I+3)=0     @#@@@@      FILNAMAJ
+)@@G@@(I)=0 @#@@@@    2 HEADER(I)=0 @#@@@@      HEADER(4)=0 @B@@@@      FLD(1,AK
+)@@G@@8,HEADER(1))=FLD(28,8,FN1)    @B@@@@      FLD(10,8,HEADER(1))=FLD(20,8,FAL
+)@@G@@N1)   @B@@@@      FLD(19,8,HEADER(1))=FLD(28,8,FN2)   @B@@@@      FLD(28AM
+)@@G@@,8,HEADER(1))=FLD(20,8,FN2)   @B@@@@      FLD(1,8,HEADER(2))=FLD(28,8,EXAN
+)@@G@@1)    @B@@@@      FLD(10,8,HEADER(2))=FLD(20,8,EX1)   @B@@@@      FLD(19AO
+)@@G@@,8,HEADER(2))=FLD(28,8,I2)    @B@@@@      FLD(28,8,HEADER(2))=FLD(28,8,IAP
+)@@G@@1)    @B@@@@      FLD(1,8,HEADER(3))=FLD(28,8,IPC)    @B@@@@      FLD(18AQ
+)@@G@@,1,HEADER(4))=FLD(35,1,1)     @A@@@@      CALL NTRAN(11,1,4,HEADER,L)   AR
+)@@G@@@^@@@@      CALL NTRAN(11,22) @ @@@@      READ(5,102)ITYPE,UNIFIL @^@@@@AS
+)@@G@@  102 FORMAT(A1,79A1)   @#@@@@      NTYPE=0     @ @@@@      IF(ITYPE.EQ.AT
+)@@G@@1HE)NTYPE=1 @ @@@@      IF(ITYPE.EQ.1HD)NTYPE=-1@ @@@@      IF(NTYPE.EQ.AU
+)@@G@@00)GO TO 60 @ @@@@      IF(NTYPE.EQ.1)GO TO 61  @]@@@@      IFL=80@#@@@@AV
+)@@G@@   11 IFL=IFL-1   @ @@@@      IF(IFL.EQ.0)GO TO 60    @A@@@@      IF(UNIAW
+)@@G@@FIL(IFL).EQ.1H )GO TO 11@]@@@@      IBL=39@A@@@@      ENCODE(IBL,105,S,IAX
+)@@G@@S)UNIFIL    @ @@@@  105 FORMAT(9H@USE 10.,,30A1)@^@@@@      CALL ERTRAN(AY
+)@@G@@6,S)  @A@@@@      CALL ERTRAN(6,11H@ASG,AX 10.) @]@@@@   61 IEOF=0@]@@@@AZ
+)@@G@@      IC=1  @]@@@@      ILC=0 @#@@@@    6 DO 3 I=1,128@^@@@@      DO 3 IBA
+)@@G@@J=1,28,9    @ @@@@      IF(IC.LE.ILC)GO TO 4    @]@@@@      IC=1  @B@@@@BB
+)@@G@@      CALL RDLINE(LINE,ILC,IEOF,NTYPE)    @ @@@@      IF(IEOF.NE.0)GO TOBC
+)@@G@@ 5    @C@@@@    4 FLD(IJ,8,OUTFIL(I))=FLD(28,8,LINE(IC))    @#@@@@    3 BD
+)@@G@@IC=IC+1     @B@@@@      FLD(0,1,OUTFIL(129))=FLD(35,1,1)    @A@@@@      BE
+)@@G@@CALL NTRAN(11,1,129,OUTFIL,L) @^@@@@      CALL NTRAN(11,22) @#@@@@      BF
+)@@G@@GO TO 6     @^@@@@    5 DO 7 JI=IJ,28,9   @B@@@@    7 FLD(JI,8,OUTFIL(I)BG
+)@@G@@)=FLD(28,8,0)     @]@@@@      II=I+1@^@@@@      DO 9 J=II,128     @#@@@@BH
+)@@G@@   9  OUTFIL(J)=0 @B@@@@      FLD(0,1,OUTFIL(129))=FLD(35,1,1)    @A@@@@BI
+)@@G@@      CALL NTRAN(11,1,129,OUTFIL,L) @^@@@@      CALL NTRAN(11,22) @^@@@@BJ
+)@@G@@      CALL NTRAN(11,9)  @^@@@@      CALL NTRAN(11,22) @C@@@@      IF(NTYBK
+)@@G@@PE.EQ.-1)CALL ERTRAN(6,9H@FREE 10.) @B@@@@      READ(5,100,END=50)FILNAMBL
+)@@G@@,EXT,I1,I2  @A@@@@      WRITE(6,101)FILNAM,EXT,I1,I2  @#@@@@      GO TO BM
+)@@G@@8     @^@@@@  50  CALL NTRAN(11,9)  @^@@@@      CALL NTRAN(11,22) @^@@@@BN
+)@@G@@      CALL NTRAN(11,9)  @ @@@@        CALL NTRAN(11,22)     @A@@@@      BO
+)@@G@@CALL ERTRAN(6,8H@FREE 11 )    @]@@@@      STOP  @#@@@@   60 WRITE(6,104)BP
+)@@G@@@E@@@@  104 FORMAT(38H UNIDENTIFIABLE FILE NAME OR TYPE-EXIT)     @]@@@@BQ
+)@@G@@      STOP  @]@@@@      END   @ @@@@@FOR,IS C.PDP11TAPGEN/RT11    @E@@@@BR
+)@@G@@      INTEGER VOL(129),LAB(129),OUTFIL(129),HDR,EOF,BD1,BC2,@D@@@@     1BS
+)@@G@@ FILNAM,EXT,ILINE(2),OLINE(9),UNIFIL(79),S(15), @^@@@@     2 IBLD(6),LINBT
+)@@G@@E(133)@G@@@@      DATA (VOL(I),I=1,129)/O126117114061,18*O40040040040,O4BU
+)@@G@@0040040063  @ @@@@     1 ,108*0,O400000000000/  @G@@@@      DATA (LAB(I)BV
+)@@G@@,I=1,129)/0,5*O40040040040,O40040040060,3*O60060060060@C@@@@     1 ,O600BW
+)@@G@@40060060,O60060060040,O60060060000  @F@@@@     1 ,O60040060060,O60060060BX
+)@@G@@060,O122124061061,4*O40040040040,   @G@@@@     2 O126117114061,18*O40040BY
+)@@G@@040040,O40040040063,88*0,O400000000000/   @G@@@@      DATA HDR,EOF,BD1,BBZ
+)@@G@@C2/O110104122061,O105117106061,O60040060060,    @^@@@@     1 O6006006006CA
+)@@G@@0/    @A@@@@C   ASSIGN THE 9 TRACK TAPE FOR USE @D@@@@    10 CALL ERTRANCB
+)@@G@@(6,27H@ASG,TH 11,16N//////Q,BLANK ) @^@@@@      CALL NTRAN(11,10) @^@@@@CC
+)@@G@@      CALL NTRAN(11,22) @A@@@@C  WRITE HEADER -TAPE VOLUME LABEL  @A@@@@CD
+)@@G@@      CALL NTRAN(11,1,129,VOL,L)    @^@@@@      CALL NTRAN(11,22) @H@@@@CE
+)@@G@@C PERLIMINARY HEADER SETUP DONE -OPERATION RETURNS HERE FOR EACH NEW FILCF
+)@@G@@E     @#@@@@   14 LAB(1)=HDR  @#@@@@      LAB(14)=BD1 @#@@@@      LAB(15CG
+)@@G@@)=BC2 @C@@@@C  GET FILE NAME FOR FILE TO BE WRITTEN ON TAPE @^@@@@C READCH
+)@@G@@ IN AS A6,1X,A3   @A@@@@       READ(5,119,END=70)FILNAM,EXT @^@@@@  119 CI
+)@@G@@FORMAT(A6,1X,A3)  @ @@@@      WRITE(6,198)FILNAM,EXT  @A@@@@  198 FORMATCJ
+)@@G@@(1H1,A6,1H.,A3,////)    @A@@@@      ENCODE(9,120,ILINE)FILNAM,EXT @^@@@@CK
+)@@G@@  120 FORMAT(A6,A3)     @ @@@@   85 DECODE(9,113,ILINE)OLINE@#@@@@  113 CL
+)@@G@@FORMAT(9R1) @#@@@@      DO 15 I=1,9 @^@@@@   15 CALL ASC(OLINE(I))@]@@@@CM
+)@@G@@      I=0   @A@@@@C  INSERT FILE NAME INTO HEADER     @#@@@@      DO 16 CN
+)@@G@@IW=2,3@^@@@@      DO 16 IC=1,28,9   @]@@@@      I=I+1 @A@@@@   16 FLD(ICCO
+)@@G@@,8,LAB(IW))=OLINE(I)    @ @@@@      FLD(1,8,LAB(4))=OLINE(9)@A@@@@C  WRICP
+)@@G@@TE OUT FILE HEADER LABELS     @A@@@@      CALL NTRAN(11,1,129,LAB,L)    CQ
+)@@G@@@^@@@@      CALL NTRAN(11,22) @^@@@@      CALL NTRAN(11,9)  @^@@@@      CR
+)@@G@@CALL NTRAN(11,22) @E@@@@C NOW START ON THE UNIVAC FILE TO BE WRITTEN ON CS
+)@@G@@THE TAPE    @ @@@@      READ(5,114)ITYPE,UNIFIL @^@@@@  114 FORMAT(A1,79CT
+)@@G@@A1)   @#@@@@      NTYPE=0     @ @@@@      IF(ITYPE.EQ.1HE)NTYPE=1 @ @@@@CU
+)@@G@@      IF(ITYPE.EQ.1HD)NTYPE=-1@ @@@@      IF(NTYPE.EQ.0)GO TO 60  @ @@@@CV
+)@@G@@      IF(NTYPE.EQ.1)GO TO 61  @]@@@@      IFL=80@#@@@@   17 IFL=IFL-1   CW
+)@@G@@@ @@@@      IF(IFL.EQ.0)GO TO 60    @A@@@@      IF(UNIFIL(IFL).EQ.1H )GOCX
+)@@G@@ TO 17@]@@@@      IBL=88@A@@@@      ENCODE(IBL,115,S,IS)UNIFIL    @A@@@@CY
+)@@G@@  115 FORMAT(9H@USE 10.,,79A1 )     @^@@@@      CALL ERTRAN(6,S)  @B@@@@CZ
+)@@G@@      CALL ERTRAN(6,11H@ASG,AX 10.  )     @]@@@@   61 IEOF=0@]@@@@      DA
+)@@G@@IC=1  @]@@@@      ILC=0 @]@@@@       IBL=0@#@@@@   18 IBL=IBL+1   @^@@@@DB
+)@@G@@      DO 19 I=1,128     @^@@@@      DO 19 IJ=1,28,9   @ @@@@      IF(IC.DC
+)@@G@@LE.ILC)GO TO 20   @]@@@@      IC=1  @B@@@@      CALL RDLINE(LINE,ILC,IEODD
+)@@G@@F,NTYPE)    @ @@@@      IF(IEOF.NE.0)GO TO 50   @A@@@@   20 FLD(IJ,8,OUTDE
+)@@G@@FIL(I))=LINE(IC)  @#@@@@   19 IC=IC+1     @ @@@@      FLD(0,1,OUTFIL(129DF
+)@@G@@))=1  @A@@@@      CALL NTRAN(11,1,129,OUTFIL,L) @^@@@@      CALL NTRAN(1DG
+)@@G@@1,22) @#@@@@      GO TO 18    @^@@@@   50 DO 27 JI=IJ,28,9  @ @@@@   27 DH
+)@@G@@FLD(JI,8,OUTFIL(I))=0   @]@@@@      II=I+1@^@@@@      DO 29 J=II,128    DI
+)@@G@@@#@@@@   29 OUTFIL(J)=0 @ @@@@      FLD(0,1,OUTFIL(129))=1  @A@@@@      DJ
+)@@G@@CALL NTRAN(11,1,129,OUTFIL,L) @^@@@@      CALL NTRAN(11,22) @^@@@@      DK
+)@@G@@CALL NTRAN(11,9)  @^@@@@      CALL NTRAN(11,22) @A@@@@C  WRITE OUT EOF LDL
+)@@G@@ABELS FOR FILE    @#@@@@      LAB(1)=EOF  @ @@@@      ENCODE(6,116,IBLE)DM
+)@@G@@IBL   @#@@@@  116 FORMAT(I6)  @ @@@@      DECODE(6,117,IBLE)IBLD  @#@@@@DN
+)@@G@@  117 FORMAT(6R1) @#@@@@      DO 30 I=1,6 @^@@@@      CALL ASC(IBLD(I)) DO
+)@@G@@@A@@@@      IF(IBLD(I).EQ.32)IBLD(I)=48   @#@@@@   30 CONTINUE    @A@@@@DP
+)@@G@@      FLD(19,8,LAB(14))=IBLD(1)     @A@@@@      FLD(28,8,LAB(14))=IBLD(2DQ
+)@@G@@)     @ @@@@      FLD(1,8,LAB(15))=IBLD(3)@A@@@@      FLD(10,8,LAB(15))=DR
+)@@G@@IBLD(4)     @A@@@@      FLD(19,8,LAB(15))=IBLD(5)     @A@@@@      FLD(28DS
+)@@G@@,8,LAB(15))=IBLD(6)     @^@@@@C  OUTPUT EOF LABELS    @A@@@@      CALL NDT
+)@@G@@TRAN(11,1,129,LAB,L)    @^@@@@      CALL NTRAN(11,22) @^@@@@      CALL NDU
+)@@G@@TRAN(11,9)  @^@@@@      CALL NTRAN(11,22) @C@@@@      IF(NTYPE.EQ.-1)CALDV
+)@@G@@L ERTRAN(6,9H@FREE 10. )@#@@@@      GO TO 14    @^@@@@   70 CALL NTRAN(1DW
+)@@G@@1,9)  @^@@@@      CALL NTRAN(11,22) @A@@@@      CALL ERTRAN(6,8H@FREE 11DX
+)@@G@@ )    @]@@@@      STOP  @#@@@@   60 WRITE(6,118)@E@@@@  118 FORMAT(39H UDY
+)@@G@@NDEFINEABLE FILE NAME OR TYPE-ABORT  )    @^@@@@      CALL ERTRAN(1)    DZ
+)@@G@@@]@@@@      STOP  @]@@@@      END   @ @@@@@FOR,IS C.PDP11TAPERD/DOS     EA
+)@@G@@@F@@@@      INTEGER TAPNO,S(7),UNIFIL(30),LINE(131),INFIL(128),OCR,OLF  EB
+)@@G@@@ @@@@      DATA OCR,OLF/O15,O12/   @^@@@@      READ(5,100)TAPNO  @#@@@@EC
+)@@G@@  100 FORMAT(A4)  @ @@@@      ENCODE(28,101,S,IS)TAPNO@C@@@@  101 FORMATED
+)@@G@@(22H@ASG,TH 11,16N//////Q,,A4,2H  ) @^@@@@      CALL ERTRAN(6,S)  @^@@@@EE
+)@@G@@      CALL NTRAN(11,10) @^@@@@      CALL NTRAN(11,22) @ @@@@    1 READ(5EF
+)@@G@@,103,END=50)UNIFIL@#@@@@  103 FORMAT(30A1)@]@@@@      ILC=31@#@@@@    2 EG
+)@@G@@ILC=ILC-1   @ @@@@      IF(ILC.EQ.0)GO TO 3     @A@@@@      IF(UNIFIL(ILEH
+)@@G@@C).NE.1H )GO TO 4 @#@@@@       GO TO 2    @^@@@@    3 CALL NTRAN(11,8,1)EI
+)@@G@@@^@@@@      CALL NTRAN(11,22) @#@@@@      GO TO 1     @^@@@@    4 WRITE(EJ
+)@@G@@6,104)UNIFIL@ @@@@  104 FORMAT(1H1,30A1,////)   @A@@@@      ENCODE(39,10EK
+)@@G@@5,S,IS)UNIFIL     @A@@@@  105 FORMAT(7H@CAT,P ,30A1,2H  )   @^@@@@      EL
+)@@G@@CALL ERTRAN(6,S)  @A@@@@      ENCODE(39,106,S,IS)UNIFIL     @ @@@@  106 EM
+)@@G@@FORMAT(9H@USE 10.,,30A1)@^@@@@      CALL ERTRAN(6,S)  @A@@@@      CALL EEN
+)@@G@@RTRAN(6,11H@ASG,AX 10. )@#@@@@      CALL HEADER @]@@@@      LC=0  @ @@@@EO
+)@@G@@    5 CALL BLKRD(INFIL,IEOF)  @ @@@@      IF(IEOF.NE.0)GO TO 60   @#@@@@EP
+)@@G@@      DO 6 I=1,128@^@@@@      DO 6 J=1,28,9     @ @@@@      ITEMP=FLD(J,EQ
+)@@G@@8,INFIL(I)) @ @@@@      IF(ITEMP.EQ.0)GO TO 6   @ @@@@      IF(ITEMP.EQ.ER
+)@@G@@OCR)GO TO 7 @ @@@@      IF(ITEMP.EQ.OLF)GO TO 6 @#@@@@      LC=LC+1     ES
+)@@G@@@^@@@@      CALL RASC(ITEMP)  @^@@@@      LINE(LC)=ITEMP    @#@@@@      ET
+)@@G@@GO TO 6     @A@@@@    7 WRITE(6,107)(LINE(K),K=1,LC)  @^@@@@  107 FORMATEU
+)@@G@@(1X,131R1)  @A@@@@      WRITE(10,108)(LINE(K),K=1,LC) @^@@@@  108 FORMATEV
+)@@G@@(131R1)     @]@@@@      LC=0  @#@@@@    6 CONTINUE    @#@@@@      GO TO EW
+)@@G@@5     @ @@@@   60 IF(LC.EQ.0)GO TO 51     @A@@@@      WRITE(6,107)(LINE(EX
+)@@G@@K),K=1,LC)  @A@@@@      WRITE(10,108)(LINE(K),K=1,LC) @#@@@@  51  END FIEY
+)@@G@@LE 10 @^@@@@      CALL CLOSE(10,1)  @A@@@@      CALL ERTRAN(6,9H@FREE 10EZ
+)@@G@@.)    @#@@@@      GO TO 1     @^@@@@   50 CALL NTRAN(11,10) @^@@@@      FA
+)@@G@@CALL NTRAN(11,22) @A@@@@      CALL ERTRAN(6,9H@FREE 11.)    @]@@@@      FB
+)@@G@@STOP  @]@@@@      END   @ @@@@@FOR,IS C.PDP11TAPERD/RT11    @F@@@@      FC
+)@@G@@INTEGER TAPNO,S(7),UNIFIL(30),LINE(131),INFIL(128),OCR,OLF  @ @@@@      FD
+)@@G@@DATA OCR,OLF/O15,O12/   @^@@@@      READ(5,100)TAPNO  @#@@@@  100 FORMATFE
+)@@G@@(A4)  @ @@@@      ENCODE(28,101,S,IS)TAPNO@C@@@@  101 FORMAT(22H@ASG,TH FF
+)@@G@@11,16N//////Q,,A4,2H  ) @^@@@@      CALL ERTRAN(6,S)  @^@@@@      CALL NFG
+)@@G@@TRAN(11,10) @^@@@@      CALL NTRAN(11,22) @^@@@@      CALL NTRAN(11,8,1)FH
+)@@G@@@^@@@@      CALL NTRAN(11,22) @ @@@@    1 READ(5,103,END=50)UNIFIL@#@@@@FI
+)@@G@@  103 FORMAT(30A1)@]@@@@      ILC=31@#@@@@    2 ILC=ILC-1   @ @@@@      FJ
+)@@G@@IF(ILC.EQ.0)GO TO 3     @A@@@@      IF(UNIFIL(ILC).NE.1H )GO TO 4 @#@@@@FK
+)@@G@@       GO TO 2    @^@@@@    3 CALL NTRAN(11,8,3)@^@@@@      CALL NTRAN(1FL
+)@@G@@1,22) @#@@@@      GO TO 1     @^@@@@    4 WRITE(6,104)UNIFIL@ @@@@  104 FM
+)@@G@@FORMAT(1H1,30A1,////)   @A@@@@      ENCODE(39,105,S,IS)UNIFIL     @A@@@@FN
+)@@G@@  105 FORMAT(7H@CAT,P ,30A1,2H  )   @^@@@@      CALL ERTRAN(6,S)  @A@@@@FO
+)@@G@@      ENCODE(39,106,S,IS)UNIFIL     @ @@@@  106 FORMAT(9H@USE 10.,,30A1)FP
+)@@G@@@^@@@@      CALL ERTRAN(6,S)  @A@@@@      CALL ERTRAN(6,11H@ASG,AX 10. )FQ
+)@@G@@@]@@@@      LC=0  @ @@@@    5 CALL BLKRD(INFIL,IEOF)  @ @@@@      IF(IEOFR
+)@@G@@F.NE.0)GO TO 60   @#@@@@      DO 6 I=1,128@^@@@@      DO 6 J=1,28,9     FS
+)@@G@@@ @@@@      ITEMP=FLD(J,8,INFIL(I)) @ @@@@      IF(ITEMP.EQ.0)GO TO 6   FT
+)@@G@@@ @@@@      IF(ITEMP.EQ.OCR)GO TO 7 @ @@@@      IF(ITEMP.EQ.OLF)GO TO 6 FU
+)@@G@@@#@@@@      LC=LC+1     @^@@@@      CALL RASC(ITEMP)  @^@@@@      LINE(LFV
+)@@G@@C)=ITEMP    @#@@@@      GO TO 6     @A@@@@    7 WRITE(6,107)(LINE(K),K=1FW
+)@@G@@,LC)  @^@@@@  107 FORMAT(1X,131R1)  @A@@@@      WRITE(10,108)(LINE(K),K=FX
+)@@G@@1,LC) @^@@@@  108 FORMAT(131R1)     @]@@@@      LC=0  @#@@@@    6 CONTINFY
+)@@G@@UE    @#@@@@      GO TO 5     @ @@@@   60 IF(LC.EQ.0)GO TO 51     @A@@@@FZ
+)@@G@@      WRITE(6,107)(LINE(K),K=1,LC)  @A@@@@      WRITE(10,108)(LINE(K),K=GA
+)@@G@@1,LC) @#@@@@  51  END FILE 10 @^@@@@      CALL CLOSE(10,1)  @A@@@@      GB
+)@@G@@CALL ERTRAN(6,9H@FREE 10.)    @^@@@@      CALL NTRAN(11,8,2)@^@@@@      GC
+)@@G@@CALL NTRAN(11,22) @#@@@@      GO TO 1     @^@@@@   50 CALL NTRAN(11,10) GD
+)@@G@@@^@@@@      CALL NTRAN(11,22) @A@@@@      CALL ERTRAN(6,9H@FREE 11.)    GE
+)@@G@@@]@@@@      STOP  @]@@@@      END   @#@@@@@FOR,IS C.ASC     @ @@@@      GF
+)@@G@@SUBROUTINE ASC(LET)     @ @@@@      INTEGER BLNK,IASC(64)   @^@@@@      GG
+)@@G@@DATA BLNK/O40/    @G@@@@      DATA (IASC(I),I=1,64)/O100,O133,O135,O43,OGH
+)@@G@@136,O40,O101,O102,O103, @G@@@@     C      O104,O105,O106,O107,O110,O111,GI
+)@@G@@O112,O113,O114,O115,O116,     @G@@@@     C O117,O120,O121,O122,O123,O124GJ
+)@@G@@,O125,O126,O127,O130,O131,O132,     @G@@@@     C O51,O55,O53,O74,O75,O76GK
+)@@G@@,O46,O44,O52,O50,O45,O72,O77,O41,O54,O134,@G@@@@     C O60,O61,O62,O63,OGL
+)@@G@@64,O65,O66,O67,O70,O71,O47,O73,O57,O56,O42,O137/@C@@@@      IF((LET.LT.0GM
+)@@G@@).OR.(LET.GT.63))GO TO 10     @^@@@@      LET=IASC(LET+1)   @]@@@@      GN
+)@@G@@RETURN@#@@@@   10 LET=BLNK    @]@@@@      RETURN@]@@@@      END   @#@@@@GO
+)@@G@@@FOR,IS C.RASC    @ @@@@      SUBROUTINE RASC(LET)    @ @@@@      INTEGEGP
+)@@G@@R BLNK,IASC(64)   @^@@@@      DATA BLNK/O5/     @G@@@@      DATA (IASC(IGQ
+)@@G@@),I=1,64)/O5,O55,O76,O3,O47,O52,O46,O72,O51,O40,O50,  @G@@@@     C O42,OGR
+)@@G@@56,O41,O75,O74,O60,O61,O62,O63,O64,O65,O66,O67,O70,O71,O53  @G@@@@     CGS
+)@@G@@ ,O73,O43,O44,O45,O54,O0,O6,O7,O10,O11,O12,O13,O14,O15,O16,O17,   @G@@@@GT
+)@@G@@     C O20,O21,O22,O23,O24,O25,O26,O27,O30,O31,O32,O33,O34,O35,O36,O37, GU
+)@@G@@@^@@@@     C O1,O57,O2,O4,O77/@C@@@@      IF((LET.LT.32).OR.(LET.GT.95))GV
+)@@G@@GO TO 10    @^@@@@      LET=IASC(LET-31)  @]@@@@      RETURN@#@@@@   10 GW
+)@@G@@LET=BLNK    @]@@@@      RETURN@]@@@@      END   @#@@@@@FOR,IS C.IRAD50  GX
+)@@G@@@ @@@@      FUNCTION IRAD50(LET)    @#@@@@      INTEGER OO50@A@@@@      GY
+)@@G@@DIMENSION LET(3),IRY(38,2)    @^@@@@      DATA OO50/O50/    @G@@@@      GZ
+)@@G@@DATA(IRY(I,1),I=1,38)/1HA,1HB,1HC,1HD,1HE,1HF,1HG,1HH,1HI,1HJ     @F@@@@HA
+)@@G@@     C ,1HK,1HL,1HM,1HN,1HO,1HP,1HQ,1HR,1HS,1HT,1HU,1HV,1HW,1HX   @F@@@@HB
+)@@G@@     C ,1HY,1HZ,1H$,1H.,1H0,1H1,1H2,1H3,1H4,1H5,1H6,1H7,1H8,1H9/  @G@@@@HC
+)@@G@@      DATA (IRY(I,2),I=1,38)/O1,O2,O3,O4,O5,O6,O7,O10,O11,O12,O13,O14   HD
+)@@G@@@F@@@@     C ,O15,O16,O17,O20,O21,O22,O23,O24,O25,O26,O27,O30,O31,O32   HE
+)@@G@@@E@@@@     C ,O33,O34,O36,O37,O40,O41,O42,O43,O44,O45,O46,O47/    @#@@@@HF
+)@@G@@      IRAD50=0    @#@@@@      DO 1 I=1,3  @#@@@@      DO 2 J=1,38 @A@@@@HG
+)@@G@@      IF(LET(I).EQ.IRY(J,1))GO TO 10@#@@@@    2 CONTINUE    @^@@@@      HH
+)@@G@@IRAD50=IRAD50*OO50@#@@@@      GO TO 1     @A@@@@   10 IRAD50=IRAD50*OO50HI
+)@@G@@+IRY(J,2)   @#@@@@    1 CONTINUE    @]@@@@      RETURN@]@@@@      END   HJ
+)@@G@@@#@@@@@FOR,IS C.RDLINE  @C@@@@      SUBROUTINE RDLINE(LINE,ILC,IEOF,NTYPHK
+)@@G@@E)    @^@@@@      INTEGER OCR,OLF   @ @@@@      DIMENSION LINE(134)     HL
+)@@G@@@ @@@@      DATA OCR,OLF/O15,O12/   @ @@@@      IF(NTYPE.EQ.-1)GO TO 60 HM
+)@@G@@@B@@@@    3 READ(5,100,END=50)(LINE(J),J=1,80)  @#@@@@  100 FORMAT(80R1)HN
+)@@G@@@#@@@@      DO 1 I=1,80 @A@@@@      IF(LINE(81-I).NE.5)GO TO 2    @#@@@@HO
+)@@G@@    1 CONTINUE    @#@@@@      GO TO 3     @#@@@@    2 ILC=81-I+2  @A@@@@HP
+)@@G@@      WRITE(6,101)(LINE(J),J=1,80)  @^@@@@  101 FORMAT(1X,80R1)   @^@@@@HQ
+)@@G@@       LINE(ILC-1)=OCR  @#@@@@      II=81-I     @^@@@@      LINE(ILC)=OLHR
+)@@G@@F     @#@@@@   70 DO 4 J=1,II @^@@@@    4 CALL ASC(LINE(J)) @]@@@@      HS
+)@@G@@IEOF=0@]@@@@      RETURN@B@@@@   60 READ(10,110,END=50)(LINE(J),J=1,131)HT
+)@@G@@@^@@@@  110 FORMAT(131R1)     @^@@@@      DO 12 I=1,131     @A@@@@      HU
+)@@G@@IF(LINE(132-I).NE.5)GO TO 13  @#@@@@   12 CONTINUE    @#@@@@      GO TO HV
+)@@G@@60    @#@@@@   13 ILC=132-I+2 @A@@@@      WRITE(6,111)(LINE(J),J=1,131) HW
+)@@G@@@^@@@@  111 FORMAT(1X,131R1)  @^@@@@      LINE(ILC-1)=OCR   @^@@@@      HX
+)@@G@@LINE(ILC)=OLF     @#@@@@      II=132-I    @#@@@@      GO TO 70    @#@@@@HY
+)@@G@@   50 IEOF=100    @]@@@@      RETURN@]@@@@      END   @#@@@@@FOR,IS C.HEHZ
+)@@G@@ADER  @^@@@@      SUBROUTINE HEADER @^@@@@      INTEGER HEAD(4)   @A@@@@IA
+)@@G@@      CALL NTRAN(11,2,4,HEAD,L)     @^@@@@      CALL NTRAN(11,22) @]@@@@IB
+)@@G@@      RETURN@]@@@@      END   @#@@@@@FOR,IS C.BLKRD   @A@@@@      SUBROUIC
+)@@G@@TINE BLKRD(INFIL,IEOF)  @^@@@@      INTEGER INFIL(128)@]@@@@      IEOF=0ID
+)@@G@@@#@@@@      DO 1 I=1,128@#@@@@    1 INFIL(I)=0  @A@@@@      CALL NTRAN(1IE
+)@@G@@1,2,128,INFIL,L)  @^@@@@      CALL NTRAN(11,22) @ @@@@      IF(L.EQ.-2)IIF
+)@@G@@EOF=100     @]@@@@      RETURN@]@@@@      END   @A@@@@@MAP,IX MAP1,C.PDPIG
+)@@G@@11TAPEGEN/DOS     @^@@@@IN C.PDP11TAPEGEN/DOS   @]@@@@IN C.IRAD50 @]@@@@IH
+)@@G@@IN C.ASC    @]@@@@IN C.RDLINE @A@@@@@MAP,IX MAP2,C.PDP11TAPEGEN/RT11    II
+)@@G@@@^@@@@IN C.PDP11TAPEGEN/RT11  @]@@@@IN C.ASC    @]@@@@IN C.RDLINE @ @@@@IJ
+)@@G@@@MAP,IX MAP3,C.PDP11TAPERD/DOS@^@@@@IN C.PDP11TAPERD/DOS    @]@@@@IN C.HIK
+)@@G@@EADER @]@@@@IN C.RASC   @]@@@@IN C.BLKRD  @A@@@@@MAP,IX MAP4,C.PDP11TAPEIL
+)@@G@@RD/RT11     @^@@@@IN C.PDPTAPERD/RT11     @]@@@@IN C.RASC   @]@@@@IN C.BIM
+)@@G@@LKRD  ___HW,1HX   @F@@@@     C ,1HY,1HZ,1H$,1H.,1H0,1H1,1H2,1H3,1H4,1H5,IN
+)@@G@@1H6,1H7,1H8,1H9/  @G@@@@      DATA (IRY(I,2),I=1,38)/O1,O2,O3,O4,O5,O6,OIO
+)@@G@@7,O10,O11,O12,O13,O14   @F@@@@     C ,O15,O16,O17,O20,O21,O22,O23,O24,O2IP
+)@@G@@@D@]@@  ITEM                               AMOUNT      COST @D@]@@CPU TIIQ
+)@@G@@ME                     00:00:04.593        $0.08@D@[@@FILE I/O REQUESTS IR
+)@@G@@                     257       $0.06@D@[@@FILE I/O WORDS                IS
+)@@G@@      150189       $0.01@D@[@@MEMORY USAGE                         0.101IT
+)@@G@@       $0.04@D@[@@CARDS IN                                22       $0.00IU
+)@@G@@@D@[@@PAGES PRINTED                            5       $0.09@D@[@@SHAREDIV
+)@@G@@ FILES                             1       $0.06@D@[@@SOFTWARE SUPPORT  IW
+)@@G@@                      17       $0.14@D@[@@JOB CHARGE                    IX
+)@@G@@           1       $0.05@D@]@@TOTAL COST                                IY
+)@@G@@       $0.53@J@]@@    THE ABOVE DOLLAR AMOUNTS ARE APPROXIMATE AND ARE BIZ
+)@@G@@ASED ON RATES FOR OVERNIGHT RUNS    @D@[@@USER BALANCE                  JA
+)@@G@@                 $125.66@C@]@@    INITIATION  TIME:   01:52:39 DEC  1,19JB
+)@@G@@78    @C@]@@    TERMINATION TIME:   01:53:02 DEC  1,1978    @C@]@@   PREJC
+)@@G@@VIOUS RUN TIME:   01:35:06 DEC  1,1978    0^@@@@D,@@TTY RUN=CLS,BRF=ON  JD
+)@@G@@_@_____U________________________________________________________________JE
+)@@G@@________________________________________________________________________JF
+)@@G@@_________________________V______________________________________________JG
+)@@G@@________________________________________________________________________JH
+)@@G@@________________________________________________________________________JI
+)@@G@@________________________________________________________________________JJ
+)@@G@@________________________________________________________________________JK
+)@@G@@________________________________________________________________________JL
+)@@G@@________________________________________________________________________JM
+)@@G@@________________________________________________________________________JN
+)@@G@@________________________________________________________________________JO
+)@@G@@________________________________________________________________________JP
+)@@G@@________________________________________________________________________JQ
+)@@G@@________________________________________________________________________JR
+)@@G@@________________________________________________________________________JS
+)@@G@@________________________________________________________________________JT
+)@@G@@________________________________________________________________________JU
+)@@G@@________________________________________________________________________JV
+)@@G@@________________________________________________________________________JW
+)@@G@@________________________________________________________________________JX
+)@@G@@________________________________________________________________________JY
+)@@G@@________________________________________________________________________JZ
+)@@G@@________________________________________________________________________KA
+)@@G@@________________________UMBER, NUMBER IS,I10)   (019H BOTH ENDS OF PIPE KB
+)@@G@@,I5,027H ARE CONNECTED TO SAME NODE)K&@@@@KXPPPPL77C@@@@@@@ @@[@@[@@@@@AKC
+)@@G@@KG@@@@      KPK*.WKJU#9]L5CC@@4     K^@@@@K^OZH3KA4B2 J";M=[5           KD
+)@@G@@@@@@@@L5!JM4@@@@@@@@@@@'@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@KE
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@KF
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@[@@@@@ ^$H@@I^$H@@[^$HKG
+)@@G@@@)[@@@@-@@@@@@@@@@@@@@@@@@@@@@[)@@@@[=@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@KH
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@KI
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@)[@@@@)@@@@@)@@@@@-@@@@@-@@@@@=@@@@KJ
+)@@G@@@=@@@@@_F^@%READ AFTER WRITE ATTEMPTED WITHOUT IG@@C7SC[@S7"G[@C6)T[@C7TKK
+)@@G@@G@@@@KAB@C9R/,0@CB@@@@@@]@@@@@O8)@@[A@)C6Z8LKC9J/,0@CB@@@C5W]@@@@@@@@C6YKL
+)@@G@@[@@@@@@@@C6T]@@@@@/,0@CC@@@CHP#[]@@@@@@C63@@@@@@@@@@@IR8)@@[A@)C6ZN9K@@^KM
+)@@G@@/,0@CB@@@C6S]@@@@@O8)@@[A@)C6Z8LKC9?/,0@CB@@@C5W]@@@@@@@@C6Y[@@@@@@@@C6TKN
+)@@G@@]@@@@@/,0@CC@@@CHP#[[@@@@@@C/R@@@@@@@@@C6Y[@@@@@/,0@CC@@@CHP#[[@@@@@@C/&KO
+)@@G@@@@@@@@@@@CHB#@@@@@@@@CHD]@@@@E/,0@CC@@@CHP#[[@@@@@@C/&@@@@@@@@@CHB#@@@@@KP
+)@@G@@@@@CHD]@@@@E/,0@CC@@@CHP#[]@@@@@@C7[@@@@@@@@@@@CR80@@[A@0C6XC[@C6+H9@@@[KQ
+)@@G@@N[)@@KR'3C5$AA0C')/,0@CB@@@@@@]@@@@@R'3C7IAA0C'>/,0@CB@@@@@@[@@@@@R'3C5SKR
+)@@G@@AA0C'%/,0@CB@@@@@@[@@@@@R'3C5WAA0C'\/,0@CB@@@@@@[@@@@@O80@@[A@0C6X8L)C'XKS
+)@@G@@/,0@CC@@@CHP#[[@@@@@@C/6@@@@@@/,0@CC@@@CHP#[]@@@@@@C7D@@@@@@@@@@@AR8)@@[KT
+)@@G@@A@)C6)C[@C7OH9@@@[N[K@@KR'2C5$AA0C;B/,0@CB@@@@@@]@@@@@R'2C7IAA0C;G/,0@CBKU
+)@@G@@@@@@@@[@@@@@O8)@@[A@)C6)8LKC;^/,0@CC@@@CHP#[[@@@@@@C.^@@@@@@@@@C6<]@@@@@KV
+)@@G@@/,0@CC@@@@@@@@@@@@@@@@@@@@@C6=@@@@@@@@@C.-@@@C.+@@@C.&@@@C.&@@@C.&@@@C.+KW
+)@@G@@@@@C.:@@@C.?@@@C7W@@@C5-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@KX
+)@@G@@@@@@@@@CK@C0[SC[0]@SE[S^]KK@C![0?]@TEL D-[E-DE1 ^@)CD^DLPETOC(^^@)^@)CTPKY
+)@@G@@D*M[0<]@<CD]ETJD-PE- ^@)^@)C1MC(L^@)^@)^@)C1MC(L^@)^@)^[AEL ECM]@J^[#CDOKZ
+)@@G@@C(BD9MFC)D-[CL D)I[0K L#D9^C*)^@)^[AEL EC)^@)^@)^@*E[#E)(^@)^@)^@*E[#E)(LA
+)@@G@@^@)^@) [KCTO CN@@@@CI^)K#K! *! *! *)^@)^@! *! *! *)^@)^@! *! *! *M[0W]@ LB
+)@@G@@E-JE-[D)D[^@@K][0 ]@ AC0A@,A@L]T ^@)@CK@C0[SC[0]@SE[S^]KK@C!@K#[0K]@BCD^LC
+)@@G@@DK)CTPD*L]KI@C]@SI@)K]T#D9^C*)^@)C1MC(L^[KCTO^[KCTO]CM]S)C1M@CK@C![0R]@RLD
+)@@G@@D*)DC)ES)ES)DC)D0)C8)^@)C))CC)E))CCM[0[@K#[0^]@FCTJC- ^@)^[AEL ECI[@L]KNLE
+)@@G@@@CKAC0D1JE-  0,^@)C-PC*)E-J^[GCDMC9 ^[JEK)C1MCD#E-DD9ICDG^[RC(DC9CE-N ))LF
+)@@G@@ETJD( ]KK K)C1MC(LE( D1#DD ES)D([FC)CL ^[DD0)C(MELJEK)CLT^[[ES)D(PCTC^[[LG
+)@@G@@ESA@8[]T D)I@@@@@@@@@@@@K^@@@@@@@@@@@@@@@BNS@@@@KB2@@@@@@@@@@@@@@]K@)@@@LH
+)@@G@@@@@@@@K/@@@@@@@@@@_____8@@@@@[@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@D( CDILI
+)@@G@@^@)^@)ETOC))C(MEK)D( C-DCDI^@)D(JC- ^@)^@)ETOC))C- E0)E1[ELDCDICT DTPELOLJ
+)@@G@@D9NDDNETFC(RD1 ETNEL[D1BC*)^@)D(DD1DD(PD*)D([F[DD(PD*)Z__=32)@@VGH@@@@@@LK
+)@@G@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@LL
+)@@C@@@@@@@@@@@@@@@@@@@@@@@@@F@@@@@@@@@@@@@@@@@@@@@@@@                        LM
+@EOF
+@COPY,IO  TEMP.1023-001-001,1023-001-001.
+@FREE     TEMP.

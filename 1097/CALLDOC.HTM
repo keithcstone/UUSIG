@@ -1,0 +1,2675 @@
+<!--This file created 5/30/97 6:16 PM by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>CALL Macro Processor</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=42 BOTTOM=765 LEFT=4 RIGHT=534>
+<!doctype html public "-//IETF//DTD HTML//EN"> <META NAME="OPERATOR" CONTENT="Keith C Stone">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<P><CENTER><B>Unisys Corporation</B></CENTER></P>
+
+<P><CENTER><B>CALL Macro Processor</B></CENTER></P>
+
+<P><CENTER><B>Programmer Reference Manual</B></CENTER></P>
+
+<P>This version of the CALL PRM corresponds to level 3R5 of the CALL
+processor.</P>
+
+<PRE><B>1.     Introduction</B>                                                     <B>Page 1</B> <B>
+2.     Lexical Elements</B>                                                 <B>Page 2</B> 
+2.1.     Character Set                                                  Page 2 
+2.2.     Layout, Spacing, and Comments                                  Page 2 
+2.3.     Identifiers                                                    Page 2 
+2.4.     Literals                                                       Page 3 <B>
+3.     Values and Expressions</B>                                           <B>Page 4</B> 
+3.1.     Variables and Arrays                                           Page 4 
+3.2.     Expressions                                                    Page 5 
+3.3.     Character String Operators                                     Page 6 
+3.3.1.     Substring                                                    Page 6 
+3.3.2.     Concatenation                                                Page 6 
+3.4.     Arithmetic Operators                                           Page 7 
+3.4.1.     Unary Operators                                              Page 7 
+3.4.2.     Binary Operators                                             Page 7 
+3.4.3.     Relational Operators                                         Page 7 
+3.5.     Boolean Operators                                              Page 8 
+3.6.     Functions                                                      Page 8 
+3.7.     Built-in Functions                                             Page 9 <B>
+4.     Statements</B>                                                      <B>Page 17</B> 
+4.1.     Program Construction                                          Page 17 
+4.1.1.     Notation                                                    Page 17 
+4.1.2.     Blocks                                                      Page 17 
+4.1.3.     MACRO                                                       Page 17 
+4.1.4.     PROCEDURE                                                   Page 18 
+4.1.5.     LOCAL                                                       Page 18 
+4.1.6.     RETURN                                                      Page 19 
+4.1.7.     CALL                                                        Page 19 
+4.2.     Input-Output                                                  Page 19 
+4.2.1.     PRINT                                                       Page 19 
+4.2.2.     OUTPUT                                                      Page 20 
+4.2.3.     QUERY                                                       Page 20 
+4.2.4.     OPEN                                                        Page 20 
+4.2.5.     CLOSE                                                       Page 21 
+4.2.6.     READ                                                        Page 21 
+4.2.7.     BLOCK READ                                                  Page 22 
+4.2.8.     WRITE                                                       Page 22 
+4.2.9.     BLOCK WRITE                                                 Page 23 
+4.2.10.     BUFFER {IN | LOCK | OUT}                                   Page 23 
+4.3.     Variable Manipulation                                         Page 24 
+4.3.1.     LET                                                         Page 24 
+4.3.2.     MOVE                                                        Page 24 
+4.3.3.     REMOVE                                                      Page 25 
+4.4.     Flow Control                                                  Page 25 
+4.4.1.     IF                                                          Page 25 
+4.4.2.     CASE                                                        Page 26 
+4.4.3.     LOOP                                                        Page 26 
+4.5.     Miscellaneous                                                 Page 27 
+4.5.1.     SET                                                         Page 27 
+4.5.1.1.     Screen Control                                            Page 27 
+4.5.1.2.     Processor Operation                                       Page 29 
+4.5.2.     LOCATE                                                      Page 31 
+4.5.3.     WAIT                                                        Page 32 
+4.5.4.     BREAKPOINT                                                  Page 32 
+4.5.5.     SAVE                                                        Page 33 
+4.5.6.     ABORT                                                       Page 33 <B>
+5.     CALL Processor Invocation</B>                                       <B>Page 34</B> 
+5.1.     Processor Call Statement                                      Page 34 
+5.2.     Processor Call Options                                        Page 34 
+5.3.     Debugging                                                     Page 35 
+5.3.1.     Interactive Debugging                                       Page 35 
+5.4.     Saving the Compiled Macro                                     Page 36 
+5.5.     Paging                                                        Page 36 
+5.6.     Processor Limitations                                         Page 37 <B>
+Appendix A.     Development and Maintenance</B>                            <B>Page 38</B> <B>
+Appendix B.     Revision History</B>                                       <B>Page 39</B> 
+&nbsp;
+&nbsp;</PRE>
+
+<H1>Introduction</H1>
+
+<P>CALL is a medium performance high level language, oriented towards
+string processing. Language features include: modern, block
+structured syntax; automatic type conversion; array range
+manipulation; support for UTS full screen protocol; numerous built-in
+functions for information retrieval and text handling; and both text-
+and bit-oriented I/O. The CALL processor is a combined compiler and
+execution environment, capable of running CALL programs
+interpretively or saving them as complete absolutes for later,
+independent execution.</P>
+
+<P>CALL is an excellent tool for writing one-time programs and
+prototyping utilities. Where performance is not absolutely critical,
+CALL programs can be used successfully in production environments.
+</P>
+
+<H1>Lexical Elements</H1>
+
+<P><B>Character Set</B></P>
+
+<P>CALL macros can be recorded in either Fieldata or ASCII, but only
+the 128-character ASCII set is used within the CALL processor. All
+characters can be used in character literals, and many of the
+printing characters have specific uses in forming the statements of
+CALL macros. In identifiers and keywords no distinction is made
+between upper-case and lower-case letters. For example, the
+identifiers <TT>FIRST_RECORD</TT> and <TT>First_record</TT> are the
+same to CALL.</P>
+
+<P><B>Layout, Spacing, and Comments</B></P>
+
+<P>A CALL macro is a sequence of lines. Each line consists of up to
+4096 characters. The break between lines is significant at the
+lexical level, i.e., units such as identifiers, keywords, literals,
+and special symbols cannot cross line boundaries. Statements can span
+multiple lines. The end of a statement is indicated by a semicolon.
+</P>
+
+<P>Spaces have the same meaning in CALL macros as in most languages
+&#150; a space terminates a lexical element. A space is not necessary
+between two lexical elements provided the omission does not cause two
+letters (including underscores), a letter and a digit, or two digits
+to become adjacent. Addition of non-significant spaces does not
+increase the execution time of a CALL macro, so the use of spaces to
+improve readability is recommended. Since a space terminates any
+lexical element other than a character literal, spaces may not appear
+within a lexical unit such as an identifier, a keyword, a numeric
+literal, or a special symbol.</P>
+
+<P>Comments can be included in a CALL macro through use of the
+construct</P>
+
+<PRE>" comment "
+&nbsp;</PRE>
+
+<P>The quote character (<TT>"</TT>) is used to delimit comments; the
+apostrophe (<TT>'</TT>) has no special significance within a comment.
+Outside character literals, a comment has the same significance as a
+space. Like other lexical units, a comment cannot span line
+boundaries, however, unlike string literals, a comment is assumed to
+end at the end of a line. Thus no closing delimiter is needed if a
+comment includes the last character of a line.</P>
+
+<P><B>Identifiers</B></P>
+
+<P>An identifier consists of a sequence of letters, digits, and
+underscores, beginning with a letter. Identifiers may be of any
+length, but only the first 28 characters are retained for comparison;
+identifiers must be uniquely identified by their first 28 characters.
+Identifiers are used to name variables, arrays, and procedures. The
+following identifiers are reserved for specific meanings and may not
+be used as variable, array, or procedure names:</P>
+
+<PRE>ABS             FALSE           LT              SITEID
+ABSOLUTENAME    FILEXISTS       LXOR            STATUS
+ACCOUNT         FIRSTINDEX      MAX             STIME
+AND             FROMFIELDATA    MIN             SYSID
+BITS            FULLFILENAME    MOD             SYSTYPE
+BREAK           GE              NE              TIME
+CHARACTER       GT              NOT             TOFIELDATA
+CHARACTERIZE    INDEX           OPTION          TRIM
+CONDITIONS      INTEGER         OR              TRUE
+CONSOLE         INTEGERIZE      PARAMETER       UPPER
+CONTROLWORD     LAND            PROGTYPE        URUNID
+DATE            LASTINDEX       PROJECT         USERID
+ELEMENTINDEX    LE              QUEUELENGTH     VERIFY
+ELEMENTTYPE     LENGTH          RECOVERED       VOID
+EQ              LINENUMBER      RUNID           VOIDINDEX
+EXEC            LOR             SDATE           XOR
+EXECLEVEL       LOWER<B>
+&nbsp;</B></PRE>
+
+<P><B>Literals</B></P>
+
+<P>Literals, or constants, are of two types: integer and character.
+An integer literal is a sequence of decimal digits representing a
+value which can be represented as a positive value in 35 bits (i.e.,
+the maximum value is 34,359,738,367). The built-in constants
+<TT>TRUE</TT> (for 1) and <TT>FALSE</TT> (for 0) can be used to
+improve readability when integer variables are being used to hold
+Boolean values.</P>
+
+<P>A character literal consists of an apostrophe followed by zero or
+more characters followed by another apostrophe; it represents the
+character sequence enclosed within the apostrophes. An apostrophe
+within the string is represented as two consecutive apostrophes (but
+stored as a single apostrophe). Similarly, an underscore is
+represented as two consecutive underscores. String constants may not
+span line boundaries; the maximum length of a string constant is 4096
+characters.</P>
+
+<P>Any ASCII character can be represented in a character literal as
+an underscore followed by three octal digits (e.g., <TT>'_033'</TT>
+for a string of one character whose value is the character ESC). In
+addition, the 33 standard non-printing ASCII characters (with octal
+codes 000-037 and 177) can be represented by an underscore followed
+by the three-character mnemonic name of the ASCII character.
+Two-character names are extended with a trailing period to make them
+three characters long. For example, <TT>'_033'</TT>, <TT>'_esc'</TT>,
+and <TT>'_ESC'</TT> all represent the escape character, and
+<TT>'_012'</TT> and <TT>'_LF.'</TT> both represent the line-feed
+character.</P>
+
+<H1>Values and Expressions</H1>
+
+<P>Most operations of the CALL macro language manipulate values of
+one of two types: character string or integer. An expression consists
+of constant values and variables combined through the use of
+operators. Constant values are represented by the literal forms
+discussed in the previous section. Variables represent the values
+most recently assigned to them.</P>
+
+<P><B>Variables and Arrays</B></P>
+
+<P>A variable is a named entity whose type and value are determined
+by the value most recently assigned to it and the context in which it
+was assigned. Unless otherwise declared, variables are global to the
+entire macro. Variables with limited scope are created by their
+appearance as formal parameters on <TT>PROCEDURE</TT> statements or
+by their appearance in a <TT>LOCAL</TT> statement within a procedure
+body.</P>
+
+<P>Each variable has a value of one of four types, which may change
+each time a new value is assigned to the variable. The possible types
+are:</P>
+
+<P>Undefined The variable has no current value; any reference to the
+variable which attempts to access its value is a fatal error.</P>
+
+<P>Integer The variable has an integer value in the range
+-34,359,738,367 to +34,359,738,367 (inclusive).</P>
+
+<P>Character The variable has a character string value, which may
+vary in length from 0 to 4096 characters; a character variable
+retains both the characters of the string and its current length.
+</P>
+
+<P>File The variable has been used to name a file in an <TT>OPEN</TT>
+statement; it can be used as a file name in <TT>READ</TT>,
+<TT>WRITE</TT>, and <TT>CLOSE</TT> statements and the
+file-referencing built-in functions, but cannot be used as an integer
+or character string until the file is closed.</P>
+
+<P>A variable is referenced by using its name in an expression.</P>
+
+<P>An array is a set of values accessed by integer index values; CALL
+supports arrays of an arbitrary number of dimensions. A variable name
+by itself identifies a scalar variable. When the name appears with
+one subscript, it identifies elements of a vector, and so on. Thus an
+array cannot (usually) be referenced as a whole. However, when a
+variable name is passed to a procedure as a parameter, all the
+associations of that name are accessible through the formal parameter
+name, including its associated vector, matrix, and higher-dimensioned
+arrays.</P>
+
+<P>An array element is referenced by following the array variable
+name with a list of index values inside parentheses:</P>
+
+<PRE>LET a( i, j ) := a( i, j ) + b( i, k ) * c( k, j );
+&nbsp;</PRE>
+
+<P>An array comes into existence when any element of the array is
+first referenced. The existence of an array element does not imply
+anything about the existence of any other array elements. For
+example,</P>
+
+<PRE>LET a( 100, -100 ) := 37;
+&nbsp;</PRE>
+
+<P>defines one element of the array <TT>a</TT>; if they have not been
+previously defined, the scalar <TT>a</TT>, the vector <TT>a(i)</TT>,
+and other array elements <TT>a(i,j)</TT> remain undefined. The range
+permitted for index values is entire range of integer values. A
+program may execute slowly if the set of index values defined for an
+array is very sparse. An indexed structure is used for array
+accessing; each index table covers a range of about 200 index values,
+so extreme sparseness of array index values may result in the
+creation (and swapping) of many largely empty index tables.</P>
+
+<P>The CALL processor uses a paged memory space to hold the CALL
+macro program as well as the variables and arrays defined by the
+program; this space is currently set at about 117 million words, but
+could be increased to a maximum of about 30 billion words by
+increasing the size of its swapping file. It is difficult to exceed
+the current space allocation in any reasonable time.</P>
+
+<P><B>Expressions</B></P>
+
+<P>In the CALL macro language, an expression can be as simple as a
+single variable name or can occupy several lines and involve
+arithmetic, string, and Boolean operations. Where operands of a
+particular type are required, any operand of another type is
+converted to the required type. It is a fatal error to attempt to
+convert an undefined or file variable's value to either integer or
+character, and it is a fatal error to attempt to convert a character
+string value to integer if it does not contain the character
+representation of an integer value in the proper range.</P>
+
+<P>The operators of the CALL macro language are divided into four
+groups, according to the types of their operands and results. These
+groups are character string operators, arithmetic operators,
+relational operators, and Boolean operators.</P>
+
+<P>When more than one operator occurs in an expression, the order of
+evaluation is determined by the following table of precedence, where
+the highest precedence operator is performed first and operators at
+the same precedence are performed left-to-right.</P>
+
+<P>9 <TT>[...]</TT> (substring)<BR>
+
+8 <TT>+</TT>, <TT>-</TT>, <TT>^</TT>, <TT>NOT</TT> (unary arithmetic,
+Boolean operators)<BR>
+
+7 <TT>**</TT> (binary arithmetic operator)<BR>
+
+6 <TT>*</TT>, <TT>/</TT> (binary arithmetic operators)<BR>
+
+5 <TT>+</TT>, <TT>-</TT> (binary arithmetic operators)<BR>
+
+4 <TT>||</TT>, <TT>!!</TT> (binary string operators)<BR>
+
+3 <TT>&lt;</TT>, <TT>&gt;</TT>, <TT>&lt;=</TT>, <TT>&gt;=</TT>,
+<TT>=</TT>, <TT>&lt;&gt;</TT>, <TT>^=</TT> (relational operators)<BR>
+
+<TT>LT</TT>, <TT>GT</TT>, <TT>LE</TT>, <TT>GE</TT>, <TT>EQ</TT>,
+<TT>NE</TT> (monocase relational operators)<BR>
+
+2 <TT>AND</TT> (<TT>&amp;</TT>) (binary Boolean operators)<BR>
+
+1 <TT>OR</TT> (<TT>|</TT>, <TT>!</TT>), <TT>XOR</TT> (binary Boolean
+operators)</P>
+
+<P>When the precedence and left-to-right ordering does not produce
+the desired result, the evaluation of an expression can be reordered
+by enclosing subexpressions in parentheses.</P>
+
+<P><B>Character String Operators</B></P>
+
+<P>Two operators manipulate character strings to produce new
+character strings: substring and concatenation.</P>
+
+<P><B>Substring</B></P>
+
+<P>Substring isolates characters out of an existing character string.
+The form of a substring operation is (the brackets are part of the
+syntax):</P>
+
+<PRE><I>expression</I> [<I>start</I>, <I>length</I>]<I>
+expression</I> [<I>start</I>, *]<I>
+expression</I> [*, <I>length</I>]<I>
+expression</I> [<I>start</I>]<I>
+expression</I> [*]
+&nbsp;</PRE>
+
+<P>Characters in a string value are indexed left-to-right, starting
+with 1 for the first character. The first form of substring
+identifies the <I><TT>length</TT></I> characters starting with the
+character at position <I><TT>start</TT></I>. The second form
+identifies the characters starting at position <I><TT>start</TT></I>
+and ending at the end of the string value. The third form identifies
+the last <I><TT>length</TT></I> characters of the string. The fourth
+form identifies the one character at position <I><TT>start</TT></I>.
+Finally, the fifth form identifies just the last character of the
+string. The string value is extended on the right with spaces if
+necessary so that <I><TT>start</TT></I> and <I><TT>length</TT></I>
+will identify characters within the value, with
+<I><TT>length</TT></I> assumed to be 1 if <I><TT>start</TT></I>
+points past the end of the string value in the second form.</P>
+
+<P>The substring operator can also appear as the target of an
+assignment (including as the target of a <TT>READ</TT> or
+<TT>QUERY</TT> statement), in which case its
+<I><TT>expression</TT></I> operand must be a variable name or array
+element reference. In such a case the actual target of the assignment
+is the selected part of the variable or array element. Unlike
+ordinary string assignment, the use of substring establishes a length
+for the target. The value assigned is truncated or padded with spaces
+on the right to fit the substring length. If the second form of
+substring is used, with <I><TT>length</TT></I> specified as
+<TT>*</TT>, the length of the left operand and the value of
+<I><TT>start</TT></I> determine the value of <I><TT>length</TT></I>.
+</P>
+
+<P><B>Concatenation</B></P>
+
+<P>Concatenation produces a character string consisting of the
+characters of the first operand followed by the characters of the
+second operand. The form of a concatenation expression is:</P>
+
+<PRE><I>expression_1</I> || <I>expression_2</I>
+&nbsp;</PRE>
+
+<P>The concatenation operator can be written as either <TT>||</TT> or
+<TT>!!</TT>.</P>
+
+<P><B>Arithmetic Operators</B></P>
+
+<P>All arithmetic operators produce integers with an extended range;
+integer constants and variables are represented in 36 bits, so must
+lie in the range which can be represented by a sign bit and 35 value
+bits. Intermediate results in arithmetic expressions are represented
+in 72 bits, allowing 71 bits of value. The final result of an
+arithmetic operation must be representable in 36 bits; longer values
+cannot be directly assigned, converted to strings, or compared.
+(However, see the <TT>LONGEXPR</TT> and <TT>LONGVAL</TT> functions
+for manipulation of 72-bit quantities.)</P>
+
+<P><B>Unary Operators</B></P>
+
+<P>The unary arithmetic operators are:</P>
+
+<PRE>+ <I>expression</I>
+- <I>expression</I>
+&nbsp;</PRE>
+
+<P>The unary <TT>+</TT> is primarily of use when its operand is a
+string expression, in which case it causes translation of the string
+value to an integer. If its operand is already an integer, the
+resulting value is the same integer. The unary <TT>-</TT> returns the
+integer value equal in absolute value and opposite in sign to its
+operand.</P>
+
+<P><B>Binary Operators</B></P>
+
+<P>The binary operators have their usual significance, with division
+returning the integer part of the quotient.</P>
+
+<P><I><TT>expression_1</TT></I><TT> +
+</TT><I><TT>expression_2</TT></I> (addition)<BR>
+
+<I><TT>expression_1</TT></I><TT> - </TT><I><TT>expression_2</TT></I>
+(subtraction)<BR>
+
+<I><TT>expression_1</TT></I><TT> * </TT><I><TT>expression_2</TT></I>
+(multiplication)<BR>
+
+<I><TT>expression_1</TT></I><TT> / </TT><I><TT>expression_2</TT></I>
+(division)<BR>
+
+<I><TT>expression_1</TT></I><TT> ** </TT><I><TT>expression_2</TT></I>
+(exponentiation)</P>
+
+<P><B>Relational Operators</B></P>
+
+<P>The result of a relational operator is an integer value 0
+(representing <TT>FALSE</TT>) or 1 (representing <TT>TRUE</TT>).</P>
+
+<P>Relational operators take operands of either integer or character
+type. If both operands are integer, the comparison is done on the
+integer values. Otherwise the comparison is done on string values,
+with the integer operand, if any, first converted to a character
+string. Care should be taken with comparisons involving both integer
+and character data, since different results are often returned
+depending on the type of the comparison. For example,</P>
+
+<P><TT>21 &lt; 100</TT> =&gt; <TT>TRUE<BR>
+
+'21' &lt; 100</TT> =&gt; <TT>FALSE</TT></P>
+
+<P>Comparison between integer values has the usual meaning.</P>
+
+<P>Comparison between character values is performed character by
+character from left to right as usual, with padding of the shorter
+operand with spaces to the length of the longer operand. Equality
+exists if the (padded) operands are identical (subject to
+monocasing). If the operands are not equal, their order is determined
+by the relative order of the first characters which are not equal
+between the two operands, according to the ISO collating sequence.
+</P>
+
+<P>Two forms of all the relational operators exist. One performs
+comparison on character strings unmodified; the other performs
+monocase comparison, with all lower case characters in either operand
+converted to upper case.</P>
+
+<P>The relational operators are:</P>
+
+<P><TT>=</TT> test for equality<BR>
+
+<TT>EQ</TT> monocased test for equality<BR>
+
+<TT>&lt;&gt;</TT>,<TT> _^=</TT> test for inequality<BR>
+
+<TT>NE</TT> monocased test for inequality<BR>
+
+<TT>&lt;</TT> test for left operand less<BR>
+
+<TT>LT</TT> monocased test for left operand less<BR>
+
+<TT>&lt;=</TT> test for left operand not greater<BR>
+
+<TT>LE</TT> monocased test for left operand not greater<BR>
+
+<TT>&gt;</TT> test for left operand greater<BR>
+
+<TT>GT</TT> monocased test for left operand greater<BR>
+
+<TT>&gt;=</TT> test for left operand not less<BR>
+
+<TT>GE</TT> monocased test for left operand not less</P>
+
+<P><B>Boolean Operators</B></P>
+
+<P>The Boolean operators are the unary <TT>NOT</TT> and the binary
+<TT>AND</TT>, <TT>OR</TT>, and <TT>XOR</TT>. They take integer
+operands, interpreted in the sense of 0 being <TT>FALSE</TT> and
+non-zero being <TT>TRUE</TT>, and combine them in the usual ways,
+producing 0 for <TT>FALSE</TT> and 1 for <TT>TRUE</TT>. <TT>NOT</TT>
+is also represented by "<TT>^</TT>", <TT>AND</TT> by
+"<TT>&amp;</TT>", and <TT>OR</TT> by "<TT>|</TT>" or "<TT>!</TT>". No
+alternative representation is provided for <TT>XOR</TT>.</P>
+
+<P><B>Functions</B></P>
+
+<P>All procedures which have parameters can be called as functions.
+Function calls can appear in any expression. The syntax of a function
+call is:</P>
+
+<PRE><I>function</I>( <I>expression</I>[, <I>expression</I>[, <I>expression</I>]]... )
+&nbsp;</PRE>
+
+<P>The number of <I><TT>expression</TT></I>s must match the number of
+parameters in the function's <TT>PROCEDURE</TT> statement, and there
+must be at least one. The type of the returned value is the type of
+the value on the <TT>RETURN</TT> statement which ends execution of
+the procedure.</P>
+
+<P>Except for the function value, a function reference is identical
+to a procedure call using the <TT>CALL</TT> statement; see the later
+sections on the <TT>CALL</TT> and <TT>PROCEDURE</TT> statements for
+more details. A procedure which does not specify a returned value on
+a <TT>RETURN</TT> statement returns the null string.</P>
+
+<P>Procedures must be declared before they can be referenced as
+functions; this can be accomplished by placing the <TT>PROCEDURE</TT>
+statement and body ahead of the first reference, or by a
+<TT>PROCEDURE</TT> <TT>...</TT> <TT>FORWARD</TT> declaration.</P>
+
+<P><B>Built-in Functions</B></P>
+
+<P>The CALL macro language provides a number of built-in functions,
+which provide additional data manipulations as well as access to a
+number of Executive functions. The number and types of operands and
+the type of results vary from one function to another, as indicated
+below.</P>
+
+<P><TT>ABS(</TT><I><TT> expression </TT></I><TT>)<BR>
+
+</TT>The absolute value of the integer <I><TT>expression</TT></I>
+value is returned.</P>
+
+<P><TT>ABSOLUTENAME<BR>
+
+</TT>The name of the currently executing processor (i.e., the CALL
+processor or the compiled macro being executed) is returned as the
+character string
+<TT>'</TT><I><TT>file.Element/Version</TT></I><TT>'</TT>, where
+<I><TT>File</TT></I> is an internal file name that may have been
+attached by the Exec. The <I><TT>/version</TT></I> is omitted if the
+version name of the executing element is blank.</P>
+
+<P><TT>ACCOUNT<BR>
+
+</TT>The account number of the current run is returned as a character
+string.</P>
+
+<P><TT>BITS(</TT><I><TT> value</TT></I><TT>,
+</TT><I><TT>start</TT></I><TT>, </TT><I><TT>length </TT></I><TT>)<BR>
+
+</TT>The three parameters are integer values. The bits of the 36-bit
+ones-complement representation of <I><TT>value</TT></I> are numbered
+from 0 to 35, left to right. The value of <TT>BITS</TT> is
+<I><TT>length</TT></I> bits starting with the bit numbered
+<I><TT>start</TT></I>.</P>
+
+<P><TT>BREAK<BR>
+
+</TT>If the break flag is set, the returned value is <TT>TRUE</TT>;
+otherwise it is <TT>FALSE</TT>. The break flag is set when "@@X C" is
+entered from the terminal or an "II" keyin is entered for the run;
+the flag is cleared at program initiation and when the <TT>BREAK</TT>
+function is called.</P>
+
+<P><TT>CHARACTER(</TT><I><TT> expression</TT></I><TT> )<BR>
+
+</TT>If the <I><TT>expression</TT></I> value is a character string,
+the result is the same value. If the <I><TT>expression</TT></I> value
+is an integer, the result is a digit string representing the integer
+value, with a leading minus sign if the value is negative.</P>
+
+<P><TT>CHARACTERIZE( </TT><I><TT>expression</TT></I><TT>[,
+</TT><I><TT>count</TT></I><TT>] )<BR>
+
+</TT>The integer <I><TT>expression</TT></I> value is interpreted as
+the ASCII code of <I><TT>count</TT></I> characters; the returned
+value is the ASCII string of length <I><TT>count</TT></I>. If not
+specified, <I><TT>count</TT></I> is assumed to be one; if
+<I><TT>count</TT></I> is negative or zero, a null string is returned;
+if <I><TT>count</TT></I> is greater than four, results are undefined.
+</P>
+
+<P><TT>CONDITIONS<BR>
+
+</TT>The value returned is the current condition word, expressed as a
+36-character string of 0s and 1s. The meaning of the individual bits
+is defined in <U>Exec System Software Executive Requests Programming
+Reference Manual</U> (7830 7899).</P>
+
+<P><TT>CONTROLWORD( </TT><I><TT>filename</TT></I><TT> )<BR>
+
+</TT>The <I><TT>filename</TT></I> parameter is the variable name
+associated with an open input file in the <TT>OPEN</TT> statement;
+the returned value is the integer value of the image control word of
+the most recently read image. This value is negative for control
+images and non-negative for data images.</P>
+
+<P>The <TT>BITS</TT> built-in function can be used to determine the
+type of a control image; if <TT>n</TT> is the <TT>CONTROLWORD</TT>
+value, <TT>BITS(n,0,6)</TT> is the type of the control image (e.g.,
+40 for a type 050 label image).</P>
+
+<P><TT>DATE<BR>
+
+</TT>A character string representing the current date in the form
+<I><TT>MMDDYY</TT></I> is returned, where <I><TT>YY</TT></I> is the
+year (00-99), <I><TT>MM</TT></I> is the month (01-12), and
+<I><TT>DD</TT></I> is the day (01-31).</P>
+
+<P><TT>ELEMENTINDEX<BR>
+
+ELEMENTINDEX</TT> returns the array index of the element which
+satisfied the search on the last <TT>LOCATE</TT> statement. Only a
+<TT>LOCATE</TT> statement changes this value.</P>
+
+<P><TT>ELEMENTTYPE( </TT><I><TT>filename </TT></I><TT>)<BR>
+
+</TT>The <I><TT>filename</TT></I> parameter is a variable name that
+has been used in an <TT>OPEN</TT> statement to name a file which has
+been opened as a program file element; the returned value is a
+character string representing the element type: <TT>'ASMP'</TT>,
+<TT>'FORP'</TT>, <TT>'COBP'</TT>, or a symbolic subtype name as
+defined in the SYS$*RLIB$ element SSTYP$.</P>
+
+<P><TT>EXEC( </TT><I><TT>expression </TT></I><TT>)<BR>
+
+</TT>The string <I><TT>expression</TT></I> value is passed to the
+Executive as the operand of ER CSF$; the Executive commands which can
+be passed include @ADD, @ASG, @BRKPT, @CAT, @CKPAR, @CKPT, @FREE,
+@LOG, @MODE, @QUAL, @RSPAR, @RSTRT, @START, @SYM, and @USE. The
+returned value is a 36-character string of 0's and 1's representing
+the status returned by the Executive. The meaning of the individual
+bits of the executive status is defined in <U>Exec System Software
+Executive Requests Programming Reference Manual</U> (7830 7899).</P>
+
+<P><TT>EXECLEVEL<BR>
+
+</TT>The returned value is a character string consisting of the
+current Exec level, as configured by the site.</P>
+
+<P><TT>FIRSTINDEX( </TT><I><TT>reference</TT></I><TT> )<BR>
+
+</TT>The returned value is the lowest subscript of any element of the
+array identified by <I><TT>reference</TT></I>. If
+<I><TT>reference</TT></I> is to a variable name for which no elements
+are defined, the returned value is the value of the built-in function
+<TT>VOIDINDEX</TT>.</P>
+
+<P><TT>FROMFIELDATA( </TT><I><TT>expression</TT></I><TT> )<BR>
+
+</TT>The <I><TT>expression</TT></I> is evaluated as an integer, which
+is then interpreted as six Fieldata characters and converted to
+ASCII. The result is a six-character string. This function is
+primarily useful in interpreting the contents of files read using the
+<TT>BUFFER</TT> <TT>IN</TT> statement.</P>
+
+<P><TT>FULLFILENAME( </TT><I><TT>filename</TT></I><TT>[,
+</TT><I><TT>expression</TT></I><TT>] )<BR>
+
+</TT>The <I><TT>filename</TT></I> parameter is a character string
+whose value is the internal name of a file. The returned character
+string value is the fully-qualified file name of the file, in the
+form
+<TT>'[</TT><I><TT>dir#</TT></I><TT>]</TT><I><TT>qual*file(cycle</TT></I><TT>)'</TT>.
+</P>
+
+<P>If <I><TT>filename</TT></I> is attached (via @USE) to a file but
+the file is not assigned to the run, only the qualifier and file name
+appear in the string. If <I><TT>filename</TT></I> does not identify
+an assigned file or an @USE name, the returned string is
+<TT>'*UNDEFINED*'</TT>.</P>
+
+<P>If the file was assigned with an absolute cycle number,
+<I><TT>cycle</TT></I> is the absolute cycle number. If the file was
+assigned with a relative cycle number, then <I><TT>cycle</TT></I>
+depends on the integer value of <I><TT>expression</TT></I> and
+whether or not an absolute cycle number is available: if the least
+significant bit of the integer value is zero, or the absolute cycle
+number is unavailable, <I><TT>cycle</TT></I> is the relative cycle
+number with a leading sign; if the least significant bit of the
+integer value is one, and the absolute cycle number is available,
+<I><TT>cycle</TT></I> is the absolute cycle number.</P>
+
+<P>The directory id is returned for tape and mass storage files only
+when requested by setting the next to last bit of the integer value
+of <I><TT>expression</TT></I>. The default value for
+<I><TT>expression</TT></I> is 0.</P>
+
+<P><TT>INDEX<BR>
+
+</TT>If <TT>INDEX</TT> is referenced without parameters, it returns
+the character index of the substring which satisfied the search on
+the last <TT>LOCATE</TT> statement. The value of <TT>INDEX</TT> is
+zero if no such substring was found. This value is changed only by a
+<TT>LOCATE</TT> statement.</P>
+
+<P><TT>INDEX( </TT><I><TT>source</TT></I><TT>,
+</TT><I><TT>search</TT></I><TT>[, </TT><I><TT>start</TT></I><TT>]
+)<BR>
+
+</TT>The characters of the string value of <I><TT>source</TT></I> are
+numbered from left to right, starting at 1. The index of the first
+character of the first occurrence in <I><TT>source</TT></I> of the
+string value of <I><TT>search</TT></I> is returned. If
+<I><TT>source</TT></I> is a null string, the returned value is 0;
+otherwise, if <I><TT>search</TT></I> is a null string, the returned
+value is 1. If <I><TT>start</TT></I> is present, it is the index of
+the character at which the search for <I><TT>search</TT></I> is to
+begin. The returned character index is relative to the beginning of
+<I><TT>source</TT></I>, regardless of whether or not
+<I><TT>start</TT></I> is specified.</P>
+
+<P>A mask character can be established for the <TT>INDEX</TT>
+function, using the <TT>SET</TT> <TT>MASK</TT> statement. Each mask
+character in the search string matches any character in the source
+string. Case differences can be ignored by setting monocase mode with
+the <TT>SET</TT> <TT>MONOCASE</TT> statement. In monocase mode
+<TT>'a'</TT> and <TT>'A'</TT> are treated as if they have the same
+value; in normal mode, <TT>'a'</TT> and <TT>'A'</TT> have different
+values. Performance note: The speed of execution of an <TT>INDEX</TT>
+function call is not affected by masking or monocasing.</P>
+
+<P><TT>INTEGER(</TT><I><TT> expression </TT></I><TT>)<BR>
+
+</TT>If <I><TT>expression</TT></I> has an integer value, that value
+is returned; otherwise, the character string value of
+<I><TT>expression</TT></I> is interpreted as an integer constant
+(with possible leading sign) and the corresponding integer value is
+returned. It is a fatal error if the string value of
+<I><TT>expression</TT></I> is not the symbolic representation of a
+signed integer constant in the supported range.</P>
+
+<P><TT>INTEGERIZE( </TT><I><TT>expression</TT></I><TT>[,
+</TT><I><TT>count</TT></I><TT>] )<BR>
+
+</TT>The integer ASCII code of the first <I><TT>count</TT></I>
+characters of the character string value of
+<I><TT>expression</TT></I> is returned. If <I><TT>count</TT></I> is
+omitted, it is assumed to be one; if <I><TT>count</TT></I> is zero or
+negative, a null string is used for <I><TT>expression</TT></I>, and
+zero is returned; if <I><TT>count</TT></I> is greater than four,
+results are undefined.</P>
+
+<P><TT>LAND( </TT><I><TT>expression_1</TT></I><TT>,
+</TT><I><TT>expression_2</TT></I><TT>[,
+</TT><I><TT>expression_3</TT></I><TT>]... )<BR>
+
+</TT>The expressions are evaluated as integers; the result is
+obtained by bit-wise ANDing all values in the list.</P>
+
+<P><TT>LASTINDEX( </TT><I><TT>reference</TT></I><TT> )<BR>
+
+</TT>The returned value is the highest subscript of any element of
+the array identified by <I><TT>reference</TT></I>. If
+<I><TT>reference</TT></I> is to a variable name for which no elements
+are defined, the returned value is the value of the built-in function
+<TT>VOIDINDEX</TT>.</P>
+
+<P><TT>LENGTH(</TT><I><TT> expression </TT></I><TT>)<BR>
+
+</TT>The length (i.e., number of characters) in the string
+<I><TT>expression</TT></I> value is returned. If the
+<I><TT>expression</TT></I> (and surrounding parentheses) are omitted,
+the returned value is the current length of the internal output
+string (see the <TT>OUTPUT</TT> statement in a later section).</P>
+
+<P><TT>LINENUMBER( </TT><I><TT>filename </TT></I><TT>)<BR>
+
+</TT>The <I><TT>filename</TT></I> parameter is the variable name
+which identifies a file previously opened as an input file. The
+returned value is the integer line number of the most recently read
+line of the file; if CTS line numbers are present, the CTS line
+number is returned, otherwise the sequential line number is returned.
+</P>
+
+<P><TT>LONGEXPR(</TT><I><TT> low_expression, high_expression
+</TT></I><TT>)<BR>
+
+</TT>The <TT>LONGEXPR</TT> function produces a 72-bit result by using
+<I><TT>low_expression</TT></I> as the low-order 36 bits, and
+<I><TT>high_expression</TT></I> as the upper 36 bits. Neither input
+expression may have a value that exceeds 2**36.</P>
+
+<P><TT>LONGVAL( </TT><I><TT>expression</TT></I><TT>,
+</TT><I><TT>reference </TT></I><TT>)<BR>
+
+</TT>If <I><TT>expression</TT></I> evaluates to an integer, the
+high-order 36 bits are stored in <I><TT>reference</TT></I>, and the
+low-order 36 bits are returned as the result of <TT>LONGVAL</TT>. If
+the <I><TT>expression</TT></I> is a string, <I><TT>reference</TT></I>
+is set to a null string, and the function result is the string.
+<I><TT>reference</TT></I> must not be an open file variable.</P>
+
+<P><TT>LOR( </TT><I><TT>expression_1</TT></I><TT>,
+</TT><I><TT>expression_2</TT></I><TT>[,
+</TT><I><TT>expression_3</TT></I><TT>]... )<BR>
+
+</TT>The expressions are evaluated as integers; the result is
+obtained by bit-wise ORing all values in the list.</P>
+
+<P><TT>LOWER( </TT><I><TT>expression </TT></I><TT>)<BR>
+
+</TT>Returns a character string equal to the string
+<I><TT>expression</TT></I> value with all upper case letters replaced
+by their lower case equivalents.</P>
+
+<P><TT>LXOR( </TT><I><TT>expression_1</TT></I><TT>,
+</TT><I><TT>expression_2</TT></I><TT>[,
+</TT><I><TT>expression_3</TT></I><TT>]... )<BR>
+
+</TT>The expressions are evaluated as integers; the result is
+obtained by bit-wise XORing all values in the list, in the specified
+order.</P>
+
+<P><TT>MAX( </TT><I><TT>expression_1</TT></I><TT>,
+</TT><I><TT>expression_2</TT></I><TT>[,
+</TT><I><TT>expression_3</TT></I><TT>]... )<BR>
+
+</TT>The expressions are evaluated as integers; the result is the
+value that is greater than or equal to each other value in the list.
+</P>
+
+<P><TT>MIN( </TT><I><TT>expression_1</TT></I><TT>,
+</TT><I><TT>expression_2</TT></I><TT>[,
+</TT><I><TT>expression_3</TT></I><TT>]... )<BR>
+
+</TT>The expressions are evaluated as integers; the result is the
+value that is less than or equal to each other value in the list.
+</P>
+
+<P><TT>MOD( </TT><I><TT>expression_1</TT></I><TT>,
+</TT><I><TT>expression_2 </TT></I><TT>)<BR>
+
+</TT>Returns the remainder from dividing the integer value of
+<I><TT>expression_1</TT></I> by the integer value of
+<I><TT>expression_2</TT></I>.</P>
+
+<P><TT>OPTION[( </TT><I><TT>expression </TT></I><TT>)]<BR>
+
+</TT>The first character of the string <I><TT>expression</TT></I>
+value is used to select a CALL processor option letter; the result is
+1 if the option letter was specified and 0 if not. Digits 0-9 select
+high-order bits of A5 from the initial register set; for example,
+<TT>OPTION('1')</TT> is 1 if execution began within an "@BRKPT
+PRINT$,<I>file"</I>. If the first character of the string is not a
+letter or a digit, the returned value is 0.</P>
+
+<P>If <I><TT>expression</TT></I> is omitted, then <TT>OPTION</TT>
+returns a 36-character string of 0s and 1s representing all of the
+bits of A5 from the initial register set.</P>
+
+<P><TT>PARAMETER( </TT><I><TT>expression </TT></I><TT>)<BR>
+
+</TT>The integer <I><TT>expression</TT></I> value selects one of the
+CALL processor call fields. A value of 1 selects the first field
+after the CALL macro element name, 2 selects the next, and so on. A
+value of 0 selects the processor identification from the @CALL
+processor call. If the processor call was "@Q*F.CALL,X ...",
+<TT>PARAMETER(0)</TT> returns <TT>'Q*F.CALL'</TT>. The parameter is
+returned as a character string with all the subfields separated by
+the standard ECL delimiters.</P>
+
+<P><TT>PROGTYPE<BR>
+
+</TT>The returned value is one of the character strings
+<TT>'DEMAND'</TT>, <TT>'DEADLINE'</TT>, or <TT>'BATCH'</TT>,
+depending on the execution mode of the program.</P>
+
+<P><TT>PROJECT<BR>
+
+</TT>The returned value is a character string consisting of the
+project-id of the current run.</P>
+
+<P><TT>QUEUELENGTH<BR>
+
+</TT>The returned integer value is the number of input messages
+currently queued. This value is zero unless a <TT>SET</TT>
+<TT>QUEUING</TT> statement has been executed.</P>
+
+<P><TT>RECOVERED<BR>
+
+</TT>The returned Boolean value (<TT>TRUE</TT> or <TT>FALSE</TT>)
+indicates whether or not the current program execution was started
+with an <TT>R</TT>-option, and without a <TT>V</TT>-option. (Note
+that this does not include automatic restarts from a
+<TT>BREAKPOINT</TT> <TT>RELOAD</TT>; the function always returns
+<TT>FALSE</TT> in this case.) The <TT>TRUE</TT> value is only
+returned once; the second and subsequent references to the function
+always present <TT>FALSE</TT>.</P>
+
+<P><TT>RUNID<BR>
+
+</TT>The returned value is a character string consisting of the
+original run-id of the current run.</P>
+
+<P><TT>SDATE<BR>
+
+</TT>The returned value is the character string representing the date
+of the start of execution of the program, in the form
+<I><TT>MMDDYY</TT></I>, where <I><TT>YY</TT></I> is the year (00-99),
+<I><TT>MM</TT></I> is the month (01-12), and <I><TT>DD</TT></I> is
+the day (01-31).</P>
+
+<P><TT>SITEID<BR>
+
+</TT>The returned value is a character string consisting of the
+site-id of the current run, as retrieved by ER INFO$. For a demand
+run, this is the site-id of the associated terminal.</P>
+
+<P><TT>STATUS[( </TT><I><TT>filename </TT></I><TT>)]<BR>
+
+</TT>The <I><TT>filename</TT></I> parameter is the variable name
+which was associated with a file on an <TT>OPEN</TT> statement. The
+<I><TT>filename</TT></I> (and the parentheses) can be omitted, in
+which case the file most recently accessed is assumed. The returned
+value is one of the following character strings representing the
+status of the most recent operation on the indicated file.</P>
+
+<P><TT>'NOT OPENED'</TT> (only for
+<TT>STATUS(</TT><I><TT>filename</TT></I><TT>)</TT>)<BR>
+
+<TT>'NORMAL'<BR>
+
+'FILE NOT ASSIGNED'<BR>
+
+'ILLEGAL DEVICE'<BR>
+
+'ELEMENT NOT FOUND'<BR>
+
+'IO ERROR'<BR>
+
+'AREA NEVER WRITTEN'<BR>
+
+'FILE CANNOT BE WRITTEN'<BR>
+
+'END OF FILE'<BR>
+
+'FILE TOC IS LOCKED'</TT></P>
+
+<P>The one exception to the above description occurs following an
+<TT>OPEN</TT> statement; at that time <TT>STATUS</TT> returns the
+specific status of the <TT>OPEN</TT>, and
+<TT>STATUS(</TT><I><TT>filename</TT></I><TT>)</TT> returns either
+<TT>'NORMAL'</TT> or <TT>'NOT OPENED'</TT>. If the <TT>OPEN</TT> is
+not successful, <TT>STATUS(</TT><I><TT>filename</TT></I><TT>)</TT> is
+the only file operation that can be performed on
+<I><TT>filename</TT></I>; all other file operations will cause error
+termination of the CALL macro.</P>
+
+<P>The status <TT>'ELEMENT</TT> <TT>NOT</TT> <TT>FOUND'</TT> is
+returned for four cases:</P>
+
+<P>An <TT>OPEN</TT> for <TT>READ</TT> statement specifies an element
+name and the specified element is not in the requested or implied
+file.</P>
+
+<P>An <TT>OPEN</TT> for <TT>WRITE</TT> statement specifies an element
+name and the specified file appears to be a data file (based on the
+status returned by BSP-RFTI$).</P>
+
+<P>An <TT>OPEN</TT> for <TT>READ</TT> statement specifies a file name
+(with no element name) and the file appears to be a program file
+(i.e., it has the **PF** sentinel in its first word) or does not
+begin with an SDF label image. (However, if the first sector is not
+assigned to the file, <TT>'IO</TT> <TT>ERROR'</TT> is returned for
+<TT>STATUS</TT>, rather than <TT>'ELEMENT</TT> <TT>NOT</TT>
+<TT>FOUND'</TT>. This would happen, for example, if you try to read a
+file immediately after @ERSing it.)</P>
+
+<P>An <TT>OPEN</TT> statement (either <TT>READ</TT> or
+<TT>WRITE</TT>) has a syntax error in the element name portion of the
+string expression.</P>
+
+<P>The status <TT>'FILE</TT> <TT>NOT</TT> <TT>ASSIGNED'</TT> is
+returned for <TT>OPEN</TT> when the requested file is not already
+assigned and cannot be assigned by CALL, or when a syntax error
+exists in the file name portion of the string expression.</P>
+
+<P><TT>STIME<BR>
+
+</TT>The returned value is a character string containing the time of
+day of the start of program execution in the form
+<I><TT>HHMMSS</TT></I>, where <I><TT>HH</TT></I> is the hour (00-23),
+<I><TT>MM</TT></I> is the minute (00-59), and <I><TT>SS</TT></I> is
+the second (00-59).</P>
+
+<P><TT>SYSID<BR>
+
+</TT>The returned value is a character string containing the system
+id as configured by the site.</P>
+
+<P><TT>SYSTYPE<BR>
+
+</TT>The returned value is a character string containing the system
+type (e.g., <TT>'2200/600'</TT>).</P>
+
+<P><TT>TIME<BR>
+
+</TT>The returned value is a character string containing the time of
+day in the form <I><TT>HHMMSS</TT></I>, where <I><TT>HH</TT></I> is
+the hour (00-23), <I><TT>MM</TT></I> is the minute (00-59), and
+<I><TT>SS</TT></I> is the second (00-59).</P>
+
+<P><TT>TOFIELDATA(</TT><I><TT> expression </TT></I><TT>)<BR>
+
+</TT>The <I><TT>expression</TT></I> is evaluated as a string. The
+first six characters of the resulting string are converted from ASCII
+to Fieldata and concatenated; the result is an integer value
+consisting of the six Fieldata characters. If the argument is shorter
+than six characters, the converted string is right-justified and
+zero-filled on the left. For example, the value of
+<TT>TOFIELDATA('a')</TT> is 6.</P>
+
+<P><TT>TRIM(</TT><I><TT> expression_1</TT></I><TT>[,
+</TT><I><TT>expression_2</TT></I><TT>] )<BR>
+
+</TT>The integer value of <I><TT>expression_2</TT></I> is used to
+determine which ends of the string value of
+<I><TT>expression_1</TT></I> to trim spaces from. If the last bit is
+set in the integer value, all trailing spaces are deleted. If the
+next to last bit is set, all leading spaces are deleted. The second
+parameter can be omitted, in which case 3 (trim leading and trailing
+spaces) is assumed. The returned value is the string value with
+leading and/or trailing spaces removed as requested.</P>
+
+<P><TT>UPPER( </TT><I><TT>expression </TT></I><TT>)<BR>
+
+</TT>The returned value is a character string consisting of the
+string <I><TT>expression</TT></I> value with all lower case letters
+converted to their upper case equivalents.</P>
+
+<P><TT>URUNID<BR>
+
+</TT>The returned value is a character string consisting of the
+unique run-id of the current run. This is the same as <TT>RUNID</TT>
+unless the original run-id was changed by the Executive to preserve
+run-id uniqueness.</P>
+
+<P><TT>USERID<BR>
+
+</TT>The returned value is a character string consisting of the
+user-id of the current run.</P>
+
+<P><TT>VERIFY( </TT><I><TT>source</TT></I><TT>,
+</TT><I><TT>search</TT></I><TT>[, </TT><I><TT>start</TT></I><TT>]
+)<BR>
+
+</TT>The returned value is the integer index in the string
+<I><TT>source</TT></I> value of its first character which does not
+occur in the string <I><TT>search</TT></I> value. If
+<I><TT>start</TT></I> is present, it is the index of the first
+character in <I><TT>source</TT></I> to be checked against the
+characters of <I><TT>search</TT></I>. The returned character index is
+always relative to the beginning of <I><TT>source</TT></I>,
+regardless of whether or not <I><TT>start</TT></I> is specified.</P>
+
+<P><TT>VOID( </TT><I><TT>reference </TT></I><TT>)<BR>
+
+</TT>The returned value is 1 (i.e., <TT>TRUE</TT>) if the variable or
+array entry identified by the <I><TT>reference</TT></I> does not have
+a value, and 0 (i.e., <TT>FALSE</TT>) if the variable or array entry
+does have a value. <TT>VOID(X)</TT> is <TT>TRUE</TT> if <TT>X</TT>
+has never been assigned a value or if the most recent reference to
+<TT>X</TT> was as the target of a <TT>CLOSE</TT> or <TT>REMOVE</TT>
+statement.</P>
+
+<P><TT>VOIDINDEX<BR>
+
+</TT>The returned value is an integer which is used to represent
+indices of array elements that have not been defined. Its numeric
+value is 34,359,738,367, i.e., 2**35-1. See <TT>FIRSTINDEX</TT> and
+<TT>LASTINDEX</TT>.</P>
+
+<H1>Statements</H1>
+
+<P>One of the primary functions of the CALL macro processor is to
+replace the @ADD Executive command with a dynamically alterable
+command stream. To accomplish this, CALL allows the specification of
+strings to be included in an element which will be dynamically added
+at the completion of execution of the macro program (see the
+<TT>WRITE</TT> statement). In the ordinary course of execution,
+information is read from existing files and elements and questions
+are asked of the user. In response to the answers to those questions
+the macro program writes an @ADD element which will accomplish the
+desired function. That element is automatically added at completion
+of macro program execution, although it can be suppressed.</P>
+
+<P><B>Program Construction</B></P>
+
+<P><B>Notation</B></P>
+
+<P>The syntax of CALL macro language statements is described using
+the following notational conventions:</P>
+
+<P>Upper case indicates CALL keywords; italicized lower case marks
+items to be filled in.</P>
+
+<P>Square brackets ("<TT>[</TT>" and "<TT>]</TT>") delimit optional
+material</P>
+
+<P>Braces ("<TT>{</TT>" and "<TT>}</TT>") delimit required material
+</P>
+
+<P>A vertical bar ("<TT>|</TT>") separates alternatives</P>
+
+<P>Ellipsis ("<TT>...</TT>") indicates that the item immediately
+ahead of it, which may be a group delimited by brackets or braces, is
+repeated one or more times. Repetition of a bracketed item means the
+item occurs zero or more times.</P>
+
+<P><B>Blocks</B></P>
+
+<P>The basic construct of the CALL macro language is a block. A block
+is a sequence of zero or more statements which is executed as a unit;
+a block has a single entry point and (ordinarily) a single exit point
+(but see <TT>RETURN</TT> and <TT>ABORT</TT> for exceptions). A block
+is simply a sequence of statements.</P>
+
+<P><B>MACRO</B></P>
+
+<P>The form of a CALL macro program is:</P>
+
+<PRE>MACRO[( <I>option_word</I>[, <I>option_word</I>]... )]
+	[<I>procedure_definition</I> | <I>block</I>]... 
+ENDMACRO;
+&nbsp;</PRE>
+
+<P>Execution of the CALL macro program begins with the first block
+not part of a procedure definition and proceeds sequentially, subject
+to the influence of <TT>IF</TT>, <TT>CASE</TT>, <TT>LOOP</TT>,
+<TT>CALL</TT>, and <TT>RETURN</TT> statements, until an
+<TT>ABORT</TT> or <TT>BREAKPOINT</TT> statement, or a <TT>RETURN</TT>
+statement outside a procedure body, is encountered.</P>
+
+<P>Option words can be specified on the <TT>MACRO</TT> statement to
+control certain aspects of CALL processor operation. The option words
+can be specified in any order; the words which can be specified are:
+</P>
+
+<P><TT>NODEBUG </TT>Disable the interactive debugging system. When
+<TT>NODEBUG</TT> is specified, error termination during macro
+interpretation causes display of the offending statement followed
+immediately by CALL processor termination, and execution of a
+<TT>DEBUG</TT> statement is ignored.</P>
+
+<P><B>PROCEDURE</B></P>
+
+<PRE>PROCEDURE <I>identifier</I>[(<I> identifier</I>[, <I>identifier</I>]... )]
+	<I>block</I>
+ENDPROC;
+&nbsp;</PRE>
+
+<P>The required <I><TT>identifier</TT></I> on the <TT>PROCEDURE</TT>
+statement establishes the procedure name, which is the name
+referenced on a <TT>CALL</TT> statement to invoke the procedure body.
+The optional list of <I><TT>identifier</TT></I>s establishes names
+for the parameters passed on the procedure <TT>CALL</TT>; the
+association between parameter identifiers and <TT>CALL</TT> statement
+parameter expressions is by position of each in the parameter list.
+Within the <I><TT>block</TT></I> of the procedure, parameter
+identifiers hide any variables with the same names which exist
+outside the procedure.</P>
+
+<P>Execution returns to the statement following the <TT>CALL</TT>
+statement or to the expression containing the function reference when
+the last statement of the <I><TT>block</TT></I> has been executed or
+when a <TT>RETURN</TT> statement is executed within the
+<I><TT>block</TT></I>.</P>
+
+<PRE>PROCEDURE <I>identifier</I> FORWARD;
+&nbsp;</PRE>
+
+<P>This form of <TT>PROCEDURE</TT> statement is used for mutually
+recursive functions, to satisfy the requirement that procedures be
+declared before they are used as functions. This prevents function
+calls from being compiled as array element references. A
+<TT>PROCEDURE</TT> statement in the first form must be present later
+in the source element.</P>
+
+<P><B>LOCAL</B></P>
+
+<PRE>LOCAL <I>identifier</I>[, <I>identifier</I>]...;
+&nbsp;</PRE>
+
+<P>The <I><TT>identifier</TT></I>s listed in the <TT>LOCAL</TT>
+statement are declared to be local to the procedure definition which
+contains the statement. Any variables with the same names used
+elsewhere in the macro program are inaccessible once this statement
+has been encountered, until the end of the procedure. The
+<TT>LOCAL</TT> statement may not be used outside a procedure body or
+nested within a grouping statement (<TT>LOOP</TT>, <TT>CASE</TT>, or
+<TT>IF</TT>).</P>
+
+<P><B>RETURN</B></P>
+
+<PRE>RETURN[<I> expression</I>];
+&nbsp;</PRE>
+
+<P>If the <TT>RETURN</TT> statement is executed within a procedure
+body, execution continues after the <TT>CALL</TT> statement which
+invoked the procedure. Outside a procedure body, <TT>RETURN</TT>
+closes all files, @ADDs the dynamic @ADD element, and terminates the
+CALL processor.</P>
+
+<P>The <I><TT>expression</TT></I> provides the returned value if the
+<TT>RETURN</TT> statement is executed in a procedure called as a
+function; if the <I><TT>expression</TT></I> is absent, the returned
+value is the null string. (A null string is also returned when
+execution reaches an <TT>ENDPROC</TT> statement.) If the
+<TT>RETURN</TT> is not executed in a procedure called as a function,
+the returned value is ignored. The type of the
+<I><TT>expression</TT></I> (determined by the types of its operands
+and operators) determines the type of the returned value.</P>
+
+<P><B>CALL</B></P>
+
+<PRE>CALL <I>identifier</I>[( <I>expression</I>[, <I>expression</I>]... )];
+&nbsp;</PRE>
+
+<P>The <I><TT>identifier</TT></I> must appear in a procedure
+definition (see the <TT>PROCEDURE</TT> statement). The <TT>CALL</TT>
+statement causes each of the argument <I><TT>expression</TT></I>s to
+be associated with the corresponding formal parameter and the body of
+the procedure executed. If procedure execution ends with a
+<TT>RETURN</TT> statement which specifies a returned value, the
+returned value is ignored.</P>
+
+<P>Parameter association takes two forms:</P>
+
+<P>If the <I><TT>expression</TT></I> is a variable name or array
+reference, the formal parameter becomes an alias for the variable or
+array element. In this case assignment to the formal parameter
+changes the value of the variable or array element, and the procedure
+can access existing array elements or create new ones.</P>
+
+<P>If the <I><TT>expression</TT></I> involves any operator (except as
+part of an array index expression), the <I><TT>expression</TT></I> is
+evaluated, the value is stored in a temporary variable, and the
+formal parameter becomes an alias for the temporary variable. The
+temporary has no array elements, of course, and the temporary and any
+associated elements created by the procedure cease to exist when
+execution of the procedure body ends.</P>
+
+<P><B>Input-Output</B></P>
+
+<P><B>PRINT</B></P>
+
+<PRE>PRINT[ CONTROL | CONSOLE][<I> expression</I>];
+&nbsp;</PRE>
+
+<P>If the keyword <TT>CONTROL</TT> is present, the print image is
+directed to PRINT$ as a print control image; otherwise it is
+displayed as a normal print image. If the keyword <TT>CONSOLE</TT> is
+present, the print image is displayed on the console via ER COM$; the
+image may be truncated by the Exec if it exceeds the limit for the
+console in use (this is usually around 68 characters). If the
+<I><TT>expression</TT></I> is present, its string value is the print
+image used; otherwise the current value of the internal output string
+is used. In either case the internal output string is reset to null.
+</P>
+
+<PRE>PRINT *;
+&nbsp;</PRE>
+
+<P>In full screen mode (see <TT>SET</TT> <TT>FULLSCREEN</TT>), this
+statement causes any partially filled output buffer to be
+transmitted. If there is a partial image created by <TT>OUTPUT</TT>
+statements, it is appended to the full-screen print buffer and reset
+to null before the print buffer is transmitted. <TT>PRINT</TT>
+<TT>*</TT> is primarily useful when an extended delay is about to
+begin or input is about to be solicited from the terminal. Note that
+<TT>SET</TT> <TT>FULLSCREEN</TT> <TT>OFF</TT> also transmits buffered
+<TT>PRINT</TT> output before terminating full screen mode.</P>
+
+<P><B>OUTPUT</B></P>
+
+<PRE>OUTPUT <I>expression</I>;
+&nbsp;</PRE>
+
+<P>CALL maintains an internal output string, which is initially null
+and is reset to null whenever a <TT>PRINT</TT> or <TT>WRITE</TT>
+statement is executed. The string value of the
+<I><TT>expression</TT></I> is appended to the current internal output
+string. The internal output string is limited to 4096 characters.
+</P>
+
+<P><B>QUERY</B></P>
+
+<PRE>QUERY[ CONSOLE] <I>target</I>[ WITH <I>expression</I>];
+&nbsp;</PRE>
+
+<P>The <TT>QUERY</TT> statement uses an ASCII TREAD$ request to
+solicit input of a character string from the user, or if the
+<TT>CONSOLE</TT> clause is present, input is requested from the
+console operator via ER COM$. If the <TT>WITH</TT> clause is present,
+the string value of the <I><TT>expression</TT></I> is used as the
+input prompt; otherwise the internal output string is used and then
+set to null. The <I><TT>target</TT></I> must be a valid assignment
+target as specified for the <TT>LET</TT> statement.</P>
+
+<P>The input prompt is displayed on the terminal, possibly followed
+by a system-supplied prompt character, and the cursor or print head
+is left at that position. The user then types the response on the
+same line. Trailing spaces are trimmed from the response before
+assigning it to the <I><TT>target</TT></I>. (Trailing spaces are not
+trimmed in full screen mode; see <TT>SET</TT> <TT>FULLSCREEN</TT>.)
+When an end-of-file condition occurs (e.g., the user responds with
+"@EOF" and the terminal is not in input escape mode), the value
+assigned to the <I><TT>target</TT></I> is <TT>'@EOF'</TT>.</P>
+
+<P><B>OPEN</B></P>
+
+<PRE>OPEN <I>identifier </I>{READ | WRITE} <I>expression</I>;
+&nbsp;</PRE>
+
+<P>The <TT>OPEN</TT> statement associates <I><TT>identifier</TT></I>
+with a file, which may be an SDF file or a symbolic element of a
+program file. If<TT> </TT><I><TT>identifier</TT></I> was previously
+defined as a variable, its former value is lost. The keyword
+<TT>READ</TT> or <TT>WRITE</TT> indicates whether the file is an
+input file or an output file. The string value of
+<I><TT>expression</TT></I> is the name of the SDF file or program
+file element to be accessed through the newly opened file.</P>
+
+<P>For an SDF file, the file name must end in a period. For a program
+file element, if no period is present or the period is the first
+character in the name, TPF$ is assumed to be the program file;
+otherwise the usual "D#Q*F(C)/R/W.E/V" notation is used.</P>
+
+<P>Note that at most one <TT>WRITE</TT> file can be open in a single
+program file at once. CALL does not check for violations of this
+rule; opening more than one <TT>WRITE</TT> file for a single program
+file at the same time will generally result in two or more
+overwritten elements.</P>
+
+<P>If the file is not already assigned to the run, it is assigned by
+execution of the <TT>OPEN</TT> statement. In the case of an SDF
+output file, it is assigned for exclusive use. The changes in
+assignment status caused by the <TT>OPEN</TT> statement are recorded
+and used to restore the original assignment status when the file is
+closed. In the case of an output program file element, if the program
+file is not already exclusively assigned when the <TT>OPEN</TT>
+statement is executed, the first sector of the file is locked using a
+read-and-lock function. This lock is also released when the file is
+closed. Note, however, that OS 1100 limits the duration of such a
+lock to a maximum of 12 minutes; CALL will be unable to complete
+writing of the output element if the lock time expires. Thus if there
+is a reasonable chance that the element will be open for more than 12
+minutes, you should assign the program file exclusively before
+executing the <TT>OPEN</TT> statement.</P>
+
+<P><B>CLOSE</B></P>
+
+<PRE>CLOSE <I>identifier</I>[ ELEMENTTYPE <I>expression</I>];
+&nbsp;</PRE>
+
+<P>The <I><TT>identifier</TT></I> is a file identifier established in
+a previously executed <TT>OPEN</TT> statement. The file is closed; if
+it is a <TT>WRITE</TT> file, any buffers maintained by the CALL
+processor are written out and the Table of Contents entry is created
+if it is an element of a program file. If the <TT>OPEN</TT> statement
+assigned the file, the <TT>CLOSE</TT> statement frees it. Note that
+when multiple files are opened for a single system file (e.g., if two
+elements are opened in the same program file), it is essential that
+the first file opened be the last file closed; otherwise the
+underlying system file will be freed while I/O operations are still
+being performed to it through another file identifier, which will
+later cause a fatal CALL processor error.</P>
+
+<P>For output program file elements, <TT>ELEMENTTYPE</TT> can be
+specified to set the symbolic element type or subtype; the string
+value of the <I><TT>expression</TT></I> should be a type or subtype
+identification string as described for the <TT>ELEMENTTYPE</TT>
+built-in function. (For compatibility with older levels, an equals
+sign is allowed between <TT>ELEMENTTYPE</TT> and
+<I><TT>expression</TT></I>.)</P>
+
+<P>Following execution of the <TT>CLOSE</TT> statement, the
+<I><TT>identifier</TT></I> has an undefined value.</P>
+
+<P><B>READ</B></P>
+
+<PRE>READ <I>target</I>[ FROM {<I>identifier</I>[ CONTROL]} | CONSOLE];
+&nbsp;</PRE>
+
+<P>The <TT>READ</TT> statement reads a string from the terminal (or
+runstream) or from the operator at the console. If the <TT>FROM</TT>
+clause is omitted, <TT>READ</TT> is identical to <TT>QUERY</TT>
+except that no input prompt is displayed.</P>
+
+<P>When <TT>FROM</TT> <I><TT>identifier</TT></I> is present, the
+<I><TT>identifier</TT></I> must be that associated with a currently
+open file by its <TT>OPEN</TT> statement. The next line of the file
+is read and assigned to the target exactly as if it had been read via
+<TT>QUERY</TT>. Trailing spaces are truncated from the input lines as
+for <TT>QUERY</TT>. (Trailing spaces are not truncated in full screen
+mode; see <TT>SET</TT> <TT>FULLSCREEN</TT>.)</P>
+
+<P>When the keyword <TT>CONTROL</TT> is specified, the next image
+from the file (other than deleted data images if the file is a cycled
+element) is returned, whether data or control image. The
+<TT>CONTROLWORD</TT> built-in function can be used to determine
+whether a control image or a data image was obtained.</P>
+
+<P>When the <TT>CONSOLE</TT> keyword is present, <TT>READ</TT> is
+identical to <TT>QUERY</TT> except that the output message is a null
+string.</P>
+
+<P><B>BLOCK READ</B></P>
+
+<PRE>BLOCK READ <I>target</I>[[, <I>start</I>], <I>count</I>] FROM <I>file</I>;<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>BLOCK</TT> <TT>READ</TT> is identical to <TT>READ</TT> except
+that it reads a sequence of lines rather than a single line.
+<I><TT>target</TT></I> identifies an array which ends up with
+consecutive indices from <I><TT>start</TT></I> to
+<I><TT>count</TT></I>. If <I><TT>start</TT></I> is omitted, the first
+element read is <I><TT>target</TT></I><TT>(1)</TT>. If
+<I><TT>count</TT></I> is omitted, reading continues to the end of the
+input file. Reading stops at the end of the input file if that is
+reached before <I><TT>count</TT></I> elements are read. The index of
+the last element read is placed in
+<I><TT>target</TT></I><TT>(0)</TT>. If the end of the input file is
+reached, <TT>STATUS</TT> and
+<TT>STATUS(</TT><I><TT>file</TT></I><TT>)</TT> have the usual value,
+<TT>'END</TT> <TT>OF</TT> <TT>FILE'</TT>, but the <TT>'@EOF'</TT>
+image is not placed in <I><TT>target</TT></I> and does not affect the
+value of <I><TT>target</TT></I><TT>(0)</TT>.</P>
+
+<P><B>WRITE</B></P>
+
+<PRE>WRITE[ <I>expression_1</I>][ INTO <I>identifier</I>]
+					[ LINENUMBER <I>expression_2 </I>]
+					[ IMAGETYPE <I>expression_3</I> ]
+					[ LINESPACING <I>expression_4</I>];
+&nbsp;</PRE>
+
+<P>The string value of <I><TT>expression_1</TT></I>, or the current
+internal output string if <I><TT>expression_1</TT></I> is not
+present, is written. If the <TT>INTO</TT> clause is present, the
+<I><TT>identifier</TT></I> is the name associated with a currently
+open file by its <TT>OPEN</TT> statement and the string is written as
+the next line in the file. If no <TT>INTO</TT> clause is specified,
+the string is written as the next line in the dynamic @ADD element.
+</P>
+
+<P>The <TT>LINENUMBER</TT> clause allows specification of CTS line
+numbers; if the <TT>LINENUMBER</TT> clause is not present, no CTS
+line number image is written.</P>
+
+<P>The <TT>IMAGETYPE</TT> clause allows creation of control images in
+the output file; the value of the expression must be between 32 and
+63, inclusive. The meanings of the various <TT>IMAGETYPE</TT> values
+can be determined from the description of SDF files in <U>Exec System
+Software Executive Requests Programming Reference Manual</U> (7830
+7899). The <TT>IMAGETYPE</TT> values most likely to be useful are 48
+(print control image) and 56 (punch control image).</P>
+
+<P>The <TT>LINESPACING</TT> clause allows control of line spacing in
+print files. The value of <I><TT>expression_4</TT></I> is truncated
+to fit in 12 bits and recorded in the line-spacing field of the data
+image control word. A value of 4095 causes a page eject; values of
+2048-4094 currently cause page ejects as well but are reserved for
+future use and should thus not be used. Note that
+<TT>LINESPACING</TT> is ignored if <TT>IMAGETYPE</TT> is present or
+the <I><TT>identifier</TT></I> refers to an element.</P>
+
+<P><B>BLOCK WRITE</B></P>
+
+<PRE>BLOCK WRITE <I>source</I>[[, <I>start</I>], <I>count</I>][ INTO <I>identifier</I>];<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>BLOCK</TT> <TT>WRITE</TT> is identical to <TT>WRITE</TT>
+except that it writes a sequence of lines rather than a single line.
+<I><TT>source</TT></I> must identify an array with consecutive
+indices from <I><TT>start</TT></I> to <I><TT>count</TT></I>. If
+<I><TT>start</TT></I> is omitted, the first element written is
+<I><TT>source</TT></I><TT>(1)</TT>. If <I><TT>count</TT></I> is
+omitted, the integer value of <I><TT>source</TT></I><TT>(0)</TT> is
+the number of elements to write. Selected elements must have integer
+or string values; integers are written as their equivalent strings.
+</P>
+
+<P>It is not possible to create CTS line number images with
+<TT>BLOCK</TT> <TT>WRITE</TT>.</P>
+
+<P><B>BUFFER {IN | LOCK | OUT}</B></P>
+
+<PRE>BUFFER IN <I>target</I>, <I>count</I> FROM <I>filename</I>, <I>offset</I>;
+BUFFER LOCK <I>target</I>, <I>count</I> FROM <I>filename</I>, <I>offset</I>;
+BUFFER OUT <I>target</I>, <I>count</I> INTO <I>filename</I>, <I>offset</I>;<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>BUFFER</TT> statements are similar to <TT>BLOCK</TT>
+statements in construction. <I><TT>target</TT></I> identifies an
+array with which <I><TT>count</TT></I> words are read from or written
+into a file. The <TT>FROM</TT> or <TT>INTO</TT> specification,
+however, is significantly different. <I><TT>filename</TT></I> is a
+string expression whose value is the internal name (i.e., a
+12-character string) of the sector addressable file to be accessed.
+<I><TT>offset</TT></I> is the word offset in the file at which
+reading or writing is to start. <TT>BUFFER</TT> <TT>OUT</TT> requests
+which do not start and/or end on sector boundaries are handled
+internally by CALL so that adjacent data in the file are not altered.
+</P>
+
+<P><TT>BUFFER</TT> <TT>IN</TT> allows reading of mass storage files
+in formats other than the system standard sequential data file
+format. It reads sequential words, starting at the specified word
+offset in the file, into an array of integer values. Using the
+<TT>FROMFIELDATA</TT>, <TT>BITS</TT>, and <TT>CHARACTERIZE</TT>
+functions it is then possible to interpret the contents of any sector
+addressable mass storage file with a known format.</P>
+
+<P>Upon completion of the <TT>BUFFER</TT> <TT>IN</TT> operation,
+element 0 of the target array is set to the number of words read; the
+data read begins in element 1 of the array. The file specified must
+be assigned to the run when the <TT>BUFFER</TT> <TT>IN</TT> statement
+is executed.</P>
+
+<P><TT>BUFFER</TT> <TT>LOCK</TT> operates just like <TT>BUFFER</TT>
+<TT>IN</TT>, except that a read-and-lock operation is performed. This
+prevents other activities from accessing the area of the file being
+read in until a <TT>BUFFER</TT> <TT>OUT</TT> statement is executed or
+twelve minutes have expired.</P>
+
+<P><TT>BUFFER</TT> <TT>OUT</TT> is the reverse of <TT>BUFFER</TT>
+<TT>IN</TT>; sequential integer values are written from element 1 of
+the array to the file at the specified word offset. If the area of
+the file had been previously accessed by <TT>BUFFER</TT>
+<TT>LOCK</TT>, it becomes unlocked and accessible to other
+activities. The actual number of words written is returned in element
+0 of the array. The <TT>TOFIELDATA</TT>, <TT>BITS</TT>, and
+<TT>INTEGERIZE</TT> functions are often useful in constructing the
+contents of the array.</P>
+
+<P><B>Variable Manipulation</B></P>
+
+<P><B>LET</B></P>
+
+<PRE>[LET ]<I>variable</I> := <I>expression</I>;
+[LET ]<I>substring</I> := <I>expression</I>;
+&nbsp;</PRE>
+
+<P>The <I><TT>variable</TT></I> is an identifier or array element.
+Its existing value, if any, is replaced by the value of the
+<I><TT>expression</TT></I>.</P>
+
+<P>If a <I><TT>substring</TT></I> is specified, it must be a
+substring of an identifier or array element, which must already have
+a value. If an <TT>*</TT> length is specified in the
+<I><TT>substring</TT></I> specification, the length of the existing
+value is used to determine the value to be used for the <TT>*</TT>.
+Following evaluation of the expression, the variable or array element
+is converted to a character string if it was an integer, extended if
+necessary to the length required to accommodate the
+<I><TT>substring</TT></I> specified, and the character string value
+of the <I><TT>expression</TT></I> is truncated or space-padded on the
+right to fit and placed in the <I><TT>substring</TT></I>.</P>
+
+<P>In most instances, <TT>LET</TT> can be omitted; however, if the
+variable or substring identifier is one of the following,
+<TT>LET</TT> must be used to avoid ambiguity with statements of the
+same name:</P>
+
+<PRE>CASE            LOCATE          SAVE
+CASEENTRY       OUTPUT          WAIT
+IF              PRINT           WRITE
+LET             RETURN<B>
+&nbsp;</B></PRE>
+
+<P><B>MOVE</B></P>
+
+<PRE>MOVE <I>array1</I>, <I>start1</I>, <I>count</I> TO <I>array2</I>, <I>start2</I>
+&nbsp;</PRE>
+
+<P>The vector identified by <I><TT>array1</TT></I>,
+<I><TT>start1</TT></I>, and <I><TT>count</TT></I> is moved (NOT
+assigned) to the corresponding vector identified by
+<I><TT>array2</TT></I> and <I><TT>start2</TT></I>. The elements of
+<I><TT>array1</TT></I> need not be defined &#150; undefined elements
+cause the corresponding elements of <I><TT>array2</TT></I> to be
+undefined after the move. Each element of <I><TT>array1</TT></I>
+becomes undefined when its definition is placed in
+<I><TT>array2</TT></I>. The move is done in ascending order of
+indexes if <I><TT>start1</TT></I> is greater than
+<I><TT>start2</TT></I> and in descending order otherwise, so if the
+source and destination are overlapping ranges within the same array
+no propagation of values occurs. In effect the source elements are
+copied out of <I><TT>array1</TT></I>, the elements of
+<I><TT>array1</TT></I> are set undefined, then the copied elements
+are moved into <I><TT>array2</TT></I>.</P>
+
+<P>Some moves may have strange results if an array is moved into an
+array that contains it or that it contains. Each variable or array
+element has a dictionary entry; one of the fields of a dictionary
+entry is a pointer to the vector element structure for that variable
+or array element. That is, the element <TT>X(1)</TT> has a dictionary
+entry which, among other things, contains a pointer to the dictionary
+structure identifying the elements <TT>X(1,i)</TT>. <TT>MOVE</TT>
+operates by moving the pointers within the vector element structure;
+thus any substructure associated with a given element is moved with
+it. If elements 1 through 10 of <TT>X(1)</TT> are moved into elements
+1 through 10 of <TT>X</TT>, that causes a redefinition of
+<TT>X(1)</TT>, which makes elements <TT>X(1,2)</TT> through
+<TT>X(1,10)</TT> inaccessible. If <TT>X(1)</TT> through
+<TT>X(10)</TT> are moved to <TT>X(5,1)</TT> through <TT>X(5,10)</TT>,
+moving <TT>X(5)</TT> to <TT>X(5,5)</TT> causes <TT>X(5)</TT> to
+become undefined; it immediately becomes redefined (as an undefined
+variable with elements), but the elements which have already been
+moved to <TT>X(5,i)</TT> are now elements <TT>X(5,5,i)</TT>. Such
+moves can thus cause unexpected restructuring of the array, which is
+dependent on the order in which the elements are moved.</P>
+
+<P>To avoid problems with array restructuring, it is recommended that
+the arrays named in the MOVE statement either have different variable
+names or at least one index which is specified for both arrays and
+has different values for <I><TT>array1</TT></I> and
+<I><TT>array2</TT></I>.</P>
+
+<P><B>REMOVE</B></P>
+
+<PRE>REMOVE <I>reference</I>;
+&nbsp;</PRE>
+
+<P>The variable (which may be an array element) is set to an
+undefined value, as if it had never been assigned a value. If the
+variable has any elements, they are removed from the dictionary.
+Following execution of a <TT>REMOVE</TT> statement,
+<TT>VOID(</TT><I><TT>reference</TT></I><TT>)</TT> is <TT>TRUE</TT>.
+</P>
+
+<P>The <TT>REMOVE</TT> statement can be used, in combination with the
+<TT>VOID</TT> built-in function, to control macro execution. It can
+also be used to reclaim the virtual storage space used by large
+arrays once they are no longer needed. The latter can be useful for
+long-running macros as it may reduce paging by reducing dictionary
+fragmentation.</P>
+
+<P><B>Flow Control</B></P>
+
+<P><B>IF</B></P>
+
+<PRE>IF <I>expression</I> THEN
+	<I>block</I>
+[ELSE
+	<I>block</I>]
+ENDIF;
+&nbsp;</PRE>
+
+<P>If the <I><TT>expression</TT></I> produces a non-zero value (i.e.,
+<TT>TRUE</TT>), then the <I><TT>block</TT></I> of the <TT>THEN</TT>
+clause is executed, followed by the statement following the
+<TT>ENDIF</TT>. If the value is zero (i.e., <TT>FALSE</TT>), then if
+an <TT>ELSE</TT> clause is present its <I><TT>block</TT></I> is
+executed, and in any case control then passes to the statement
+following the <TT>ENDIF</TT>.</P>
+
+<P><B>CASE</B></P>
+
+<PRE>CASEENTRY <I>expression</I> OF
+[CASE <I>condition</I> :
+	<I>block</I>]<I>
+...</I>
+[CASE * :
+	<I>block</I>]
+ENDCASE;
+&nbsp;</PRE>
+
+<P>Where <I><TT>condition</TT></I> is:</P>
+
+<PRE>[= ]<I>expression</I>[, <I>expression</I>]...
+&nbsp;</PRE>
+
+<P>Execution of a <TT>CASE</TT> statement consists of evaluating the
+<TT>CASEENTRY</TT> expression, then checking it against the
+<I><TT>condition</TT></I>s of each <TT>CASE</TT> and executing the
+<I><TT>block</TT></I> of the first <TT>CASE</TT> whose
+<I><TT>condition</TT></I> matches the <TT>CASEENTRY</TT>
+<I><TT>expression</TT></I>. A <I><TT>condition</TT></I> matches the
+<TT>CASEENTRY</TT> <I><TT>expression</TT></I> if one of its
+<I><TT>expression</TT></I>s has the same value as the
+<TT>CASEENTRY</TT> <I><TT>expression</TT></I>. <TT>CASE</TT> checking
+is done by evaluating each of the <I><TT>expression</TT></I>s of a
+<TT>CASE</TT> and comparing them to the <TT>CASEENTRY</TT> value,
+then proceeding to the next <TT>CASE</TT> only if the current
+<TT>CASE</TT> does not match.</P>
+
+<P>If a <I><TT>condition</TT></I> begins with an equal sign
+("<TT>=</TT>"), the comparison between the <TT>CASEENTRY</TT> value
+and the individual values in the <I><TT>condition</TT></I> is done
+without monocasing; if the equal sign is omitted and either value is
+a character string, the comparison is done with all lower case
+letters converted to upper case.</P>
+
+<P>If none of the <I><TT>condition</TT></I>s match the<TT>
+CASEENTRY</TT> value, the <I><TT>block</TT></I> of the <TT>CASE</TT>
+<TT>*</TT> clause is executed, if there is one. If not, no
+<I><TT>block</TT></I> of the <TT>CASE</TT> statement is executed and
+control passes to the next statement in sequence.</P>
+
+<P><B>LOOP</B></P>
+
+<PRE>LOOP[ FOR <I>identifier</I> := <I>iteration</I>]
+		[ {UNTIL <I>expression</I>} | {WHILE <I>expression</I>}] DO
+	<I>block</I>
+ENDLOOP[ WHEN <I>expression</I>];
+&nbsp;</PRE>
+
+<P>Where <I><TT>iteration</TT></I> is either</P>
+
+<PRE><I>expression</I>[ TO <I>expression</I>[ BY <I>expression</I>]]
+&nbsp;</PRE>
+
+<P>or</P>
+
+<PRE><I>expression</I> BY <I>expression</I>[ TO <I>expression</I>]
+&nbsp;</PRE>
+
+<P>The basic function of the <TT>LOOP</TT> statement is to repeatedly
+execute the <I><TT>block</TT></I> it contains. In the absence of the
+optional clauses, the <I><TT>block</TT></I> will be executed
+repeatedly until a statement is executed which causes CALL processor
+execution or procedure execution to terminate.</P>
+
+<P>The <TT>FOR</TT> clause creates a temporary variable with the name
+specified in <I><TT>identifier</TT></I>, which exists for the
+duration of the loop and hides any other variable with the same name.
+The value of the variable is set to the value of the first
+<I><TT>expression</TT></I> of the <I><TT>iteration</TT></I>. If the
+<TT>BY</TT> clause is present, then on each repetition of the loop
+the value of the <TT>FOR</TT> variable is increased by the value of
+the <TT>BY</TT> <I><TT>expression</TT></I>. If the <TT>TO</TT> clause
+is present, then on each repetition the value of the <TT>FOR</TT>
+variable is tested against the value of the <TT>TO</TT>
+<I><TT>expression</TT></I>. Loop execution terminates when the new
+value exceeds (for a positive <TT>BY</TT> value) or is less than (for
+a negative <TT>BY</TT> value) the <TT>TO</TT> value. If a <TT>TO</TT>
+clause is specified without a <TT>BY</TT> clause, the assumed
+<TT>BY</TT> value is 1. All <TT>FOR</TT>-clause
+<I><TT>expression</TT></I>s are evaluated at the beginning of the
+<TT>LOOP</TT> statement and their values remain fixed for all
+repetitions of the <TT>LOOP</TT> <I><TT>block</TT></I>.</P>
+
+<P>If a <TT>WHILE</TT> clause is present, its
+<I><TT>expression</TT></I> is evaluated before each repetition of the
+<TT>LOOP</TT> <I><TT>block</TT></I> and execution of the
+<TT>LOOP</TT> statement ends if the resulting value is <TT>FALSE</TT>
+(i.e., zero).</P>
+
+<P>The <TT>UNTIL</TT> and <TT>WHEN</TT> clauses differ only in the
+point at which they are tested; they each cause loop execution to end
+when their contained <I><TT>expression</TT></I>s produce a
+<TT>TRUE</TT> (i.e., non-zero) value. The <TT>UNTIL</TT> clause is
+evaluated at the beginning of each repetition and is thus able to
+cause termination before the <TT>LOOP</TT> <I><TT>block</TT></I> is
+first executed, while the <TT>WHEN</TT> clause is evaluated at the
+end of each repetition and thus cannot cause termination until the
+<TT>LOOP</TT> <I><TT>block</TT></I> has been executed once.</P>
+
+<P><B>Miscellaneous</B></P>
+
+<P><B>SET</B></P>
+
+<P>The <TT>SET</TT> statement controls various aspects of CALL
+processor execution and allows cursor position and display field
+attribute control when in output escape mode on Uniscope and UTS
+terminals.</P>
+
+<P>Screen Control</P>
+
+<P><U>FULLSCREEN</U></P>
+
+<PRE>SET FULLSCREEN[ ON | OFF];
+&nbsp;</PRE>
+
+<P>In full screen mode, the CALL processor does not automatically
+print the output of <TT>PRINT</TT> statements; instead it is buffered
+and printed when the 4800-character buffer is full. The output
+handler also keeps track of cursor movement on the assumption that
+the destination is a Uniscope or UTS terminal and begins each output
+buffer with a cursor addressing sequence, so that retransmission to
+correct line errors does not cause erroneous output to appear on the
+terminal display screen. For <TT>SET</TT> <TT>FULLSCREEN</TT>, if no
+parameter is given or <TT>ON</TT> is specified, CALL enters full
+screen mode. <TT>SET</TT> <TT>FULLSCREEN</TT> <TT>OFF</TT> puts CALL
+back in line-at-a-time mode with no special handling of escape or
+other special character sequences. <TT>SET</TT> <TT>FULLSCREEN</TT>
+<TT>OFF</TT> causes all buffered <TT>PRINT</TT> output to be
+transmitted before terminating full screen mode. CALL does not
+activate or remove output escape mode; that must be done by the macro
+program as needed, by statements such as:</P>
+
+<PRE>PRINT CONTROL 'D,@@ESC';
+PRINT CONTROL 'D,@@END ESC';
+&nbsp;</PRE>
+
+<P>While in full screen mode, CALL handles input for <TT>QUERY</TT>
+and for <TT>READ</TT> from the terminal somewhat differently.
+Ordinarily, trailing spaces are truncated from the input line. In
+full screen mode, trailing spaces in the last full word of the line
+are truncated along with the EOT that precedes them (CALL assumes
+that "@@ESC" has been done, rather than "@@ESC O"). If there is no
+EOT in the last word, no truncation is done. In any case, no more
+than four characters are truncated, and no characters ahead of the
+EOT are truncated.</P>
+
+<P>Full-screen output buffering does not occur for <TT>PRINT</TT>
+statements with the <TT>CONTROL</TT> or <TT>CONSOLE</TT> option. Such
+statements produce their output immediately, without first
+transmitting the full-screen buffer. This is particularly important
+when <TT>PRINT</TT> <TT>CONTROL</TT> is used to terminate output
+escape mode, since buffered output might be transmitted after output
+escape mode has been terminated.</P>
+
+<P><U>SCREENSIZE</U></P>
+
+<PRE>SET SCREENSIZE <I>expression</I>, <I>expression</I>;
+&nbsp;</PRE>
+
+<P>The <TT>SET</TT> <TT>SCREENSIZE</TT> statement is used to
+condition full screen mode for terminals that have screen sizes other
+than the standard 24x80. The number of rows is given by the integer
+value of the first <I><TT>expression</TT></I>, and the number of
+columns by the second <I><TT>expression</TT></I>. Neither value may
+be less than 1 or greater than 256. The screen size may be set at any
+time, regardless of whether or not full screen mode is enabled at the
+time of the <TT>SET</TT>, and takes effect immediately.</P>
+
+<P><U>CURSOR</U></P>
+
+<PRE>SET CURSOR <I>expression</I>, <I>expression</I>;
+&nbsp;</PRE>
+
+<P>The <TT>SET</TT> <TT>CURSOR</TT> statement should only be used in
+full screen mode; it moves the cursor to the line number specified by
+the integer value of the first <I><TT>expression</TT></I> and the
+column number specified by the second <I><TT>expression</TT></I>.
+</P>
+
+<P><U>FCC</U></P>
+
+<PRE>SET FCC[ <I>type</I>]...;
+&nbsp;</PRE>
+
+<P>The <TT>SET</TT> <TT>FCC</TT> statement allows symbolic generation
+of UTS-40 FCC definition sequences in full-screen mode. <TT>SET</TT>
+<TT>FCC</TT> should only be used in full screen mode. The
+alternatives for the <I><TT>type</TT></I> parameter are:</P>
+
+<P><TT>OFF </TT>Do not display the field.<BR>
+
+<TT>LOW </TT>Display the field in low intensity.<BR>
+
+<TT>BLINK </TT>Display the field blinking.<BR>
+
+<TT>REVERSE </TT>Display the field in reverse video.<BR>
+
+<TT>CHANGED </TT>Initialize the field to changed status.<BR>
+
+<TT>TAB </TT>Mark the field as a tab stop.<BR>
+
+<TT>ALPHA </TT>Allow only alphabetic input in the field.<BR>
+
+<TT>NUMERIC </TT>Allow only numeric input in the field.<BR>
+
+<TT>PROTECTED </TT>Disallow input in the field.<BR>
+
+<TT>RIGHT </TT>Right-justify input in the field.</P>
+
+<P><TT>ALPHA</TT>, <TT>NUMERIC</TT>, and <TT>PROTECTED</TT> are
+logically exclusive, and each clears the others if they were set.
+<TT>RIGHT</TT> is meaningless with <TT>PROTECTED</TT> and is cleared
+if <TT>PROTECTED</TT> is specified after <TT>RIGHT</TT>. In general
+the default FCC definition reverses all the above specifications;
+i.e., the field is displayed in normal video, is marked as not
+changed, is not a tab stop, and allows left-justified input of any
+characters.</P>
+
+<P>Note: <TT>SET</TT> <TT>FCC</TT> uses the EM-fcc1-fcc2 character
+sequence, which places the FCC wherever the cursor is currently
+located. Consequently, a <TT>SET</TT> <TT>CURSOR</TT> should precede
+a <TT>SET</TT> <TT>FCC</TT> if the terminal user has had a chance to
+move the cursor.</P>
+
+<P><U>EMPHASIS</U></P>
+
+<PRE>SET EMPHASIS[ <I>type</I>]...;<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>SET</TT> <TT>EMPHASIS</TT> turns on generation of the UTS-40
+special emphasis characteristics. <TT>SET</TT> <TT>EMPHASIS</TT>
+should only be used in full-screen mode. The attributes which can be
+specified are:</P>
+
+<P><TT>LEFT </TT>Left column emphasis.<BR>
+
+<TT>UNDERLINE </TT>Under-strike emphasis.<BR>
+
+<TT>THROUGH </TT>Strike-through emphasis.</P>
+
+<P>The selected emphasis applies to each character output in
+full-screen mode until <TT>SET</TT> <TT>EMPHASIS</TT> is executed
+with no attributes specified. Any combination of attributes can be
+specified.</P>
+
+<P>Processor Operation</P>
+
+<P><U>QUEUING</U></P>
+
+<PRE>SET QUEUING[ ON | OFF];<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>SET</TT> <TT>QUEUING</TT> controls input queuing mode. When
+queuing mode is on, a separate activity keeps an input request up at
+the terminal and queues messages as they are received. The built-in
+function <TT>QUEUELENGTH</TT> returns the number of messages in the
+queue. Once queuing mode has been set, all subsequent <TT>READ</TT>
+and <TT>QUERY</TT> statements (except <TT>READ</TT> <TT>FROM</TT>
+statements, of course) take messages from the queue. When queuing
+mode is turned off, subsequent <TT>READ</TT> and <TT>QUERY</TT>
+statements get messages from the queue until the queue is empty.</P>
+
+<P>When <TT>SET</TT> <TT>QUEUING</TT> <TT>OFF</TT> is executed, the
+read request currently active in the input activity remains in
+effect. When input is received for that request, the input activity
+places it on the queue and terminates. As long as the input activity
+is still alive or messages remain on the queue, <TT>READ</TT> and
+<TT>QUERY</TT> statements use the queue.</P>
+
+<P>When the returned status on the read request indicates a control
+image, the input activity queues an <TT>'@EOF'</TT> image and
+terminates, turning off queuing mode. If it is necessary to read the
+image (presumably an ER CLIST$ has been performed at some point), a
+<TT>READ</TT> statement executed after the <TT>'@EOF'</TT> image is
+received will do so.</P>
+
+<P><U>MASK</U></P>
+
+<PRE>SET MASK[ <I>expression</I>];
+&nbsp;</PRE>
+
+<P>The first character of the <I><TT>expression</TT></I> is set as
+the mask character for the <TT>INDEX</TT> built-in function and the
+<TT>LOCATE</TT> statement. The mask character matches any character
+in the corresponding position of the other string during a string
+comparison. Thus, if <TT>'#'</TT> is the mask character,
+<TT>INDEX(x,'A#B')</TT> would find the first occurrence of a capital
+<TT>A</TT>, followed by any character, followed by a capital
+<TT>B</TT>.</P>
+
+<P>If the <I><TT>expression</TT></I> is omitted, masking is disabled
+for <TT>INDEX</TT> and <TT>LOCATE</TT>.</P>
+
+<P><U>MONOCASE</U></P>
+
+<PRE>SET MONOCASE[ ON | OFF];<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>SET</TT> <TT>MONOCASE</TT> also affects the operation of
+<TT>INDEX</TT> and <TT>LOCATE</TT> comparisons. When monocase search
+mode is <TT>ON</TT>, alphabetic characters that differ only in case
+are treated as if they were the same. When monocase search mode is
+<TT>OFF</TT>, alphabetic characters must be identical to be treated
+as equal. The default is <TT>OFF</TT>.</P>
+
+<P><U>RECOVERY</U></P>
+
+<PRE>SET RECOVERY[ {ON[ <I>procedure</I>]} | OFF];<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>SET</TT> <TT>RECOVERY</TT> allows the CALL program to control
+whether or not the internal paging file contains consistent
+information usable for restarting the program. If <TT>RECOVERY</TT>
+is <TT>ON</TT>, the CALL data areas are written to the paging file
+immediately prior to unloading any updated pages; if <TT>OFF</TT>,
+this action is not taken. Note that when a <TT>BREAKPOINT</TT>
+<TT>NOEXIT</TT> statement is executed while <TT>RECOVERY</TT> is
+<TT>ON</TT>, the <TT>BREAKPOINT</TT> file becomes the current paging
+file. The default is <TT>OFF</TT>.</P>
+
+<P>An optional <I><TT>procedure</TT></I> name may be given for
+<TT>SET</TT> <TT>RECOVERY</TT> <TT>ON</TT>. If it is, then the
+specified <I><TT>procedure</TT></I> is automatically CALL'd (with no
+parameters) at the time of program restart for the same conditions
+that the <TT>RECOVERED</TT> function returns a <TT>TRUE</TT> value.
+This mechanism can be used to reestablish an operating environment
+(e.g., full screen mode) following an unexpected restart of a
+program.</P>
+
+<P><U>EVALUATION</U></P>
+
+<PRE>SET EVALUATION[ ON | OFF];<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>SET</TT> <TT>EVALUATION</TT> allows the program to control
+whether or not certain Boolean expressions will be fully evaluated or
+"short circuited". "Short circuiting" avoids evaluation of the second
+operand when the result of the expression can be determined from just
+the first operand. Specifically: for <I><TT>expr1</TT></I>
+<TT>AND</TT> <I><TT>expr2</TT></I>, if <I><TT>expr1</TT></I> is
+<TT>FALSE</TT>, the value of <I><TT>expr2</TT></I> can not affect the
+result; for <I><TT>expr1</TT></I> <TT>OR</TT> <I><TT>expr2</TT></I>,
+if <I><TT>expr1</TT></I> is <TT>TRUE</TT>, the value of
+<I><TT>expr2</TT></I> can not affect the result. If
+<TT>EVALUATION</TT> is <TT>ON</TT> (the default), both operands are
+evaluated; if <TT>OFF</TT>, the second operand is ignored under the
+above conditions.</P>
+
+<P>Setting <TT>EVALUATION</TT> to <TT>OFF</TT> can be used to reduce
+the number of statements in a program. For example, with
+<TT>EVALUATION</TT> <TT>ON</TT>, the following would be necessary to
+avoid referencing a potentially undefined variable:</P>
+
+<PRE>IF NOT VOID (array_count) THEN
+	IF array_count &gt; 0 THEN
+		...
+	ENDIF;
+ENDIF;
+&nbsp;</PRE>
+
+<P>With <TT>EVALUATION</TT> <TT>OFF</TT>, this can be simplified to:
+</P>
+
+<PRE>IF NOT VOID (array_count) AND array_count &gt; 0 THEN
+	...
+ENDIF;<TT>
+&nbsp;</TT></PRE>
+
+<P><TT>EVALUATION</TT> <TT>OFF</TT> must be used with care when the
+second operand in a Boolean expression involves a reference to a
+function procedure. If the function procedure produces side-effects
+(e.g., alters global variables), these will not occur if the
+evaluation is "short circuited".</P>
+
+<P><B>LOCATE</B></P>
+
+<PRE>LOCATE <I>string</I> IN <I>array</I>[[, <I>start</I>], <I>count</I>];
+&nbsp;</PRE>
+
+<P>The <TT>LOCATE</TT> statement searches an array of strings to find
+the element which contains a particular string as a substring.
+<I><TT>string</TT></I> is the string to be located.
+<I><TT>array</TT></I> is the array to be searched.
+<I><TT>start</TT></I>, if specified, is the index of the first array
+element to be examined; the default is element 1.
+<I><TT>count</TT></I>, if specified, is the number of elements to
+search; the default is the value of
+<I><TT>array</TT></I><TT>(0)</TT>. Note that if only one expression
+is specified after <I><TT>array</TT></I>, it is
+<I><TT>count</TT></I>, and the starting index is assumed to be 1.
+</P>
+
+<P>The <TT>LOCATE</TT> statement, in effect, applies the
+<TT>INDEX</TT> function to each element of the specified array in
+turn until an element is found which contains the specified
+substring. If <I><TT>count</TT></I> is negative, its absolute value
+is the loop count and the search runs backwards from the specified
+starting index. As with the <TT>INDEX</TT> function, a mask character
+can be specified for <TT>LOCATE</TT> using the <TT>SET</TT>
+<TT>MASK</TT> statement. Each mask character in the search string
+matches any character in the strings being searched. Similarly, case
+differences can be ignored by setting monocase search mode with the
+<TT>SET</TT> <TT>MONOCASE</TT> statement. Performance note: The speed
+of execution of a <TT>LOCATE</TT> statement is not affected by the
+use of masking or monocasing.</P>
+
+<P>At the completion of the statement, the index of the line which
+satisfied the search is available as the value of the built-in
+function <TT>ELEMENTINDEX</TT>, and the character index of the
+substring within that line is available as the value of the
+parameterless built-in function <TT>INDEX</TT>. If the specified
+substring is not found, <TT>INDEX</TT> and <TT>ELEMENTINDEX</TT> both
+return 0. The best test for whether or not the substring was found is
+to check <TT>INDEX</TT> for a value of 0, since the character index
+is always 1 or greater if the substring was found. <TT>INDEX</TT> and
+<TT>ELEMENTINDEX</TT> retain their values until the next
+<TT>LOCATE</TT> statement is executed.</P>
+
+<P><B>WAIT</B></P>
+
+<PRE>WAIT <I>time</I>;
+&nbsp;</PRE>
+
+<P>The <I><TT>time</TT></I> is the desired delay in milliseconds. ER
+TWAIT$ is used in a loop to cause a total delay at least as long as
+the requested interval. No attempt is made to correct for
+subintervals that exceed the requested time; that is, if an ER TWAIT$
+is made to request a five second delay and the actual elapsed time is
+ten seconds, CALL ignores the discrepancy and continues the loop (if
+the requested five seconds does not use up the requested interval).
+</P>
+
+<P><B>BREAKPOINT</B></P>
+
+<PRE>BREAKPOINT[ INTO <I>file</I>][ NOEXIT][ RELOAD];
+&nbsp;</PRE>
+
+<P>If <TT>NOEXIT</TT> is specified, the <TT>BREAKPOINT</TT> statement
+just saves the macro program state; otherwise, the
+<TT>BREAKPOINT</TT> statement closes the dynamic @ADD output element,
+@ADDs the element, saves the macro program state, and terminates
+execution of the CALL processor. A subsequent call of CALL with the
+<TT>R</TT>-option will cause macro program execution state to be
+restored. Note that if <TT>NOEXIT</TT> is not specified, the @ADD
+output element is closed before program state is saved, so the
+dynamic @ADD output element will be empty when macro program
+execution is resumed.</P>
+
+<P>If <TT>RELOAD</TT> is specified, a processor call of the form</P>
+
+<PRE>@<I>processor</I>,RV  <I>breakpoint_file</I>
+&nbsp;</PRE>
+
+<P>is queued for execution with ER QECL$. <TT>PARAMETER(0)</TT>
+supplies the value for <I><TT>processor</TT></I>.
+<I><TT>breakpoint_file</TT></I> is the fully-qualified file name of
+the <TT>INTO</TT> file or the default breakpoint file. The
+<TT>RELOAD</TT> option can thus be used for breakpoints in CALL
+programs called from other <TT>BREAKPOINT</TT>ed CALL programs, if
+care is taken to use a unique breakpoint file in each program.</P>
+
+<P>If the <TT>INTO</TT> clause is specified, the <I><TT>file</TT></I>
+must be opened for output, must identify a data file (rather than an
+element of a program file), and should not contain any data. Program
+state is saved in the specified file, overwriting any data already
+present in the file, and the file is closed.</P>
+
+<P>It is particularly worth noting the following features and
+restrictions of <TT>BREAKPOINT</TT>:</P>
+
+<P>Processor call parameters and options do not change; when the CALL
+processor state is reloaded, the tables which hold the processor call
+options and processor call parameters are included. Thus the
+<TT>R</TT>-option is not set after CALL macro execution is resumed.
+</P>
+
+<P>Files other than the dynamic @ADD output element remain open;
+their state does not change from the <TT>BREAKPOINT</TT> to the
+@CALL,R. The assignment status of files is assumed not to change;
+freeing a file before the @CALL,R can cause error termination of CALL
+if that file or an element in it was open for input or output. This
+is most significant when the @CALL,R is done in a different run from
+the <TT>BREAKPOINT</TT>.</P>
+
+<P>Since the CALL processor may be executed out of files other than
+SYS$*LIB$ and TPF$, the recommended way to resume execution (if
+<TT>RELOAD</TT> is not used) is to construct a processor call using
+the <TT>PARAMETER(0)</TT> built-in function. That ensures that the
+same CALL processor is invoked. For example:</P>
+
+<PRE>WRITE '@' || PARAMETER(0) || ',R';<B>
+&nbsp;</B></PRE>
+
+<P><B>SAVE</B></P>
+
+<PRE>SAVE <I>file</I>;
+&nbsp;</PRE>
+
+<P>The <TT>SAVE</TT> statement is very similar to the
+<TT>BREAKPOINT</TT> statement without the <TT>NOEXIT</TT> option,
+except that the saved information is written as an absolute. The
+resulting absolute element can be executed as a processor, as if it
+had been produced by compiling the macro source with the CLN-options.
+Note that file handling is the same as for <TT>BREAKPOINT</TT>; it is
+safest if all files are closed before the <TT>SAVE</TT> statement is
+executed.</P>
+
+<P>The <I><TT>file</TT></I> must be previously opened and must
+identify an element rather than a data file. It is closed as part of
+the <TT>SAVE</TT> statement.</P>
+
+<P>Execution of the <TT>SAVE</TT> statement terminates macro
+execution. When the resulting absolute element is executed, execution
+resumes with the statement after the <TT>SAVE</TT> statement.</P>
+
+<P>Using <TT>SAVE</TT> it is possible to perform arbitrarily complex
+initialization only once, creating an absolute element in which the
+initialization is already complete. However, it is usually not
+worthwhile to pre-initialize large arrays if initialization can be
+performed with <TT>BLOCK</TT> <TT>READ</TT> during macro execution.
+<TT>SAVE</TT> is most often useful if a significant amount of CALL
+macro code must be executed during initialization or if the
+initialization process requires interaction that is only needed once.
+</P>
+
+<P><B>ABORT</B></P>
+
+<PRE>ABORT[ WITH <I>expression</I>];
+&nbsp;</PRE>
+
+<P>The <TT>ABORT</TT> statement specifies that processing of the
+macro program is to cease without adding the generated @ADD element.
+If the <TT>WITH</TT> clause is present, the string
+<I><TT>expression</TT></I> is printed before execution of the macro
+program is terminated.</P>
+
+<H1>CALL Processor Invocation</H1>
+
+<P><B>Processor Call Statement</B></P>
+
+<P>The processor call statement to invoke CALL is:</P>
+
+<PRE>@[file.]CALL[,options] [macro_element[,parameter]...]
+&nbsp;</PRE>
+
+<P>The <I><TT>file</TT></I> specification is optional if CALL is
+executed out of TPF$ or (less probably) SYS$*LIB$ (or other system
+library file). The available <I><TT>options</TT></I> are listed
+below.</P>
+
+<P>If the <I><TT>macro_element</TT></I> specification does not
+include a file name and the indicated symbolic element is not found
+in TPF$, CALL searches the file with internal name CALL-MACRO$ if it
+is assigned to the run, then CALL$*CALL-MACRO$. This makes it
+possible to have private and system CALL macro libraries without
+requiring that the library files be explicitly named each time they
+are used.</P>
+
+<P>The <I><TT>macro_element</TT></I> may be omitted only with the
+<TT>R</TT>-option, which requests resumption of a suspended macro
+program execution (see the description of the <TT>BREAKPOINT</TT>
+statement). With the R-option, if <I><TT>macro_element</TT></I> is
+present, it must be a file name and the file must be one produced by
+execution of a <TT>BREAKPOINT</TT> statement.</P>
+
+<P>The <I><TT>parameter</TT></I>s have the general
+<TT>Q*F(C)/R/W.E/V(C)</TT> format; they are not interpreted by the
+CALL processor, but are made available to the macro program as the
+values of the <TT>PARAMETER</TT> built-in function. They are not used
+with the R-option; instead the original <TT>@CALL</TT> parameters are
+retained.</P>
+
+<P>No specification for the dynamic @ADD element name is given; that
+element is always written to CO$.CO$. If a different element name is
+desired, the macro program must <TT>OPEN</TT> it explicitly,
+<TT>WRITE</TT> to the opened file, <TT>CLOSE</TT> the file, and
+explicitly @ADD the element using the <TT>EXEC</TT> built-in
+function.</P>
+
+<P><B>Processor Call Options</B></P>
+
+<P>The option letters with defined meanings for CALL are:</P>
+
+<P><TT>D</TT> Use the terminal for <TT>CONSOLE</TT> functions, and
+print paging statistics at processor termination.</P>
+
+<P><TT>L</TT> Perform @ADD,L instead of @ADD of CO$.CO$.</P>
+
+<P><TT>N</TT> Do not @ADD CO$.CO$ at normal termination.</P>
+
+<P><TT>R</TT> Recover to the last <TT>BREAKPOINT</TT>.</P>
+
+<P><TT>V</TT> Do not print processor ID line.</P>
+
+<P><TT>CLN</TT> Compile the macro into an absolute element.</P>
+
+<P><B>Debugging</B></P>
+
+<P>The <TT>D</TT>-option provides a debugging capability for macros
+which use the <TT>CONSOLE</TT> option for operator communication on
+<TT>QUERY</TT>, <TT>PRINT</TT>, or <TT>READ</TT> statements. When the
+<TT>D</TT>-option is specified, such statements are directed to the
+terminal executing the macro, rather than the operator's console.
+</P>
+
+<P>Syntax errors are detected during the compilation phase. Execution
+is never started if errors are detected during compilation.</P>
+
+<P>If an error is detected during execution of the macro, an
+informative message is printed and execution is terminated. After
+that message, the run-time debugging system is activated.</P>
+
+<P><B>Interactive Debugging</B></P>
+
+<P>The interactive debugging system is automatically activated when
+an error occurs in CALL macro execution or when a <TT>DEBUG</TT>
+statement is executed. Activation of the debugging system can be
+suppressed by specifying the <TT>NODEBUG</TT> option on the
+<TT>MACRO</TT> statement (see the description of the <TT>MACRO</TT>
+statement for details).</P>
+
+<P>The interactive debugging system accepts the following commands:
+</P>
+
+<P><I><TT>line_number</TT></I><TT>[
+</TT><I><TT>line_count</TT></I><TT>]<BR>
+
+</TT>This command consists of one or two positive integers. The
+specified number of lines (or 1, if <I><TT>line_count</TT></I> is
+omitted) of the CALL macro are displayed, preceded by line numbers.
+Lines which either were blank or consisted entirely of comments are
+not displayed.</P>
+
+<P><I><TT>identifier</TT></I><TT>[(
+</TT><I><TT>integer</TT></I><TT>[,
+</TT><I><TT>integer</TT></I><TT>]... )]<BR>
+
+</TT>This command consists of an identifier followed optionally by
+constant subscripts. The value of the specified variable or array
+element is displayed along with information about its type and, for
+strings, its length. <TT>LOCAL</TT> variables and procedure
+parameters can be displayed only for the currently active procedure.
+</P>
+
+<P><TT>*GO<BR>
+
+</TT>This command is permitted only when the debugging system has
+been activated by a <TT>DEBUG</TT> statement; it causes execution to
+resume with the statement following the <TT>DEBUG</TT> statement.
+</P>
+
+<P><TT>*STACK<BR>
+
+</TT>This command lists the source line number and starting column
+number (in case of multiple statements on a single line) of the last
+eight statements executed.</P>
+
+<P><TT>*CALLS<BR>
+
+</TT>This command identifies the procedure being executed at the time
+the debugging system was activated and the chain of procedures which
+will be reactivated with successive <TT>RETURN</TT>s, back to the
+main program. For each call which has not terminated, this command
+prints the name of the called procedure and the source line number
+and starting column of the calling statement.</P>
+
+<P><TT>*PAGING<BR>
+
+</TT>This command displays the current statistics of CALL's internal
+paging system. One of its uses is to measure the relative efficiency
+of a running CALL program. See the Paging section for more
+information about the values displayed.</P>
+
+<P><TT>*HELP<BR>
+
+</TT>This command prints a (more-or-less) brief description of the
+commands and other input acceptable to the debugging system. The
+output is essentially an abbreviated form of this section of the CALL
+PRM.</P>
+
+<P><B>Saving the Compiled Macro</B></P>
+
+<P>When the option letters are <TT>CLN</TT>, at the end of the
+compilation phase CALL creates an absolute element as specified by
+the second subfield of the processor call. If the element name is not
+given, NAME$ is assumed. If neither the file nor the element is
+specified, TPF$.NAME$ is assumed. The resulting absolute element
+contains the CALL processor and the compiled macro.</P>
+
+<P>The generated absolute element must be called as a processor; the
+parameter fields are defined in the same way as on an @CALL
+invocation except that the first subfield is <TT>PARAMETER(1)</TT>
+rather than the second subfield. For example,</P>
+
+<PRE>@CALL UTILFILE.UNADS,FILE1.DOC
+&nbsp;</PRE>
+
+<P>would, after compilation of the macro UNADS, be called as:</P>
+
+<PRE>@UTILFILE.UNADS FILE1.DOC
+&nbsp;</PRE>
+
+<P>assuming that the absolute was compiled or copied into
+UTILFILE.UNADS.</P>
+
+<P><B>Paging</B></P>
+
+<P>The data space of the CALL processor, including the variables and
+arrays of the CALL macro program as well as the source and
+intermediate text versions of the CALL macro program itself, is
+maintained in a paged data area. This allows the CALL processor to
+handle large programs and large data structures without excessive
+main memory requirements.</P>
+
+<P>With the <TT>D</TT>-option, the CALL processor prints two lines of
+paging statistics at termination:</P>
+
+<PRE>* Paging -- <I>W</I> calls, <I>X</I> misses, <I>Y</I> pages written in <I>Z</I> writes.
+*           <I>A</I> read-aheads unused out of <I>B</I>.  <I>C</I> d-bank writes.
+&nbsp;</PRE>
+
+<P>These statistics allow you to estimate the impact of paging on the
+execution of a particular program.</P>
+
+<P>All CALL data storage area addresses are kept as offsets into a
+file; these must be converted to hardware relative addresses before
+the data structures can be accessed. This conversion is done by
+calling the paging system; <I><TT>W</TT></I> in the first line is the
+number of times the paging system interfaces were called. When a
+request is made for a page which is not resident in main memory, it
+is called a "miss"; the paging system releases one (or more) of the
+pages in main memory and reads the requested page (and possibly some
+following pages) into the page buffers thereby freed.
+<I><TT>X</TT></I> in the first line is the number of misses that
+occurred. When a page buffer is released, if the page has been
+altered since the last time it was written to the backing file, it
+must be written out. At the same time the paging system writes out
+all adjacent pages that are eligible to be written, in hopes of not
+needing to write them later when they are no longer needed.
+<I><TT>Y</TT></I> is the total number of pages written to the backing
+file (this counts each page once for each time it is written), and
+<I><TT>Z</TT></I> is the total number of write I/O functions issued.
+</P>
+
+<P>Finally, when a page is read in, the paging system reads the next
+page at the same time, on the assumption that references will tend to
+go forward through the paged address space. The "read-ahead" pages
+are kept in four special pools; for each miss, the paging system
+first releases the page in the oldest pool if it has not been
+referenced since it was read, then releases as many of the
+least-recently-used pages as necessary to make up the number of pages
+to be read (either one or two). <I><TT>A</TT></I> on the second line
+is the number of read-ahead pages that were unused when their pools
+became eligible for release, and <I><TT>B</TT></I> is the total
+number of pages read into the read-ahead pools. <I><TT>A</TT></I> and
+<I><TT>B</TT></I> together give a rough idea of the value of the
+read-ahead scheme for any given program.</P>
+
+<P><I><TT>C</TT></I> indicates the number of times CALL's d-banks
+were written to the paging file to insure that a consistent set of
+information existed for recovery purposes.</P>
+
+<P><B>Processor Limitations</B></P>
+
+<P>The CALL processor has some limitations imposed by the current
+design or by the system. These limitations may change with further
+development of CALL or further evolution of the system.</P>
+
+<P>Macro program images are limited to 4096 characters each.</P>
+
+<P>Printed output images are limited to 132 characters by the
+Executive; images written to files are limited to 4096 characters in
+length.</P>
+
+<P>Responses, as requested by the <TT>QUERY</TT> and <TT>READ</TT>
+statements, are limited to 4096 characters in length.</P>
+
+<P>Nesting of loops and procedure calls, and nesting of parentheses
+and brackets within a statement, cause recursion in the macro
+interpreter; the limit on nesting depends on many factors but is
+estimated to be at least 2000 levels.</P>
+
+<P>Only the first 28 characters of identifiers are retained; variable
+and procedure names must be uniquely identified in the first 28
+characters.</P>
+
+<P>Integers are limited to the range -34,359,738,367 to
++34,359,738,367.</P>
+
+<P>Character strings (constants, variables, or intermediate results)
+are limited to 4096 characters in length.</P>
+
+<P>Space for program and data storage is limited to 116,913,664
+words, which could be extended by increasing the size of the CALLPG$
+swapping file.</P>
+
+<P><B>Appendix A Development and Maintenance</B></P>
+
+<P>This reference manual describes the current implementation of the
+CALL macro language processor. This program is based on the CALL
+macro language originated by Fred Prouse; it has been modified to
+remove a few features the author (Darrell Tangman) of this version
+found little use for and to add features useful for the author's
+experiments. No attempt has been made to coordinate this language
+with any changes which may have taken place in the original CALL
+processor, so there is no guarantee that the only differences are
+those described here.</P>
+
+<P>One major incompatibility which may not be obvious to the casual
+reader is in the treatment of uninitialized variables. In the
+original CALL language, uninitialized variables were initialized to
+the null string on first reference, equivalent to zero if the context
+required an integer. In this version of CALL, uninitialized variables
+have an undefined value, and any reference to an undefined variable
+causes error termination of the CALL processor.</P>
+
+<P>This CALL processor was originally coded in PL/I, partly as a test
+of the Series 1100 PL1 compiler and partly as an experiment in
+prototyping. As features were added, the limitations imposed by the
+inefficiencies of PL1 generated code and by the author's design
+dictated a recoding. This was done in MASM; at the same time, the
+major data structures were moved to virtual storage using the FLIT
+paging algorithm. Since that recoding no major changes to this
+version of the CALL macro language have been made, although a number
+of new statements have been added.</P>
+
+<P>The PL/I coded CALL processor was level 1R1 and its 1Rx
+successors. The recoding in MASM produced level 2R1 and its 2Rx
+successors.</P>
+
+<P>Unlike prior versions of this manual, the documents for level 3R4
+and beyond use change bars ("|" in the margin) to indicate
+differences or enhancements from the previous releases of CALL, not
+differences from the original, PL/I implementation.</P>
+
+<P>Anyone using this version of CALL is invited to share your
+experiences, particularly problems encountered and desired
+enhancements, with the maintainer:</P>
+
+<P>Chuck Caldarale<BR>
+
+Unisys Roseville, M.S. 4033<BR>
+
+Phone: (612) 635-6070, NET2 524-6070<BR>
+
+Internet:
+<A HREF="mailto:crc1@rsvl.unisys.com">crc1@rsvl.unisys.com</A></P>
+
+<P><B>Appendix B Revision History</B></P>
+
+<P><U>Level 3R1</U></P>
+
+<P>The internals of CALL have been extensively revised for level 3.
+While few differences should be detectable at the macro language
+level, the performance has been drastically improved. Level 3 of CALL
+compiles the macro source to an intermediate P-code form,
+constructing a dictionary as it does so, and interprets the P-code
+entries instead of the source code. By eliminating run-time
+processing of the macro source, the CPU time to execute a macro is
+reduced by a large factor, depending on the operations performed and
+the structure of the macro.</P>
+
+<P>Significant differences result primarily from the nature of a
+compiler. These include:</P>
+
+<P>CALL must make sense of the entire macro before execution begins.
+In previous versions, most syntax errors could exist without
+preventing correct execution as long as they were on paths which were
+never executed. With level 3, all syntax errors must be corrected
+before macro execution can take place.</P>
+
+<P>The <TT>LOCAL</TT> statement may not be nested within another
+statement (i.e., a <TT>THEN</TT> or <TT>ELSE</TT> clause, a
+<TT>LOOP</TT> body, or a <TT>CASE</TT> alternative), and it effects
+all statements which textually follow it in the procedure. In
+previous levels, the <TT>LOCAL</TT> statement was permitted to appear
+anywhere in the body of a procedure, and the statement took effect
+when executed.</P>
+
+<P>Undefined variables can be passed as arguments; if the first
+reference to the corresponding parameter assigns it a value, no error
+occurs. In earlier levels arguments were always evaluated, which
+caused an error if an argument was an undefined variable.</P>
+
+<P><U>Level 3R2</U></P>
+
+<P>This level introduces several new features, including:</P>
+
+<P><TT>BUFFER</TT> <TT>IN</TT>, <TT>BUFFER</TT> <TT>LOCK</TT>,
+<TT>BUFFER</TT> <TT>OUT</TT> statements;</P>
+
+<P><TT>FROMFIELDATA</TT> and <TT>TOFIELDATA</TT> conversion
+functions;</P>
+
+<P>a count parameter for <TT>CHARACTERIZE</TT> and
+<TT>INTEGERIZE</TT> functions;</P>
+
+<P><TT>RELOAD</TT> clause on <TT>BREAKPOINT</TT> statement;</P>
+
+<P><TT>FULLFILENAME</TT> function;</P>
+
+<P><TT>SET</TT> <TT>MONOCASE</TT> statement and corresponding case
+handling in <TT>INDEX</TT> and <TT>LOCATE</TT>.</P>
+
+<P>(Some of these enhancements were in some versions of 3R1, but are
+documented here for what may be the first time.)</P>
+
+<P><U>Level 3R3</U></P>
+
+<P>The enhancements in this level include:</P>
+
+<P><TT>SET</TT> <TT>SCREENSIZE</TT> statement and corresponding
+changes to the screen handler to allow any size display up to 256x256
+rather than the previous fixed 24x80;</P>
+
+<P>changing the <TT>FULLSCREEN</TT> buffer size to 4800 characters;
+</P>
+
+<P>raising of the character string length limit to 4096 for
+variables, constants, and intermediate results.</P>
+
+<P><U>Level 3R4</U></P>
+
+<P>New features in this level are:</P>
+
+<P><TT>LAND</TT>, <TT>LOR</TT>, and <TT>LXOR</TT> functions for
+logical (bit) operations on integers;</P>
+
+<P>exponentiation operator;</P>
+
+<P>documentation of the <TT>CONDITIONS</TT> function;</P>
+
+<P>improved <TT>BREAKPOINT</TT> file handling;</P>
+
+<P>new <TT>SET</TT> parameters: <TT>RECOVERY</TT> and
+<TT>EVALUATION</TT>;</P>
+
+<P>new <TT>RECOVERED</TT> function to determine if the program has
+been restarted;</P>
+
+<P>optional cycle handling for the <TT>FULLFILENAME</TT> function;
+</P>
+
+<P>optional return of all option bits via the <TT>OPTION</TT>
+function;</P>
+
+<P>additional information functions <TT>EXECLEVEL</TT>,
+<TT>PROGTYPE</TT>, <TT>SDATE</TT>, <TT>STIME</TT>, <TT>SYSID</TT>,
+and <TT>SYSTYPE</TT>;</P>
+
+<P>support for shared files in the <TT>OPEN</TT> statement and
+<TT>FULLFILENAME</TT> function;</P>
+
+<P>a syntax error in a file or element name on an <TT>OPEN</TT>
+statement now returns a status rather than terminating the program;
+</P>
+
+<P>corrections for off-sector <TT>BUFFER</TT> I/O requests;</P>
+
+<P>active <TT>FOR</TT> loop index variables may now be displayed via
+the interactive debugging mechanism.</P>
+
+<P>In addition, the internal operation of CALL has been considerably
+revised, resulting in an approximate 25 per cent CPU time reduction
+compared to previous levels.</P>
+
+<P><U>Level 3R5</U></P>
+
+<P>This level supports the following new features:</P>
+
+<P>Long (72-bit) integers are supported via the <TT>LONGVAL</TT> and
+<TT>LONGEXPR</TT> functions.</P>
+
+<P>The <TT>LET</TT> keyword on assignment statements is now optional,
+in most cases.</P>
+
+<P>The paging file can now grow to 65,536 tracks, rather than 32,768.
+</P>
+
+<P><TT>CONSOLE</TT> output size is now limited by the Exec, not CALL.
+</P>
+
+<P>Also, compilation time has been reduced 15-20 per cent.</P>
+</BODY>
+</HTML>

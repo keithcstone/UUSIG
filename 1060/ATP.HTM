@@ -1,0 +1,714 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<!--This file created 6/5/97 9:58 PM by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE> SI39-013 AUDIT TRAIL PROCESSOR (ATP) </TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=42 BOTTOM=765 LEFT=4 RIGHT=534>
+<meta http-equiv="Content-Type"
+
+content="text/html; charset=iso-8859-1">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1>1. INTRODUCTION</H1>
+
+<P>The AUDIT TRAIL PROCESSOR (ATP) has been written to select and
+print any information from AUDIT Trails.</P>
+
+<P>Processor call:</P>
+
+<PRE>@SYS$*ATP.ATP</PRE>
+
+<P>OR</P>
+
+<PRE>@XQT SYS$*ATP.ATP</PRE>
+
+<P>The processor will inquire which application number</P>
+
+<P>you desire to use.</P>
+
+<PRE>APPLICATION NUMBER (1-9)?</PRE>
+
+<P>Answer with the correct number.</P>
+
+<P>Input to ATP may be given in the following format:</P>
+
+<P>Format 1 (service functions):</P>
+
+<P>&lt;FUNCTION&gt; [&lt;PARAMLIST&gt;]</P>
+
+<P>Format 2 (condition input functions):</P>
+
+<P>&lt;FUNCTION&gt; [&lt;CONDITION&gt;]</P>
+
+<P>A function has to start at col.1 . Function and condition (or
+paramlist) must be separated by at least one space character.</P>
+
+<H1>2. PROCESSOR FUNCTIONS</H1>
+
+<H2>2.1. SERVICE FUNCTIONS</H2>
+
+<P>The following functions are available:</P>
+
+<H3>2.1.1 ACTION functions</H3>
+
+<P>ACT Closes CONDITION INPUT and starts processingand clears all
+CONDITIONS when completed.</P>
+
+<P>ACTH [N] Closes CONDITION INPUT and starts processing but leaves
+all CONDITIONS set.</P>
+
+<P>If N is given in FIND-MODE, the ACTH command is repeated N times,
+that means the next N RECORDS that match the CONDITION are printed.
+</P>
+
+<P>In SELECT-MODE the repeat count N is ignored.</P>
+
+<H3>2.1.2 PRINT functions</H3>
+
+<P>PRINT [EDIT=P1] [DUMP=[P2][/C]] [LINES=N]</P>
+
+<P>EDIT Specifies print options for edited RECORD HEADER information.
+</P>
+
+<P>DUMP Specifies print options for</P>
+
+<P>AUDIT RECORD raw dump.</P>
+
+<P>LINES A limit on PRINT LINES is specified.</P>
+
+<P>P1,P2 PRINT OPTIONS:</P>
+
+<P>0 - NO PRINT</P>
+
+<P>1 - ONLY PRINT$ 'PRIMARY' (default)</P>
+
+<P>2 - ONLY ALTERNATE PRINT FILE</P>
+
+<P>3 - PRINT$ 'PRIMARY' and ALTERNATE</P>
+
+<P>PRINT FILE</P>
+
+<P>C CODE flag for RECORD dump:</P>
+
+<P>O - OCTAL only (default)</P>
+
+<P>A - ASCII representation additional</P>
+
+<P>N Max LINE COUNT (default: N=10000)</P>
+
+<P>Processing is terminated, if exceeded.</P>
+
+<H3>2.1.3 TAPE MOVE functions</H3>
+
+<P>REWIND Rewind the audit tape reel.</P>
+
+<P>FMOVE N Move forward N blocks (octal or decimal).</P>
+
+<P>BMOVE N Move backward N blocks (octal or decimal).</P>
+
+<P>SWAP &lt;REEL#&gt; Swap to reel number &lt;REEL#&gt;.</P>
+
+<P>SWAP NEXT Swap to next audit reel in sequence.</P>
+
+<H3>2.1.4 MISCELLANEOUS functions</H3>
+
+<P>HELP or ? Prints the functions and conditions</P>
+
+<P>available with the syntax format.</P>
+
+<P>ATFREE @FREE audit tape on EXIT (default)</P>
+
+<P>ATHOLD Keep audit tape assigned at EXIT</P>
+
+<P>CURRENT Print the current record.</P>
+
+<P>DISPLAY [F1[,F2[,...]]] Display the following information:</P>
+
+<P>F1,F2,...</P>
+
+<P>FIND FIND CONDITION</P>
+
+<P>START START CONDITION</P>
+
+<P>SELECT SELECT CONDITION</P>
+
+<P>STOP STOP CONDITION</P>
+
+<P>PRINT PRINT FLAGS</P>
+
+<P>TYPES AUDIT RECORD TYPES</P>
+
+<P>(default: START,SELECT,STOP,NOT,PRINT)</P>
+
+<P>EXIT Stop execution with clean-up.</P>
+
+<P>EXED Stop execution and @ED,R into PRINT FILE.</P>
+
+<P>EXSYM [Q] Stop execution and @SYM the PRINT FILE.</P>
+
+<P>Q can be used to specify the print queue to by SYM'd to, the
+default is PR.</P>
+
+<P>IGNORE [F1[,F2[,...]]] Discard the following information:</P>
+
+<P>F1,F2,...</P>
+
+<P>FIND FIND CONDITION</P>
+
+<P>START START CONDITION</P>
+
+<P>SELECT SELECT CONDITION</P>
+
+<P>STOP STOP CONDITION</P>
+
+<P>NOT NOT CONDITION</P>
+
+<P>PRINT PRINT FLAGS</P>
+
+<P>(default: START,SELECT,STOP,NOT)</P>
+
+<P>LOG$ T[/E] Turns on a re-selection of FC$SSN 'LOG$'</P>
+
+<P>USER-OWN records during FIND, SELECT and</P>
+
+<P>START evaluation.</P>
+
+<P>T - Time (in milli-seconds) at least one</P>
+
+<P>FC$SSN request of this record has used.</P>
+
+<P>E - FC$SSN error status of at least one request of this record.
+The value 99 matches any nonzero status.</P>
+
+<P>LOFF Turn off special FCSS 'LOG$' selection.</P>
+
+<P>NEXT Print next audit record.</P>
+
+<P>WAIT [N] Wait N seconds, or until @@X C if N is omitted.</P>
+
+<P>@@x C Interrupt processing (demand only) EJECT</P>
+
+<H2>2.2. CONDITION INPUT FUNCTIONS</H2>
+
+<P>Four types of conditions may be specified by the following
+functions:</P>
+
+<P>START &lt;CONDITION&gt; Specifies a condition to START scanning
+</P>
+
+<P>SELECT &lt;CONDITION&gt; Specifies a condition to SELECT records
+for output</P>
+
+<P>STOP &lt;CONDITION&gt; Specifies a condition to STOP scanning</P>
+
+<P>NOT &lt;CONDITION&gt; Specifies a condition to EXCLUDE records
+from SELECT or FIND</P>
+
+<P>A further function is available to search a specific record on the
+trail:</P>
+
+<P>FIND &lt;CONDITION&gt; Combines START, SELECT and STOP for a
+single record.</P>
+
+<P>In FIND-MODE any SELECT-CONDITION is ignored, but an additional
+STOP CONDITION may be specified. EJECT</P>
+
+<H3>2.2.1 CONDITIONS</H3>
+
+<P>A CONDITION is a set of Criteria's, separated by at least one
+SPACE character, evaluated as logical PRODUCT ('AND'), i.e. the
+result is only true, if all CRITERIA are met:</P>
+
+<P>&lt;CONDITION&gt; : &lt;CRITERIA1&gt; [&lt;CRITERIA2&gt; ...]</P>
+
+<P>A CRITERIA is defined by a KEYWORD, followed by '=', followed by a
+list of parameters, separated by ',':</P>
+
+<P>&lt;CRITERIA&gt; :
+&lt;KEYWORD&gt;=&lt;PARAM1&gt;[,&lt;PARAM2&gt;[,...]]</P>
+
+<P>A CRITERIA is true, if at least one of the parameters matches
+(logical SUM, 'OR').</P>
+
+<P>A CRITERIA specification must not contain SPACE characters. A
+keyword may appear more than once in the same function, but this is
+equivalent to merging the PARAMETER lists into one. There is a limit
+of 20 PARAMETER entries for a KEYWORD in one FUNCTION. Some KEYWORDS
+have PARAMETERS that consist of SUBparameters, separated by '/'.</P>
+
+<P>Following KEYWORDS are available to specify Criteria's: EJECT</P>
+
+<H3>2.2.2 REEL=R1[,R2[,...]]</H3>
+
+<P>Specifies tape reel numbers to be used:</P>
+
+<P>R1,R2,.. alpha REEL# (up to 6 characters)</P>
+
+<UL>
+   <LI>used on START or FIND FUNCTION: scan starts with specified
+   reel (only the first REEL# is used)
+
+   <LI>used on SELECT FUNCTION: process only specified reels in the
+   given order
+
+   <LI>used on STOP FUNCTION: processing stops if the end of any of
+   the specified reels is reached
+</UL>
+
+<P>NOTE: REEL PARAMETERS are only checked to assign the first reel
+and when swapping reels. If no REEL CRITERIA is used on SELECT
+FUNCTION, the next REEL# is picked up from the trailer record. If no
+trailer record or REEL# can be found, the operator (in DEMAND: user)
+is asked for the next reel.</P>
+
+<H3>2.2.3 TIME=HH:MM:SS</H3>
+
+<P>allows to specify a time range:</P>
+
+<P>HH hours (2 decimal digits)</P>
+
+<P>MM minutes (2 decimal digits)</P>
+
+<P>SS seconds (2 decimal digits)</P>
+
+<UL>
+   <LI>used on START, FIND or SELECT FUNCTION: scan starts if time
+   stamp of audit block equals or is greater than HH:MM:SS
+
+   <LI>used on STOP FUNCTION: scan stops if time stamp of audit block
+   equals or is greater than HH:MM:SS
+</UL>
+
+<H3>2.2.4 BLOCK=B1[,B2[,...]]</H3>
+
+<P>allows to specify AUDIT TAPE BLOCK numbers</P>
+
+<P>B1,B2,.. octal or decimal BLOCK# (reel-relative)</P>
+
+<P>- used on START or FIND FUNCTION: scan starts if current audit
+BLOCK# equals or is greater than one of the given BLOCK#</P>
+
+<P>- used on SELECT FUNCTION: SELECT only the specified Blocks</P>
+
+<P>- used on STOP FUNCTION: scan stops if current audit BLOCK# equals
+or is greater than one of the given BLOCK#</P>
+
+<H3>2.2.5 TBSN=B1[,B2[,...]]</H3>
+
+<P>same as BLOCK, but numbers are unique in the</P>
+
+<P>set of trail reels.</P>
+
+<H3>2.2.6 TYPE=T1[/S1][,T2[/S2][,...]]</H3>
+
+<P>space 1</P>
+
+<P>allows to specify the TYPE of AUDIT Records:</P>
+
+<P>T1,T2,.. octal or decimal RECORD TYPES (1-63)</P>
+
+<P>S1,S2,.. octal or decimal RECORD Subtypes</P>
+
+<P>(0-63). If omitted, any SUBTYPE matches.</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the Types in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only specified RECORD Types</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the Types in the PARAMETER list EJECT</P>
+
+<P>Currently known Types are:</P>
+
+<P>1/ 0 = MEDIA HEADER RECORD</P>
+
+<P>2/ 0 = TAPE TRAILER RECORD</P>
+
+<P>4/ 0 = REBOOT START RECORD</P>
+
+<P>5/ 0 = REBOOT CONTINUE RCD</P>
+
+<P>6/ 0 = AUDIT CTL STATISTICS</P>
+
+<P>10/ 1 = TPPS INP MSG ENQ RCD</P>
+
+<P>10/ 2 = TPPS ST USR PROC RCD</P>
+
+<P>10/ 3 = TPPS END USR PRC RCD</P>
+
+<P>10/ 4 = TPPS OUT MSG ENQ RCD</P>
+
+<P>10/ 5 = TPPS OUT MSG SEL RCD</P>
+
+<P>10/ 6 = TPPS OUT MSG DEQ RCD</P>
+
+<P>10/12 = TPPS SUP-PRG XQT RCD</P>
+
+<P>16/ 1 = SC QUEUE ITEM</P>
+
+<P>16/ 2 = SC PERIODIC SAVE</P>
+
+<P>16/ 3 = SC MAINT-Q FUNCTION</P>
+
+<P>16/ 4 = SC MESSAGE NUMBERING</P>
+
+<P>17/ 1 = MCB MESSAGE TEXT</P>
+
+<P>17/ 2 = MCB MESSAGE OVERFLOW</P>
+
+<P>17/ 3 = MCB MRF FILE HEADER</P>
+
+<P>17/ 4 = MCB MRF FILE CONTROL</P>
+
+<P>17/ 5 = MCB STATISTICS</P>
+
+<P>17/ 6 = MCB MRF SEGMENT CTL</P>
+
+<P>17/ 7 = MCB TIP$Q ERROR RCD</P>
+
+<P>18/ 1 = DMS AFTER-LOOK</P>
+
+<P>18/ 2 = DMS BEFORE-LOOK</P>
+
+<P>18/ 3 = DMS REC. AFTER-LOOK</P>
+
+<P>18/ 4 = DMS CAL</P>
+
+<P>18/ 5 = DMS IL</P>
+
+<P>18/ 6 = DMS PAIL</P>
+
+<P>18/ 7 = DMS ILLPR</P>
+
+<P>18/ 8 = DMS LRI</P>
+
+<P>19/ 0 = DMS USER OWN</P>
+
+<P>19/ 1 = FCSS USER OWN</P>
+
+<P>19/ 2 = MCB USER OWN</P>
+
+<P>20/ 1 = DMS IDLE POINT</P>
+
+<P>20/ 2 = MCB IDLE POINT</P>
+
+<P>22/ 1 = FCSS AFTER-LOOK RCD</P>
+
+<P>22/ 2 = Freespace CHANGE RCD</P>
+
+<P>22/ 3 = DEFERRED UPDATE LIST</P>
+
+<P>23 = IMS</P>
+
+<P>32/ 1 = IRU DUMP HEADER</P>
+
+<P>32/ 2 = IRU DUMP PAGE</P>
+
+<P>32/ 3 = IRU DUMP TRAILER</P>
+
+<P>63/ 0 = AUDIT FILLER RECORD</P>
+
+<P>63/63 = AUDIT FILLER RECORD</P>
+
+<P>EJECT</P>
+
+<H3>2.2.7 STEP=D1/T1/X1[/S1][,D2/T2/X2[/S2][,...]]</H3>
+
+<P>allows to specify STEP-ID's:</P>
+
+<P>D1,D2,.. octal DATE of STEP (TDATE$ format)</P>
+
+<P>T1,T2,.. octal TIME of STEP (TDATE$ format)</P>
+
+<P>X1,X2,.. octal sequence number (8 digits)</P>
+
+<P>S1,S2,.. octal STEP NUMBER (4 digits)</P>
+
+<P>If omitted, any STEP NUMBER matches.</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the STEP-IDs in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only specified STEP-IDs</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the STEP-IDs in the PARAMETER list</P>
+
+<H3>2.2.8 PID=P1[,P2[,...]]</H3>
+
+<P>allows to specify PIDs:</P>
+
+<P>P1,P2,.. octal or decimal PID</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the PIDs in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only specified PIDs</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the PIDs in the PARAMETER list</P>
+
+<P>EJECT</P>
+
+<H3>2.2.9 LIBB=L1/B1[,L2/B2[,...]]</H3>
+
+<P>allows to specify LIB/BANKs:</P>
+
+<P>L1,L2,.. octal or decimal HV TIP LIB#</P>
+
+<P>B1,B2,.. octal or decimal HV TIP BANK#</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the LIB/BANKs in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only specified LIB/BANKs</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the LIB/BANKs in the PARAMETER list</P>
+
+<H3>2.2.10 RUNID=R1[,R2[,...]]</H3>
+
+<P>allows to specify RUNIDs:</P>
+
+<P>R1,R2,.. generated RUNID (6 alpha characters)</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the RUNIDs in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only specified RUNIDs</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the RUNIDs in the PARAMETER list EJECT</P>
+
+<H3>2.2.11 FILE=F1[,F2[,...]]</H3>
+
+<P>allows to specify TIP FILE numbers:</P>
+
+<P>F1,F2,.. octal or decimal TIP FILE number</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the FILE numbers in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only specified FILE numbers</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the FILE numbers in the PARAMETER list</P>
+
+<H3>2.2.12 RECORD=R1[,R2[,...]]</H3>
+
+<P>allows to specify RECORD numbers:</P>
+
+<P>R1,R2,.. octal or decimal TIP RECORD NUMBER</P>
+
+<P>or Freespace RECORD-KEY</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the RECORD numbers in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only specified RECORD numbers
+</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the RECORD numbers in the PARAMETER list EJECT</P>
+
+<H3>2.2.13 DATA=D1[/[A1][/M1]][,....]</H3>
+
+<P>allows to specify DATA Words:</P>
+
+<P>D1,.. octal DATA WORD</P>
+
+<P>A1,.. octal or decimal ADDRESS</P>
+
+<P>If specified, this is the address of one word to inspect. Zero
+means the first word of the RECORD HEADER.</P>
+
+<P>If omitted, RECORD Headers are skipped and the data part is
+scanned.</P>
+
+<P>M1,.. octal MASK for SEARCH</P>
+
+<P>If no MASK is given, the full WORD is used as SEARCH argument</P>
+
+<P>- used on START or FIND FUNCTION: scan starts at first occurrence
+of one of the DATA Words in the PARAMETER list</P>
+
+<P>- used on SELECT FUNCTION: SELECT only records with specified DATA
+Words</P>
+
+<P>- used on STOP FUNCTION: scan stops at first occurrence of one of
+the DATA Words in the PARAMETER list</P>
+
+<P>Example: For Step-Control, type 16/1 does not allow any
+differentiation of the Q-item type. This is only possible via option
+bits in word 012 of the record:</P>
+
+<P>bit 17 = 0400000 on queue</P>
+
+<P>16 = 0200000 step active</P>
+
+<P>15 = 0100000 COMMIT in progress</P>
+
+<P>14 = 040000 step advance pending</P>
+
+<P>13 = 020000 advance step (with new step ID)</P>
+
+<P>12 = 010000 rollback step</P>
+
+<P>11 = 04000 terminate step</P>
+
+<H1>3. EXAMPLES</H1>
+
+<H2>3.1. EXAMPLE 1</H2>
+
+<PRE>@SYS$*ATP.ATP<BR>
+
+1<BR>
+
+START REEL=AUD001<BR>
+
+STOP REEL=AUD001<BR>
+
+ACT<BR>
+
+EXIT</PRE>
+
+<P>Application group number 1. Reel AUD001 is scanned and processing
+stops at the end of that reel. If STOP was not specified and a second
+tape existed, ATP would attempt to swap to that tape. All records
+found on this tape will print on the terminal up to 10,000 lines. The
+number of lines can be changed with the [PRINT LINES=xxxxxx]
+function. EJECT</P>
+
+<H2>3.2. EXAMPLE 2</H2>
+
+<PRE>@SYS$*ATP.ATP<BR>
+
+1<BR>
+
+PRINT EDIT=2 DUMP=0 LINES=200000<BR>
+
+SELECT REEL=AUD001 TYPE=18/1,18/3<BR>
+
+ACT<BR>
+
+EXSYM PR2</PRE>
+
+<P>Application group number 1 The PRINT command will cause only the
+header information of the records selected to be put into an
+alternate print file, the actual record data will be discarded. The
+LINES condition will change the default number of lines from 10,000
+to 200,000 to allow up to 200,000 lines of print to the alternate
+print file. The SELECT command will select DMS AFTER-LOOK and DMS
+RECOVERED AFTER-LOOK records to be selected. The ACT will begin
+processing the tape and place those records in the file. EXSYM PR2
+will @SYM that print file to printer PR2 and exit the ATP processor.
+EJECT</P>
+
+<H2>3.3. EXAMPLE 3</H2>
+
+<PRE>@SYS$*ATP.ATP<BR>
+
+2<BR>
+
+START REEL=AUD033<BR>
+
+PRINT DUMP=2<BR>
+
+FIND TYPE=18/4<BR>
+
+ACTH 2<BR>
+
+EXIT</PRE>
+
+<P>Application group number 2 The record data will be placed in an
+alternate print file and only the record header information will
+print on the screen. DMS COMPACTED AFTER-LOOK records will be
+selected. The ACTH 2 will begin processing, only scan for the first 2
+occurrences of the record, stop at that point on the audit trail
+tape, and not clear the select criteria. EXIT will exit the process.
+EJECT</P>
+
+<H2>3.4. EXAMPLE 4</H2>
+
+<P>@SYS$*ATP.ATP</P>
+
+<P>1</P>
+
+<P>START REEL=AUD001</P>
+
+<P>PRINT EDIT=2 DUMP=2 PRINT=100000</P>
+
+<P>SELECT AREA=956,957,958 PAGE=1</P>
+
+<P>STOP REEL=AUD003</P>
+
+<P>DISPLAY</P>
+
+<P>.............................................................</P>
+
+<P>Below what DISPLAY would actually show here</P>
+
+<P>.............................................................</P>
+
+<P>DISPLAY START-CONDITION:</P>
+
+<P>REEL:</P>
+
+<P>AUD001 SELECT-CONDITION:</P>
+
+<P>FILE:</P>
+
+<P>956</P>
+
+<P>957</P>
+
+<P>958</P>
+
+<P>RECORD:</P>
+
+<P>000000000001 STOP-CONDITION:</P>
+
+<P>REEL:</P>
+
+<P>AUD003 NOT-CONDITION: PRINT-FLAGS:</P>
+
+<P>EDIT=2 DUMP=2/O MAX LINES: 100000 (CURR. 5) AT$$18420004</P>
+
+<P>.................................................................
+</P>
+
+<P>ATHOLD</P>
+
+<P>ACT</P>
+
+<P>EXED</P>
+
+<P>Application group number 1 All of the information selected will be
+dumped into an alternate print file. Only records with an area code
+field are searched and those with the area code and record numbers
+that match the select criteria are selected. Scanning is stopped at
+the end of tape AUD003. A DISPLAY is done to verify criteria. You
+will notice that AREA and PAGE show up as FILE and RECORD in the
+DISPLAY. The FCSS terminology was used rather than the DMS
+terminology. An ATHOLD was done so that a user could exit out of ATP,
+look at his data and leave the tape assigned so that if he executes
+ATP again he will not lose that assignment. EXED will exit the
+process and put you directly into edit mode into the alternate print
+file.</P>
+
+<H1>4. INSTALLATION</H1>
+
+<P>The ATP processor comes with one file with all the necessary
+elements necessary to build the processor. It comes with a non common
+banked version of the absolute that is ready to be executed, which
+was built from the element BLDATP. There is also a common banked
+build stream BLDATP/CB to build a common banked version of the
+processor. PCF elements are also supplied in the file to make changes
+to the processor. It is recommended you copy the tape file into
+SYS$*ATP as this is what file the documentation reflects and how the
+runstream is built.</P>
+</BODY>
+</HTML>

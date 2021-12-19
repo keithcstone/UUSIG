@@ -1,0 +1,2298 @@
+@CAT,P UUSIG*1108-001-001.,F///500
+@ELT,IQ UUSIG*1108-001-001.PQCUP/DOC,,,,DOC
+RIGHTM ON   
+SUBHDG N
+SUBHDG C,***   PQCUP 1R1   ***  
+1'PQCUP' (Print Queue Clean-Up) 
+2Introduction   
+    The PQCUP processor is used to maintain the symbiont
+ queues on your system. The main reason PQCUP has been written is   
+ to selectively get rid of print files which have been queued for   
+ printing but are no longer required.   
+SPACE   
+ Please report any problems or suggestions to:  
+SPACE   
+                      Erich Staubringer 
+               Email: gestau1@mvmhp.ciw.uni-karlsruhe.de
+               Fax:   xx49 7246/942094  
+2Processor Call 
+ The general PQCUP processor call syntax is:
+SPACE   
+ @[<file.>]PQCUP[,<options>]  [<primary sel. specs>],[<secondary sel. specs>]   
+SPACE   
+ As the above syntax indicates, all options and specification fields are
+ optional and will have default values assigned, if necessary.  
+SPACE   
+ The various specification fields are described in the following
+ subsections.   
+3File   
+ This is the file in which PQCUP is stored and is not required to be
+ specified if PQCUP has been installed and registered in a system library   
+ file.  
+3Options
+ Options can be categorized into the following three groups:
+SPACE   
+ General options:   
+0----------------   
+SPACE   
+COLUMN 10   
+   C  -  Do not error terminate, even if an error occurs.   
+         This applies to non-internal and non-serious errors
+         only.  
+SPACE   
+   Z  -  If debugging is enabled within the program, this option
+         produces diagnostic dumps at several key points in 
+         the program. If debugging is disabled this option is   
+         invalid.   
+SPACE   
+ Action options:
+0---------------
+SPACE   
+   D  -  Delete the selected print files. When this option is used  
+         the J-option is assumed, if not specified. 
+SPACE   
+   L  -  List the selected print file entries. This is the default  
+         option if no other action option has been specified.   
+SPACE   
+   U  -  Update (toggle) the In-Progress and/or SV bit of the selected  
+         entries.   
+         This option requires at least one of the selection option and  
+         produces two lines of output per entry. The first line displays
+         the original entry (before the change) and the second line 
+         displays the updated entry (after the change). 
+SPACE   
+ Selection options: 
+0------------------ 
+SPACE   
+   I  -  Select entries with the In-Progress bit set only.  
+SPACE   
+   J  -  Bypass entries with the In-Progress bit set.   
+SPACE   
+   S  -  Select entries with the SV bit set only.   
+SPACE   
+   T  -  Bypass entries with the SV bit set.
+SPACE   
+COLUMN 2
+ When more than one of the selection options are given, all tests   
+ must pass for the entry to be selected, provided it is a legal 
+ option combination (logical 'AND' operations are done).
+3Specification Fields   
+ The specification fields are used to specify further selection criteria
+ for print files to be searched for.
+ Two types of specification fields are available: Primary selection 
+ specifications and secondary selection specifications. If neither  
+ selection options nor specification fields are given, PQCUP defaults   
+ to all print files queued on the system.   
+4Primary Selection Specifications   
+ Primary selection specs are the parameters which PQCUP passes on to the
+ operating system and, in turn, retrieves only the entries which match the  
+ specified criteria. The format is: 
+SPACE   
+         <name>/<identifier>
+SPACE   
+ where:  name         refers to an EXEC entity of the following identifier  
+SPACE   
+         identifier   describes the name above and can be:  
+SPACE   
+0                     QUEUE       Print queue identifier
+0                     RUNID       Generated runid   
+0                     USERID      Userid
+0                     OUTPUT-ID   Output-id of in-progress print files  
+0                     PRIORITY    Priority value (A - Z)
+0                     FILE        File name 
+SPACE   
+ The above described identifiers can be abbreviated to any length.  
+ On the first specification field it can be omitted and defaults
+ to QUEUE or FILE, respectively. This has been implemented to allow 
+ easy access to various print queues (@PQCUP B12, for example). 
+SPACE   
+ All of the specified identifiers must match for an entry to be 
+ selected (logical 'AND' operations are done).  
+ The only exception to this rule is when multiple print queue ids   
+ have been specified to be searched. In this case, only one of  
+ the queue ids must match.  
+ The actual number of allowed print queue id specs is configurable  
+ and is currently set to a maximum of 10.   
+SPACE   
+ If the identifier is RUNID or OUTPUT-ID and name is not specified, 
+ the generated runid of the calling run is assumed. 
+SPACE   
+ If the identifier refers to a userid and name is omitted, the  
+ current userid is substituted. 
+SPACE   
+ When the qualifier part of a file name is not specified, the run's 
+ default qualifier is used (@QUAL,D).   
+SPACE   
+ When the qualifier is omitted but an asterisk precedes the filename
+ the run's implied qualifier is used (@QUAL).   
+SPACE   
+ When the file cycle is omitted the first print file found on the   
+ queue(s) which match the specified qualifier and file name 
+ is selected, regardless of the actual file cycle.  
+SPACE   
+ Summarizing the rules outlined above gives the following sytax:
+SPACE   
+0                       [<device-1>[/QUEUE],[<device-n>/QUEUE]],;   
+0                       [[<run-id>]/RUNID],;
+0                       [[<user-id>]/USERID],;  
+0                       [[<output-id>]/OUTPUT-ID],; 
+0                       [<priority>/PRIORITY],; 
+0                       [<qual>[*]]<file>[(cyc)].[/FILE]
+4Secondary Selection Specifications 
+ Secondary selection specs are selection parameters not supported by the
+ operating system directly. Thus, PQCUP retrieves the entries specified 
+ via the primary selection specs and re-selects the desired entries.
+SPACE   
+ This specification, if used, must be the last field on the processor   
+ call line. 
+ If this is the only field, it must be made unique by using the 
+ test-operator or date identifier field, otherwise it would be recognized   
+ as a primary spec field print queue or file name.  
+SPACE   
+ Currently, only one secondary selection spec is implemented which allows   
+ to select files based on their relative age.   
+ The specification field format is: 
+SPACE   
+                        [<test-operator>.][<relative age>][/<date ident>]   
+SPACE   
+COLUMN 25   
+ where:  test-operator  is an optional field used to specify the test to
+                        be done against the relative age specification, 
+                        which selects the files based on the number of  
+                        days since catalogued or number of days last
+                        referenced, respectively.   
+SPACE   
+                        Valid test operators are:   
+SPACE   
+0                       TGE   (Test Greater or Equal)   
+0                       TG    (Test Greater)
+0                       TE    (Test Equal)  
+0                       TNE   (Test Not Equal)  
+0                       TLE   (Test Less than or Equal) 
+0                       TNG   (Test Not Greater)
+SPACE   
+                        If this specification is omitted TGE is assumed,
+                        which causes all file entries to be selected
+                        older than or equal to the number of days   
+                        specified in the relative age specification 
+                        field.  
+SPACE   
+           relative age specifies the relative age in days of file  
+                        entries to be selected. 
+                        It can be omitted with the LIST function only   
+                        and defaults to 0 in this case. For all other   
+                        functions this specification is mandatory.  
+                        The test to be performed depends on the 
+                        test-operator specification described above.
+SPACE   
+            date ident  specifies which date to use to determine the
+                        print file's age.   
+SPACE   
+                        Print files put on a symbiont queue do not have a field 
+                        attached which tells the date the file has been symmed. 
+                        To work around this gap, PQCUP offers the capability to 
+                        refer either to the date the file has been catalogued or
+                        the last reference date of the file to determine it's   
+                        relative age.   
+SPACE   
+                        Valid choices for this field are CATAGE or REFAGE.  
+                        When it's not specified, CATAGE is the default. 
+SPACE   
+                        See section "Restrictions" for further details  
+                        on this subject.
+COLUMN 2
+2Current Restrictions and Limitations   
+3Maximum Number Of Print Queue Entries  
+ Due to current (44R3) Exec limitations, PQCUP can only handle up to
+ 169 print queue entries at most. However, when the D-option
+ is used to delete entries, it could be possible for PQCUP to   
+ process all entries on a queue, even if there are more than 169
+ entries queued. Actually, the degree of success depends on the 
+ primary selection specs, i.e. the matching of the file entries against 
+ the user's specifications. 
+SPACE   
+ Suppose there are 300 entries on a symbiont queue. PQCUP reads the 
+ first 169 entries and examines each one to determine which ones
+ match the user-specified selection criteria. Let's assume that 
+ there have been 3 entries selected for deletion.   
+ When these entries have been successfully removed  
+ PQCUP recognizes that there are more entries queued and initiates  
+ another read request to retrieve the first 169 entries again.  
+ If the queue has not been changed by any other activity,   
+ there are 3 new entries in the set of the first 169 entries.   
+ The other 166 ones have already been read in the previous execution path.  
+SPACE   
+ The user should be aware though that this processing is very inefficient,  
+ it does allow the removal of more than 169 print files,
+ provided there is at least one entry which matches the primary selection   
+ specification. 
+3Date Of @SYM   
+ The Exec does not carry the date a file has been symmed along with the 
+ symbiont queue entries, so it's not possible to refer to the date a file   
+ has been symmed.   
+ To get around this gap, PQCUP refers to the date the file has been 
+ catalogued. Optionally, this default value can be overwritten to refer 
+ to the last reference date of the file. However, using the last-reference  
+ date it should be remembered that if a user referenced the file while  
+ DLOC$-privileged, the file's last-reference date is not updated.   
+2Notes  
+3Changes To The System Clock
+ When PQCUP executes and a date change occurs (either manually initiated
+ or automatically at midnight), PQCUP continues to use the date it has  
+ been invoked to determine the relative dates of the print files.   
+0In other words, the date used as a basis to calculate the relative date
+ is determined at program initialization and subsequently re-used.  
+3The Sign-Off Line  
+ When PQCUP terminates, it normally displays a sign-off line in the 
+ following format:  
+SPACE   
+   END PQCUP.  Examined: a/b   Listed: c  Changed: d  Deleted: e  Rejected: f   
+SPACE   
+COLUMN 25   
+   where:      a        Number of entries returned by the operating system  
+                        on the LAST retrieve operation. 
+SPACE   
+               b        Total number of entries at the time of the LAST 
+                        retrieve operation. 
+SPACE   
+               c        The number of files that have been listed, i. e.
+                        displayed.  
+SPACE   
+               d        The number of entries updated.  
+SPACE   
+               e        The number of entries removed.  
+SPACE   
+               f        The number of entries that have not been processed  
+                        due to any of the following errors encountered: 
+SPACE   
+0                       -  An error occured reading the MFD information of a file   
+0                       -  The In-progress bit could not be set for an entry
+0                       -  The entry could not be removed   
+0                       -  The Exec marked the entry in error   
+COLUMN 2
+SPACE   
+ When a file is marked rejected or any other unusual situation  
+ is encountered a snapshot dump and/or formatted dump is
+ displayed, depending on the type of error. 
+3System Log Entries For Deleted Print Files 
+ When a print file is being dropped via ER SMOQUE$, the Exec assigns
+ it to it's PCT and finally marks it for deletion.  
+ Therefore, Exec is recorded in the system log file entry as the
+ deleting activity, regardless of the initiator.
+ Unfortunately, there is no way to determine the originating activity   
+ which actually initiated the delete request.   
+SPACE   
+ I have opened a Feature Suggestion on this subject, but
+ haven't received an answer yet.
+3Privileges And File Security   
+ To access, modify and delete print files PQCUP uses various
+ ER SMOQUE$ functions. Access to some of these functions is restricted, 
+ and only users with appropriate privileges can use them.   
+ The type of required privileges depends on the system configuration:   
+SPACE   
+ On systems running Fundamental Security only the security officer  
+ has the rights to use privileged ER SMOQUE$ functions. 
+SPACE   
+ On systems with Secopt-1 or higher turned on the calling user has to   
+ have the SSSMOQUE privilege to use the privileged ER SMOQUE$ functions.
+ The security officer grants these privileges to individual users.  
+SPACE   
+ However, a user with access to the privileged ER SMOQUE$ functions 
+ bypasses all file security checks. 
+ Even in a Secopt-1 or higher system, delete access is granted to ALL   
+ files, not only to the files within the user's compartment set or  
+ clearance level range, as one might assume.
+SPACE   
+ I have opened a Feature Suggestion on this subject, but
+ haven't received an answer yet.
+2Planned Enhancements For Future Releases   
+ - Detailed and meaningful messages on spec field errors
+SPACE   
+ - Attach use-names to the selected print files (if no D-option)
+SPACE   
+ - Copy / move the selected files into program file elements
+2Release History
+ - Sep '95   1R1    Initial release 
+2Examples   
+ Each of the following examples shows at least two possible PQCUP   
+ calls. The first one shows the full spelled out syntax, and any
+ following calls are abbreviated calls which deliver the same   
+ results.   
+ Additionally, all examples assume that PQCUP has been either installed 
+ in a system library file or copied into the run's TPF$ file.   
+SPACE 2 
+ List all print files on the system.
+SPACE   
+           @PQCUP,L   TGE.0/CATAGE  
+           @PQCUP   
+SPACE 2 
+ List all print files on the system on queue B12 which have 
+ been created 30 days or longer ago.
+SPACE   
+           @PQCUP,L   B12/QUEUE,TGE.30/CATAGE   
+           @PQCUP     B12/Q,TGE.30  
+           @PQCUP     B12,30
+SPACE 2 
+ Delete all print files on the system which have been   
+ symmed by the current userid and have not been referenced for  
+ at least 30 days.  
+SPACE   
+           @PQCUP,D   /USERID,TGE.30/REFAGE 
+           @PQCUP,D   /USER,30/REFAGE   
+           @PQCUP,D   /U,30/REFAGE  
+SPACE 2 
+ Delete all print files created by the user-id currently executing under
+ which are catalogued 3 days before and have the SV-bit set, i. e. have 
+ been saved to tape via the SV keyin and the N-option.  
+SPACE   
+           @PQCUP,DS  /USERID,TE.3/CATAGE   
+           @PQCUP,DS  /U,TE.3   
+SPACE 2 
+ Same scenario as above, but clear the SV-bit rather than deleting  
+ the files. 
+SPACE   
+           @PQCUP,US  /USERID,TE.3/CATAGE   
+           @PQCUP,US  /U,TE.3   
+SPACE 2 
+ Delete all print files created by run SYSGEO which have been saved 
+ to tape but not removed from the symbiont queues (via SV ,/N) and have 
+ not been referenced within the last 7 days.
+SPACE   
+           @PQCUP,DS   SYSGEO/RUNID,TGE.7/REFAGE
+           @PQCUP,DS   SYSGEO/R,7/REFAGE
+SPACE 2 
+ Clear the IP bit of all files on queues B12 and B13 which have 
+ the output-id PR5 attached and have last been referenced yesterday.
+SPACE   
+           @PQCUP,UI   B12/QUEUE,B13/QUE,PR5/OUTPUT-ID,TE.1/REFAGE  
+           @PQCUP,UI   B12,B13/Q,PR5/O,TE.1/REFAGE  
+@EOF
+@ELT,IQ UUSIG*1108-001-001.PQCUP,,,,MSM
+.   
+.   
+.         PQCUP - A Print Queue Clean-UP Utility
+.   
+.                      Presented by EST, Sep '95
+.   
+.   
+          $include  'maxr$'           . 
+          elt$                        . 
+.   
+.         Common EQUs   
+.   
+on        $equ      1                 . 
+off       $equ      0                 . 
+.   
+pgmnam    $equ      'PQCUP'           . 
+pgmver    $equ      '1R1'             . 
+debug     $equ      on                . on=generate debugging code  
+slc       $equ      'CB'              . Syslib call type
+.   
+i         $do       'A','Z' ,;        . Define option bit mnemonics 
+[i]opt    $equ      1*/('Z'-i)        . 
+alopts    $equ      0++    ;          . Define allowed options  
+                    copt++ ;          .   Continue on user-error
+                    dopt++ ;          .   Delete selected entries   
+                    lopt++ ;          .   List selected entries 
+                    uopt++ ;          .   Update IP/SV bit of entries   
+                    iopt++ ;          .   Select entries with IP bit only   
+                    jopt++ ;          .   Bypass entries with IP bit set
+                    sopt++ ;          .   Select entries with SV bit only   
+                    topt++ ;          .   Bypass entries with SV bit set
+                    0                 . 
+alopts    $equ      alopts++((debug=on)->zopt!0) . Debug option 
+.   
+maxent    $equ      169               . max = (169*3)+4 = 511   
+entlen    $equ      39                . single entry length 
+smoqrpfpl $equ      4                 . request packet fixed part length
+smoqrprpl $equ      3                 . request packet rep. part length 
+minpktlen $equ      smoqrpfpl+(smoqrprpl*1) . minimum request pkt size  
+maxpktlen $equ      smoqrpfpl+(smoqrprpl*maxent) . max request pkt size 
+.   
+mditabec  $equ      10                . # of MultiDev Ident Tab entries 
+inforl    $equ      28                . size of the INFOR$ table
+edlinel   $equ      132//4            . size of the AEDIT$ buffer   
+msconbufl $equ      28                . size of the MSCON$ buffer   
+seltabez  $equ      5                 . Size of a single SELTAB entry   
+toptabez  $equ      2                 . size of a single TOPTAB entry   
+.   
+msconerror $equf    flags,,s1         . indicator that MFD info isn't valid 
+hdgflag   $equf     flags,,s2         . 
+.   
+.         PCT EQUFs 
+.   
+ab        $equf     01,,W             . PCT rel addr of generated runid 
+userid    $equf     0104,,w           . Userid  
+pctnam    $equ      0241              . Start of PCT Name Section   
+nsextptr  $equf     075,,h1           . Pointer to the NS Extension Table   
+lastqual  $equf     1,,w              .      Implied qualifier  
+defaultqual $equf   5,,w              .      Default qualifier  
+/.  
+.   
+.         ER SMOQUE$ mode bits  
+.   
+smoqmsetip $equ     000000000001      . Set in-progress 
+smoqmclrip $equ     000000000002      . Clear in-progress   
+smoqmbypip $equ     000000000004      . Bypass in-progress  
+smoqmgetip $equ     000000000010      . Get in-progress 
+smoqmsetsv $equ     000000000020      . Set SV bit  
+smoqmclrsv $equ     000000000040      . Clear SV bit
+smoqmbypsv $equ     000000000100      . Bypass SV   
+smoqmgetsv $equ     000000000200      . Get SV  
+smoqmexmat $equ     000000000400      . Exact match 
+smoqmprint $equ     000000001000      . Print files only
+smoqmpunch $equ     000000002000      . Punch files only
+smoqmasgfi $equ     000000004000      . Assign file 
+smoqmdevgs $equ     000000010000      . Device-group-station
+smoqmrunid $equ     000000020000      . Runid   
+smoqmfilen $equ     000000040000      . Filename
+smoqmfreef $equ     000000100000      . Free-file   
+smoqmsetpr $equ     000000200000      . Set priority
+smoqmdelen $equ     000000400000      . Delete entry
+smoqmbypcn $equ     000001000000      . Bypass conflict 
+smoqmbyptf $equ     000002000000      . Bypass tape files   
+smoqmnpart $equ     000004000000      . No partnames
+smoqmusrid $equ     000010000000      . User-id field   
+smoqmnextr $equ     000020000000      . No extra
+smoqmoutid $equ     000200000000      . Output-id   
+smoqmmultd $equ     000400000000      . Multidevice 
+smoqmassok $equ     001000000000      . Assume-OK   
+.   
+.         ER SMOQUE$ statuses   
+.   
+smoqsok   $equ      0                 . good news   
+smoqsosl  $equ      0000001           . packet outside storage limits   
+smoqsiln  $equ      0000002           . illegal name for d/g/s  
+smoqsactf $equ      0000004           . activity reactivated via activate   
+smoqsnff  $equ      0000010           . no file found   
+smoqsiee  $equ      0000020           . internal exec error 
+smoqscon  $equ      0000040           . conflicts   
+smoqsface $equ      0000200           . fac error   
+smoqstpt  $equ      0000400           . tape partname data truncation   
+smoqsopt  $equ      0001000           . output truncation   
+smoqsilpl $equ      0002000           . illegal packet length   
+smoqscic  $equ      0004000           . change not completed
+smoqsilm  $equ      0010000           . illegal function mode   
+smoqsmfm  $equ      0020000           . missing function mode   
+smoqsilf  $equ      0040000           . illegal function
+smoqsnprv $equ      0100000           . required privilege missing  
+smoqsild  $equ      0200000           . illegal data supplied   
+smoqsian  $equ      0400000           . invalid activity name on activate   
+.   
+.         ER SMOQUE$ packet EQUFs   
+.   
+smoqstat  $equf     0,,h1             . status  
+smoqfunc  $equf     0,,h2             . function code   
+smoqmode  $equf     1,,w              . mode bits   
+smoqentret $equf    2,,h1             . number of entries returned  
+smoqentnum $equf    2,,h2             . number of entries   
+smoqver    $equf    3,,h1             . packet version  
+smoqpnsiz  $equf    3,,h2             . max size for partname areas 
+.   
+.         ER SMOQUE$ packet EQUFs - repeating entry descriptors 
+.   
+smoqentbdi $equf    0,,h1             . bdi of entry descriptor 
+smoqentadr $equf    0,,h2             . offset of entry descriptor  
+smoqentl  $equf     1,,h1             . length of entry 
+smoqtpndl $equf     1,,h2             . length of tape partname data
+smoqtpnda $equf     2,,w              . address of tape partname data buf   
+.   
+.         ER SMOQUE$ entry  
+.   
+smoqrunid $equf     0,,w              . 
+smoqacct  $equf     2,,w              . 
+smoqproj  $equf     5,,w              . 
+smoqusrid $equf     010,,w            . 
+smoqqid   $equf     013,,w            . queue id
+smoqoid   $equf     015,,w            . output id   
+smoqfqual $equf     022,,w            . 
+smoqfname $equf     025,,w            . 
+smoqfcyc  $equf     030,,w            . 
+smoqfacst $equf     035,,w            . 
+smoqiid   $equf     040,,h2           . id of initial SMOQUE entry  
+smoqdir   $equf     041,,s1           . directory   
+smoqid    $equf     041,,h2           . id of this entry
+smoqflgb  $equf     044,,w            . flag bits   
+smoqftpf  $equ      1                 .            tape file
+smoqfmtpf $equ      2                 .            multiple tape file   
+smoqfmtpfa $equ     4                 .            all files to be printed  
+smoqferr  $equ      010               .            error occured
+smoqfprf  $equ      0400              .            print file   
+smoqfpuf  $equ      01000             .            punch file   
+smoqfip   $equ      02000             .            in progress bit  
+smoqfsv   $equ      04000             .            SV bit   
+smoqfusrid $equ     010000            .            queued to USR*ID 
+smoqflpo  $equ      020000            .            LABEL_PRINT_OUTPUT on
+smoqfepl  $equ      040000            .            EVERY_PAGE_LABELING on   
+smoqbpn   $equf     045,,h1           . breakpoint number   
+smoqpri   $equf     045,,h2           . priority index  
+/.  
+.   
+.         ER MSCON$ EXIST$ packet EQUFs 
+.   
+mscfqual  $equf     1,,w              . qualifier   
+mscfname  $equf     3,,w              . file name   
+mscbuflen $equf     5,,t1             . output buffer length
+mscfcyc   $equf     5,,t3             . file cycle  
+mscbufadr $equf     6,,w              . output buffer address   
+.   
+.         MFD Main Item sector 0
+.   
+mfdfqual  $equf     1,,w              . 
+mfdfname  $equf     3,,w              . 
+mfdfcyc   $equf     17,,t3            . 
+mfdfrefd  $equf     18,,w             . 
+mfdfcatd  $equf     19,,w             . 
+/.  
+.   
+.         Local table EQUFs 
+.   
+seltabid  $equf     0,,w              . Identifier  
+seltabmb  $equf     2,,w              . Mode bits   
+seltabmc  $equf     3,,w              . Number of chars 
+seltabda  $equf     4,,w              . Destination address 
+.   
+toptabim  $equf     0,,w              . Instruction mnemonic
+toptabin  $equf     1,,w              . Generated instruction   
+/.  
+.   
+.         CONST - Optimized constant operand
+.   
+.         Makes a literal if necessary, else uses J = U or XU   
+.   
+.         L  A0,CONST(100)     ->  L,U   A0,100 
+.         L  A0,CONST(-100)    ->  L,XU  A0,-100
+.         L  A0,CONST(1234567) ->  L     A0,(1234567)   
+.   
+const*    $func                       . 
+z         $equ      const(1)          . 
+          $end      (-1*/17<Z<0777777->Z<>-0)->(0777777**Z)+(I$ 0,Z<0->XU!U)!(Z) .  
+/.  
+.   
+.         Proc to ease the pain for Fieldata to Ascii   
+.         conversions and vice versa.   
+.   
+.         FDASC|ASCFD[,type[,padflg]] [wrdcnt],[inpbuf],[outbuf]
+.   
+.         All parameters are optional and void parameter fields 
+.         are ignored.  
+.   
+p         $proc                       . 
+fdasc*    $name     'FDASC$'          . 
+ascfd*    $name     'ASCFD$'          . 
+padflg    $equ      (p(0,0)='FDASC$')**(p(0,2)) .   
+          $if       (p(1)>3)++(p>2)   . 
+          $display  *'*Error*  Invalid ':p(0,0):' parameter(s) specified!' .
+          $else                       . 
+i         $repeat   p(1)              . 
+          $if       p(1,i)<>0         . 
+          l,u       a0+i-1,p(1,i)     . 
+          $endf                       . 
+          $endr                       . 
+          $do       padflg , ;        . 
+          lmj       x11,prefdasc      . 
+          $if       p(0,1)='A'        . 
+          lmj       x11,['CB':p(0,0)-1] .   
+          $elsf     p(0,1)='CB'       . 
+          i$bj      x11,['CB':p(0,0)] . 
+          $else                       . 
+          lmj       x11,[p(0,0)]      . 
+          $endf                       . 
+          $do       padflg , ;        . 
+          lmj       x11,postfdasc     . 
+          $endf                       . 
+          $end                        . 
+.   
+.         Proc for dumping and debugging purposes.  
+.   
+.         [DEBUG]DUMP[,<flag>]  <ident>  [<word-count>],[<address>] 
+.   
+.         flag = 0  Octal & Ascii dump  
+.         flag = 1  Octal dump only 
+.   
+p         $proc                       . 
+debugdump* $name    0                 . 
+dump*     $name     1                 . 
+debugonly $equ      (debug=on)**(p(0,0)=0) .
+ident     $equ      $cas(p(1,1))      . 
+octalonly $equ      p(0,1)            . 
+          $if       debugonly         . 
+          l         a1,options        . 
+          top       a1,const(zopt)    . 
+          j         nodebdum          . 
+          $endf                       . 
+          $do       p(2)>0 , ;        . 
+          lxi,u     a0,p(2,1)         . 
+          $do       p(2)>1 , ;        . 
+          lxm,u     a0,p(2,2)         . 
+          $if       octalonly>0       . 
+          or        a0,(1*/35)        . 
+          l         a0,a1             . 
+          $endf                       . 
+          l         a1,(0100+($sl(ident)//4),(ident)) . 
+          lmj       x11,dumpit        . 
+nodebdum.   
+          $End                        . 
+.   
+.         Proc to build selection table entries.
+.   
+.         seltabent    '<ident>'[,<max chars>] <mode bits> <dest-addr>  
+.   
+.             +------------------------------------+
+.         0   |            identifier              |
+.             +                                    +
+.         1   |        (12 FD chars, LJSF)         |
+.             +------------------------------------+
+.         2   |             mode bits              |
+.             +------------------------------------+
+.         3   |        max number of chars         |
+.             +------------------------------------+
+.         4   |        destination address         |
+.             +------------------------------------+
+.   
+p         $proc                       . 
+seltabent* $name                      . 
+ident     $equ      $cfs(p(1,1))      . 
+numchar   $equ      p(1,2)->p(1,2)!0  . 
+modebits  $equ      p(2,1)            . 
+destaddr  $equ      p(3,1)+smoqbuf1   . 
+identwl   $equ      $sl(ident)//6     . 
+          $if       identwl>2         . 
+          $display  *'*Error*  SELTAB identifier too long: ':ident .
+          $else                       . 
+          $gen      ident             . Word 0+1
+          $if       identwl<2         . 
+          $gen      $cfs(''l)         . 
+          $endf                       . 
+          +         modebits          . Word 2  
+          +         numchar           . Word 3  
+          +         destaddr          . Word 4  
+          $endf                       . 
+          $end                        . 
+.   
+.         Proc to build test operator entries.  
+.   
+.         TOPTABENT '<test-instr.-mnemonic>' [test-routine-addr.]   
+.   
+.             +------------------------------------+
+.         0   |     test instruction mnemonic      |
+.             +------------------------------------+
+.         1   |    test-instr. or -routine call    |
+.             +------------------------------------+
+.   
+p         $proc                       . 
+toptabent* $name                      . 
+insmne    $equ      $cfs(p(1,1)l)     . 
+          $if       $sl(insmne)>6     . 
+          $display  *'*Error*  Invalid TOPTABENT parameter: ':insmne .  
+          $else                       . 
+          $gen      insmne            . Word 0  
+          $if       p>2               . 
+          $gen      +(lmj x11,p(2,1)) . Word 1  
+          $else                       . 
+          $gen      +([insmne] a0,a1) . Word 1  
+          $endf                       . 
+          $endf                       . 
+          $end                        . 
+/.  
+.   
+.         Here we go ...
+.   
+$(1),pqcup. 
+          s         a5,options        . 
+.   
+.         Determine current relative date   
+.   
+          l         a0,r2             . current date in TDATE$ format   
+          ssl       a0,18             . date portion to H2  
+          l,u       a3,scratch        . 
+          lmj       x11,relativedate  . 
+          s         a0,curreldate     . current relative date   
+.   
+.         Sign on   
+.   
+          i$d$,slc  idpkt             . 
+          j         iderr             . 
+.   
+.         Read the INFOR$ table & check option bits 
+.   
+          i$nfor,slc 'rinf$',inforl,infor inforpkt .
+          j         rinferr           . 
+          lmj       x11,check_options . 
+.   
+.         Grab various infos from the PCT   
+.   
+          lxi,u     x9,pctbd$+3*/15   . X9 := PCT BDI & UTILD bank  
+          lbj       x9,$+1            . Base the PCT ...
+          lxm,u     x9,rpcta$         . ... and point to PCT_FIXED  
+.   
+          l         a0,ab,x9          . Generated runid 
+          s         a0,fdgrunid       . 
+          sas       asgrunid+1        . 
+          fdasc,slc 1,fdgrunid,asgrunid .   
+.   
+          dl        a0,userid,x9      . Userid  
+          ds        a0,fduserid       . 
+.   
+          l         x8,pctnam+nsextptr,x9 . X8 := Ptr to the NS ext table   
+          dl        a0,lastqual,x8    . Implied qualifier   
+          ds        a0,fdimpqual      . 
+          dl        a0,defaultqual,x8 . Default qualifier   
+          ds        a0,fddefqual      . 
+          lbj       x9,$+1            . Unbase the PCT  
+/.  
+.   
+.   
+.         Read & Verify Specification Fields
+.   
+.   
+.         Step 1: Check out fields 1 through n-1
+.                 ("primary" selection specs)   
+.   
+.                 Format: [<device-1>[/QUEUE],[<device-n>/QUEUE]],; 
+.                         [[<run-id>]/RUNID], ; 
+.                         [[<user-id>]/USERID], ;   
+.                         [[<output-id>]/OUTPUT-ID], ;  
+.                         [<priority>/PRIORITY], ;  
+.                         [<qual>[*]]<file>[(cyc)].[/FILE]  
+.   
+          l,u       r1,entlen         . Initialize  
+          l         a0,(1,smoqbuf1)   .  the 1st
+          l,u       a1,(0)            .   SMOQUE$   
+          bt        a0,,*a1           .    buffer   
+spec1100.   
+          l         a0,specount       . Get current spec field number   
+          a,u       a0,1              . Increment & 
+          s         a0,specount       .   store back
+          i$nfor,slc 'selt$' inforpkt . Read the spec field 
+          j         spec2100          . Nothing specified   
+.   
+.         Set defaults  
+.   
+          tz        evl               . "Element version" specified ?   
+          j         spec1110          . Yes 
+          l,s6      a0,specount       . Get current spec field number   
+          te,u      a0,1              . Make sure this is the 1st one   
+          j         spec2100          . Check for last field if not 
+          l         a0,($cfs('QUEUE'l)) . No - get default value
+          tz        fnl               . When a file name is present ... 
+          l         a0,($cfs('FILE'l)) .   'FILE' is the default
+          s         a0,ever           . Put default value and   
+          l,u       a0,6              .   length
+          s         a0,evl            .     into INFOR table
+.   
+.         Setup to search the SELTAB table  
+.   
+spec1110.   
+          l,u       a0,12             . Get max # of chars  
+          an        a0,evl            . Subtract actual length  
+          msi,u     a0,6              . Convert # of chars to # of bits 
+          ln,u      a1,0              . A1 := -0
+          ln,u      a2,0              . A2 := -0
+          ldsl      a1,,a0            . A1,A2 := bit mask to extract ident  
+          ds        a1,scratch        . Save mask   
+.   
+          dl        a0,ever           . Get keyword 
+          and       a1,scratch+1      . Mask out significant chars  
+          and       a0,scratch        . 
+          ds        a1,scratch+2      . Save significant chars of keyword   
+.   
+.         Search the SELTAB table for valid identifier  
+.   
+          l,u       a5,seltabec-1     . # of entries in table - 1   
+          l         x5,(seltabez,seltab-seltabez) . index   
+spec1120.   
+          dl        a0,seltabez+seltabid,*x5 . identifier from our table
+          and       a1,scratch+1      . mask out significant chars  
+          and       a0,scratch        . 
+          dte       a1,scratch+2      . do they match?  
+          jgd       a5,spec1120       . no - loop back if any left  
+          jn        a5,spec2100       . else chk for secondary format fld   
+.   
+.         Entry found - check the length & for dups 
+.   
+.         Note: X5 points to the table entry
+.   
+          l         a5,seltabmc,x5    . Get the max length from the table   
+          jz        a5,spec1130       . Jump around if no check needed  
+          tle       a5,enl            . Within allowed range ?  
+          j         spec2100          . No  
+spec1130.   
+          l         a0,(tz 0)         . Build the instruction skeleton  
+          or        a0,seltabda,x5    . Merge address of destination field  
+          s         a1,scratch        . 
+          ex        scratch           . Check out the destination field 
+          j         spec1140          . This field is already occupied  
+          j         spec1160          . Blank entry - we accept that
+spec1140.   
+          l         a4,seltabmb,x5    . Get mode bits   
+          and       a4,const(smoqmdevgs++smoqmmultd) . Device name specified?   
+          jz        a5,spec2100       . Jump if not 
+.   
+.         Initialize the MultiDevice Identifier Table   
+.   
+          tz        mditab            . Already initialized ?   
+          j         spec1150          . Yes 
+          and       a4,const(-smoqmdevgs) . No - clear the Device mode bit  
+          or        a5,const(smoqmmultd) . Set the MultiDevice mode bit 
+          s         a6,seltabmb,x5    . Update the request packet   
+          sp1       mditab            . Set the entry count 
+          l         a0,seltabda,x5    . Move the previously specified   
+          dl        a5,,a0            .  device name to the 
+          ds        a5,mditab+1       .   multidevice table 
+.   
+.         Append an entry to the MultiDevice Identifier Table   
+.   
+.         *Note* The entry count is updated later when it's sure
+.                there are no syntax errors or illegal INFOR$   
+.                fields, respectively.  
+.   
+spec1150.   
+          l,u       a0,mditab-1       . Point to MDITAB-1   
+          l         a1,1,a0           . Get currect entry count 
+          tg,u      a1,mditabec       . Enough room?
+          j         mditabof          . Nope - table overflow   
+          a,u       a1,1              . Yep, calculate  
+          msi,u     a1,2              .  address for new
+          a,u       a1,,a0            .   entry 
+          s         a1,seltabda,x5    . Save it for the conversion routine  
+spec1160.   
+          l         a4,seltabmb,x5    . Get current requested mode bits 
+          top       a4,const(smoqmfilen) . Searching for file name ?
+          j         spec1200          . No  
+          j         spec1300          . Yes 
+.   
+.         Check out format 1 ("element name" specification) 
+.   
+spec1200.   
+          tnz       elt$              . File name and   
+          tz        ecl               .   element cycle spec
+          j         spec2100          .     not allowed 
+          tz        cfn               . "Implied" file name specified?  
+          j         spec2100          . Yes 
+.   
+          dl        a0,ename          . Get the element name and
+          l         a2,enl            .   it's length   
+          tle,u     a2,6+1            . Less than 7 chars ? 
+          sfs       a1                . Yes, clear 2nd word 
+          jnz       a2,spec1220       . Don't use defaults if NZ
+.   
+          l         a0,fdgrunid       . Get the generated runid 
+          sfs       a1                . 
+          top       a4,const(smoqmrunid) . Check if looking for runid   
+          tep       a4,const(smoqmoutid) .   or output-id   
+          j         spec1220          . Jump if so  
+          dl        a0,fduserid       . Else assume userid-search   
+          top       a4,const(smoqmusrid) . Check if so  
+          j         spec2100           . No - check for secondary format
+spec1220.   
+          ds        a0,ename          . 
+          l         a0,seltabmc,x5    . Get the char length 
+          dsl       a0,36             . Prepare for divide  
+          di,u      a0,6              . Convert to words
+          tz        a1                . Does it fit?
+          a,u       a0,1              . Nope - round up 
+          l         a2,seltabda,x5    . Destination address 
+          tnz       a2                . 
+          er        err$              . 
+          top       a4,const(smoqmsetpr) . Priority value ? 
+          j         spec1230          . Nope
+          l         a0,ename          . Yes, special case   
+          lmj       x11,fp2pix        . Convert to priority index   
+          j         spec2100          . Jump if error   
+          l         a1,(s a0,0)       . Store instruction skeleton  
+          or        a2,a1             . Merge in J- and U-fields
+          s         a3,scratch        . Save and
+          ex        scratch           .  execute the store  
+          j         spec1240          . 
+spec1230.   
+          fdasc,slc,1 ,ename          . Convert to Ascii
+spec1240.   
+          j         spec1400          . Join common code
+.   
+.         Check out format 2 (file name specification)  
+.   
+spec1300.   
+          l         a0,rkl            . Check   
+          a         a0,wkl            .   out   
+          a         a0,enl            .     the 
+          a         a0,ecl            .       illegal   
+          a         a0,cfn            .         fields  
+          jnz       a0,spec2100       . Jump if any detected
+.   
+          l,u       a1,fddefqual      . Default qualifier   
+          tz        iqf               . Implied qualifier desired?  
+          l,u       a1,fdimpqual      . Yes 
+          l         a0,fql            . Get the qual length 
+          jz        a0,spec1310       . Jump if none
+          l,u       a1,fqual          . Else point to the user's qual   
+          tle,u     a0,6+1            . > 6 chars?  
+          sfs       1,a1              . Nope - clear 2nd word   
+spec1310.   
+          fdasc,slc 2,,smoqbuf1+smoqfqual . Convert & put into entry
+.   
+          l         a0,fnl            . Is the file name length 
+          tle,u     a0,6+1            .   > 6 chars?
+          sfs       fname+1           . Nope - clear 2nd word   
+          fdasc,slc 2,fname,smoqbuf1+smoqfname . Put file name into buffer  
+.   
+          l,u       a1,fcyc           . User-specified file cycle   
+          tnz       fcl               . Did he actually specify one?
+          l,u       a1,($cfs('0'l))   . Nope - ask for 1st entry one queue  
+          fdasc,slc 1,,smoqbuf1+smoqfcyc . Put the cycle into the buffer
+.   
+.         Update the request packet mode bits   
+.   
+spec1400.   
+          l         a0,smoqpkt1+smoqmode . Get mode bits assembled so far   
+          or        a0,seltabmb,x5       . "Merge" current requested mode bits  
+          s         a1,smoqpkt1+smoqmode . Update request packet
+.   
+.         Update the MultiDevice Ident Table Entry counter  
+.   
+          l         a0,seltabmb,x5    . Get current mode bits   
+          tep       a0,const(smoqmmultd) . Is the Multidevice bit on?   
+          inc       mditab            . Yes 
+          nop                         . Nop(e)  
+          j         spec1100          . Do the next field   
+/.  
+.   
+.         Step 2: Check out field n ("secondary" selection spec)
+.   
+.                 [<test-operation>.]<# of days>[/[CATAGE|REFAGE]]  
+.   
+spec2100.   
+.   
+.         Init defaults 
+.   
+          i$nfor,slc 'selt$',specount inforpkt . Re-init ELT$   
+          sz        ecc               . No-find return  
+          l         a0,toptab+toptabin . Initialize the 
+          s         a0,usrcomp        .   compare-instruction cell  
+          sz        usrdays           . 
+          l         a0,($cfs('CATAGE')) .   
+          l,u       a1,6              . 
+          tz        evl               . 
+          j         $+3               . 
+          s         a0,ever           . 
+          s         a1,evl            . 
+.   
+.         Check the "general" field format  
+.   
+          l         a0,elt$           . File name field lengths 
+          lssc      a0,6              . Shift around FQL
+          lssl      a0,6              . Shift off FNL   
+          a         a0,ecl            . 
+          a         a0,cfn            . 
+          jnz       a0,specerr        . 
+.   
+.         Check out the "file name" field (test-instr. mnemonic)
+.   
+          l         a0,fnl            . 
+          jz        a0,spc2200        . 
+          tg,u      a0,6+1            . 
+          j         specerr           . 
+.   
+          l,u       a2,toptabec-1     . # of entries in table - 1   
+          l         a3,(toptabez,toptab-toptabez) . index   
+          l         a0,toptabez+toptabim,*a3 .  
+          te        a0,fname          . 
+          jgd       a2,$-2            . 
+          jn        a2,specerr        . 
+          l         a0,1,a3           . 
+          s         a0,usrcomp        . 
+.   
+.         Handle the "element name" field (# of days)   
+.   
+spc2200.
+          l         a3,enl            . Get the element name field  
+          jnz       a3,spc2300        . Jump if # of days specified 
+          l         a5,options        . 
+          top       a5,const(lopt)    . List function ? 
+          j         specerr           . Nope - default not allowed  
+          j         spc2400           . 
+spc2300.
+          tg,u      a3,6+1            . 
+          j         specerr           . 
+          l         a1,ename          . # of days   
+          sfs       a2                . 
+          lmj       x11,fdbin         . 
+          j         specerr           . 
+          s         a4,usrdays        . 
+.   
+.         Now the "element version" field   
+.   
+spc2400.
+          l         a3,evl            . Get the element version field   
+          tg,u      a3,6+1            . More than 6 chars?  
+          j         specerr           . Yes - bad call  
+.   
+          l         a0,ever           . yes-get the "elt version" field 
+          l,u       a1,0              . 
+          tne       a0,($cfs('REFAGE')) .   
+          l         a1,(l a0,mfdfrefd+msconbuf) .   
+          tne       a0,($cfs('CATAGE')) .   
+          l         a1,(l a0,mfdfcatd+msconbuf) .   
+          jz        a1,specerr        . invalid specification   
+          s         a1,usrdate        . instr. to fetch TDATE$ word 
+/.  
+.   
+.         Step 3: Make sure this was the last field 
+.   
+          l         a0,specount       . Get current spec number 
+          tnz       ecc               . Void specification field?   
+          j         spec9110          . Yes 
+          a,u       a0,1              . No, increment field number  
+          s         a0,specount       . Save it 
+spec9110.   
+          i$nfor,slc 'selt$' inforpkt . Go read the field   
+          tz        0,a0              . End of INFOR table? 
+          j         specerr           . No - must be an illegal field   
+.   
+.         Add mode bits requested via option settings   
+.   
+          l         a4,smoqpkt1+smoqmode . Mode bits assembled so far   
+          l         a15,options       . 
+          or        a4,const(smoqmgetip) . Set the get-IP bit   
+          tep       a15,const(iopt)   . I-option set ?  
+          l         a4,a5             . Yes 
+          or        a4,const(smoqmbypip) . Set the bypass-IP bit
+          tep       a15,const(jopt)   . J-option set ?  
+          l         a4,a5             . Yes 
+          or        a4,const(smoqmgetsv) . Set the get-SV bit   
+          tep       a15,const(sopt)   . S-option set ?  
+          l         a4,a5             . Yes 
+          or        a4,const(smoqmbypsv) . Set the bypass-SV bit
+          tep       a15,const(topt)   . T-option set ?  
+          l         a4,a5             . Yes 
+          s         a4,smoqpkt1+smoqmode . Put mode bits into request pkt   
+/.  
+.   
+.         Loop entry to scan the symbiont queue(s)  
+.   
+          l,u       a1,minpktlen      . start with minimum overhead 
+retrieve_entries.   
+          s         a1,smoqpkt1cs     . save current pkt size   
+          l         a0,(bdiref$+smoqpkt1,smoqpkt1) .
+          tnz       mditab            . MultiDevIdTable initialized?
+          j         ret_ent_a         . No  
+          l         a5,(bdiref$+mditab,mditab) . Yes, update 1st entry  
+          l,u       a6,0              . 
+          ds        a5,smoqbuf1+smoqqid .   
+ret_ent_a.  
+          er        smoque$           . 
+          $if       debug=on          . 
+          l         a15,options       . 
+          top       a15,const(zopt)   . 
+          j         ret_ent_b         . 
+          l$snap    'SMOQP1',2,minpktlen,smoqpkt1 . Dump out regs, pkt &
+          dump      '** SMOQENT1 **' entlen,smoqbuf1 . the edited entry 
+ret_ent_b.  
+          $endf                       . 
+          l,u       a0,smoqpkt1       . 
+          l         a2,smoqstat,a0    . status returned 
+          jz        a2,ret_ent_c      . 
+          tep       a2,const(smoqsnprv) . Missing privilege ?   
+          j         priverr           . Yep 
+          tep       a2,const(smoqsnff) . no-find status ?   
+          j         exit              . yes - nothing to do 
+          top       a2,const(smoqsopt) . output truncation? 
+          j         smoqerr           . nope
+          l         a1,smoqentnum,a0  . A1 := number of entries on q
+          tg,u      a1,maxent         . more than the maximum?  
+          l,u       a1,maxent         . yes, get max number of entries  
+          msi,u     a1,smoqrprpl      . multiply by size of repeating entires   
+          a,u       a1,smoqrpfpl      . add reqest pkt fixed part size  
+          anu,u     a1,1              . adjust for trailing TG  
+          tg        a2,smoqpkt1cs     . new calculated pkt size greater?
+          j         retrieve_entries  . yes-go back & try your luck 
+ret_ent_c.  
+.   
+.         If no entries returned we terminate right NOW 
+.   
+          l         r7,smoqentret+smoqpkt1 . # of entries returned  
+          jgd       r7,$+2            . -1 for trailing JGD 
+          j         exit              . 
+          l         x8,(entlen,smoqbuf1) . entsize, pointer to entry table  
+.   
+.         Loop entry to process the next SMOQUE$ entry  
+.   
+.         Read the directory Main Item of an entry  
+.   
+read_mfd_mi.
+          sz        msconerror        . 
+          lmj       x11,read_main_item .
+          sp1       msconerror        . 
+          tz        msconerror        . 
+          j         dis_this_entry    . 
+.   
+.         Calculate the file's relative date
+.   
+          ex        usrdate           . get the TDATE$ word into A0 
+          l,u       a3,scratch        . pointer to work buffer  
+          ssl       a0,18             . A0,H2 = mmddyy  
+          lmj       x11,relativedate  . convert to # of days
+          l         a1,curreldate     . A1 := # of days to present  
+          anu       a1,a0             . A2 := present - passed  
+          s         a2,entreldate     . save this entry's relative date 
+.   
+.         Determine whether this file is within the specified range 
+.   
+.         jn        a2,next_mfd_mi    . If negative, date went backward 
+          l         a0,usrdays        . Get # of days from user 
+          l         a1,entreldate     . Get # of days of entry  
+          ex        usrcomp           . Compare them
+          j         next_mfd_mi       . Test failed 
+.   
+.         Entry selected - edit MFD- and SMOQUE-information 
+.   
+dis_this_entry. 
+          lmj       x11,edit_entry    . 
+          inc       lstcnt            . 
+          nop                         . 
+.   
+.         Check out the current entry before proceeding 
+.   
+          tz        msconerror        . Error reading MFD entry ?   
+          j         rejected          . Yes 
+          l         a0,smoqflgb,x8    . No, get SMOQUE entry flag bits  
+          top       a0,const(smoqferr) . Did an error occur so far ?
+          j         sel_act           . No  
+          l         a0,x8             . A0 := len, addr of current entry
+          dump      '*** Erroneous entry ***' . 
+          j         rejected          . 
+.   
+.         Decide what to do next
+.   
+sel_act.
+          l         a0,options        . A0 := option bits   
+          tep       a0,const(lopt)    . L-opt set ? 
+          j         next_mfd_mi       . Yes - no more work this time
+          tep       a0,const(dopt)    . D-opt set ? 
+          j         del_this_entry    . yes - get rid of this entry 
+          tep       a0,const(uopt)    . U-opt set ? 
+          j         upd_this_entry    . yes - update this entry 
+          er        err$              . should not ever happen  
+.   
+.         Delete the print file 
+.   
+del_this_entry. 
+          lmj       x11,delete_entry  . 
+          j         rejected          . 
+          inc       delcnt            . 
+          nop                         . 
+          inc       delcnttmp         . 
+          nop                         . 
+          j         next_mfd_mi       . 
+.   
+.         Update the current entry  
+.   
+upd_this_entry. 
+          lmj       x11,update_entry  . 
+          j         rejected          . 
+          inc       chgcnt            . 
+          nop                         . 
+          lmj       x11,edit_entry    . 
+          j         next_mfd_mi       . 
+.   
+.         Something went wrong with the current entry   
+.   
+rejected.   
+          inc       rejcnt            . 
+          nop                         . 
+.   
+.         Prepare to process the next entry 
+.   
+next_mfd_mi.
+          nop       ,,*x8             . incr SMOQUE$ entry table pointer
+          jgd       r7,read_mfd_mi    . loop back if any left   
+.   
+.         If more entries are on the queue and any entries  
+.         have been deleted in the current execution path   
+.         go back and re-read the queue.
+.   
+          l         a0,smoqstat+smoqpkt1 . A0 := status of last GET FILE
+          tep       a0,const(smoqsopt) . output truncation and  
+          tnz       delcnttmp         .    any entries deleted? 
+          j         exit              . nope
+          l         a1,smoqentnum+smoqpkt1 . get total # of entries 
+          an        a1,delcnttmp      . subtract # of entries removed   
+          tg,u      a1,maxent         . more than the maximum?  
+          l,u       a1,maxent         . yes, get the maximum
+          msi,u     a1,smoqrprpl      . multiply by repeating entry length  
+          a,u       a1,smoqrpfpl      . add len of fixed packet part
+          sz        delcnttmp         . init counter
+          j         retrieve_entries  . re-read the queue entries   
+/.  
+.   
+.         Print signoff line and exit   
+.   
+exit.   
+          a$edit,slc edpkt            . 
+          a$emsg,slc signoffm         . 
+          a$edecv,slc smoqentret+smoqpkt1 . 
+          a$echar,slc $cas('/')       . 
+          a$edecv,slc smoqentnum+smoqpkt1 . 
+          a$emsgr,slc                 . 
+          a$edecv,slc lstcnt          . 
+          a$emsgr,slc                 . 
+          a$edecv,slc chgcnt          . 
+          a$emsgr,slc                 . 
+          a$edecv,slc delcnt          . 
+          a$emsgr,slc                 . 
+          a$edecv,slc rejcnt          . 
+          a$eprint,slc                . 
+          tnz       rejcnt            . 
+          er        exit$             . 
+          j         errxit            . 
+/.  
+.   
+.         ID$ sign-on error 
+.   
+iderr.  
+          l$snap    'ID$ERR',2        . 
+          j         errxit            . 
+.   
+.         Error reading INFOR table 
+.   
+rinferr.
+          er        print$            . 
+          j         errxit            . 
+.   
+.          Illegal / Conflicting / Missing options  
+.   
+.          Come here with the option bit mask in A2 
+.   
+optillg.
+          l,u       x7,optillgm       . 
+          j         opterr            . 
+optcnfl.
+          l,u       x7,optcnflm       . 
+          j         opterr            . 
+optmiss.
+          l,u       x7,optmissm       . 
+          j         opterr            . 
+.   
+.          "General" option error handling  
+.   
+opterr. 
+          s         a2,a5             . A5 := opt bits for EDIT_OPTIONS 
+          a$edit,slc edpkt            . 
+          a$emsg,slc errortext        . 
+          a$emsg,slc 0,x7             . 
+          lmj       x11,edit_options  . 
+          j         perrxit           . 
+.   
+.         Specification field error 
+.   
+specerr.
+          a$edit,slc edpkt            . 
+          a$emsg,slc errortext        . 
+          a$emsg,slc specerrm         . 
+          a$edecv,slc specount,,s6    . 
+          a$emsgr,slc                 . 
+          j         perrxit           . 
+.   
+.         More device names specified than allowed  
+.   
+mditabof.   
+          a$edit,slc edpkt            . 
+          a$emsg,slc errortext        . 
+          a$emsg,slc mditabofm        . 
+          j         perrxit           . 
+.   
+.         Not privileged to use ER SMOQUE$  
+.   
+priverr.
+          a$edit,slc edpkt            . 
+          a$emsg,slc errortext        . 
+          a$emsg,slc priverrm         . 
+          j         perrxit           . 
+.   
+.         ER SMOQUE$ returned bad status
+.   
+smoqerr.
+          s         a0,a15            . 
+          a$edit,slc edpkt            . 
+          a$emsg,slc errortext        . 
+          a$emsg,slc smoqerrm         . 
+          l         a0,a15            . 
+          a$eoctv,slc smoqstat,a0     . 
+          a$emsgr,slc                 . 
+          l         a0,a15            . 
+          a$eoctv,slc smoqfunc,a0     . 
+          a$eprint,slc                . 
+          l         a0,a15            . 
+          debugdump,1 '** ER SMOQUE$ packet **' minpktlen . 
+          j         errxit            . 
+.   
+.         Common error termination  
+.   
+perrxit.
+          a$eprint,slc                . 
+errxit. 
+          l         a15,options       . 
+          top       a15,const(copt)   . Has the C option been specified ?   
+          er        err$              . Nope - error off
+          er        exit$             . Yep  - normal termination   
+/.  
+.   
+.         Check out the option bits for validity and conflicts. 
+.   
+.         Input:    OPTIONS  holds the option bits to be verified   
+.   
+.         Call:     LMJ   X11,CHECK_OPTIONS 
+.   
+.         Return:   J     0,X11       . 
+.   
+.         OPTIONS   is updated to add any defaults, if necessary.   
+.   
+.         If an invalid option or an option conflict is detected
+.         control is transferred to an error processing location,   
+.         depending on the type of error. Thus, when the return 
+.         path is taken the specified option combination is valid.  
+.   
+.         Following options are currently supported:
+.   
+.         General options:  
+.         ----------------  
+.   
+.         C         Do not error terminate even if an error occurs  
+.                   (this is valid for non-internal errors only)
+.   
+.         Z         If debugging is enabled this option produces
+.                   diagnostic dumps at various key points  
+.   
+.         Action options:   
+.         ---------------   
+.   
+.         D         Delete the selected entries 
+.   
+.         L         List the selected entries   
+.   
+.         U         Update (toggle) the IP/SV bit of the selected entries   
+.   
+.         Selection options:
+.         ------------------
+.   
+.         I         Select entries with the In-Progress bit set only
+.   
+.         J         Bypass entries with the In-Progress bit set 
+.         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   
+.         S         Select entries with the SV bit set only 
+.   
+.         T         Bypass entries with the SV bit set  
+.   
+.         The following table indicates the valid option combinations:  
+.   
+.         option     default     requires     optional  
+.         --------------------------------------------  
+.           D           J           J           J S|T   
+.           L           -           -         I|J S|T   
+.           U           -          I|J            S|T   
+.           U           -          S|T        I|J   
+.           U           -           IS           -  
+.   
+check_options.  
+.   
+.         Check for illegal options 
+.   
+          l         a0,options        . Get opts from processor call
+          and       a0,(0377,0777777) . Leave the cruft 
+          and       a1,const(-alopts) . Mask out the illegal options
+          jnz       a2,optillg        . Jump if any set 
+.   
+.         Check out primary options for any conflicts   
+.   
+          and       a1,const(dopt++lopt++uopt) . Mask out "primary" opts
+          jnz       a2,opt110         . Jump if any set 
+          or        a0,const(lopt)    . Else make 'L' the default one   
+          s         a1,options        . Camouflage and  
+          j         check_options     .   start over
+opt110. 
+          lsc       a3,a2             . Get rid of the 1st "primary"
+          lssl      a3,2              .   option bit set
+          jnz       a3,optcnfl        . Jump if one more set
+.   
+.         If the D-option is set the J-option is assumed
+.   
+          tep       a1,const(dopt)    . Is the D-option set and 
+          tep       a1,const(jopt)    .   the J-option clear ?  
+          j         opt120            . No  
+          or        a0,const(jopt)    . Yes, set the J-option bit,  
+          s         a1,options        .   store back the result and 
+          j         check_options     .      start over 
+.   
+.         Mask out the "general" options
+.   
+opt120. 
+          and       a1,const(-(copt++zopt)) . These ones are always allowed 
+          l         a1,a2             .   and cannot cause any conflicts
+.   
+.         Check out the selection options for any conflicts 
+.   
+          and       a1,const(iopt++jopt) .  
+          lsc       a3,a2             . 
+          lssl      a3,2              . 
+          jnz       a3,optcnfl        . 
+.   
+          and       a1,const(sopt++topt) .  
+          lsc       a3,a2             . 
+          lssl      a3,2              . 
+          jnz       a3,optcnfl        . 
+.   
+.         Check out the D-option and it's combinations  
+.   
+          top       a1,const(dopt)    . Is the D-opt set?   
+          j         opt130            . Nope - jump around  
+          and       a1,const(-(dopt++jopt++sopt++topt)) .   
+          jnz       a2,optcnfl        . Jump if any other set   
+.   
+.         Check out the U-option and it's combinations  
+.   
+opt130. 
+          top       a1,const(uopt)    . Is the U-opt set?   
+          j         opt999            . Nope - jump around  
+          and       a1,const(iopt++jopt++sopt++topt) . Yes, verify that...  
+          jnz       a2,opt999         .  ... at least 1 req opt is set  
+          l         a2,const(iopt++jopt++sopt++topt) . Get required opts
+          j         optmiss           .      and tell hapless user  
+opt999. 
+          j         0,x11             . 
+/.  
+.   
+.         Edit information from an SMOQUE$ entry and the information
+.         returned by MSCON$, then print the assembled line.
+.   
+.         Input:    X8         = pointer to SMOQUE$ entry   
+.   
+.                   MSCONERROR = indicates whether the file's MFD info  
+.                                could successfully retrieved or not.   
+.   
+.                   USRDATE    = holds the instruction to get the   
+.                                proper TDATE$ word 
+.   
+.                   ENTRELDATE = the relative date of the SMOQUE$ entry 
+.   
+.         Call:     LMJ   X11,EDIT_ENTRY
+.   
+.         Return:   J     0,X11 
+.   
+edit_entry. 
+          s         x11,esex11        . 
+          tz        hdgflag           . 
+          j         editentry010      . 
+          sp1       hdgflag           . 
+          l         a0,hdgline1m      . 
+          er        aprint$           . 
+          l         a0,hdgline2m      . 
+          er        aprint$           . 
+editentry010.   
+          a$edit,slc edpkt            . 
+          a$ecopy,slc 6,smoqrunid,x8  . runid   
+          a$eskip,slc 1               . 
+          a$ecopy,slc 12,smoqusrid,x8 . userid  
+          a$eskip,slc 1               . 
+          a$ecopy,slc 6,smoqqid,x8    . queue id
+          a$eskip,slc 1               . 
+.   
+          l         a7,smoqflgb,x8    . Flag bits   
+          l,u       a5,0              . 
+          or        a5,const(iopt)    . The I-option represents the 
+          tep       a7,const(smoqfip) .   In-Progress bit   
+          l         a5,a6             . 
+          or        a5,const(sopt)    . The S-option represents the 
+          tep       a7,const(smoqfsv) .   SV bit
+          l         a5,a6             . 
+          a$ecoln,slc                 . Compute the current column number   
+          s         a0,scratch        . Save it for later use   
+          lmj       x11,edit_options  . Edit in the flag bits, if any   
+          a$ecoln,slc                 . Compute the current column number   
+          an        a0,scratch        . Compute the number  
+          an,xu     a0,2              .   of columns
+          lm        a0,a0             .     to skip 
+          a$eskip,slc 1,a0,u          . +1 for separating space 
+.   
+          l         a6,smoqflgb,x8    . flag bits   
+          l,u       a0,smoqoid,x8     . output-id   
+          top       a6,const(smoqfip) . 
+          l,u       a0,aspaces        . 
+          a$ecopy,slc 6               . 
+          a$eskip,slc 1               . 
+.   
+          tnz       msconerror        . 
+          j         editentry100      . 
+          a$eskip,slc 8+1+4+1         . 
+          j         editentry200      . 
+editentry100.   
+          ex        usrdate           . get the TDATE$ word into A0 
+          a$esfdt,slc a0              . catalogue- or last-reference date   
+          er        err$              . 
+          a$eskip,slc 1               . 
+          a$edecf,slc 4,entreldate    . relative date (age) 
+          a$eskip,slc 1               . 
+editentry200.   
+          l         a0,smoqpri,x8     . Priority index  
+          lmj       x11,pix2fp        . Convert to file priority
+          a$echar,slc                 . 
+          a$eskip,slc 1               . 
+          lmj       x11,edit_smoq_file . file name  
+          a$eprint,slc                . 
+          l         x11,esex11        . 
+          j         0,x11             . 
+/.  
+.   
+.         Edit the complete file name from an SMOQUE$ entry.
+.         The AEDIT$ packet is assumed to be active.
+.   
+.         Input:    X8  = pointer to SMOQUE$ entry  
+.   
+.         Call:     LMJ   X11,EDIT_SMOQ_FILE
+.   
+.         Return:   J     0,X11 
+.   
+edit_smoq_file. 
+          s         x11,esfx11        . 
+i         $do       3 , ;             . 
+          a$efd1,slc smoqfqual+i-1,x8 . qualifier   
+          a$echar,slc $cas('*')       . *   
+i         $do       3 , ;             . 
+          a$efd1,slc smoqfname+i-1,x8 . filename
+          a$echar,slc $cas('(')       . (   
+          a$efd1,slc smoqfcyc,x8      . cycle   
+          a$echar,slc $cas(')')       . )   
+          l         x11,esfx11        . 
+          j         0,x11             . 
+/.  
+.   
+.         Delete a SMOQUE$ entry.   
+.   
+.         Input:    X8  = length, address of SMOQUE$ entry  
+.   
+.         Call:     LMJ   X11,DELETE_ENTRY  
+.   
+.         Return:   J     0,X11       . error return
+.                   J     1,X11       . succesful return
+.   
+delete_entry.   
+          s         x11,delentx11     . 
+          l         a0,(bdiref$+smoqpkt2,smoqpkt2) .
+          l,u       a1,smoqpkt2l      . 
+.   
+.         Mark the entry "in-progess"   
+.   
+          lmj       x11,set_ip        . 
+          j         delenterr1        . error return
+.   
+.         Delete the entry  
+.   
+          l         a5,const(       ; . 
+                        smoqmclrip++ ; . clear in-progress  
+                        smoqmdelen++ ; . delete entry   
+                        0)            . 
+          s         a5,smoqmode,a0    . 
+          er        smoque$           . 
+          tz        smoqstat,a0       . 
+          j         delenterr2        . error deleting entry
+          j         delentret1        . 
+.   
+.         An error occured handling this entry  
+.   
+delentret0. 
+          lxi,u     x11,0             . 
+          j         delentret         . 
+.   
+.         Entry successfully deleted
+.   
+delentret1. 
+          lxi,u     x11,1             . 
+.   
+.         Common return 
+.   
+delentret.  
+          lxm       x11,delentx11     . 
+          nop       ,,*x11            . 
+          j         0,x11             . 
+.   
+.         The "set in-progress" failed  
+.   
+delenterr1. 
+          l$snap    'DELSIP',7,smoqpkt2l,smoqpkt2 . 
+          l         a0,x8             . 
+          dump      '*** DELETE-SET-IP Entry ***' . 
+          j         delentret0        . 
+.   
+.         The "delete" operation failed 
+.   
+delenterr2. 
+          l$snap    'DELETE',7,smoqpkt2l,smoqpkt2 . 
+          l         a0,x8             . 
+          dump      '*** DELETE-ENTRY rejected ***' .   
+          l         a0,(bdiref$+smoqpkt2,smoqpkt2) .
+          l,u       a1,smoqpkt2l      . 
+          lmj       x11,clr_ip        . 
+          j         delenterr2a       . 
+          j         delentret0        . 
+.   
+.         Attempt to reset the IP bit failed
+.   
+delenterr2a.
+          l$snap    'DELCIP',7,smoqpkt2l,smoqpkt2 . 
+          l         a0,x8             . 
+          dump      '*** DELETE-CLEAR-IP Entry ***' .   
+          j         delentret0        . 
+/.  
+.   
+.         Update a SMOQUE$ entry.   
+.   
+.         Input:    X8  = length, address of SMOQUE$ entry  
+.   
+.         Call:     LMJ   X11,UPDATE_ENTRY  
+.   
+.         Return:   J     0,X11       . error return
+.                   J     1,X11       . succesful return
+.   
+update_entry.   
+          s         x11,updentx11     . 
+          l         a0,(bdiref$+smoqpkt2,smoqpkt2) .
+          l,u       a1,smoqpkt2l      . 
+          s         x8,smoqrpfpl+smoqentadr,a0 .
+          l         a5,x8             . 
+          ssl       a5,18             . 
+          s         a5,smoqrpfpl+smoqentl,a0 .  
+.   
+.         Set the proper mode bits in the packet
+.   
+          l         a15,options       . 
+          l,u       a5,0              . 
+          or        a5,const(smoqmclrip) .  
+          tep       a15,const(iopt)   . 
+          l         a5,a6             . 
+          or        a5,const(smoqmsetip) .  
+          tep       a15,const(jopt)   . 
+          l         a5,a6             . 
+          or        a5,const(smoqmclrsv) .  
+          tep       a15,const(sopt)   . 
+          l         a5,a6             . 
+          or        a5,const(smoqmsetsv) .  
+          tep       a15,const(topt)   . 
+          l         a5,a6             . 
+          s         a5,smoqmode,a0    . 
+.   
+          dl        a6,asgrunid       . 
+          tep       a5,const(smoqmsetip) . Is the function set-IP ? 
+          ds        a6,smoqoid,x8     . Yes - put in an unique output-id
+.   
+          er        smoque$           . 
+          tnz       smoqstat,a0       . 
+          j         updentret1        . 
+          l$snap    'UPDENT',7,smoqpkt2l,smoqpkt2 . 
+          l         a0,x8             . 
+          dump      '*** UPDATE-ENTRY ***' .
+.   
+.         An error occured  
+.   
+updentret0. 
+          lxi,u     x11,0             . 
+          j         updentret         . 
+.   
+.         Everything went right 
+.   
+updentret1. 
+          lxi,u     x11,1             . 
+.   
+.         Common return 
+.   
+updentret.  
+          lxm       x11,updentx11     . 
+          nop       ,,*x11            . 
+          j         0,x11             . 
+/.  
+.   
+.         Set the IN-PROGRESS bit for a SMOQUE$ entry.  
+.   
+.         Input:    A0  = pointer to SMOQUE$ request packet 
+.                   A1  = size of the SMOQUE$ request packet
+.                   X8  = length, address of SMOQUE$ entry  
+.   
+.         Call:     LMJ   X11,SET_IP
+.   
+.         Return:   J     0,X11       . error return
+.                   J     1,X11       . succesful return
+.   
+set_ip. 
+          s         x8,smoqrpfpl+smoqentadr,a0 . Pointer to current entry   
+          l         a5,x8             . 
+          ssl       a5,18             . 
+          s         a5,smoqrpfpl+smoqentl,a0 . Entry length 
+          dl        a5,asgrunid       . The generated runid ... 
+          ds        a5,smoqoid,x8     .   ... serves as output-id   
+          l         a5,const(smoqmsetip) . Set in-progress mode bit 
+          s         a5,smoqmode,a0    .   in the request packet 
+          er        smoque$           . 
+          tz        smoqstat,a0       . 
+          j         0,x11             . 
+          j         1,x11             . 
+/.  
+.   
+.         Clear the IN-PROGRESS bit for a SMOQUE$ entry.
+.   
+.         Input:    A0  = pointer to SMOQUE$ request packet 
+.                   A1  = size of the SMOQUE$ request packet
+.                   X8  = length, address of SMOQUE$ entry  
+.   
+.         Call:     LMJ   X11,CLR_IP
+.   
+.         Return:   J     0,X11       . error return
+.                   J     1,X11       . succesful return
+.   
+clr_ip. 
+          s         x8,smoqrpfpl+smoqentadr,a0 . Pointer to current entry   
+          l         a5,x8             . 
+          ssl       a5,18             . Position the entry length   
+          s         a5,smoqrpfpl+smoqentl,a0 . Put it into the packet   
+          l         a5,const(smoqmclrip) . Set the 'Clear IP mode' bit  
+          s         a5,smoqmode,a0    .   in the request packet 
+          er        smoque$           . 
+          tz        smoqstat,a0       . 
+          j         0,x11             . 
+          j         1,x11             . 
+/.  
+.   
+.         Routine to read the MFD Main Item of a specified  
+.         file on the symbiont queue.   
+.   
+.         Input:    X8   = Pointer to SMOQUE entry  
+.   
+.         Call:     LMJ  X11,READ_MAIN_ITEM 
+.   
+.         Return:   J    0,X11  .  error return 
+.                   J    1,X11  .  good return  
+.   
+.         Upon return A0 is returned as left by ER MSCON$, i. e.
+.         H1 = status, H2 = packet address. 
+.   
+read_main_item. 
+          s         x11,rmix11        . 
+.   
+.         File cycle from SMOQUE$ entry -> MSCON$ packet
+.   
+          l,u       a1,smoqfcyc,x8    . 
+          ascfd,slc 1,,msconpkt+mscfqual .  
+          l         a1,msconpkt+mscfqual .  
+          lmj       x11,fdbin         . 
+          er        err$              . 
+          s         a4,msconpkt+mscfcyc .   
+.   
+.         File qualifier from SMOQUE$ entry -> MSCON$ packet
+.   
+          l,u       a1,smoqfqual,x8   . 
+          ascfd,slc 3,,msconpkt+mscfqual .  
+.   
+.         File name from SMOQUE$ entry -> MSCON$ packet 
+.   
+          l,u       a1,smoqfname,x8   . file name   
+          ascfd,slc 3,,msconpkt+mscfname .  
+.   
+.         Issue the MSCON$ request & check status returned  
+.   
+          l,u       a0,msconpkt       . 
+          er        mscon$            . 
+          s         a0,msconstat      . In case of error
+          ssl       a0,18             . Move status to H2   
+          te,u      a0,0              . Zero status or  
+          tne,u     a0,1              .   truncation?   
+          j         rmi_good_ret      . Yes, good enough for us 
+.   
+.         MSCON$ indicates a problem with this file 
+.   
+rmi_mscon_err.  
+          a$edit,slc edpkt            . 
+          a$emsg,slc mscerrm          . 
+          lmj       x11,edit_smoq_file .
+          a$emsgr,slc                 . 
+          a$eoctf,slc 6,msconstat,,h1 . 
+          a$eprint,slc                . 
+          $if       debug=on          . 
+          l         a15,options       . 
+          top       a15,const(zopt)   . 
+          j         rmi_bad_ret       . 
+          l$snap    'MSCON$',7,msconstuffl,msconpkt .   
+          $endf                       . 
+.   
+.         Return to caller  
+.   
+rmi_bad_ret.
+          lxi,u     x11,0             . 
+          j         rmi_ret           . 
+rmi_good_ret.   
+          lxi,u     x11,1             . 
+rmi_ret.
+          lxm       x11,rmix11        . 
+          nop       ,,*x11            . 
+          l         a0,msconstat      . 
+          j         0,x11             . 
+/.  
+.   
+.         Routine to implement the 'Test Greater or Equal' function.
+.   
+.         It's completely identical to the TG instruction with the  
+.         one exception that the test will considered to be true
+.         also when both input parameters are equal.
+.   
+.         Input:    A0   = 1st value for testing
+.                   A1   = 2nd value for testing
+.   
+.         Call:     LMJ  X11,TEST_TGE   
+.   
+.         Return:   J    0,X11  .  test failure return  
+.                   J    1,X11  .  test pass return 
+.   
+test_tge.   
+          tne       a0,a1             . 
+          j         1,x11             . 
+          tg        a0,a1             . 
+          j         0,x11             . 
+          j         1,x11             . 
+/.  
+.   
+.         Convert priority index value to Ascii file priority.  
+.   
+.         Input:    A0   = Priority Index   
+.   
+.         Call:     LMJ  X11,PIX2FP 
+.   
+.         Return:   J    0,X11  .   
+.   
+.         Output:   A0   = Ascii file priority  
+.   
+pix2fp. 
+          tg,u      a0,3              . 1 or 2 (File Priority 0 or 1) ? 
+          j         pix2fpa           . No, then it's FP A-Z
+.   
+.         File Priority = '0'+(Priority Index-1)
+.   
+          a,u       a0,$cas('0')-1    . 
+          j         pix2fpb           . 
+.   
+.         File Priority = 'A'-1+(((Priority Index-2)*3)-2)  
+.   
+pix2fpa.
+          an,u      a0,2              . Adjust for priority 0+1 
+          msi,u     a0,3              . Point to last (3rd) "group member"  
+          a,u       a0,$cas('A')-1-2  . Pos to 1st "group member" & convert 
+pix2fpb.
+          j         0,x11             . 
+/.  
+.   
+.         Convert Fieldata file priority to priority index value.   
+.   
+.         Input:    A0   = Fieldata file priority LJ
+.   
+.         Call:     LMJ  X11,FP2PIX 
+.   
+.         Return:   J    0,X11  . Bad input value return
+.                   J    1,X11  . Good return   
+.   
+.         Output:   A0   = Priority index   
+.   
+fp2pix. 
+          dsl       a0,36+30          . 
+          te,u      a1,$cfs('0')      . 
+          tne,u     a1,$cfs('1')      . 
+          j         fp2pixa           . 
+          tg,u      a1,$cfs('A')      . 
+          tg,u      a1,$cfs('Z')+1    . 
+          j         0,x11             . 
+.   
+.         Priority Index = ((File Priority-'A')/3)+3
+.   
+          an,u      a1,$cfs('A')      . 
+          di,u      a0,3              . 
+          a,u       a0,3              . 
+          j         fp2pixb           . 
+.   
+.         Priority Index = File Priority-'0'+1  
+.   
+fp2pixa.
+          an,u      a1,$cfs('0')-1    . 
+          l         a0,a1             . 
+fp2pixb.
+          j         1,x11             . 
+/.  
+.   
+.         Calculate the expected output buffer length for a 
+.         Fieldata to Ascii conversion. 
+.   
+.         Input:    A0, A1, A2 = pre-loaded as required for FDASC$  
+.   
+.         Call:     LMJ  X11,PREFDASC   
+.   
+.         Return:   J    0,X11  
+.   
+.         Output:   FDASBUF = A0, A1, A2 and calculated word count  
+.   
+prefdasc.   
+          ds        a0,fdasbuf        . Save input  
+          s         a2,fdasbuf+2      .  registers  
+          msi,u     a0,3              . Calculate the   
+          l,u       a1,0              .  expected   
+          dsl       a0,1              .   output
+          tz        a1                .    buffer   
+          a,u       a0,1              .     length  
+          s         a0,fdasbuf+3      . Save the result 
+          dl        a0,fdasbuf        . Restore 
+          l         a2,fdasbuf+2      .  registers  
+          j         0,x11             . Go back way we came 
+/.  
+.   
+.            FDASC$ space fills the last word converted out to a
+.         word boundary, if necessary. If the last word is all  
+.         spaces after the space filling, then the length of the
+.         output string is decreased by one word.   
+.   
+.            POSTFDASC is used to revert this action, i. e. to  
+.         fill in ascii spaces into the last word if the converted  
+.         image is less than the expected word count calculated 
+.         by PREFDASC.  
+.   
+.         Input:    FDASBUF = as returned by PREFDASC   
+.                   A0      = as returned by FDASC$ 
+.   
+.         Call:     LMJ  X11,POSTFDASC  
+.   
+.         Return:   J    0,X11  
+.   
+postfdasc.  
+          tne       a0,fdasbuf+3      . Is the result as expected ? 
+          j         postfdasc9        . Yes, nothing to do  
+          l         a2,fdasbuf+3      . Nope, get the expected word count   
+          an        a2,a0             . Calculate the difference
+          te,u      a2,1              . Should differ by 1 word only
+          er        err$              . Else error off  
+          au        a0,fdasbuf+2      . Calculate addr of last word and 
+          sas       0,a1              .  fill in spaces 
+postfdasc9. 
+          j         0,x11             . Return to caller
+/.  
+.   
+.         "Quick 'n dirty" routine for debugging purposes.  
+.   
+.         l      a0,(flg,len,addr)  
+.         l      a1,<pcw>|0 
+.         lmj    x11,dumpit 
+.   
+dumpit. 
+          ds        a0,ditbuf+0       . 
+          ds        a6,ditbuf+2       . 
+          s         x10,ditbuf+4      . 
+          s         x11,ditbuf+5      . 
+          s         r6,ditbuf+6       . 
+.   
+          dsc       a0,36             . 
+          tz        a0                . 
+          er        aprint$           . 
+          l,u       x10,,a1           . X10M := buffer address  
+          lxi,u     x10,1             . X10I := increment   
+          l,u       a7,0              . octal-only flag 
+          tp        a1                . 
+          l,u       a7,1              . 
+          lssl      a1,1              . 
+          ssl       a1,18+1           . 
+          l         r6,a1             . R6   := length  
+          jgd       r6,$+2            . R6   := length-1 for trailing JGD   
+          j         dit900            . 
+          l,u       a6,0              . A6   := counter 
+dit010. 
+          a$edit,slc edpkt            . 
+          a$edecf,slc 6,a6,,w         . rel. addr.  
+          a$eskip,slc 1               . 
+          a$eoctf,slc 6,0,x10,u       . abs. addr.  
+          a$eskip,slc 1               . 
+          a$eoctf,slc 12,0,x10        . 
+          jnz       a7,dit020         . 
+          a$eskip,slc 1               . 
+          a$ecopy,slc 4,0,x10         . 
+dit020. 
+          nop       ,,*x10            . 
+          a$eprint,slc                . 
+          a,u       a6,1              . 
+          jgd       r6,dit010         . 
+dit900. 
+          dl        a0,ditbuf+0       . 
+          dl        a6,ditbuf+2       . 
+          l         x10,ditbuf+4      . 
+          l         x11,ditbuf+5      . 
+          l         r6,ditbuf+6       . 
+          j         0,x11             . 
+/.  
+.   
+.         Edit option bits. The AEDIT$ package is assumed   
+.         to be "active".   
+.   
+.         Input:    A5  = option bits in master bit notation
+.   
+.         Call:     LMJ   X11,EDIT_OPTIONS  
+.   
+.         Return:   J     0,X11       . 
+.   
+edit_options.   
+          s         x11,a15           . Save way home   
+          lssl      a5,36-('Z'-'A')-1 . A5 := option bits LJZF  
+          l,u       a6,$cas('A')      . A6 := start char
+          l,u       a7,'Z'-'A'        . A7 := loop count - 1 for JGD
+edopt100.   
+          jps       a5,edopt110       . Jump if this opt is not set 
+          a$echar,slc a6,,w           . Else edit the appropriate char  
+edopt110.   
+          a,u       a6,1              . Increment for next char 
+          jgd       a7,edopt100       . Loop back if any left   
+          l         x11,a15           . Get return address and  
+          j         0,x11             .   go back way we came   
+/.  
+.   
+.         Convert Fieldata Decimal to Binary
+.   
+.         dl        a1,<fd-dec-value>   
+.         lmj       x11,fdbin   
+.         <error return>
+.         <good  return>              . A4:=binary number   
+.   
+fdbin.  
+          l,u       a4,0              . init result 
+fdbin1. 
+          l,u       r1,5              . 
+fdbin2. 
+          l,u       a0,0              . 
+          ldsl      a0,6              . get one digit   
+          tne,u     a0,' '            . end of number?  
+          j         1,x11             . yes 
+          an,u      a0,'0'            . remove bias 
+          tn        a0                . check for numeric   
+          tg,u      a0,10             . 
+          j         0,x11             . illegal char return 
+          msi,u     a4,10             . 
+          a         a4,a0             . 
+          jn        a4,0,x11          . overflow occurred? yes,exit 
+          jgd       r1,fdbin2         . 
+          jz        a2,1,x11          . return if done both words   
+          ldsl      a1,36             . else move A2 to A1  
+          j         fdbin1            .  and repeat the whole story 
+/.  
+.   
+.         Determine the # of days since January 1, 1964.
+.   
+.   
+.         Call:   LMJ  X11,RELATIVEDATE 
+.   
+.         Input:  A3 = work buffer (1 word) 
+.                 A0(H2) = Month, Day, Year in the ER TDATE$ format 
+.   
+.         Output: A3 = work buffer  
+.                 A0 = # of days since 1-1-1964 
+.   
+.         Registers destroyed:  A1, A2  
+.   
+mdy       $equf     0,,h2             . Month, Day, Year
+mdyyear   $equf     0,,s6             . Year
+mdymonth  $equf     0,,s4             . Month   
+mdyday    $equf     0,,s5             . Day 
+.   
+RELATIVEDATE.   
+          S         A0,MDY,A3         . Save the input to RELATIVEDATE  
+          L         A0,MDYYEAR,A3     . A0 := (Year MOD 1964) * 365 
+          MSI,U     A0,365            . Determine # of days to Jan 1, YEAR  
+          L         A2,MDYYEAR,A3     . Account for all the leap years before   
+          DEC       A2                .    this year without regard for 
+          NOP                         .    leap years.  
+          L,U       A1,0              . 
+          DI,U      A1,4              . A1 := # of leap years - 1   
+          A         A0,A1             . A0 := (# of days to Jan 1, YEAR)-1  
+          L         A1,MDYMONTH,A3    . Account for the days from 1-1-YEAR to   
+          A         A0,ADDMONTH-1,A1  .    1-MONTH-YEAR 
+          TLE,U     A1,3              . Account for leap year for YEAR  
+          J         NOLEAP            . Jan, or Feb --no need to add 1. 
+          L         A2,MDYYEAR,A3     . 
+          L,U       A1,0              . 
+          DI,U      A1,4              . 
+          TNZ       A2                . Is the current year a leap year?
+          A,U       A0,1              .   Yes, add 1 to the total   
+NOLEAP .
+          A         A0,MDYDAY,A3      . Now add the current day of the month
+          J         0,X11             . (problems in the year 2028!)
+.   
+.   
+.   
+ADDMONTH . Offsets to calculate Julian date.
+          . The routine RELATIVEDATE uses this table.   
+          . 
+          +0                          . Jan 
+          +31                         . Feb 
+          +59                         . Mar 
+          +90                         . Apr 
+          +120                        . May 
+          +151                        . Jun 
+          +181                        . Jul 
+          +212                        . Aug 
+          +243                        . Sep 
+          +273                        . Oct 
+          +304                        . Nov 
+          +334                        . Dec 
+/.  
+$(0)      $lit                        . 
+.   
+.         Flags, pointers, counters and save buffers
+.   
+specount  +         0100              . SELT$ control word  
+lstcnt    +         0                 . counter for displayed entries   
+chgcnt    +         0                 . changed/updated entries counter 
+delcnt    +         0                 . delete counter for totals   
+delcnttmp +         0                 . delete counter for current cycle
+rejcnt    +         0                 . reject counter  
+flags     +         0                 . misc flags  
+curreldate $res     1                 . current relative date   
+entreldate $res     1                 . relative date of SMOQUE$ entry  
+options   $res      1                 . A5 save cell
+usrcomp   $res      1                 . instr. to compare dates 
+usrdays   $res      1                 . age in days (spec 2) goes here  
+usrdate   $res      1                 . instr. to fetch desired TDATE$ wrd  
+scratch   $res      4                 . Work buffer 
+fdgrunid  $res      1                 . generated runid goes here   
+asgrunid  $res      2                 . ...and here it's Ascii version...   
+fduserid  $res      2                 . caller's userid 
+fdimpqual $res      2                 . implied qualifier   
+fddefqual $res      2                 . default qualifier   
+smoqpkt1cs $res     1                 . current size of SMOQUE$ pkt 1   
+esex11    $res      1                 . 
+rmix11    $res      1                 . 
+esfx11    $res      1                 . 
+ditbuf    $res      7                 . 
+delentx11 $res      1                 . 
+updentx11 $res      1                 . 
+fdasbuf   $res      4                 . 
+.   
+.         ID$ packet
+.   
+idpkt     i$dpkt    'idbuf' $cas(pgmnam:' ':pgmver:' ') 1*/4 .  
+.   
+.         INFOR$ table buffer   
+.   
+infor     $res      inforl            . 
+          $if       slc='CB'          . 
+inforpkt  i$nforpkt                   . 
+          $else                       . 
+inforpkt  $equ      0                 . 
+          $endf                       . 
+.   
+.         EDIT$ packet  
+.   
+edline    $res      edlinel           . 
+edpkt     a$editpkt edlinel,edline 'dft',3 'tft',0 .
+.   
+.         ER MSCON$ EXIST$ function packet  
+.   
+msconpkt  +         0,exist$          . 
+          $res      2                 . qualifier   
+          $res      2                 . file name   
+          +         msconbufl,0,0     . buffer len, 0, file cycle   
+          +         msconbuf          . buffer address  
+          +         0,0,0100          . start sector, sector cnt, start item
+msconstat $res      1                 . MSCON$ status word goes here
+msconbuf  $res      msconbufl         . 
+msconstuffl $equ    $-msconpkt        . 
+.   
+.         Selection table   
+.   
+seltab. 
+          seltabent 'QUEUE',6     smoqmdevgs++smoqmexmat++smoqmassok++ ; .  
+                                  smoqmnpart smoqqid .  
+          seltabent 'RUNID',6     smoqmrunid++ ; .  
+                                  smoqmnpart smoqrunid .
+          seltabent 'USERID',12   smoqmusrid++ ; .  
+                                  smoqmnpart smoqusrid .
+          seltabent 'FILE'        smoqmfilen++ ; .  
+                                  smoqmnpart 0 .
+          seltabent 'OUTPUT-ID',6 smoqmoutid++ ; .  
+                                  smoqmnpart smoqoid .  
+          seltabent 'PRIORITY',1  smoqmsetpr++ ; .  
+                                  smoqmnpart smoqpri .  
+seltabl   $equ      $-seltab          . 
+seltabec  $equ      seltabl/seltabez  . 
+.   
+.         Test operators (1st entry is default entry)   
+.   
+toptab. 
+          toptabent 'TGE' test_tge    . 
+          toptabent 'TG'              . 
+          toptabent 'TE'              . 
+          toptabent 'TNE'             . 
+          toptabent 'TLE'             . 
+          toptabent 'TNG'             . 
+toptabl   $equ      $-toptab          . 
+toptabec  $equ      toptabl/toptabez  . 
+/.  
+$(2).   
+.   
+.         SMOQUE$ stuff for get-file functions  
+.   
+smoqpkt1  +         0,2               . status, get-file function   
+          +         0                 . mode bits go here   
+          +         0,0               . # of ent ret, total # of ent
+          +         0,0               . packet version, size for parts  
+.   
+.         Repeating entry descriptors   
+.   
+i         $repeat   maxent            . 
+          +         bdi$,smoqbuf1+(entlen*(i-1)) .  
+          +         entlen,0          . 
+          +         0                 . 
+          $endr                       . 
+smoqbuf1  $res      maxent*entlen     . buffer for SMOQUE entries   
+.   
+.         SMOQUE$ packet for change-entry functions 
+.   
+smoqpkt2  +         0,3               . status, change-entry function   
+          +         0                 . mode bits go here   
+          +         0,0               . # of ent ret, total # of ent
+          +         0,0               . packet version, size for parts  
+.   
+.         Repeating entry descriptor
+.   
+          +         bdi$,0            . 
+          +         0,0               . 
+          +         0                 . 
+smoqpkt2l $equ      $-smoqpkt2        . 
+.   
+.         Multidevice Identifier Table  
+.   
+mditab    +         0                 . 
+          $res      2*mditabec        . 
+/.  
+$(4)      $ascii                      . 
+.   
+.         ASCII data
+.   
+aspaces   '        '                  . 
+hdgline1  'Runid  Userid       Queue  FL OP-Id  Date      Age '; .  
+          'P File Name'               . 
+hdgline1m +         0100+$-hdgline1,hdgline1 .  
+hdgline2  $sr('-',80-1)               . 
+hdgline2m +         0100+$-hdgline2,hdgline2 .  
+errortext '*Error* &'                 . 
+optillgm  'Illegal option(s): &'      . 
+optcnflm  'Conflicting option(s): &'  . 
+optmissm  'At least one of the following required option(s) missing: &' .   
+specerrm  'Spec & field error.&'      . 
+mditabofm 'Too many queue-ids specified - configured maximum = '; . 
+          :$cd(mditabec):'&' .  
+mscerrm   'MSCON$ returned bad status. File: &  A0,H1: &' . 
+priverrm  'ER SMOQUE$ failed due to missing privilege.&' .  
+smoqerrm  'SMOQUE$ returned bad status: & function: &' .
+signoffm  'END ':pgmnam:'.  Examined: &   ':; . 
+          'Listed: &  Changed: &  Deleted: &  Rejected: &' .
+          $end      pqcup             . 
+@EOF
+@ELT,IQ UUSIG*1108-001-001.PQCUP/MAP,,,,MAP
+          IN        UUSIG*1108-001-001.PQCUP
+          END
+@EOF

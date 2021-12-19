@@ -1,0 +1,76 @@
+       @GT is the latest incarnation of the ECL Pre-Scanner (ESCAN).  GT will
+  scan an input ECL Runstream for valid syntax, and attempt to respond to each
+  error with a meaningful comment.  GT will optionally check the MFD for each
+  cataloged file referenced.  GT will also optionally perform a Media check
+  against each removable pack referenced, and verify each tape reel number
+  against the STAR-1100 on-line TIF. GT is called as follows:
+
+              @file.GT,[<opts>] [<ECL-source>]
+              @EOF
+
+  where <ECL-source> is any existing file or element (standard EXEC notation)
+  containing sysmbolic ECL statements.  The following options are available:
+
+       A -     suppress file assigned/not assigned consistency checks
+       H -     suppresses the automatic Help Text
+       L -     generates short listing and all Summarys (except Media)
+       M -     generates the Media Summary
+       N -     suppresses the generation of all output
+       S -     generates a short listing of ECL and errors
+       T -     allows transposition of the '@' sign with a '#' sign for testing
+       E,I,U - standard SIR$ Routine options apply
+       D,W,X,Y,X,Y,Z - used primarily during testing; generates a lot of output
+
+  The following output summaries are available:
+
+       FILE REFERENCE - A list of each file referenced by a standard ECL
+               command.  This would NOT include files referenced by user
+               programs or processors, or by generic processors such as
+               ACOB or MASM.  Each entry lists its attributes, assigned
+               options, and disposition at the end of the runstream.
+
+       LABEL REFERENCE - A list of each label referenced in the runstream,
+               where it was defined, and where it's referenced from.
+
+       USE NAME REFERENCE - A list of all Use names defined and there
+               associated files.
+
+       LOCAL PROGRAM REFERENCE - A list of each user program referenced, and
+               the options used with each.  This does not include any processor
+               registered via COMUS.
+
+       MEDIA LIST (Optional) - A list of each Pack-ID and VOLSER referenced,
+               and an indication as to whether or not each exists on this
+               system.
+
+       Notes for this version of ESCAN:
+
+           1. Very little leeway was incorporated into this version of ESCAN.
+       For example, only two files, TPF$ and PRINT$, are scanned successfully
+       without periods; all others will error.  Although the EXEC will allow
+       filenames without periods in certain commands, ESCAN will not.
+       Essentially, if it looks like a duck, ... it oughta be treated like
+       a duck.
+
+           2.  Due to the scanning method used, both labels and processor
+       filenames that begin with legal ECL commands will generate an error.
+       Example:
+                @ASG:free the*file.
+                @BK1:xqt  the*file.program
+                @EOF*file.processor,asdf
+
+       ( ESCAN prefers to view this as enforcing good coding technique ... )
+
+           3.  The A option provides an override of the File Not Assigned
+       and File Already Assigned messages.  This was added to allow for the
+       conditional cataloging (for example) of the same file under different
+       labels in a Runstream.  All Syntax checking is still enforced.
+       Example:
+                @test   te/0           . if RCW 1 assign a big file
+                @jump   bigfil         .
+                @asg,t  work.,///100   . assign it little
+                @jump   contu          .
+                @asg,t  work.,///9999  . assign it big
+                @contu:eof             .
+
+

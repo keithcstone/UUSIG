@@ -1,0 +1,949 @@
+% Here is an Algol version of the Unix "compress" program.
+
+% Caveats? I haven't used it on stream files, and it probably
+% won't work. I wrote it around mid-3.7, and haven't changed
+% it since. It meets my needs. -- Michael Smith
+
+BEGIN                                                                   
+$ SET VERSION 4.0.0                                                     
+%                                                                       
+% Compress - a data compression program                                 
+%                                                                       
+% This is the standard algorithm used on Unix ('.Z' files)              
+%                                                                       
+% The original program was written and placed in the public domain by:  
+% Spencer W. Thomas, Jim McKie, Steve Davies, Ken Turkowski,            
+% James A. Woods and Joe Orost.                                         
+%                                                                       
+% This program was based on version 4.0.                                
+%                                                                       
+% A-Series translation by Michael B. Smith (mbs@adastra.cvl.va.us)      
+%                                                                       
+% If I would re-write this, I'd use the same input that the Unix        
+% compress does, however, I'm not going to. So, I've got A-Series       
+% things that define what we do.                                        
+%                                                                       
+% File-equate STDIN to the file (I've only tested it against a          
+% diskfile) to be read. STDOUT to the output file (which will be        
+% named DATA/COMPRESS or DATA/UNCOMPRESS as appropriate).               
+%                                                                       
+%       SW1: DEBUG      (a variety of debugging information)            
+%       SW2: NOMAGIC    (for compatibility with version 2.0 compress)   
+%       SW3: COMPRESS   (vs. decompress STDIN)                          
+%       SW8: STD_DEBUG  (debug stdio routines)                          
+%                                                                       
+% So, the default action is to uncompress a file named STDIN to         
+% a diskfile named DATA/UNCOMPRESS.                                     
+%                                                                       
+% If SW3 is set, then compress a file named STDIN to a diskfile         
+% named DATA/COMPRESS.                                                  
+%                                                                       
+% The algorithm is Lempel-Ziv-Welch (LZW) similar to what is used in the
+% popular ZIP packages. Basically, it finds common substrings and       
+% replaces them with a variable size code. This is deterministic and    
+% done on-the-fly. Thus, the decompression routine needs no input table,
+% and instead tracks the way the table was built.                       
+%                                                                       
+% Algorithm documentation in "A Technique for High Performance Data     
+% Compression", _IEEE_Computer_, Vol. 17, No. 6 (June 1984), pp. 8-19,  
+% by Terry A. Welch.                                                    
+%                                                                       
+% This program was converted DIRECTLY from the 'C' source. FEW A-Series 
+% optimizations have been done. The entire compress/decompress/getcode/ 
+% outputc routines could be significantly improved performance-wise to  
+% better use the strengths of the A-Series (such as bit manipulation    
+% operators). Leaving it alone, however, shows some of the interesting  
+% ways in which logical operations can be used, and how simple it can be
+% to move a Unix program to A-Series.                                   
+%                                                                       
+% All trademarks copyright (C) by their respective owners.              
+%                                                                       
+BOOLEAN                                                                 
+   STD_DEBUG,                                                           
+   DEBUG;                                                               
+                                                                        
+FILE                                                                    
+   LINE (KIND = PRINTER),                                               
+   STDOUT (KIND = DISK, MAXRECSIZE = 512, BLOCKSIZE = 1024,             
+           FRAMESIZE = 8, NEWFILE),                                     
+   STDIN (KIND = DONTCARE, MAXRECSIZE = 512, BLOCKSIZE = 10240,         
+          FRAMESIZE = 8, MYUSE = IN, DEPENDENTSPECS),                   
+   STDER (KIND = REMOTE);                                               
+                                                                        
+EBCDIC ARRAY                                                            
+   BUFF_IN,                                                             
+   BUFF_OUT [0:0];                                                      
+                                                                        
+INTEGER                                                                 
+   STD_SZ_IN,                                                           
+   STD_SZ_OUT,                                                          
+   STD_REC_IN,                                                          
+   STD_REC_OUT,                                                         
+   AVAIL_IN,                                                            
+   AVAIL_OUT;                                                           
+                                                                        
+DEFINE                                                                  
+   CORRECTLY = .[7:48] FOR 1 #;                                         
+                                                                        
+PROCEDURE SET_UP_STDIO;                                                 
+   BEGIN                                                                
+   OPEN (STDIN);                                                        
+   STD_SZ_IN := STDIN.MAXRECSIZE;                                       
+   IF STDIN.UNITS EQL 0 THEN                                            
+      STD_SZ_IN := * * 6;                                               
+   RESIZE (BUFF_IN, STD_SZ_IN + 1);                                     
+                                                                        
+   OPEN (STDOUT);                                                       
+   STD_SZ_OUT := STDOUT.MAXRECSIZE;                                     
+   IF STDOUT.UNITS EQL 0 THEN                                           
+      STD_SZ_OUT := * * 6;                                              
+   RESIZE (BUFF_OUT, STD_SZ_OUT + 1);                                   
+                                                                        
+   END OF PROCEDURE SET_UP_STDIO;                                       
+                                                                        
+INTEGER PROCEDURE GETCHAR;                                              
+   BEGIN                                                                
+   IF AVAIL_IN LEQ 0 THEN                                               
+      BEGIN                                                             
+      IF STD_DEBUG THEN                                                 
+         BEGIN                                                          
+         STD_REC_IN := * + 1;                                           
+         WRITE (STDER, <"Read a record from STDIN..", J12>, STD_REC_IN);
+         END;                                                           
+      IF READ (STDIN, STD_SZ_IN, BUFF_IN) THEN                          
+         GETCHAR := -1                                                  
+      ELSE                                                              
+         BEGIN                                                          
+         AVAIL_IN := STD_SZ_IN;                                         
+         GETCHAR := REAL (BUFF_IN [STD_SZ_IN - AVAIL_IN], 1);           
+         END;                                                           
+      END                                                               
+   ELSE                                                                 
+      GETCHAR := REAL (BUFF_IN [STD_SZ_IN - AVAIL_IN], 1);              
+   AVAIL_IN := * - 1;                                                   
+   END OF PROCEDURE GETCHAR;                                            
+                                                                        
+PROCEDURE FLUSH;                                                        
+   BEGIN                                                                
+   IF AVAIL_OUT GTR 0 THEN                                              
+      WRITE (STDOUT, STD_SZ_OUT, BUFF_OUT);                             
+   REPLACE BUFF_OUT BY 0 FOR STD_SZ_OUT;                                
+   AVAIL_OUT := 0;                                                      
+   IF STD_DEBUG THEN                                                    
+      BEGIN                                                             
+      STD_REC_OUT := * + 1;                                             
+      WRITE (STDER, <"Wrote a record to STDOUT..", J12>, STD_REC_OUT);  
+      END;                                                              
+   END OF PROCEDURE FLUSH;                                              
+                                                                        
+INTEGER PROCEDURE PUTCHAR (CHAR);                                       
+INTEGER                                                                 
+   CHAR;                                                                
+   BEGIN                                                                
+   IF AVAIL_OUT GEQ STD_SZ_OUT THEN                                     
+      FLUSH;                                                            
+   REPLACE BUFF_OUT [AVAIL_OUT] BY CHAR CORRECTLY;                      
+   AVAIL_OUT := * + 1;                                                  
+   END OF PROCEDURE PUTCHAR;                                            
+                                                                        
+INTEGER PROCEDURE FREAD (PTR, CHAR_SIZE, COUNT);                        
+VALUE                                                                   
+   PTR,                                                                 
+   CHAR_SIZE,                                                           
+   COUNT;                                                               
+POINTER                                                                 
+   PTR;                                                                 
+INTEGER                                                                 
+   CHAR_SIZE,                                                           
+   COUNT;                                                               
+   %                                                                    
+   BEGIN                                                                
+   LABEL                                                                
+      DONE;                                                             
+   INTEGER                                                              
+      C,                                                                
+      RSLT,                                                             
+      CT;                                                               
+   %                                                                    
+   % CT represents the total number of bytes read in. We return         
+   % the number of items (up to COUNT) actually read                    
+   %                                                                    
+   CT := CHAR_SIZE * COUNT;                                             
+   WHILE CT GTR 0 DO                                                    
+      IF (C := GETCHAR) LSS 0 THEN                                      
+         GO DONE                                                        
+      ELSE                                                              
+         BEGIN                                                          
+         REPLACE PTR:PTR BY C CORRECTLY;                                
+         RSLT := * + 1;                                                 
+         CT := * - 1;                                                   
+         END;                                                           
+DONE:                                                                   
+   FREAD := RSLT DIV CHAR_SIZE;                                         
+   END OF PROCEDURE FREAD;                                              
+                                                                        
+INTEGER PROCEDURE FWRITE (PTR, CHAR_SIZE, COUNT);                       
+VALUE                                                                   
+   PTR,                                                                 
+   CHAR_SIZE,                                                           
+   COUNT;                                                               
+POINTER                                                                 
+   PTR;                                                                 
+INTEGER                                                                 
+   CHAR_SIZE,                                                           
+   COUNT;                                                               
+   %                                                                    
+   BEGIN                                                                
+   INTEGER                                                              
+      RSLT,                                                             
+      CT;                                                               
+   %                                                                    
+   % CT represents the total number of bytes to write. We return        
+   % the number of items (up to COUNT) actually written.                
+   %                                                                    
+   CT := CHAR_SIZE * COUNT;                                             
+   WHILE CT GTR 0 DO                                                    
+      BEGIN                                                             
+      PUTCHAR (REAL (PTR, 1));                                          
+      PTR := * + 1;                                                     
+      RSLT := * + 1;                                                    
+      CT := * - 1;                                                      
+      END;                                                              
+                                                                        
+   FWRITE := RSLT DIV CHAR_SIZE;                                        
+   END OF PROCEDURE FWRITE;                                             
+                                                                        
+DEFINE                                                                  
+   LEFT_SHIFT (X, Y)      = (X * (0 & 1 [Y:1]))#,                       
+   RIGHT_SHIFT (X, Y)     = (X DIV (0 & 1 [Y:1]))#,                     
+   %                                                                    
+   BIT_MASK               = 4"1F"#,                                     
+   BLOCK_MASK             = 4"80"#,                                     
+   %                                                                    
+   RNF                    = REAL (NOT FALSE)#,                          
+   %                                                                    
+   INIT_BITS              = 9 #,                                        
+   BITS                   = 16 #,      % actually MAXMAXBITS            
+   H_SIZE                 = 69001 #,   % tied to BITS. do NOT change    
+   CHECK_GAP              = 10000 #,                                    
+   MAX_CODE (X)           = (LEFT_SHIFT (1, X) - 1)#,                   
+   HTABOF (X)             = HTAB [(X)]#,                                
+   CODETABOF (X)          = CODETAB [(X)]#,                             
+   TAB_PREFIXOF (X)       = CODETABOF (X)#,                             
+   TAB_SUFFIXOF (X)       = HTAB [(X)]#,                                
+   FIRST                  = 257 #,                                      
+   CLEAR                  = 256 #,                                      
+   MAGIC_HEADER           = 4"1F9D" #,                                  
+   MAGIC_HEADER1          = 48"1F" #,                                   
+   MAGIC_HEADER2          = 48"9D" #,                                   
+                                                                        
+LAST_DEFINE               = #;                                          
+                                                                        
+BOOLEAN                                                                 
+   DOCOMPRESS;          % myself.sw3                                    
+EBCDIC ARRAY                                                            
+   DE_STACK [0:7999];   % output character stack                        
+POINTER                                                                 
+   STACKP;              % pointer to de_stack                           
+INTEGER                                                                 
+   N_BITS,              % number of bits in current table               
+   MAXBITS,             % maximum number of bits we can deal with       
+   MAXCODE,             % maximum code currently in table               
+   MAXMAXCODE,          % absolute maximum a code can be                
+   HSIZE,               % hash table size                               
+   FSIZE,               % file size (not used)                          
+   FREE_ENT,            % first free entry in hash table                
+   EXIT_STAT,           % exit status (not used)                        
+   NOMAGIC,             % compatibility flag. Older versions of the     
+                        % compress() format (2.0 and before) did not    
+                        % have a 'magic' tag (first two bytes) to id    
+                        % them as compress() files.                     
+   ZCAT_FLG,            % show compression ratio only (not used)        
+   QUIET,               % don't print anything out at all (not used)    
+   BLOCK_COMPRESS,      % always true on output, indicates that we are  
+                        % compressing on a block level                  
+   CLEAR_FLG,           % time to clear the table                       
+   CHECKPOINT,          % ditto.                                        
+   RATIO,               % compression ratio in current table            
+   FORCE;               % always create an output file (not used)       
+                                                                        
+ARRAY                                                                   
+   HTAB [0:H_SIZE],     % hash table                                    
+   CODETAB [0:H_SIZE];  % code table                                    
+                                                                        
+PROCEDURE INITIALIZE;                                                   
+   BEGIN                                                                
+   DEBUG := MYSELF.SW1;                                                 
+   NOMAGIC := REAL (MYSELF.SW2);                                        
+   DOCOMPRESS := MYSELF.SW3;                                            
+   IF DEBUG THEN                                                        
+      STD_DEBUG := MYSELF.SW8;                                          
+                                                                        
+   IF DEBUG THEN                                                        
+      BEGIN                                                             
+      WRITE (STDER, <"Compress A-Series version ", J12, ".", J12, ".",  
+         J12>, COMPILETIME (20), COMPILETIME (21), COMPILETIME (22));   
+      WRITE (STDER, <"Debug = TRUE">);                                  
+      WRITE (STDER, <"STD_DEBUG = ", L5>, STD_DEBUG);                   
+      WRITE (STDER, <"NOMAGIC = ", J12>, NOMAGIC);                      
+      WRITE (STDER, <"DOCOMPRESS = ", L5>, DOCOMPRESS);                 
+      END;                                                              
+   %                                                                    
+   IF DOCOMPRESS THEN                                                   
+      BEGIN                                                             
+      IF NOT STDOUT.FILEEQUATED THEN                                    
+         STDOUT (TITLE = "DATA/COMPRESS.");                             
+      END                                                               
+   ELSE                                                                 
+      BEGIN                                                             
+      IF NOT STDOUT.FILEEQUATED THEN                                    
+         STDOUT (TITLE = "DATA/UNCOMPRESS.");                           
+      END;                                                              
+   %                                                                    
+   SET_UP_STDIO;                                                        
+                                                                        
+   % defaults                                                           
+   MAXBITS := BITS;                                                     
+   MAXMAXCODE := LEFT_SHIFT (1, BITS);                                  
+   HSIZE := H_SIZE;                                                     
+   QUIET := 1;                                                          
+   BLOCK_COMPRESS := BLOCK_MASK;                                        
+   CHECKPOINT := CHECK_GAP;                                             
+   STACKP := DE_STACK [0];                                              
+                                                                        
+   IF (NOMAGIC EQL 0)  AND                                              
+      (NOT DOCOMPRESS) THEN                                             
+      % setup for decompress                                            
+      BEGIN                                                             
+      IF GETCHAR ISNT MAGIC_HEADER1 OR GETCHAR ISNT MAGIC_HEADER2 THEN  
+         BEGIN                                                          
+         IF DEBUG THEN                                                  
+            WRITE (STDER, <"BAD MAGIC HEADER">);                        
+         MYSELF.STATUS := VALUE (TERMINATED);                           
+         END;                                                           
+      MAXBITS := GETCHAR;                                               
+      % BLOCK_COMPRESS := MAXBITS.[7:1];                                
+      BLOCK_COMPRESS := REAL (BOOLEAN (MAXBITS) AND                     
+                              BOOLEAN (BLOCK_MASK));                    
+      % MAXBITS := MAXBITS.[6:7];                                       
+      MAXBITS := REAL (BOOLEAN (MAXBITS) AND                            
+                       BOOLEAN (BIT_MASK));                             
+      % MAXMAXCODE := 0 & 1 [MAXBITS:1];                                
+      MAXMAXCODE := LEFT_SHIFT (1, MAXBITS);                            
+      IF DEBUG THEN                                                     
+         BEGIN                                                          
+         WRITE (STDER, <"BLOCK_COMPRESS ", H12>, BLOCK_COMPRESS);       
+         WRITE (STDER, <"MAXBITS        ", H12>, MAXBITS);              
+         WRITE (STDER, <"MAXMAXCODE     ", H12>, MAXMAXCODE);           
+         END;                                                           
+      FSIZE := 100000;                                                  
+      IF MAXBITS GTR BITS THEN                                          
+         BEGIN                                                          
+         IF DEBUG THEN                                                  
+            WRITE (STDER, <"TOO MANY BITS">);                           
+         MYSELF.STATUS := VALUE (TERMINATED);                           
+         END;                                                           
+      END;                                                              
+                                                                        
+   END OF PROCEDURE INITIALIZE;                                         
+                                                                        
+INTEGER                                                                 
+   V_OFFSET,                                                            
+   V_SIZE,                                                              
+   IN_COUNT,                                                            
+   BYTES_OUT,                                                           
+   OUT_COUNT;                                                           
+                                                                        
+EBCDIC ARRAY                                                            
+   BUF [0:BITS];                                                        
+                                                                        
+PROCEDURE OUTPUTC (CODE);                                               
+VALUE                                                                   
+   CODE;                                                                
+INTEGER                                                                 
+   CODE;                                                                
+   %                                                                    
+   % Maintain a BITS character long buffer (so that 8 codes will fit in 
+   % it exactly). When the buffer fills up, empty it and start over.    
+   %                                                                    
+   % CODE is an N_BITS bit integer. When eql -1, then we are done       
+   % processing the input file.                                         
+   %                                                                    
+   BEGIN                                                                
+   INTEGER                                                              
+      C,       % character code being generated                         
+      M1,      % bit mask                                               
+      M2,      % bit mask                                               
+      R_OFF,                                                            
+      BITS;                                                             
+   POINTER                                                              
+      BP;                                                               
+   %                                                                    
+   R_OFF := V_OFFSET;                                                   
+   BITS := N_BITS;                                                      
+   BP := BUF [0];                                                       
+   %                                                                    
+   IF (CODE GEQ 0) THEN                                                 
+      %                                                                 
+      % From here to where we check about storing the buffer, we are    
+      % inserting BITS bits from the argument 'CODE' starting at        
+      % V_OFFSET bits from the beginning of BUF                         
+      %                                                                 
+      % On a Vax, this can be done with a SINGLE assembler instruction: 
+      %            insv 4(ap),r11,r10,(r9)                              
+      % Talk about CISC....                                             
+      %                                                                 
+      BEGIN                                                             
+      %                                                                 
+      % get to the first byte                                           
+      %                                                                 
+      BP := * + RIGHT_SHIFT (R_OFF, 3);                                 
+      R_OFF := R_OFF.[2:3];  % r_off &= 7                               
+      %                                                                 
+      % Since code is always geq 8 bits (INIT_BITS == 9), only need to  
+      % mask the first hunk on the left.                                
+      %                                                                 
+      % (I did an A-Series optimization here. They were using two arrays
+      % called 'lmask' and 'rmask' to get these mask values. A dynamic  
+      % isolate is much quicker than an index - mbs).                   
+      %                                                                 
+      M1 := IF R_OFF EQL 0 THEN                                         
+               0                                                        
+            ELSE                                                        
+               RNF.[R_OFF-1:R_OFF];                                     
+      M2 := IF R_OFF EQL 8 THEN                                         
+               0                                                        
+            ELSE                                                        
+               0 & RNF [7:(8 - R_OFF)];                                 
+      C  := REAL (BOOLEAN (REAL (BP, 1))             AND BOOLEAN (M1)); 
+      M1 := REAL (BOOLEAN (LEFT_SHIFT (CODE, R_OFF)) AND BOOLEAN (M2)); 
+      C  := REAL (BOOLEAN (C)                        OR  BOOLEAN (M1)); 
+                                                                        
+      REPLACE BP:BP BY C CORRECTLY;                                     
+      %                                                                 
+      % 'C' for above:                                                  
+      %                                                                 
+      %  *bp = (*bp & rmask[r_off]) | (code << r_off) & lmask [r_off];  
+      %  bp++;                                                          
+      %                                                                 
+      % Which do you prefer?                                            
+      %                                                                 
+      BITS := * - (8 - R_OFF);                                          
+      CODE := RIGHT_SHIFT (CODE, (8 - R_OFF));                          
+      %                                                                 
+      % get any 8-bit parts in the middle (leq 1 for up to 16 bits)     
+      %                                                                 
+      IF (BITS GEQ 8) THEN                                              
+         BEGIN                                                          
+         REPLACE BP:BP BY CODE CORRECTLY;                               
+         CODE := RIGHT_SHIFT (CODE, 8);                                 
+         BITS := * - 8;                                                 
+         END;                                                           
+      %                                                                 
+      % last bits                                                       
+      %                                                                 
+      IF (BITS GTR 0) THEN                                              
+        REPLACE BP BY CODE CORRECTLY;                                   
+      %                                                                 
+      % Store the buffer if it is full                                  
+      %                                                                 
+      V_OFFSET := * + N_BITS;                                           
+      IF (V_OFFSET EQL LEFT_SHIFT (N_BITS, 3)) THEN                     
+         BEGIN                                                          
+         BP := BUF;                                                     
+         BITS := N_BITS;                                                
+         BYTES_OUT := * + BITS;                                         
+         DO                                                             
+            BEGIN                                                       
+            BITS := * - 1;                                              
+            PUTCHAR (REAL (BP, 1));                                     
+            BP := * + 1;                                                
+            END                                                         
+         UNTIL (BITS EQL 0);                                            
+         V_OFFSET := 0;                                                 
+         END;                                                           
+      %                                                                 
+      % If the next entry if going to be too large for the current code 
+      % size, increase the size if possible                             
+      %                                                                 
+      IF (FREE_ENT GTR MAXCODE) OR                                      
+         (CLEAR_FLG NEQ 0)      THEN                                    
+         BEGIN                                                          
+         %                                                              
+         % Write the whole buffer as the input side will not discover   
+         % the size increase until after it has read it.                
+         %                                                              
+         IF (V_OFFSET GTR 0) THEN                                       
+            BEGIN                                                       
+            IF (FWRITE (BUF [0], 1, N_BITS) NEQ N_BITS) THEN            
+               MYSELF.STATUS := VALUE (TERMINATED);                     
+            BYTES_OUT := * + N_BITS;                                    
+            END;                                                        
+         V_OFFSET := 0;                                                 
+         %                                                              
+         % Set the new bit size                                         
+         %                                                              
+         IF (CLEAR_FLG NEQ 0) THEN                                      
+            BEGIN                                                       
+            N_BITS := INIT_BITS;                                        
+            MAXCODE := MAX_CODE (N_BITS);                               
+            CLEAR_FLG := 0;                                             
+            END                                                         
+         ELSE                                                           
+            BEGIN                                                       
+            N_BITS := * + 1;                                            
+            IF (N_BITS EQL MAXBITS) THEN                                
+               MAXCODE := MAXMAXCODE                                    
+            ELSE                                                        
+               MAXCODE := MAX_CODE (N_BITS);                            
+            END;                                                        
+         END;                                                           
+      END % code gtr 0                                                  
+   ELSE                                                                 
+      BEGIN % code lss 0                                                
+      %                                                                 
+      % At EOF write the rest of the buffer                             
+      %                                                                 
+      C := (V_OFFSET + 7) DIV 8;  % number of codes to be written       
+                                  % in characters                       
+      IF (V_OFFSET GTR 0) THEN                                          
+         IF (FWRITE (BUF [0], 1, C) NEQ C) THEN                         
+            MYSELF.STATUS := VALUE (TERMINATED);                        
+      BYTES_OUT := * + C;                                               
+      V_OFFSET := 0;                                                    
+      FLUSH;                                                            
+      END;                                                              
+   END OF PROCEDURE OUTPUTC;                                            
+                                                                        
+PROCEDURE COMPRESS;                                                     
+   %                                                                    
+   % Use open addressing double hashing (no chaining) on the prefix     
+   % code / next character combination. We do a variant of Knuth's      
+   % algorithm D (vol. 3, sec. 6.4) along with G. Knott's relatively    
+   % prime secondary probe. Here, the modular division first probe gives
+   % way to an exclusive-or manipulation. Also do block compression with
+   % an adaptive reset, whereby the code table is cleared when the      
+   % compression ratio decreases, but after the table fills. The        
+   % variable-length output codes are resized at this point, and a      
+   % special CLEAR code is generated for the decompressor.              
+   %                                                                    
+   BEGIN                                                                
+   LABEL                                                                
+      NEXT,                                                             
+      PROBE,                                                            
+      NOMATCH;                                                          
+   INTEGER                                                              
+      FCODE,                                                            
+      I,                                                                
+      C,                                                                
+      RAT,                                                              
+      ENT,                                                              
+      DISP,                                                             
+      HSIZE_REG,                                                        
+      HSHIFT;                                                           
+   %                                                                    
+   IF (NOMAGIC EQL 0) THEN                                              
+      BEGIN                                                             
+      PUTCHAR (MAGIC_HEADER1);                                          
+      PUTCHAR (MAGIC_HEADER2);                                          
+      PUTCHAR (REAL (BOOLEAN (BLOCK_COMPRESS) OR BOOLEAN (MAXBITS)));   
+      END;                                                              
+   %                                                                    
+   V_OFFSET := 0;                                                       
+   BYTES_OUT := 3;   % so far..                                         
+   OUT_COUNT := 0;                                                      
+   CLEAR_FLG := 0;                                                      
+   RATIO := 0;                                                          
+   IN_COUNT := 1;                                                       
+   CHECKPOINT := CHECK_GAP;                                             
+   N_BITS := INIT_BITS;                                                 
+   MAXCODE := MAX_CODE (N_BITS);                                        
+   FREE_ENT := IF (BLOCK_COMPRESS NEQ 0) THEN                           
+                  FIRST                                                 
+               ELSE                                                     
+                  256;                                                  
+   %                                                                    
+   ENT := GETCHAR;                                                      
+   %                                                                    
+   % determine hash code range bound                                    
+   %                                                                    
+   HSHIFT := 0;                                                         
+   FCODE := HSIZE;                                                      
+   WHILE (FCODE LSS 65536) DO       % this code will never be executed  
+      BEGIN                         % on an A-Series machine (HSIZE is  
+      FCODE := * * 2;               % DEFINED to 69001 for 16 bits - no 
+      HSHIFT := * + 1;              % need to support less than the full
+      END;                          % implementation)                   
+   HSHIFT := 8 - HSHIFT;                                                
+   %                                                                    
+   % clear hash table                                                   
+   %                                                                    
+   HSIZE_REG := HSIZE;                                                  
+   REPLACE POINTER (HTAB [0], 0) BY -1 FOR HSIZE WORDS;                 
+   %                                                                    
+   % do it                                                              
+   %                                                                    
+   WHILE (C := GETCHAR) GEQ 0 DO                                        
+      BEGIN                                                             
+      IN_COUNT := * + 1;                                                
+      FCODE := LEFT_SHIFT (C, MAXBITS) + ENT;                           
+      %                                                                 
+      % build XOR hash (not natural on A-Series)                        
+      %                                                                 
+      I := LEFT_SHIFT (C, HSHIFT);                                      
+      I := REAL (NOT (BOOLEAN (I) EQV BOOLEAN (ENT))).[BITS-1:BITS];    
+      %                                                                 
+      % 'C' for above:                                                  
+      %                                                                 
+      % i = ((c << hshift) ^ ent);   /* xor hashing */                  
+      %                                                                 
+      % The isolate [BITS-1:BITS] recognizes the fact that A-Series do  
+      % FULL WORD (48 bits) logical operations. Only BITS worth are     
+      % needed here. 'I' needs to fit into a n_bit integer.             
+      %                                                                 
+      IF (HTABOF (I) EQL FCODE) THEN                                    
+         BEGIN                                                          
+         ENT := CODETABOF (I);                                          
+         GO NEXT;                                                       
+         END                                                            
+      ELSE                                                              
+         IF (HTABOF (I) LSS 0) THEN                                     
+            % empty slot in hash table                                  
+            GO NOMATCH;                                                 
+      %                                                                 
+      % do secondary hash (we had a collision on primary hash)          
+      %                                                                 
+      DISP := HSIZE_REG - 1;                                            
+      IF (I EQL 0) THEN                                                 
+         DISP := 1;                                                     
+PROBE:                                                                  
+      IF ((I := * - DISP) LSS 0) THEN                                   
+         I := * + HSIZE_REG;                                            
+      %                                                                 
+      % check for occupancy at secondary location                       
+      %                                                                 
+      IF (HTABOF (I) EQL FCODE) THEN                                    
+         BEGIN                                                          
+         ENT := CODETABOF (I);                                          
+         GO NEXT;                                                       
+         END;                                                           
+      %                                                                 
+      % if still collision, check another slot                          
+      %                                                                 
+      IF (HTABOF (I) GTR 0) THEN                                        
+         GO PROBE;                                                      
+NOMATCH:                                                                
+      %                                                                 
+      % otherwise, output the entry, and add it to the hash table       
+      %                                                                 
+      OUTPUTC (ENT);                                                    
+      OUT_COUNT := * + 1;                                               
+      ENT := C;                                                         
+      IF (FREE_ENT LSS MAXMAXCODE) THEN                                 
+         BEGIN                                                          
+         CODETABOF (I) := FREE_ENT;                                     
+         FREE_ENT := * + 1;                                             
+         HTABOF (I) := FCODE;                                           
+         END                                                            
+      ELSE                                                              
+         IF (IN_COUNT GEQ CHECKPOINT) AND                               
+            (BLOCK_COMPRESS NEQ 0)    THEN                              
+            BEGIN                                                       
+            CHECKPOINT := IN_COUNT + CHECK_GAP;                         
+            %                                                           
+            % We do this code assuming 32-bit integers so that our      
+            % output files will be usable on other systems!!            
+            %                                                           
+            IF (IN_COUNT GTR RNF.[22:23]) THEN                          
+               % shift below would overflow on 32-bit systems           
+               BEGIN                                                    
+               RAT := RIGHT_SHIFT (BYTES_OUT, 8);                       
+               IF (RAT EQL 0) THEN                                      
+                  % Don't divide by zero                                
+                  % This would indicate a hell of a good compression    
+                  % effect in a very large file (not very likely)       
+                  RAT := RNF.[30:31]                                    
+               ELSE                                                     
+                  RAT := IN_COUNT / RAT;                                
+               % RAT now contains a compression ratio in term of        
+               % 8 fractional bits.                                     
+               END                                                      
+            ELSE                                                        
+               RAT := LEFT_SHIFT (IN_COUNT, 8) / BYTES_OUT;             
+            %                                                           
+            % RAT contains the compression ratio for this table.        
+            % If it has decreased since the last check, it is time to   
+            % dump the table and start a new one. Note that it is       
+            % possible to have a degenerate case (such as another       
+            % compressed file or binary file) which would cause the     
+            % "compress" file to be larger than the original.           
+            %                                                           
+            IF DEBUG THEN                                               
+               WRITE (STDER, <"IN_COUNT = ", J12, " NEW RATIO ", J12,   
+                              " OLD RATIO = ", J12, " OUT CT = ", J12>, 
+                              IN_COUNT, RAT, RATIO, OUT_COUNT);         
+            IF (RAT GTR RATIO) THEN                                     
+               RATIO := RAT                                             
+            ELSE                                                        
+               BEGIN                                                    
+               RATIO := 0;                                              
+               % clear the hash table and inform the decompresser to    
+               % reset its table as well                                
+               REPLACE POINTER (HTAB [0], 0) BY -1 FOR HSIZE WORDS;     
+               %                                                        
+               FREE_ENT := FIRST;                                       
+               CLEAR_FLG := 1;                                          
+               OUTPUTC (CLEAR);                                         
+               END;                                                     
+            END;                                                        
+NEXT:                                                                   
+      END; % while getchar                                              
+   %                                                                    
+   % put out last code                                                  
+   %                                                                    
+   OUTPUTC (ENT);                                                       
+   OUT_COUNT := * + 1;                                                  
+   %                                                                    
+   % tell output routine to flush buffers                               
+   %                                                                    
+   OUTPUTC (-1);                                                        
+   %                                                                    
+   % print out stats                                                    
+   %                                                                    
+%% IF (QUIET EQL 0) THEN                                                
+      BEGIN                                                             
+      WRITE (STDER, <"File was compressed ", F5.2, " %">,               
+            ((IN_COUNT - BYTES_OUT) / IN_COUNT) * 100);                 
+      IF (BYTES_OUT GEQ IN_COUNT) THEN                                  
+         BEGIN                                                          
+         WRITE (STDER, <"No space savings">);                           
+         EXIT_STAT := 2;                                                
+         END;                                                           
+      END;                                                              
+   IF EXIT_STAT EQL 0 THEN                                              
+      CLOSE (STDOUT, CRUNCH);                                           
+   END OF PROCEDURE COMPRESS;                                           
+                                                                        
+INTEGER PROCEDURE GETCODE;                                              
+   %                                                                    
+   % Read one code from STDIN. If EOF, return -1                        
+   %                                                                    
+   BEGIN                                                                
+   LABEL                                                                
+      DONE;                                                             
+   INTEGER                                                              
+      M,          % code bit mask                                       
+      CODE,                                                             
+      R_OFF,                                                            
+      BITS;                                                             
+   POINTER                                                              
+      BP;                                                               
+   %                                                                    
+   BP := BUF [0];                                                       
+   %                                                                    
+   IF (CLEAR_FLG NEQ 0)      OR                                         
+      (V_OFFSET GEQ V_SIZE)  OR                                         
+      (FREE_ENT GTR MAXCODE) THEN                                       
+      BEGIN                                                             
+      %                                                                 
+      % If the next entry will be too big for the current code size,    
+      % then we must increase the size. This implies reading a new      
+      % buffer full of bits as well.                                    
+      %                                                                 
+      IF (FREE_ENT GTR MAXCODE) THEN                                    
+         BEGIN                                                          
+         N_BITS := * + 1;                                               
+         IF (N_BITS EQL MAXBITS) THEN                                   
+            % can't get any bigger now                                  
+            MAXCODE := MAXMAXCODE                                       
+         ELSE                                                           
+            MAXCODE := MAX_CODE (N_BITS);                               
+         END;                                                           
+                                                                        
+      IF (CLEAR_FLG NEQ 0) THEN                                         
+         BEGIN                                                          
+         N_BITS := INIT_BITS;                                           
+         MAXCODE := MAX_CODE (N_BITS);                                  
+         CLEAR_FLG := 0;                                                
+         END;                                                           
+                                                                        
+      V_SIZE := FREAD (BUF [0], 1, N_BITS);                             
+      IF (V_SIZE LEQ 0) THEN                                            
+         BEGIN                                                          
+         % hit the end of file. Note that we could have gotten only a   
+         % partial buffer (although unlikely)                           
+         GETCODE := -1;                                                 
+         GO DONE;                                                       
+         END;                                                           
+      %                                                                 
+      % haven't currently used any bits in this buffer                  
+      %                                                                 
+      V_OFFSET := 0;                                                    
+      %                                                                 
+      % round size down to integral number of codes                     
+      %                                                                 
+      V_SIZE := LEFT_SHIFT (V_SIZE, 3) - (N_BITS - 1);                  
+      END;                                                              
+   %                                                                    
+   % Most of the rest of this procedure can be done on the Vax with     
+   % a single assembler instruction:                                    
+   %          extzv  r10,r9,(r8),r11                                    
+   %                                                                    
+   R_OFF := V_OFFSET;                                                   
+   BITS := N_BITS;                                                      
+   %                                                                    
+   % Get to the first byte                                              
+   %                                                                    
+   BP := * + RIGHT_SHIFT (R_OFF, 3);                                    
+   % R_OFF := *.[2:3];                                                  
+   R_OFF := REAL (BOOLEAN (R_OFF) AND BOOLEAN (7));                     
+   %                                                                    
+   % get the first part (low order bits)                                
+   %                                                                    
+   CODE := RIGHT_SHIFT (REAL (BP, 1), R_OFF);                           
+   BP := * + 1;                                                         
+   BITS := * - (8 - R_OFF);                                             
+   %                                                                    
+   % now, get the offset into the code word                             
+   %                                                                    
+   R_OFF := 8 - R_OFF;                                                  
+   %                                                                    
+   % Get any 8-bit parts in the middle (leq 1 for up to 16 bits)        
+   %                                                                    
+   IF (BITS GEQ 8) THEN                                                 
+      BEGIN                                                             
+      CODE := REAL (BOOLEAN (CODE) OR                                   
+                    BOOLEAN (LEFT_SHIFT (REAL (BP, 1), R_OFF)));        
+      BP := * + 1;                                                      
+      R_OFF := * + 8;                                                   
+      BITS := * - 8;                                                    
+      END;                                                              
+   %                                                                    
+   % get high order bits                                                
+   %                                                                    
+   %M := CASE BITS OF (4"00",4"01",4"03",4"07",4"0F",                   
+   %                   4"1F",4"3F",4"7F",4"FF");                        
+   M := IF BITS EQL 0 THEN                                              
+           0                                                            
+        ELSE                                                            
+           RNF.[BITS-1:BITS];                                           
+   M := REAL (BOOLEAN (REAL (BP, 1)) AND BOOLEAN (M));                  
+   CODE := REAL (BOOLEAN (CODE)  OR                                     
+                 BOOLEAN (LEFT_SHIFT (M, R_OFF)));                      
+   %                                                                    
+   % here is where Vax part would stop                                  
+   %                                                                    
+   V_OFFSET := * + N_BITS;                                              
+   GETCODE := CODE;                                                     
+DONE:                                                                   
+   END OF PROCEDURE GETCODE;                                            
+                                                                        
+PROCEDURE DECOMPRESS;                                                   
+   %                                                                    
+   % Decompress STDIN to STDOUT. The routine adapts to the codes in the 
+   % file, and builds the 'string' table on-the-fly; requiring no table 
+   % to be stored in the output file. The tables used herein are shared 
+   % with those of the compress() routine. See the DEFINEs.             
+   %                                                                    
+   BEGIN                                                                
+   LABEL                                                                
+      DONE;                                                             
+   INTEGER                                                              
+      FINCHAR,                                                          
+      CODE,                                                             
+      OLDCODE,                                                          
+      INCODE;                                                           
+   %                                                                    
+   % initialize first 256 entries in the table                          
+   %                                                                    
+   N_BITS := INIT_BITS;                                                 
+   MAXCODE := MAX_CODE (N_BITS);                                        
+   FOR CODE := 255 STEP -1 UNTIL 0 DO                                   
+      BEGIN                                                             
+      TAB_PREFIXOF (CODE) := 0;                                         
+      TAB_SUFFIXOF (CODE) := CODE;                                      
+      END;                                                              
+   %                                                                    
+   % Where is the first free entry in the hash table?                   
+   %                                                                    
+   FREE_ENT := IF BLOCK_COMPRESS NEQ 0 THEN                             
+                  FIRST                                                 
+               ELSE                                                     
+                  256;                                                  
+   %                                                                    
+   IF (FINCHAR := OLDCODE := GETCODE) LSS 0 THEN                        
+      % empty file                                                      
+      GO DONE;                                                          
+   %                                                                    
+   PUTCHAR (FINCHAR);                                                   
+   STACKP := DE_STACK [0];                                              
+                                                                        
+   WHILE (CODE := GETCODE) GEQ 0 DO                                     
+      BEGIN                                                             
+      IF (CODE EQL CLEAR) AND (BLOCK_COMPRESS NEQ 0) THEN               
+         BEGIN                                                          
+         FOR CODE := 255 STEP -1 UNTIL 0 DO                             
+            TAB_PREFIXOF (CODE) := 0;                                   
+         CLEAR_FLG := 1;                                                
+         FREE_ENT := FIRST - 1;                                         
+         IF (CODE := GETCODE) LSS 0 THEN                                
+            GO DONE;                                                    
+         END;                                                           
+      INCODE := CODE;                                                   
+      %                                                                 
+      % Special case for KwKwK string                                   
+      %                                                                 
+      IF (CODE GEQ FREE_ENT) THEN                                       
+         BEGIN                                                          
+         REPLACE STACKP:STACKP BY FINCHAR CORRECTLY;                    
+         CODE := OLDCODE;                                               
+         END;                                                           
+      %                                                                 
+      % Generate output characters in reverse order                     
+      %                                                                 
+      WHILE (CODE GEQ 256) DO                                           
+         BEGIN                                                          
+         REPLACE STACKP:STACKP BY TAB_SUFFIXOF (CODE) CORRECTLY;        
+         CODE := TAB_PREFIXOF (CODE);                                   
+         END;                                                           
+      FINCHAR := TAB_SUFFIXOF (CODE);                                   
+      REPLACE STACKP:STACKP BY FINCHAR CORRECTLY;                       
+      %                                                                 
+      % Put them to the file in forward order                           
+      %                                                                 
+      DO                                                                
+         BEGIN                                                          
+         STACKP := * - 1;                                               
+         PUTCHAR (REAL (STACKP, 1));                                    
+         END                                                            
+      UNTIL OFFSET (STACKP) EQL 0;                                      
+      %                                                                 
+      % Generate the new entry                                          
+      %                                                                 
+      CODE := FREE_ENT;                                                 
+      IF (CODE LSS MAXMAXCODE) THEN                                     
+         BEGIN                                                          
+         TAB_PREFIXOF (CODE) := OLDCODE;                                
+         TAB_SUFFIXOF (CODE) := FINCHAR;                                
+         FREE_ENT := CODE + 1;                                          
+         END;                                                           
+      %                                                                 
+      % Remember the last code                                          
+      %                                                                 
+      OLDCODE := INCODE;                                                
+      END;                                                              
+                                                                        
+DONE:                                                                   
+   FLUSH;                                                               
+   CLOSE (STDOUT, CRUNCH);                                              
+   END OF PROCEDURE DECOMPRESS;                                         
+                                                                        
+   % Main Program                                                       
+                                                                        
+   INITIALIZE;                                                          
+   IF DOCOMPRESS THEN                                                   
+      COMPRESS                                                          
+   ELSE                                                                 
+      DECOMPRESS;                                                       
+                                                                        
+END.                                                                    

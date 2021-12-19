@@ -1,0 +1,698 @@
+<HTML>
+<HEAD>
+    <META NAME="GENERATOR" CONTENT="Internet Assistant for Word 1.00">
+    <META NAME="AUTHOR" CONTENT="Keith C Stone">
+    <TITLE>ZIP 3R1 Documentation</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<H1>1. Introduction</H1>
+ZIP is a fast read-only text processor used for inspection of any SDF (System
+Data Format) file on the Unisys 1100/2200. Operation is very similar to
+@ED,R. In most cases the command names and formats are the same. Several
+new commands are available. ZIP offers the following major advantages over
+the existing text editor:
+<UL>
+  <LI>I/O buffers are from 4 to 36 times larger resulting in first-read
+access times that can be up to 20 times faster than @ED.
+  <LI>An internal line index allows almost instantaneous access to any line
+that has been read before.
+  <LI>Record lengths up to the system maximum (2047 words) are supported.
+  <LI>Text which contains ASCII control characters can be displayed without
+disruption or misrepresentation of data. This, plus the ability to handle
+large records, makes ZIP an ideal tool for the examination of PCIOS-created
+SDF data files.
+  <LI>Continuous terminal output is halted automatically after every full
+screen. Scrolling output can be re-established if desired.
+  <LI>Records which contain computational fields can be reformatted so the
+data is displayed numerically. Partial strings of character data can also
+be extracted using the reformat feature.
+  <LI>Global selection criteria can be established that will allow only
+records meeting certain conditions to be printed, extracted or searched.
+  <LI>Symbols can be defined to describe fields used for text formatting
+and record selection. Symbol lists can be saved and restored across ZIP
+sessions. When the same file is re-read, the restore is automatic.
+  <LI>Several different data extraction commands are allowed. Records written
+to an extract file can be formatted or unformatted, and can optionally be
+sorted using user-defined sort keys.
+  <LI>Command execution can selectively be enabled and disabled with the
+IF/ELSE/IFEND sequence, based on whether the last FIND or LOCATE was successful.
+  <LI>An improved format of the SCALE command is provided to assist in locating,
+selecting and reformatting data that occurs in fixed fields.
+  <LI>The FA (Find Address) and FAR (Find Address Relative) commands allow
+quick location of specific addresses within PMD-format dump output.
+  <LI>A comprehensive online HELP facility is provided. Information is available
+via &lt;HELP&gt; or &lt;HELP topic&gt;.
+  <LI>ZIP is provided with the FUSION full-screen simulation package from
+the U. S. Army Concepts Analysis Agency (author: Les Leist). This dramatically
+improves the speed of terminal output and gives a professional &quot;look
+and feel&quot;. FUSION is a component of UPLI program # 1081 (CAA Utilities
+Tape) which includes a TCF that can give this capability to the @ED editor.
+</UL>
+<H1>2. Processor call and options</H1>
+ZIP is called as follows:
+<PRE>@ZIP&lt;,options&gt;   &lt;filename.&gt;&lt;element/version&gt;</PRE>
+The &lt;filename&gt; parameter is required. The &lt;element/version&gt;
+is optional. Operation is strictly read-only. The input file/element is
+never modified. The following global options are available: <P>
+B - BRIEF mode. Same as the editor. Records are not automatically displayed
+when addressed via NEXT, +/-, &lt;num&gt; etc. <P>
+C - LOCATEs and FINDs are case-sensitive. (Normally they are not.) <P>
+E - This will disable escape sequences in output. These are normally used
+to emphasize embedded control characters and accentuate the ten's digit
+in SCALE output. (Control characters will continue to be translated, but
+won't be shown in low intensity or reverse video). This option is assumed
+if using batch or breakpointed. <P>
+F - This provides additional full-screen capability when using FUSION. Screen
+I/O is somewhat more efficient, but the bottom line of the screen is not
+preserved. Experiment to see which works best for your terminal/configuration.
+This option must be given to use FUSION under a pre-41 level EXEC. <P>
+G - Global search flag. Normally, when a REFORMAT is active, LOCATEs and
+FINDs will work against the reformatted record. If this option is set, the
+unformatted record will be searched instead. <P>
+L - Display the current record size (in bytes) at each user prompt. <P>
+N - This will disable the FUSION package. FUSION is automatically disabled
+when using ZIP from batch or when breakpointed. Both 'N' and 'E' should
+be set if outputting to an attached printer or in other applications where
+escape sequences are undesired. <P>
+O - This determines the action of the carriage return when given at the
+command prompt. In the released version of ZIP, a &lt;CR&gt; will display
+continuously until the screen is filled, starting at the next record in
+the file. If the 'O' option is set, only a single record will be displayed.
+If you are using a version of ZIP with the &lt;CRPAGE&gt; parameter set
+to zero, single-line operation is the default and the 'O' option will enable
+continuous display. <P>
+P - Print embedded print control images when found in print files. <P>
+Q - Compresses extra blanks from all output, except PRINT. This also bypasses
+nonsignificant blanks in LOCATE/FIND operations. <P>
+S - Normally, after a full screen of output without command input, operation
+is suspended and the CONTINUE:&gt; prompt is displayed. A carriage return
+will produce the next screen of output, and so on. At any time the current
+command can be cancelled by entering STOP (or S) at the prompt. A new command
+can also be given, which will cancel the previous command. If the 'S' option
+is set, this enables scrolling output and the CONTINUE prompt is not produced.
+<P>
+V - This has meaning only when given on the ZIP call line. It will disable
+the automatic load of saved symbols when ZIP is called to read a file for
+which symbols had been previously saved. <P>
+Y - Normally, when used from batch or when breakpointed, ZIP will echo all
+command input. The 'Y' option disables this feature. <P>
+All options are dynamic. Each can be set and cleared with the ON and OFF
+commands. Use the OPT command to display current option status.
+<H1>3. Basic (@ED-compatible) commands</H1>
+The following ZIP commands are similar or identical to those used with the
+ED processor:
+<PRE>
+
+&lt;number&gt;              Moves to the numbered line
+
++&lt;number&gt;             Advances &lt;number&gt; lines
+
+&lt;number&gt;             Backs up &lt;number&gt; lines
+
+GO &lt;num&gt;[+/-offset]   Moves to the numbered line
+
+N                     Advances to the next line
+
+P &lt;num&gt;               Prints &lt;num&gt; lines (including current line)
+
+P+ &lt;num&gt;              Prints &lt;num&gt; lines (starting at next line)
+
+O &lt;num&gt;               Same as P+
+
+P &lt;num1&gt; &lt;num2&gt;       Prints lines from &lt;num1&gt; through &lt;num2&gt;
+
+&lt;num1&gt;,&lt;num2&gt; can be in relative (i.e. N+/-) format
+
+P!                    Prints the entire file
+
+LNP                   Same as all P commands but includes line number
+
+Q                     Same as all P commands, extra blanks are omitted
+
+LNQ                   Same as Q, includes line number
+
+T                     Positions to the top of the file
+
+LAS                   Positions to the last line of the file
+
+L &lt;string&gt;            Locates the next occurrence of &lt;string&gt;
+
+                        Surround &lt;string&gt; with single quotes to include
+
+                        trailing spaces.  If &lt;string&gt; is omitted, the
+
+                        previous string is used.
+
+L?                    Displays the current locate string and column limits
+
+LC &lt;string&gt;           Locates all remaining occurrences of &lt;string&gt;
+
+LC*&lt;num&gt;  &lt;string&gt;    Locates the next &lt;num&gt; occurrences of &lt;string&gt;
+
+LC,&lt;num&gt;  &lt;string&gt;    Searches the next &lt;num&gt; lines for all occurrences
+
+of &lt;string&gt;
+
+LC[&lt;num1&gt;,&lt;num2&gt;] ..  Limits searches to columns &lt;num1&gt; thru &lt;num2&gt;
+
+Also allowed with &lt;L&gt;, &lt;LC*&gt; and &lt;LC,&gt;
+
+LIM L &lt;num1&gt; &lt;num2&gt;   Permanent specification of column limits for L and LC
+
+TCC &lt;char&gt;            Specification of transparent locate character
+
+F &lt;string&gt;            Same as LOCATE except only strings which begin in
+
+                        column 1 are located.
+
+F?  FC  FC*  FC,      Same as LOCATE/LC except match only begin at col. 1.
+
+TCH &lt;char&gt;            Specification of transparent find character
+
+BRI                   Turns on BRIEF mode (global 'B' option)
+
+VER                   Turns off BRIEF mode
+
+CASE N|U              Turns case-sensitivity on and off (global 'C' option)
+
+LOOP &lt;count&gt;          Queues up a set of commands for repeated processing
+
+(Loop nesting, LPSUB, LPTST, etc. are unsupported)
+
+WAIT &lt;num&gt;&lt;S&gt;         Waits &lt;num&gt; seconds before proceeding
+
+TIM                   Displays date/time, name of current file/element
+
+REM                   Comment line.  Commands beginning with an asterisk
+
+                        or a period are also treated as comments.
+
+EXIT  OMIT  END       Any of these commands will terminate ZIP.</PRE>
+ZIP can be interrupted at any time with @@X C. As with the text editor,
+execution is interrupted and the user is positioned at the line that was
+being processed when the interrupt occurred.
+<H1>4. New or enhanced basic commands</H1>
+The following commands are new or enhanced in ZIP: <P>
+&lt;CR&gt; A carriage return given at the command prompt will display continuously,
+starting at the next record, until the screen is full. If the global 'O'
+option is set, only the next record will be displayed. <P>
+The meaning of the global 'O' option is inverted if <P>
+ZIP is generated with &lt;CRPAGE&gt; set to zero. <P>
+ON &lt;option(s)&gt; Sets one or more global options, as described on pages
+2 and 3. If more than one option is given, do not separate with spaces or
+commas. <P>
+OFF &lt;option(s)&gt; Clears one or more global options, same syntax as
+ON. <P>
+OPT Displays options which are currently ON. <P>
+SCA&lt;,F&gt; &lt;num1&gt;:&lt;num2&gt; Displays the current record from
+byte &lt;num1&gt; through &lt;num2&gt;. Multiple lines are used if necessary.
+Under each character is its corresponding column number. The tens digit
+is displayed in normal intensity and overlays the units digit for all columns
+ending in zero. Units digits for all other columns are shown in low intensity.
+If &lt;num1&gt; and &lt;num2&gt; are not given, the entire record is scaled.
+This command is not allowed when positioned at a zero-length record. If
+the 'F' option is given and a REFORMAT is active, the formatted record is
+scaled. <P>
+OCT&lt;,F&gt; &lt;num1&gt;:&lt;num2&gt; Displays the current record in octal,
+from byte &lt;num1&gt; through &lt;num2&gt;. If both parameters are omit-
+ted, the entire record is displayed. This command is not allowed when positioned
+at a zero-length record. If the 'F' option is given and a REFORMAT is active,
+the formatted record is used. <P>
+WID &lt;width&gt; Selects the current terminal width. The &lt;width&gt;
+parameter must be either 80 or 132. 80 is assumed for demand, 132 when batch
+or breakpointed. <P>
+FB These commands work exactly the same as FC and LC, <P>
+LB except that line numbers are not appended to text that is printed when
+matching strings are found. <P>
+FR These commands work exactly the same as FIND and <P>
+LR LOCATE, except that ZIP will return to the starting record if no matching
+string is found. <P>
+New or enhanced basic commands (continued) <P>
+HELP &lt;topic&gt; This activates the online HELP facility. &lt;Topic&gt;
+is either a ZIP command or a general information category, such as FIELD
+or SYMBOL. If &lt;topic&gt; is not given, a list of topics is displayed.
+Some topics have sub-topics for more detailed information. When using the
+HELP facility, the prompt is: HELP [topic]. To get a list of topics, enter
+a question mark. To return to basic HELP mode and/or to ZIP command input
+mode, enter a carriage return. <P>
+IF &lt;identifier&gt; These commands are used to selectively execute one
+or ELSE more following commands depending on the success or IFEND failure
+of the last FIND or LOCATE command. The &lt;identifier&gt; must be one of
+the following: <P>
+F$ (Last F,FC,FB or FR was successful) <P>
+NF$ (Last F,FC,FB or FR was not successful) <P>
+L$ (Last L,LC,LB or LR was successful) <P>
+NL$ (Last L,LC,LB or LR was not successful) <P>
+The &lt;IF&gt; command is used to start a sequence. The &lt;ELSE&gt; command
+may optionally follow &lt;IF&gt; to handle the opposite condition. The &lt;IFEND&gt;
+command terminates a sequence. It is possible to nest &lt;IF&gt; sequences
+to any depth that is desired (ELSE will always be applied to the innermost
+&lt;IF&gt; in the nest). LOOPs may contain IF...ELSE...IFEND sequences,
+or may be contained within them, but loops cannot be nested within loops.
+<P>
+SLV &lt;letter&gt; Sets the value of the specified line variable (a single
+letter, A-Z) to the current line number. Line variables may be used in place
+of numbers with the following com-mands: P, LNP, O, Q, LNQ, EXT, WRITE,
+SITE, LNS, COUNT. The letter 'N' is reserved and always refers to the cur-
+rent line number. This feature was added so a batch run could use the LOCATE
+command to find the starting and ending line numbers for an extracted subset
+of the input file. For example:
+<MENU>
+  <LI>L &lt;start target&gt;
+  <LI>SLV A
+  <LI>L &lt;end target&gt;
+  <LI>EXT &lt;file&gt; A N
+</MENU>
+<H1>5. Text reformatting capability</H1>
+In addition to the commands already described, ZIP also has an internal
+reformatting capability. When activated with the REF command, this will
+cause specified substrings and/or COMP fields from each input record to
+be translated in sequence. Each reformatted record will then replace its
+corresponding 'raw data' record for display and search purposes. The following
+commands control the reformatting process: <P>
+<CODE>REF &lt;field1&gt; &lt;field2&gt; ... &lt;fieldn&gt; Initial REFORMAT
+<P>
+REF+ &lt;fieldn+1&gt; ... &lt;fieldn+x&gt; Append additional fields <P>
+REF? Display current field parameters <P>
+UNF Deactivate reformatting <P>
+REF Re-activate w/prior parameters <BR>
+</CODE><BR>
+Each field takes the following form: <P>
+&lt;start&gt;:&lt;stop&gt;&lt;,format&gt; where: <P>
+&lt;start&gt; is the first column number to process <P>
+&lt;stop&gt; is the last column number to process <P>
+&lt;format&gt; is one of the following: <P>
+A - Alpha - character string substitution <P>
+AN - Alpha nofill - Same as 'A', no fill characters if the field extends
+beyond the end of the record AP - Alpha packed - same as 'A', fills and
+spaces omitted UC - Unsigned COMP field (max 6 characters) SC - Signed COMP
+field (max 6 characters) <P>
+UP - Unsigned packed - same as 'UC', leading zeroes omitted <P>
+SP - Signed packed - same as 'SC', leading zeroes omitted <P>
+&lt;start&gt; and &lt;stop&gt; are required. &lt;format&gt; is optional
+and defaults to 'A' if none is specified. <P>
+For example, suppose a data record was defined as follows:
+<PRE>
+
+01	MASTER-RECORD.
+
+         02    EMP-SSN         PIC   X(9).                (cols 1-9
+
+         02    EMP-NAME        PIC   X(30).                     10-39
+
+         02    EMP-ADDRESS     PIC   X(60).                     40-99
+
+         02    EMP-VAC-HRS     PIC   9(5) COMP.                 100-101
+
+         02    EMP-SICK-HRS    PIC   9(5) COMP.                 102-103
+
+         02    EMP-BASE-PAY    PIC   9(10) COMP.                104-107)</PRE>
+If you wanted to see name, SSN, vacation, sick and base pay you could reformat
+this record as follows:
+<PRE>
+
+REF  10:39  1:9  100:101,UC  102:103,UC  104:107,UC</PRE>
+Reformatted records can also contain literal text. This is useful for preparing
+simple reports and for clear separation and identification of data fields.
+Literal text is specified within quoted strings which can be interspersed
+between fields on the REFORMAT command. For example:
+<PRE>
+
+REF  'Name = ' 10:39  ' SSN = ' 1:9 ' Vacation hrs = ' 100:101,UC
+
+REF+  ' Sick hrs = ' 102:103,UC ' Base pay = ' 104:107,UC</PRE>
+When a field extends beyond current record limits, its position in the reformatted
+record is wholly or partially replaced with fill char- acters. The default
+fill character is the period. The FILL command is used to override the default.
+<H3>FILL &lt;new character or space&gt;</H3>
+Fields of the 'AN' format (alpha nofill) are not replaced with fill characters
+if they extend beyond the record limit. In this respect, they can be of
+variable length. An 'AN' field that is totally outside the original record
+will add no characters to the reformatted record. <P>
+Fields of the 'AP' format (alpha packed) are similar to 'AN' except that
+spaces are removed as well. 'AP' fields can always be of variable length.
+A typical use of this format would be formation of ECL output with a columnar
+list of qualifiers and filenames as input. For example:
+<PRE>
+
+REF  '@PRT,F '  1:12,AP  '*'  13:24,AP  '('  25:27,AP  ').'</PRE>
+Fields which are not separated by a quoted string are separated by one character.
+The default ASCII separator is a vertical bar and the default Fieldata separator
+is a colon. The SEP command is used to override the default. <P>
+<CODE>SEP &lt;new character or space&gt; </CODE>
+<H3>SEP,T This will make the separator an ASCII tab (011). The records must
+be ASCII. Useful for upload to MAPPER. <P>
+SEP,N This will suppress all separation between fields, except literal text
+if present in the REFORMAT command. </H3>
+<H1>6. Symbol definition</H1>
+The DEFINE command allows a symbol to be used to describe a specific field
+in a data record. The symbol can be used with the REFORMAT or SELECT commands
+instead of the long format whenever desired. Up to 500 symbols can be defined.
+<H3>DEFINE &lt;symbol&gt; &lt;start&gt;:&lt;stop&gt;&lt;,format&gt; </H3>
+&lt;symbol&gt; can be 1-12 alphanumeric characters, including '$' and '-'.
+<P>
+The first character may not be a number. The same symbol can be redefined
+as often as desired. <P>
+&lt;start&gt;:&lt;stop&gt;&lt;,format&gt; is identical to the field definition
+specification as used with REFORMAT. <P>
+Example:
+<PRE>
+
+DEF  EMP-SSN  1:9         (refer to section 5, reformatting)
+
+DEF  EMP-NAME  10:39
+
+DEF  EMP-ADDRESS  40:100
+
+DEF  EMP-VAC-HRS  100:101,UC
+
+DEF  EMP-SICK-HRS  102:103,UC
+
+DEF  EMP-BASE-PAY  104:107,UC</PRE>
+Note that the names do not necessarily have to be the same as the COBOL
+data definitions, it just makes it easier if they are similar. <P>
+The REFORMAT in the examples on pages 7,8 could then be given as follows:
+<PRE>
+
+REF  EMP-NAME  EMP-SSN  EMP-VAC-HRS  EMP-SICK-HRS  EMP-BASE-PAY     or:
+
+REF  'Name = ' EMP-NAME ' SSN = ' EMP-SSN  &lt;etc.&gt;</PRE>
+Symbols can also be used with a subscript. For example:
+<PRE>
+
+     02  ACCT-NUM          PIC X(10)                      (cols 1-10
+
+         04  SUB-ACCT  OCCURS 5 TIMES  PIC 9(5) COMP.           10-20)</PRE>
+To reformat the master account and sub-accounts 2 and 5, you could: <P>
+DEFINE ACCT-NUM 1:10 DEFINE SUB-ACCT 11:12,UC REFORMAT ACCT-NUM SUB-ACCT(2)
+SUB-ACCT(5) <P>
+Symbols can be displayed using the DISPLAY command.
+<H3>DISPLAY &lt;symbol&gt;</H3>
+This shows the value of &lt;start&gt;,&lt;stop&gt;, and &lt;format&gt; for
+the symbol desired. If &lt;symbol&gt; is omitted, all defined symbols are
+listed. <P>
+Symbol definition (continued) <P>
+Once a set of symbols has been defined, it can be saved for future use with
+the SAVE command. SAVE has no options or parameters. Saved symbols are written
+to an omnibus element in the ZIP library file: <P>
+SYS$*ZIPLIB$.&lt;qualifier/filename&gt; . Symbols can only be saved when
+reading a FILE (not an element). The SAVE command can be used as often as
+desired. The most recent set of saved symbols overrides all previous sets.
+<P>
+When the same file is read again with ZIP, the ZIPLIB$ file is searched
+for a matching set of saved symbols. If found, the symbols are restored
+during processor initialization. If the same set of saved symbols is desired
+while reading a different file (or element), the symbols can be restored
+to the current ZIP session with the command: <P>
+<CODE>LOAD[,M] &lt;qualifier&gt;*&lt;filename&gt;. <BR>
+</CODE><BR>
+The qualifier and filename are required and must match the previous name
+exactly. The symbol table is erased prior to the load unless the 'M' (merge)
+option is given. This preserves existing symbols except when a loaded symbol
+matches an existing symbol, in which case the new symbol replaces the old.
+<P>
+If a symbol is no longer needed, it can be removed with the UNDEFINE command.
+If the set of symbols is saved again, the deletion will become permanent.
+<PRE>
+
+UNDEFINE  &lt;symbol&gt;</PRE>
+<H2>6.1. Reserved symbols</H2>
+There are two reserved symbols that cannot be defined, deleted or saved.
+They can be used in REFORMAT, SELECT or KEY parameter lists. <P>
+&lt;RL$&gt; represents the length of the current record in characters. It
+<P>
+is an unsigned COMP field of five characters. When used in a reformatted
+record, &lt;RL$&gt; refers to the original record length. When reformatted
+records are being sorted, &lt;RL$&gt; refers to the formatted record length
+when used as a KEY parameter. <P>
+&lt;RN$&gt; represents the current record number. It is an unsigned COMP
+<P>
+field of seven characters. In sort operations, &lt;RN$&gt; always refers
+to the original record number.
+<H1>7. Record selection</H1>
+The SELECT command provides a powerful method to affect selection of a subset
+of records from a file or element based on the contents of one or more data
+fields. The format is as follows: <P>
+<CODE>SEL[,opt] &lt;field&gt;&lt;comp&gt;&lt;literal&gt; AND|OR &lt;f,c,l&gt;
+... Initial SELECT <P>
+SEL[,opt]+ AND|OR &lt;f,c,l&gt; ... Append more criteria <P>
+SEL? Display criteria <P>
+UNS Deactivate selection <P>
+SEL[,opt] Re-activate</CODE> with prior criteria <P>
+Each criteria takes the following form: <P>
+&lt;field&gt; is either &lt;start&gt;:&lt;stop&gt;&lt;,format&gt; (same
+as REFORMAT) <P>
+or &lt;symbol&gt;&lt;(subscript)&gt; <P>
+&lt;comp&gt; is one of the following: <P>
+'=' (equal) '&lt;&gt;' (not equal) <P>
+'&lt;' (less than) '&lt;=' (less than or equal) <P>
+'&gt;' (greater than) '&gt;=' (greater than or equal) <P>
+'*=' (contains string) '*&lt;&gt;' (does not contain string) <P>
+&lt;literal&gt; is either: <P>
+&lt;'quoted string'&gt; or &lt;number&gt; <P>
+Examples:
+<PRE>
+
+SEL  1:5='@ACOB' OR 1:3='END'
+
+SEL  EMP-VAC-HRS &gt; 0 OR EMP-SICK-HRS &gt; 0  SEL  SUB-ACCT(2) &gt; 4 AND SUB-ACCT(2) &lt; 13 SEL+  OR SUB-ACCT(3)=0 SEL  EMP-NAME *= ', JOHN'   (Select any employee with first name JOHN)</PRE>
+Parenthesis may also be used to specify the order of evaluation of selection
+criteria. Left parenthesis may precede any complete criteria and right parenthesis
+may follow any complete criteria. Parenthesis may not be used within criteria,
+except as subscript delimiters. Examples:
+<PRE>
+
+SEL  (1:3='ABC' OR 1:3='XYZ') AND 4:6='DEF'   SEL  (EMP-SSN &gt; 100000000 AND EMP-SSN &lt; 900000000) SEL+  AND ((EMP-VAC-HRS &gt; 0 OR EMP-SICK-HRS &gt; 0) OR SUB-ACCT(3) &gt; 0)</PRE>
+It is important that the number of left and right parenthesis be the same
+in each set of criteria supplied with SELECT or SELECT+ . It is not possible
+to use SELECT+ to continue an expression which begins with un- matched parenthesis.
+When it would be difficult or impossible to specify a matched expression
+on a single command line, the input may be continued using the semicolon
+(;). More about this in the next section. <P>
+Record Selection (continued) <P>
+The following options can be given with the SELECT command: <P>
+X - Invert the selection criteria. This will select all records that <P>
+would NOT have been selected with the standard usage, and bypass all records
+that would have been selected. <P>
+I - This will reestablish normal selection after the 'X' option has <P>
+been used, without the need to re-input selection criteria. These two options
+can be used with complex criteria to separate an input file into two inclusive
+non-overlapping subsets. <P>
+P - This option is used (without additional parameters) to establish a <P>
+&quot;canned&quot; selection criteria that can be used (with &lt;P!&gt;)
+to display the most-often-interrogated portions of a breakpointed ECL file.
+<P>
+The following records will be selected:
+<PRE>
+
+          1:1='@'                            (any ECL command)
+
+      OR  1:3='END'                          (processor status line)
+
+      OR  ( 1:3=' **' AND 10:80*='SEV.' )    (COBOL error messages)</PRE>
+N - This will cause ZIP to remain positioned at the current record, even
+<P>
+if it is not selected by the new criteria. This option can be used with
+either &lt;SELECT&gt; or &lt;SELECT+&gt;. <P>
+General selection rules:
+<MENU>
+  <LI>1) All SELECTs work against the original (unformatted) record, even
+if a REFORMAT is in effect. If a SELECT is active, each record must meet
+the selection criteria before further processing is allowed. Unselected
+records are not printed, written out or searched. This applies to the following
+commands:
+</MENU>
+<H2><CODE>P, LNP, O, Q, LNQ, L, LC, LB, LR, F, FC, FB, FR, EXT, WRITE, SITE,
+LNS</CODE></H2>
+<MENU>
+  <LI>2) Executing the SELECT command (or SELECT+) will position to the
+next record in the file that meets the selection criteria, unless the 'N'
+option is used. From then on, an active SELECT establishes a 'program state'
+which can affect other commands (above).
+  <LI>4) When a RANGE of records is specified, i. e. 'P 1 100', only selected
+records are processed (in this case printed) and the user is left positioned
+at the last record of the range, regardless of whether or not it was selected.
+  <LI>4) When a COUNT of records is specified, i. e. 'P 100', the next &lt;n&gt;
+selected records are processed and the user is positioned at the last record
+processed.
+  <LI>5) When positioning to a SPECIFIC record or when positioning in the
+backward direction, i. e. '-100', the specific record is addressed. It is
+not printed, however, if it has not been selected.
+</MENU>
+<H1>8. Command continuation</H1>
+The SELECT, REFORMAT and KEY commands allow many parameters to be active
+at one time. It is often impossible to specify all desired parameters on
+a single command line. One way to specify additional parameters is with
+the SEL+, REF+ and KEY+ commands. This will work in most cases, but not
+all. Another way to enter a large number of parameters with these commands
+is by using the semicolon (;) to continue the command onto the next input
+line. <P>
+Continuation is allowed only with SELECT, REFORMAT and KEY. When a semicolon
+is encountered anywhere except within a quoted string, the com- mand scan
+is halted at that point and a continuation line is solicited by:
+<H2>C-&gt;</H2>
+Scanning resumes with the first character of the next line. Several lines
+may be entered in sequence in this manner. Input is terminated and the completed
+command is processed when a line is entered without a semi- colon. The maximum
+allowed length of all continued lines in a group is approximately 2000 characters.
+Examples: <P>
+<CODE>100: SEL (10:10=2 OR 10:10=3 OR 10:10=6 OR 10:10=8 ; <P>
+C-&gt; OR 10:10=9 OR 10:10=12) AND (14:20&lt;&gt;'XXX;YYY' OR 30:30='X'
+; <P>
+C-&gt; OR 30:30='Y' OR 30:30='Z') <P>
+200: REF 'Name = ' 10:32 ' Address = ' 40:68 ' Zipcode = ' 78:82 ; <P>
+C-&gt; ' Phone = ' 120:128 ' Emp. ID = ' 1:9 </CODE>
+<H1>9. Counting of selected records</H1>
+When using SELECT, it may occasionally be necessary to find out how many
+records in a given range (or within the whole file) match the current selection
+criteria. The COUNT command provides this information with a minimum of
+additional processing overhead. The command is as follows:
+<H2><CODE>COUNT&lt;!&gt; &lt;n1&gt; &lt;n2&gt;</CODE></H2>
+The parameter format is exactly the same as PRINT. The matching count is
+displayed and the user is positioned at the end of the range. The COUNT
+command may only be given when a SELECT is active.
+<H1>10. Data extraction</H1>
+The EXTRACT command is used to write out all or part of a file or element
+to another file or element. The output type (file/elt) does not have to
+be the same as the input type. The format and action of EXTRACT is the same
+as PRINT (P), except that the output file/element must be named directly
+following the command.
+<H3><CODE>EXT&lt;,opt&gt;&lt;+|!&gt; &lt;filename.&gt;&lt;elt/version&gt;
+&lt;n1&gt; &lt;n2&gt;</CODE></H3>
+The output file must exist (catalogued or assigned temporary) and if an
+element/version is given it must either be empty or be a program file. The
+action of this command will create a new file or element, NOT append to
+existing data. If a SELECT is in effect, only those records which meet the
+selection criteria are written to the output file. In all cases, only records
+within the range specified are output. Examples: <P>
+<CODE>EXT DATA-OUT. 1 100 Writes records 1 thru 100 <P>
+EXT+ PROG1.DATA1 200 Writes the next 200 records <P>
+EXT! PROG1.DATA2/VERS1 Writes the entire file <BR>
+</CODE><BR>
+If a REFORMAT is in effect when an EXT command is given, the normal action
+is to ask the user whether formatted or unformatted records are to be output.
+If the 'F' or 'U' option is given, the corresponding record type is output
+without the preliminary query/response. If the input file is a print file
+and formatted output records are being written, use of the 'S' option will
+preserve original line spacing. <P>
+-------------------------------------------------------------------------
+<P>
+An alternate method of data extraction is available if it is desired to
+write multiple groups of records to the same output file or element. This
+is done with the OPEN, WRITE, and CLOSE commands.
+<MENU>
+  <LI>OPEN&lt;,opt&gt; &lt;filename.&gt;&lt;elt/version&gt;
+  <LI>WRITE&lt;,opt&gt;&lt;+|!&gt; &lt;n1&gt; &lt;n2&gt;
+  <LI>WRITE
+</MENU>
+. <P>
+.
+<H2>WRITE</H2>
+<H3>CLOSE</H3>
+The output file must exist and meet the same conditions required for EXTRACT.
+Also, it will be assigned exclusively until closed. The 'F' or 'U' option
+must be given with OPEN and will be the default record type unless overridden
+on the WRITE command. WRITE has three other options for printfile output:
+'T' inserts a top-of-page and 'P' a laser page feed preceding the output
+records. If formatted records are being written, use of the 'S' option will
+preserve original line spacing. <P>
+Only one file can be open at a time. While an output file is open, the EXT,
+SITE and LNS commands are not allowed. All other commands remain fully functional.
+<H1>11. Onsite printing</H1>
+The SITE and LNSITE commands work the same as their counterparts in the
+@ED processor. The selected range of records are written to an internally-created
+file and the file is SYMmed to the desired site. All records which exceed
+132 characters (124 for LNSITE) are split into as many output lines as required,
+so truncation will not occur at the printer. Carriage control for print
+files is removed, as are print control records. A user-supplied page heading
+is inserted in the output. The site-id parameter defaults to PR (the onsite
+printer) if not given. <P>
+Format:
+<PRE>
+
+SITE&lt;,opt&gt;&lt;+|!&gt; &lt;n1&gt; &lt;n2&gt;  &lt;site-id&gt;
+
+LNS&lt;,opt&gt;&lt;+|!&gt; &lt;n1&gt; &lt;n2&gt;  &lt;site-id&gt;</PRE>
+Examples:
+<PRE>
+
+SITE  1 250  HOLDQ
+
+LNS!  PR</PRE>
+If a SELECT is in effect, only selected records are sent to the printer.
+If a REFORMAT is active, the user is asked for the type of record to output.
+As with EXTRACT, the 'F' or 'U' option can be used to omit the need for
+the query/response.
+<H1>12. Sorting</H1>
+Output files and elements can be sorted before being written. The KEY command
+specifies the sort key(s) and sort order and is specified as follows:
+<PRE>
+
+  KEY  &lt;field1&gt;[,A|,D] ... &lt;fieldn&gt;[,A|,D]     Initial KEY
+
+  KEY+  &lt;fieldn+1&gt;[,A|,D]  ...                 Append additional sort keys
+
+  KEY?                                         Display current sort keys</PRE>
+&lt;field&gt; is either &lt;start&gt;:&lt;stop&gt;&lt;,format&gt; (same
+as REFORMAT) <P>
+or &lt;symbol&gt;&lt;(subscript)&gt; <P>
+The first field is required, others are optional. Each field may be followed
+with either 'A' or 'D' to indicate ascending or descending sort order. If
+not specified, ascending order is the default. Key fields are always specified
+from most significant to least significant. If reformat- ted records are
+being sorted, the key fields apply to the unformatted record. It is not
+necessary that the key be contained in the reformatted record in order to
+use its data to determine the sort order. <P>
+Once keys have been defined, the SDEF command may optionally be used to
+set sort parameters. The parameters are approximated if not specified, but
+it is sometimes necessary and usually more efficient to use this command,
+as follows:
+<PRE>
+
+SDEF  DATA=&lt;A|F&gt;,NUM=&lt;record-count&gt;,RSZ=&lt;record size&gt;</PRE>
+The DATA parameter specifies the character set of output records (ASCII
+or Fieldata). If not given, the character set of the first record is used.
+<P>
+The NUM parameter specifies the number of records to sort. This is approximated
+from the size of the input file, but if the input file is large and only
+a few records are to be sorted, it is much more efficient to specify it
+here. <P>
+The RSZ parameter specifies the maximum record size in characters. This
+is required if if unformatted records with more than 132 records are to
+be sorted, except when using a PCIOS file for input. If the maximum record
+size is known, it is always best to specify it here. <P>
+After sort keys and parameters have been defined, a sort can be initiated
+by using the 'K' option on any of the following commands: <P>
+EXTRACT, OPEN, SITE or LNSITE. ZIP uses the SORT/MERGE product to perform
+all requested sorts. This code is normally non-resident to mimimize memory
+use. At most one scratch file will be allocated for a sort, so large sorts
+(more than 1000 tracks) are best performed using some other product.
+<H1>13. Processing of PMD-format printfiles</H1>
+The FIND ADDRESS commands can be used when reading a printfile which contains
+dump output from the PMD processor. They make it very easy to locate specific
+addresses within the dump.
+<MENU>
+  <LI>FA &lt;absolute address&gt;
+  <LI>FAR &lt;relative address&gt;
+</MENU>
+Starting from the current position, the input file is searched for the next
+record which contains the address specified. The first column of addresses
+is searched for relative addresses, the second for absolute addresses. The
+&lt;address&gt; parameter must be in octal format - the leading zero may
+be omitted. If &lt;address&gt; is not given, the previous value is used.
+Either command can be followed with a question mark to display the previous
+values. <P>
+When a find is made, the most recent non-numeric line of text is displayed
+first. This is usually the header which contains the element name, bank
+name and location counter information. Nothing is displayed prior to the
+current line if no non-numeric text was encountered. If the address requested
+occurs within a 'LINES SKIPPED' message, the address of the first word of
+data within the group is also displayed. <P>
+These commands operate only with PMD-format dumps, and require very specific
+input data. If the addresses do not begin in the correct columns or if the
+'SKIPPED' messages are in a different format, it is unlikely that the requested
+address will be located. The commands will not operate if a SELECT or REFORMAT
+is in effect, and processing will halt if any record is encountered which
+is longer than 132 characters.
+</BODY>
+</HTML>

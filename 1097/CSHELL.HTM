@@ -1,0 +1,3433 @@
+<!--This file created 5/30/97 7:48 PM by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>CSHELL</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=66 BOTTOM=768 LEFT=8 RIGHT=538>
+<!doctype html public "-//IETF//DTD HTML//EN"> <META NAME="OPERATOR" CONTENT="Keith C Stone">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1>1. Introduction</H1>
+
+<P>A shell such as CSHELL provides the user the ability to create a
+working environment tailored to his or her liking. The user has
+control over every command entered. In addition to this powerful
+capability, CSHELL comes complete with a complement of time saving
+and useful features and processors. CSHELL was developed with the
+UNIX C-shell in mind. Some of its main features are:</P>
+
+<P>- ALIASING: This allows one to alias (name) any command or
+multiple commands to a new command name of their choice.</P>
+
+<P>- HISTORY BUFFER: Each command which is entered is saved in a
+buffer and can be displayed or re-executed at any point. An option
+exists to save this buffer across OS1100 sessions (see SAVHIST under
+Environmental variables).</P>
+
+<P>- REDIRECTION: An easy way to redirect the output of any command
+or multiple commands to a file or element.</P>
+
+<P>- PIPES: Used to redirect the output from one command as input to
+another command.</P>
+
+<P>- SEARCHPATH: One can define a path of program files to search for
+a particular processor to execute (similar to paths used by UNIX and
+MS-DOS).</P>
+
+<P>- And much much more including internal processors such as the
+decimal/octal calculator, GREP (used to search for string(s) in data
+files, program files, and elements), and SCRIPTS.</P>
+
+<P>CSHELL was developed to fill a 'hole' between the OS1100 control
+language ECL and the user. It is meant to greatly enhance the ECL
+environment without eliminating it (see section under ECL
+Compatibility for more information).</P>
+
+<P>Because CSHELL was written to be as compatible as possible with
+the ECL environment we are all familiar with, the new CSHELL user
+should be able to start using CSHELL after completing the SETUP
+section and then learn CSHELL's features as time permits.</P>
+
+<P>Since examples can sometimes explain what pages of description
+can't, there are many scattered throughout this documentation. The
+processors used in some of the examples may not be available on your
+system but should give a general idea of the topic being discussed.
+</P>
+
+<P>Note that throughout the documentation, a '-&gt;' represents an
+SOE and is meant to signify a command entered at the CSHELL prompt.
+</P>
+
+<H1>2. Setup</H1>
+
+<P>If CSHELL does not exist on your system (look for the existence of
+the file "CSHELL*CSHELL."), create and secure the file
+"CSHELL*CSHELL." and copy CSHELL into it. CSHELL will ONLY work when
+executed from "CSHELL*CSHELL.". The most recent version of CSHELL
+will always be available on RS07.</P>
+
+<P>Once CSHELL is installed on your system, follow these steps to
+create your CSHELL source file and begin using CSHELL.</P>
+
+<P>1. Enter "@CSHELL*CSHELL.CSHELL"</P>
+
+<P>2. You will be asked to enter your SOURCE file or transmit if you
+would like one created. Hit transmit at this point to create your
+source file.</P>
+
+<P>3. You will be asked to enter the name of the source file you
+would like initialized for CSHELL. The file can be existing or not.
+If it exists, it must be a program file. If it does not exist, a
+private program file will be cataloged and CSHELL will solicit for
+the secured project ID to save the file under. "CSHELL." would be a
+good file name.</P>
+
+<P>4. CSHELL will copy 6 default elements into your source file. They
+are:</P>
+
+<PRE>                            ALIAS   
+                            CHIST   
+                            LOGIN   
+                            LOGOUT  
+                            PROMPT  
+                            CLIST   
+&nbsp;</PRE>
+
+<P>These elements will be referred to as your .ALIAS, .CHIST, etc.
+elements and will be described in detail in this documentation.</P>
+
+<P>5. At this point your source file has been initialized and you are
+running in the CSHELL environment. Next time you start CSHELL, pass
+your source file name as parameter 1 on the call line. Since CSHELL
+is an environment rather than a tool, you will probably want to start
+up CSHELL automatically when you sign on to the OS1100. To do this,
+put the call to CSHELL (including the name of your source file) as
+the last line in your OS1100 sign on ADD stream.</P>
+
+<P>6. At any point, enter "EXIT" to exit CSHELL. Type "@CSHELL" to
+return to the point you exited CSHELL.</P>
+
+<P>7. Special options on the call line:</P>
+
+<P>-A- The 'A' option on the CSHELL call line enables CSHELL's auto
+recovery mechanism. This means that if your OS1100 session terminates
+abnormally (system failure or @@TERM), when you sign onto the system
+again, CSHELL will ask if you would like to recover your last CSHELL
+session. If you do, CSHELL will start up where you left off. The
+items which are recovered are your history buffer and any temporary
+aliases you had set up. Note that this option is only for the initial
+call to CSHELL (@CSHELL*CSHELL.CSHELL) not the @CSHELL to return to
+CSHELL after an EXIT. Recovery is automatic on the in the case of
+executing an @CSHELL after EXITing CSHELL.</P>
+
+<P>-T- The 'T' option on the initial call to CSHELL inhibits the COPY
+of CSHELL*CSHELL.RELOAD into TPF$.CSHELL. The copy is done so that if
+you EXIT CSHELL, you only have to type @CSHELL to return to where you
+left off. You can execute @CSHELL*CSHELL.RELOAD after EXITing CSHELL
+but it is longer to type. This option was added to give the CSHELL
+user the choice of where to put this absolute. You can COPY the
+absolute CSHELL*CSHELL.RELOAD to your own cataloged file and execute
+it out of there if you EXIT CSHELL. Note that specifying the 'T'
+option will shorten the initial sign on to CSHELL as the FURPUR COPY
+is avoided.</P>
+
+<H1>3. Help</H1>
+
+<P>Help is available on-line from CSHELL by executing HELP. The
+on-line help has direct access to each topic as well as simple
+searching capabilities. Keep in mind that the help screens can be
+piped to GREP or your favorite editor for more intensive searching.
+e.g.</P>
+
+<PRE> -&gt;help | uedit </PRE>
+
+<P>The above example would pipe the help documentation to UEDIT for
+viewing.</P>
+
+<P>The documentation is in SYMable form in the elements
+CSHELL*CSHELL.HELP-SYM and CSHELL*CSHELL.HELP-SYM/EPS9290-90.
+HELP-SYM is SYMable to any standard ASCII printer while
+HELP-SYM/EPS9290-90 is SYMable to the EPS9290-90 (CRONUS) printer
+which provides a nicer looking document. Simply @COPY,I the desired
+element into an SDF file and @SYM it to the printer of your choice.
+</P>
+
+<P>The documentation is also available in UNADS and COMADS format in
+the elements CSHELL*CSHELL.HELP/UNADS and CSHELL*CSHELL.HELP/COMADS
+respectively. You can convert the UNADS source to a SYMable version
+by executing the following:</P>
+
+<PRE> @USE UNADS$PF.,UNADS*UNADS13R1ML1.     . Or the current level  
+ @UNADS,E CSHELL*CSHELL.HELP/UNADS,,Proof.,Final.,UNADS$PF. 
+ [FORMB,1100]   
+ @EOF   
+ @SYM Final.,1,&lt;queue&gt;  </PRE>
+
+<P>The file "Proof." and "Final." must be cataloged before calling
+UNADS (the names don't have to be Proof and Final). The statement
+"[FORMB,1100]" specifies the printer this document is destined for.
+This example specifies a general ASCII printer (used to produce
+HELP-SYM). The statement used to produce output for an EPS9290-90
+(CRONUS) printer would be "[FORMB,UN92]" (used to produce
+HELP-SYM/EPS9290-90).</P>
+
+<P>Hard copies of the documentation from an EPS9290-90 (CRONUS)
+printer are also available at my cube (location given at the end of
+the Introduction section).</P>
+
+<P>Note: These documents are one in the same with the on-line help.
+</P>
+
+<H1>4. ECL Compatibility</H1>
+
+<P>CSHELL was developed to enhance the ECL environment but not
+eliminate it. Its emulation of the ECL environment means that the new
+user can start using CSHELL without having to learn all its features
+or change the way he/she programs. Over time the user can then learn
+the more advanced capabilities of CSHELL.</P>
+
+<P>Unfortunately, the emulation falls short of exact. The impact of
+the differences depends upon the user and the processors he runs.
+There are really two main differences between ECL and CSHELL's
+emulation of the ECL environment and they are as follows:</P>
+
+<H2>4.1. Entering Control Statements From Within Processors</H2>
+
+<P>The ECL environment allows you to enter control statements at any
+time. If you happen to be in a program at the time, that program will
+exit and your control statement will be executed. For example, if you
+are in @MAIL, you could enter "@UEDIT" from the MAIL prompt and cause
+MAIL to exit and UEDIT to start up.</P>
+
+<P>In the UNIX and MS-DOS operating systems, there is no such thing
+as a control statement. The only way out of an interactive program
+was either defined by the program (quit, exit, F1) or done by
+interrupting it (^c). For those people who have been entering control
+statements from within processors for many years, this difference
+could take some time to get used to.</P>
+
+<P>CSHELL tries to help this problem by offering an option. There is
+a configurable CSHELL variable called 'CLIST' which pertains to this
+situation. This variable is set in your .LOGIN element upon signing
+on to CSHELL and can be changed at anytime from the command line (SET
+CLIST=1 or SET CLIST=0). If CLIST=0 and you enter a control statement
+while not at the CSHELL prompt (executing a program), that control
+statement will ALWAYS get executed but CSHELL will terminate (you
+must enter @CSHELL to return to where you left off). If CLIST=1
+(default), CSHELL will try to execute the control statement itself
+via the ER CLIST$. If the control statement is not in CSHELL's list
+or your own configurable list, it will be ignored. If CLIST = 1,
+CSHELL will not terminate. See CLIST under the .LOGIN section of this
+manual.</P>
+
+<H2>4.2. Reusable Processors</H2>
+
+<P>Reusable Processors are programs which when finished, query for
+more input just in case the next command is another call to itself.
+</P>
+
+<P>The purpose of making a program "reusable" is to decrease the
+overhead of loading the processor for each successive execution of
+it. The benefit of this was geared towards the batch environment
+where you might have many executions of a given processor in a row
+and if that processor is reusable, it would only have to be loaded
+once.</P>
+
+<P>There are two types of reusable processors, CLISTed and non
+CLISTed. I will discuss the non CLISTed processors first.</P>
+
+<P>Non CLISTed processors will exit if an @EOF is entered. This means
+that after the program has finished and you are sitting at a single
+SOE (not your CSHELL prompt), entering "@EOF" will return you to
+CSHELL. Examples of these processors are all FURPUR commands and
+other FURPUR-like processors such as TTC*LIB.PRT or EDIT*EDIT.PRT.
+CSHELL recognizes all FURPUR commands and takes care of the "@EOF"
+for you. In the case of other non CLISTed processors, CSHELL provides
+a mechanism for them too. If a command is preceded by a '%', CSHELL
+will place an "@EOF" after the execution of the command. You can hide
+this in an alias as follows:</P>
+
+<PRE> -&gt;SET dir = '%edit*edit.prt,t' 
+ -&gt;dir File.
+&nbsp;</PRE>
+
+<P>The "DIR" alias hides the fact that EDIT*EDIT.PRT is a reusable
+processor so the user doesn't have to worry about it.</P>
+
+<P>This brings us to the CLISTed processors. These include such
+programs as ED, MASM, PLS, PDP, and DCL. The difference here is that
+an "@EOF" will not terminate the program. What is needed to terminate
+CLISTed processors is "@ENDX". For example, to MASM a program from
+CSHELL you could enter:</P>
+
+<PRE> -&gt;@masm,sey ,rel   
+ -&gt;@add masm.program
+ -&gt;@endx
+&nbsp;</PRE>
+
+<P>The above sequence will do what you want and return you to CSHELL.
+The key is entering "@ENDX" in the place of "@EOF". This can be
+incorporated into an alias, again to hide the 'problem'. e.g.</P>
+
+<PRE> -&gt;SET masm = '[@masm &amp;*1;@endx]'   
+ -&gt;masm,sey masm.program,rel</PRE>
+
+<P>The above command would create and ADD the following:</P>
+
+<PRE> @MASM,SEY MASM.PROGRAM,REL 
+ @ENDX  </PRE>
+
+<P>ED is a special case in that we can't put an "@ENDX" in the ADD
+stream or ED will exit right after it starts. If you are using ED in
+an ADD stream to perform some kind of manipulation of a file, adding
+the "@ENDX" will work. If you want to stay in ED to do editing, you
+must enter an "@ENDX" to return from ED. Entering "@ENDX" from ED
+will result in the same thing as entering "EXIT" or "@EOF" except you
+will return to CSHELL. If you want to "OMIT" from ED, you must "OMIT"
+and then enter "@ENDX".</P>
+
+<P>*IMPORTANT* CSHELL comes with a non-CLISTed version of ED and
+MASM. What this means is that the CSHELL user can alias ED and MASM
+to these programs and not have to worry about entering @ENDX for
+either of them. e.g.</P>
+
+<PRE> -&gt;SET ed   = 'CSHELL*CSHELL.ED'
+ -&gt;SET masm = 'CSHELL*CSHELL.MASM'  </PRE>
+
+<P>With the above aliases in place, you can execute MASM and ED from
+CSHELL as always without worrying about the @ENDX.</P>
+
+<P>Another special case is PDP. This program does not want to exit at
+all. This 'problem' has been known since CTS has been around (if you
+"PXQT" PDP from CTS, you have the same problem getting back to CTS).
+In this situation, I recommend an alias with 2 "@ENDX"s. e.g.</P>
+
+<PRE> -&gt;SET pdp = '[@pdp &amp;*1;@endx;@endx]'   
+ -&gt;pdp pdp.element  </PRE>
+
+<P>By having the 2 "@ENDX"s in the ADD stream, you will get back to
+CSHELL OK but you will get an extra message from the EXEC saying:
+</P>
+
+<P>@ENDX IGNORED - NOT IN CLIST MODE</P>
+
+<P>Hopefully this section has demonstrated how these two
+'incompatibilities' with the ECL environment can be obscured through
+the use of aliases. If you are a new CSHELL user, don't get
+discouraged from using CSHELL because of the above differences with
+ECL. As I mentioned, they may not cause you any grief at all. CSHELL
+offers ECL users a powerful alternative.</P>
+
+<H1>5. Prompt</H1>
+
+<P>CSHELL allows you to customize your prompt. The prompt is
+controlled by the environmental variable "PROMPT" which is SET in
+your .PROMPT element. Associated with the "PROMPT" variable is
+another environmental variable called "NUMON" which is also SET in
+your .PROMPT element. "NUMON" controls whether or not the current
+command number is displayed before your prompt.</P>
+
+<P>To change the "PROMPT" and "NUMON" variables in your .PROMPT
+element, enter the command "PROMPT". The internal command "PROMPT"
+will allow you to edit your .PROMPT element using the editor defined
+by the environmental variable "EDTR". The two lines of interest in
+this element are the lines:</P>
+
+<PRE> SET NUMON  = 1         % Display command number with each query
+ SET PROMPT = 'CSHELL'  % Display this prompt with each query   </PRE>
+
+<P>The '%' indicates in line comments. The variable "NUMON" is SET to
+1 or 0. If "NUMON" is set to 1 (default), the current command number
+is displayed before the prompt. If it is set to 0, the command number
+will not be displayed.</P>
+
+<P>NOTE: If you are saving your history buffer across sessions
+(SAVHIST=1), the initial command number when CSHELL starts will be
+HBUF + 1. See Environmental Variables section for more information on
+these variables.</P>
+
+<P>To change the "PROMPT" variable, simply place what you would like
+as your prompt between the quotes.</P>
+
+<P>When the variables "NUMON" and "PROMPT" are changed in your
+.PROMPT element via the "PROMPT" command, the changes will take
+effect as soon as you leave the editor and are permanent across
+OS1100 sessions. It is also possible to change these variables
+temporarily from the command line using the "SET" command. e.g.</P>
+
+<P>-&gt;SET numon = 0</P>
+
+<P>This will turn off the command number display immediately but only
+for this OS1100 session. Once you FIN off, next time you sign on the
+SET command in your .PROMPT element will take effect.</P>
+
+<P>NOTE: The variables "NUMON" and "PROMPT" cannot be placed in your
+.ALIAS element as they will not be interpreted there.</P>
+
+<H2>5.1. Advanced PROMPT Issues</H2>
+
+<P>The "PROMPT" variable is SET like any other alias (see ALIAS
+section for full description of aliasing). Parameter substitution
+does not work but variable substitution does. For example, assume the
+following variable is set:</P>
+
+<PRE> SET Current_File = 'Some*File.'</PRE>
+
+<P>Now the prompt could be set to:</P>
+
+<PRE> SET PROMPT = 'RS07\\^Current_File' </PRE>
+
+<P>Then your prompt will look like (with NUMON=0):</P>
+
+<PRE> -&gt;RS07\Some*File.-&gt;
+&nbsp;</PRE>
+
+<P>It is also possible to change these variables in a CSHELL ADD
+stream. If you SET NUMON to 0 in "Some*CSHELL.ADD/Stream", entering
+the following will change NUMON to 0:</P>
+
+<PRE> -&gt;&lt; Some*CSHELL.ADD/Stream 
+&nbsp;</PRE>
+
+<P>This idea could be useful in an alias. Let's say you have
+temporarily changed your "PROMPT" and "NUMON" variables and would
+like to change them back to their permanent values in your .PROMPT
+element. This could be done like so:</P>
+
+<PRE> -&gt;&lt; Source.PROMPT  
+             OR 
+ -&gt;SET Reset_Prompt = '&lt; Source.PROMPT'  % reset PROMPT and NUMON   
+ -&gt;Reset_Prompt 
+&nbsp;</PRE>
+
+<P>Now let's assume your Source file is a shared file on a multi host
+file sharing system. It would be nice to have your prompt reflect
+which system you are on. This can be easily accomplished using the
+system variable "_SYSID" (see System Aliases section for more
+details). e.g.</P>
+
+<PRE> -&gt;SET prompt = '^_SYSID:^_URUNID'  </PRE>
+
+<P>The above setting would result in your prompt displaying the
+configured system name followed by a colon followed by your generated
+RUNID.</P>
+
+<P>If you want a system local prompt but don't like the configured
+system id there is a way. The solution is to SET your prompt in a
+CSHELL ADD stream which you execute from your .LOGIN element when you
+sign on to CSHELL. The catch here is that the element (or file)
+containing the CSHELL ADD stream is in a local file by the same name
+on all systems. It would look something like this:</P>
+
+<PRE>  STD#Local*CSHELL.ADD/Stream:            SHARED#Source.LOGIN:  
+ .                                            . 
+ SET PROMPT = 'RS07'                          &lt; Local*CSHELL.ADD/Stream 
+ .    </PRE>
+
+<P>.</P>
+
+<P>Since the .LOGIN element is executed after the .PROMPT element is
+read, the setting of the prompt in Local*CSHELL.ADD/Stream will
+override what is in your shared .PROMPT element.</P>
+
+<P>You can also place any commands, aliases, or variables in each
+Local*CSHELL.ADD/Stream which is relevant to that particular system.
+</P>
+
+<H1>6. History Buffer</H1>
+
+<P>CSHELL remembers each command you enter at the CSHELL prompt.
+CSHELL provides an easy and useful mechanism to review, modify, and
+reexecute past commands. The internal command "H" will display your
+history buffer. The number of past commands which are displayed
+depends upon the environmental variable "HBUF". "HBUF" is usually SET
+in your .LOGIN element but can be changed at any time at the CSHELL
+prompt:</P>
+
+<PRE> -&gt;SET hbuf = 20</PRE>
+
+<P>The default value for HBUF is 20 as 20 commands can fit on one
+screen. If HBUF is set to a larger number than will fit on one
+screen, CSHELL will display the commands one page at a time. It is
+also possible to explicitly give the number of past commands you
+would like displayed. Put the number of commands after the "H" as
+follows:</P>
+
+<PRE> -&gt;h 50 </PRE>
+
+<P>The above command would display the last 50 commands executed (if
+less than 50 commands are in the history buffer, CSHELL will start at
+the first command).</P>
+
+<P>CSHELL allows you to save your history buffer across sessions.
+This is determined by the environmental variable "SAVHIST". If
+SAVHIST is SET to 1 (default), the last "HBUF" commands in your
+history buffer are saved in your .CHIST element when you "FIN" or
+"LOGOUT". These commands are then put back in your history buffer
+next time you sign on to CSHELL. If SAVHIST is set to 0, your history
+buffer is discarded and you will start with a new history buffer next
+time you sign on to CSHELL.</P>
+
+<P>When your history buffer is displayed, it will look something like
+this:</P>
+
+<PRE> -&gt;h
+ ------------COMMAND HISTORY--------------- 
+ 1: -&gt;prt,t some*file.|more 
+ 2: -&gt;some command  
+ 3: -&gt;some other command
+ 4: -&gt;t 
+ 5: -&gt;prt,f some*file.  </PRE>
+
+<P>There are a number of ways to reexecute past commands. The first
+way is to simply move your cursor up to the desired command end
+transmit. CSHELL makes this method a little easier by including a tab
+at the end of each command which allows you to tab up to your desired
+command.</P>
+
+<P>An even better way to get at old commands is using the special
+character "!" (called "bang" for short). When the bang character is
+used as the first character in a command, CSHELL knows you are
+looking for something in the history buffer. What follows the bang is
+either a number which corresponds to the command you want
+re-executed, or a string which corresponds to the start of some
+command in your history buffer. For example, assuming the history
+buffer contains the commands above, note the following:</P>
+
+<PRE> -&gt;!                  % Executes last command: "prt,f some*file."   
+ -&gt;!3                 % Executes command #3: "some other command"   
+ -&gt;!s                 % Executes "some other command"   
+ -&gt;!SoMe C            % Executes "some command" (note case insensitive) 
+ -&gt;!prt,t             % Executes "prt,t some*file.|more"
+ -&gt;!0                 % "Number out of history range" message   
+ -&gt;!qwe               % "Could not find 'qwe' in history buffer"
+&nbsp;</PRE>
+
+<P>As you can see, if a string is specified in the bang command, it
+can contain spaces and commas. If an asterisk is appended to the end
+of any bang command, the matching command from the history buffer
+will be displayed as the next prompt and will not be executed. At
+this point you can simply hit transmit and the command will be
+executed. This is useful if you are not sure which command will match
+your bang command. You can also move over to edit the command and
+then transmit, or you can enter some other command and the command
+from the history buffer will be ignored.</P>
+
+<P>The history buffer can also be redirected and piped. e.g.</P>
+
+<PRE> -&gt;h 100 | grep some</PRE>
+
+<P>This command would pipe the last 100 commands in your history
+buffer to GREP to search for any commands with the string "some" in
+it.</P>
+
+<P>If the bang command is used to reexecute a command, the command is
+placed in the history buffer rather than the bang command. The "H"
+command itself will not be placed in the history buffer except if it
+is redirected, piped, or part of a multiple command or alias.</P>
+
+<P>Here are a few useful aliases using the history buffer:</P>
+
+<PRE> -&gt;SET f6 = 'h 20'        % Display last 20 commands when hit F6
+ -&gt;SET f3 = '!*'          % Display last cmd when hit F3 (like MS-DOS)  
+ -&gt;SET f10 = '!'          % Re-execute last command when F10 is hit 
+ -&gt;SET x = '!&amp;*1'         % Execute specified previous command  
+ -&gt;SET l = '!&amp;*1*'        % Look for specified previous command.
+&nbsp;</PRE>
+
+<H1>7. Multiple Commands</H1>
+
+<P>CSHELL allows you to execute multiple commands from a single
+transmit using the special character ";". The semicolon is placed
+between commands like so:</P>
+
+<PRE> -&gt;mail ; prt,f file.   </PRE>
+
+<P>The spacing of the semicolon is free form. In the above command,
+the MAIL processor would be executed first. It is important to note
+that this sequence is not an ADD stream. It is two individual
+executions of processors. What this means is that the "PRT,F FILE."
+will not be executed until you EXIT the MAIL processor.</P>
+
+<P>If you want the semicolon to be part of your command, not a
+multiple command indicator, use the escape character before the
+semicolon: "\;".</P>
+
+<H1>8. Aliasing</H1>
+
+<P>By far the most powerful feature of CSHELL is its aliasing
+capabilities. Aliasing means that you can create your own commands to
+execute some other command or set of commands. The way to create
+aliases is through the SET command. e.g.</P>
+
+<PRE> -&gt;SET i = 'iacull' 
+ -&gt;SET m = 'mail,gn p,b,12,35'  
+ -&gt;SET s = 'some command ; othercommand'
+&nbsp;</PRE>
+
+<P>Once the above are set, you can execute "m" and result in
+"@MAIL,GN P,B,12,35" being executed. If an alias requires parameters,
+add them on to the command as usual:</P>
+
+<PRE> -&gt;i exec*43ml.      -Executes-  @IACULL EXEC*43ML. 
+ -&gt;s param1          -Executes-  @SOME COMMAND  
+                                 @OTHERCOMMAND PARAM1   </PRE>
+
+<P>Note where "PARAM1" went in the second example above. Anything
+following an alias will be appended to the end of the alias. Since
+the alias "S" is a multiple command, "PARAM1" was executed as part of
+the second command.</P>
+
+<P>Options specified on an alias will be attached to the aliased
+command as well. e.g.</P>
+
+<PRE> -&gt;m,l       -Executes-  @MAIL,GNL P,B,12,35
+ -&gt;s,t       -Executes-  @SOME,T COMMAND
+                         @OTHERCOMMAND  </PRE>
+
+<P>If options are specified on an alias for which the aliased command
+already has options, the specified options are appended to the
+existing options (as in the first example above). Notice where the
+"T" option was placed in the second example. If options are specified
+on a multiple command alias, they are placed on the first command
+only.</P>
+
+<P>Alias names are case insensitive and can be over 1000 characters
+long (though I can not think of any reason to have them this long).
+The names can also contain any character except a space. Note that
+they cannot begin with some special characters which CSHELL would
+interpret differently such as '"!&gt;&lt;\~;|:?.</P>
+
+<P>Aliases can be aliased to other aliases. e.g.</P>
+
+<PRE> -&gt;set z = 'm'  
+ -&gt;z            -Executes-  @MAIL,GN P,B,12,35  
+&nbsp;</PRE>
+
+<P>This aliasing of aliases can go 25 levels deep. Beyond that CSHELL
+assumes it is a circular alias and executes the command it has in
+hand (NOTE: A "%" character outside of the quotes on a SET line
+indicates comments) e.g.</P>
+
+<PRE> -&gt;set a = 'b'  
+ -&gt;set b = 'c'  
+ -&gt;set c = 'a'   % Completes the circle 
+ -&gt;a
+ -&gt;*WARNING* Possible circular alias B stopped at level 25  
+                   -Executes-  @B   </PRE>
+
+<P>The reason it stopped at "B" was that it just happened to have the
+alias "B" in hand when it hit level 25.</P>
+
+<P>Aliases are either permanent or temporary. The permanent aliases
+reside in your .ALIAS element and remain across OS1100 sessions. Any
+aliases which are SET at the CSHELL prompt are temporary and will be
+lost when you FIN or LOGOUT. The internal command "ALIAS" is used to
+modify your .ALIAS element. Enter the command "ALIAS" at the CSHELL
+prompt and you will be placed in an editor (defined by the
+environmental variable "EDTR") editing your .ALIAS element. After you
+exit the editor, your changes will take effect immediately. Note that
+changes made to your .ALIAS element without using the "ALIAS" command
+will not take effect until you execute "ALIAS" or until your next
+OS1100 session. In line comments are denoted with the "%" character.
+Full line comments begin with "REM ".</P>
+
+<P>TRICK: There is another tricky way to have CSHELL read your .ALIAS
+element without entering the editor. For example, if you have two
+sessions open on the same system and make changes to the .ALIAS
+element on one of the sessions, it would be nice to get those changes
+on your other session without having to enter the editor. Here is the
+alias that can do it (NOTE: two single quotes in a row will result in
+one single quote):</P>
+
+<PRE> -&gt;SET al = 'SET EDTR = '''';ALIAS;SET EDTR = ''uedit'''</PRE>
+
+<P>Execution of "AL" would allow you to read your .ALIAS element
+without entering the editor. The reason this works is that if "EDTR"
+is set to null when an ALIAS command is executed (or PROMPT command),
+CSHELL will not start up any editor but will read your .ALIAS
+element. The last command of the three part "AL" alias resets EDTR to
+the appropriate editor.</P>
+
+<P>To view what an alias is aliased to, use the "?" like so:</P>
+
+<PRE> -&gt;?i   
+ -&gt;iacull   
+ -&gt;?qwe 
+ -&gt;"QWE" is not aliased </PRE>
+
+<P>To view all of your temporary aliases, enter the command "SET" by
+itself at the CSHELL prompt. To delete an alias, execute "SET
+alias-name" like so:</P>
+
+<PRE> -&gt;?i   
+ -&gt;iacull   
+ -&gt;set i        % This deletes the alias I  
+ -&gt;?i   
+ -&gt;"I" is not aliased</PRE>
+
+<P>NOTE: Environmental variables and internal commands can not be
+deleted.</P>
+
+<P>Internal command names may not be used as alias names but can be
+aliased. e.g.</P>
+
+<PRE> -&gt;set GREP = 'some command' % Cannot do this as GREP is an internal cmd
+ -&gt;set g = 'GREP' % No problem doing this   </PRE>
+
+<P>While aliases can be over 1000 characters long, CSHELL will only
+print the first 125 characters to avoid a SYMB IMAGE LENGTH ERROR.
+This means that executing a "?alias" where the alias is longer than
+125 characters will result in CSHELL only printing the first 125
+characters of the alias. In addition, while execution of the alias
+will be complete, CSHELL will only save the first 125 characters of
+the alias in the history buffer (and will print a *WARNING* message).
+So while you can have long aliases on a single line, here is a better
+way to program them.</P>
+
+<PRE> -&gt;set com  = 'some really long alias stuff ... ; com1' 
+ -&gt;set com1 = 'some more really long alias stuff ... ; com2'
+ -&gt;set com2 = 'the last of the really really long alias'</PRE>
+
+<H2>8.1. Function Keys</H2>
+
+<P>CSHELL also allows you to alias your function keys. The alias
+names that CSHELL associates with the function keys are "F1" through
+"F22". e.g.</P>
+
+<PRE>-&gt;set F22 = 'cleanup;fin'  % Hit F22 to execute @CLEANUP and then FIN  
+ -&gt;set F3  = '!*'           % Hit F3 to display last cmd but not execute
+ -&gt;set F10 = '!'            % Hit F10 to execute last command   
+ -&gt;set F6  = 'h 20'         % Hit F6 to display last 20 cmds in history 
+ -&gt;set F1  = '.cons ss'     % Hit F1 to do @@CONS SS</PRE>
+
+<P>If a command begins with a period, it is executed as a transparent
+command.</P>
+
+<P>The aliased function keys can also be executed by typing the "Fnn"
+in and hitting transmit (but hitting the function key itself is much
+faster). When a function key is used, the command it is aliased to
+will be placed in the history buffer. Note that parameters cannot be
+specified when using a function key as the transmit is implied in the
+pressing of the key.</P>
+
+<H2>8.2. Parameter Substitution</H2>
+
+<P>Aliasing would not be complete without parameter substitution. As
+was mentioned above, if parameters are specified on an alias, they
+will be appended to the end of the alias. e.g.</P>
+
+<PRE> -&gt;i EXEC*43ML.         -Executes-  @IACULL EXEC*43ML.  </PRE>
+
+<P>This idea is fine for the alias "I", but there are other aliases
+where placing parameters at the end simply won't do. CSHELL's
+parameter substitution provides the means to place input anywhere in
+a command or multiple commands. The way it is done is through the
+meta-character '&amp;'. The syntax is: "&amp;*n". The "n" is the
+parameter number you would like placed here. The asterisk is optional
+and if specified, will place all parameters from parameter "n" on
+(inclusive), separated by spaces. CSHELL parameters are separated by
+spaces. If spaces are desired in a given parameter, the parameter is
+enclosed within double quotes. Parameter 0 (&amp;0) is the command
+itself. Some examples are as follows:</P>
+
+<PRE> -&gt;set example = 'cmd,&amp;4 &amp;1,&amp;*2,&amp;0' 
+ -&gt;example "param 1" p2 p3 param-4  
+      -Executes-  @CMD,PARAM-4 PARAM 1,P2 P3 PARAM-4,EXAMPLE
+&nbsp;
+ -&gt;set toc = 'prt,t &amp;1 | MORE'  
+ -&gt;toc some*file.   
+      -Executes-  @PRT,T SOME*FILE. 
+                  And PIPEs the output to MORE for page-at-a-time   
+                  viewing.  
+ -&gt;set info = 'prt,f &amp;1 &gt; temp ; prt,t &amp;1 &gt;&gt; temp ; MORE temp'  
+ -&gt;info Some*File.  
+      -Executes-  @PRT,F SOME*FILE. 
+                  And redirects the output to the element TPF$.TEMP 
+                  @PRT,T SOME*FILE. 
+                  And appends the output to the end of TPF$.TEMP
+                  Executes MORE of TPF$.TEMP for page-at-a-time 
+                  viewing.  
+ -&gt;set tm  = '.tm &amp;1/u &amp;*2' 
+ -&gt;tm wfs do you want to go to lunch today? 
+      -Executes-  @@TM WFS/U DO YOU WANT TO GO TO LUNCH TODAY   
+ -&gt;set sp = 'set word = ''&amp;*1'';putline,n spell word;spell spell'   
+ -&gt;sp necesary neccessary necessary 
+      -Executes- SET word = 'necesary neccessary necessary' 
+                 Places the contents of "WORD" in TPF$.SPELL
+                 @SPELL SPELL   
+                 Calls the spelling checker on TPF$.SPELL   
+ -&gt;SET lpr = 'sym,u &amp;2,,&amp;1' 
+ -&gt;lpr b12x Some*File.  
+      -Executes-  @SYM,U SOME*FILE.,,B12X   </PRE>
+
+<P>Take a look at the last alias example "LPR". I have switched the
+order of parameters to the SYM command in order to allow the
+following:</P>
+
+<PRE> -&gt;SomeCommand | lpr b12x  </PRE>
+
+<P>Execution of the above command would PIPE the output of
+SomeCommand to the alias "LPR". Since CSHELL appends the PIPE
+filename to the end of the command, it becomes the second parameter
+of the "LPR" command:</P>
+
+<PRE> -&gt;@SYM,U $$PIPE10$$.,,B12X </PRE>
+
+<P>And thus the output of SomeCommand is SYMed to B12X.</P>
+
+<P>In the last section, there was an example of a long alias which
+had the original alias calling additional aliases (the "com" alias).
+Passing the parameters in such an alias can be done like so:</P>
+
+<PRE> -&gt;set com  = 'some really &amp;2 long alias &amp;*1 stuff ... ; com1 &amp;*1'  
+ -&gt;set com1 = 'some &amp;3 more really long alias stuff ... ; com2 &amp;*1' 
+ -&gt;set com2 = 'the last of the really really &amp;2 long alias' 
+&nbsp;</PRE>
+
+<P>By calling each successive alias with "&amp;*1", the original
+parameters are passed on to each alias. The "&amp;2" of "COM2" will
+get filled in with the same parameter that was filled in for "&amp;2"
+of "COM".</P>
+
+<P>If fewer parameters are specified on the command line than are
+requested in an alias, CSHELL will print a *WARNING* message and the
+parameter will be NULL filled. e.g.</P>
+
+<PRE> -&gt;set SC = 'SomeCommand &amp;1,InputA,&amp;2,InputB'   
+ -&gt;SC p1
+ -&gt;*WARNING* Parameter 2 not specified  
+      -Executes-  @SOMECOMMAND P1,INPUTA,,INPUTB</PRE>
+
+<P>The environmental variable "NOWARN" is available to suppress the
+printing of CSHELL warning messages such as in the example above. If
+NOWARN were set to 1, the above warning message would not have been
+printed.</P>
+
+<P>If more parameters are specified on the command line than are
+requested through parameter substitution, the additional parameters
+are appended to the end of the command. e.g.</P>
+
+<PRE> -&gt;set SC = 'SomeCommand &amp;1 ; OtherCommand' 
+ -&gt;SC Param1 Param2 
+      -Executes-  @SOMECOMMAND PARAM1   
+                  @OTHERCOMMAND PARAM2  
+ -&gt;set SC = 'SomeCommand &amp;*1 ; OtherCommand'
+ -&gt;SC Param1 Param2 
+      -Executes-  @SOMECOMMAND PARAM1 PARAM2
+                  @OTHERCOMMAND </PRE>
+
+<P>Note that "PARAM2" is not appended to "OtherCommand" in the second
+example. This is because the "&amp;*1" after "SomeCommand" is asking
+for all available parameters.</P>
+
+<H2>8.3. Variable Substitution</H2>
+
+<P>CSHELL variables are very much like aliases. In fact, aliases can
+be used in variable substitution but usually don't make sense. The
+syntax to set a variable is the same as an alias. The way to get at
+your variables is through the use of the meta-character "^" (carat).
+If the carat is used in a command or alias, the string following it
+is assumed to be a variable (or alias) and its contents are
+substituted. e.g.</P>
+
+<PRE> -&gt;set default = 'DefaultInput' 
+ -&gt;set SC = 'SomeCommand ^default,&amp;1'   
+ -&gt;SC   
+      -Executes-  @SOMECOMMAND DEFAULTINPUT,
+ -&gt;SC Overriding/Input  
+      -Executes-  @SOMECOMMAND DEFAULTINPUT,OVERRIDING/INPUT</PRE>
+
+<P>With the use of variable substitution, it is possible to pass
+default parameters to programs. The program "SOMECOMMAND" can detect
+whether 1 or two parameters were given. If only one parameter is
+passed to "SOMECOMMAND" (SC), it is used as the default input. If two
+parameters are passed to "SOMECOMMAND", the second parameter will be
+used instead of the default first parameter.</P>
+
+<P>CSHELL recognizes the end of a variable as a space or one of the
+following characters: '*.&amp;^&gt;|"=,/;</P>
+
+<P>CSHELL variables can allow you to create particular work
+environments. For example, you could have a number of related
+variables which are used as default inputs to a number of programs.
+These related variables can then be SET in different elements, each
+element representing a different work environment. To switch between
+environments you could have an alias like:</P>
+
+<PRE> -&gt;SET chgenv = '&lt; Environment*File.&amp;1' 
+ -&gt;chgenv NewEnv</PRE>
+
+<P>The above alias and command would execute the CSHELL ADD stream in
+"Environment*File.NewEnv" in which new values for the default
+variables are set.</P>
+
+<H2>8.4. System Variables</H2>
+
+<P>CSHELL has a number of system variables. These are not to be
+confused with the environmental variables which change the way CSHELL
+acts. The system variables are simply useful variables that you can
+use in your commands or aliases. All system aliases begin with the
+"_" character but can be overridden by your own definition. Here is
+the list of variables beginning with the low order ASCII control
+characters.</P>
+
+<PRE>     _nul    _soh    _stx    _etx    _eot    _enq   
+     _ack    _bel    _bs     _ht     _lf     _vt
+     _ff     _cr     _so     _si     _dle    _dc1   
+     _dc2    _dc3    _dc4    _nak    _syn    _etb   
+     _can    _em     _sub    _esc    _fs     _gs
+     _rs     _us     _del   </PRE>
+
+<P>Other available variables are:</P>
+
+<PRE>     _EXECLEVEL    The current EXEC level   
+     _PROJECT      The project id for the run   
+     _RUNID        The runid
+     _SITEID       The siteid of the screen you are on  
+     _SYSID        The configured system id 
+     _SYSTYPE      The machine type (e.g. 2200/600) 
+     _URUNID       The unique runid given to this run   
+     _USERID       The userid   
+     _SOURCE       The name of your CSHELL source file  
+     _LEVEL        The level of CSHELL you are running  
+&nbsp;</PRE>
+
+<P>Here are some examples of how these variables could be used in
+aliases:</P>
+
+<P>-&gt;SET form = '.prnt;echo _ff;.nopr' -&gt;form -Executes- @@PRNT
+prints form feed character @@NOPR -&gt;SET f5 = 'form'</P>
+
+<P>Once the above is set, hitting function key 5 will cause a page
+eject on your auxiliary printer.</P>
+
+<PRE> -&gt;SET myfiles = '[@query;sel hist\;;sort key=files\;;^myfiles1 ]|more' 
+ -&gt;SET myfiles1 = 'clear ($page)\;;list files catdate proj ^myfiles2'   
+ -&gt;SET myfiles2 = 'bkdate \[ownername=''^_userid''\]\;;exit'
+ -&gt;myfiles  
+      -Builds and Executes- 
+          @query
+          sel hist; 
+          sort key=files;   
+          clear($page); 
+          list files catdate proj bkdate [ownername='WFS']; 
+          exit; </PRE>
+
+<P>The above alias "myfiles" will build an ADD stream to call the
+QUERY processor to print a list of files owned by "_USERID" (which
+will be your userid) and then PIPE the output to MORE for page at a
+time viewing. Note the use of the escape character '\' to allow
+special CSHELL characters to be put in the ADD stream (;[]). The
+above alias can be modified somewhat as follows:</P>
+
+<PRE> -&gt;SET files = 'set owner_name = ''&amp;1'';[^files1 ] | more'  
+ -&gt;SET files1 = '[@query;sel hist\;;sort key=files\;;^files2 ]|more'
+ -&gt;SET files2 = 'clear ($page)\;;list files catdate proj ^myfiles3' 
+ -&gt;SET files3 = 'bkdate \[ownername=''^owner_name''\]\;;exit'   
+ -&gt;files usr</PRE>
+
+<P>-Builds and Executes-</P>
+
+<PRE>          @query
+          sel hist; 
+          sort key=files;   
+          clear($page); 
+          list files catdate proj bkdate [ownername='usr']; 
+          exit; 
+&nbsp;</PRE>
+
+<P>With the "files" alias you can specify the userid whose files you
+want to display.</P>
+
+<PRE> -&gt;SET erase-display = 'ECHO _ESC"e" _ESC"M"'   
+ -&gt;SET F5 = 'erase-display' </PRE>
+
+<P>The above alias would execute two escape sequences, ESCAPE-e and
+ESCAPE-M. If you look these escape sequences up in a UTS terminal
+manual, you will see that they cause a cursor to home and erase
+display. Thus hitting function key 5 will now erase your screen.</P>
+
+<H1>9. Dynamic ADD Stream Building []</H1>
+
+<P>ADD streams are a basic component of the ECL environment. They
+provide an easy way to get a lot done without having to do a lot of
+typing. Most ADD streams are static and have to be edited to be
+changed. Other ADD streams are built by programs which query for much
+information. CSHELL offers a way to quickly build an ADD stream from
+the command line and have your parameters placed anywhere within it.
+This is called dynamic ADD stream building in CSHELL and is done
+through the use of the meta-characters "[" and "]".</P>
+
+<P>Dynamic ADD streams start with the character "[" and end with a
+"]". everything within the brackets is part of the ADD stream.
+Instead of the semicolon denoting another command, within the
+brackets it signals the next line in the ADD stream. A leading "@"
+sign is required if the command in the ADD stream is a control
+statement. If there is no leading "@" sign the line is considered as
+data. The only special characters recognized within the brackets are
+";" (next line) "&amp;" (parameter substitution) "^" (variable
+substitution) and "\" (escape sequence). This means that other
+"special" characters such as "." (transparent commands) "!"
+(reexecution) | (pipes) etc. will not be recognized.</P>
+
+<P>The most important thing to remember is that aliases will not be
+interpreted within the brackets unless specifically asked for through
+variable substitution (^). e.g.</P>
+
+<PRE>-&gt;SET i = 'iacull' 
+ -&gt;[@i exec*43ml.;l tag]             % Does not use the I alias 
+      -Builds and Executes-  @I EXEC*43ML.  
+                             l tag  
+ -&gt;[@^i exec*43ml.;l tag]            % Uses the I alias 
+      -Builds and Executes-  @IACULL EXEC*43ML. 
+                             l tag  
+&nbsp;</PRE>
+
+<P>Dynamic ADD stream building is made even more powerful when used
+in conjunction with parameter and variable substitution. Here are a
+number of examples of aliases which use dynamic ADD streams. If some
+of the examples aren't useful to you then hopefully they will give
+some good ideas for other aliases.</P>
+
+<PRE> -&gt;SET example = '[@SomeCommand;data line;;&amp;*1;@eof]'   
+ -&gt;example All this goes on the fourth line 
+      -Builds and Executes-  @SomeCommand   
+                             data line  
+&nbsp;
+&nbsp;
+ .                           All this goes on the fourth line   
+                             @eof   </PRE>
+
+<P>Two semicolons in a row between the brackets will result in a
+blank line in the ADD stream as is shown above.</P>
+
+<PRE> -&gt;SET def1 = 'first_default'   
+ -&gt;SET def2 = 'second_default'  
+ -&gt;SET cmd  = '@OtherCommand'   
+ -&gt;SET exmpl2 = '[@SomeCommand;^def1 ^def2 &amp;*1;^cmd]'   
+ -&gt;exmpl2 input1 input2 
+      -Builds and Executes- 
+          @SomeCommand  
+          first_default second_default input1 input2
+          @OtherCommand </PRE>
+
+<P>The above example shows how variable substitution can work in an
+alias. Notice that since the variable/alias "CMD" is SET with a
+leading "@" sign, the line produced in the ADD stream begins with an
+"@" sign.</P>
+
+<PRE> -&gt;SET sp = '[@spell;&amp;*1;@eof]' 
+ -&gt;sp necesary neccessary necessary 
+      -Builds and Executes- 
+          @spell
+          necesary neccessary necessary 
+          @eof  </PRE>
+
+<P>The "SP" alias offers an easy way to verify the spelling of words
+by passing your input to the @SPELL processor.</P>
+
+<PRE> -&gt;SET mailto = '[@mail &amp;1;@add &amp;2;@eof;y;n]'   
+ -&gt;mailto wfs Mail.Message  
+      -Builds and Executes- 
+          @mail wfs 
+          @add Mail.Message 
+          @eof  
+          y 
+          n </PRE>
+
+<P>The "mailto" alias simplifies the mailing of a file or element to
+someone.</P>
+
+<PRE> -&gt;SET ddp = '[@ipf;copy &amp;1::&amp;2,&amp;3::&amp;4,type=ddp;@eof]'  
+ -&gt;ddp rs07 Source*File. rs06 Dest*File.
+      -Builds and Executes- 
+          @ipf  
+          copy rs07::Source*File.,rs06::Dest*File.,type=ddp 
+          @eof  
+ -&gt;SET S7toS6 = 'ddp rs07 &amp;1 rs06 &amp;2'   
+ -&gt;s7tos6 Source*File. Dest*File.   
+      -Builds and Executes- 
+          @ipf  
+          copy rs07::Source*File.,rs06::Dest*File.,type=ddp 
+          @eof  </PRE>
+
+<P>The "ddp" alias is a very useful one and as was shown above by the
+"S7toS6" alias, it can have an assortment of sub-aliases.</P>
+
+<P>Dynamic ADD stream building aliases can be any length as
+demonstrated by the following example:</P>
+
+<PRE> -&gt;SET myadd = 'set p1 = ''&amp;1'';set p2 = ''&amp;2'';[^myadd1] &gt; Out*File.'  
+ -&gt;SET myadd1 = '@long command;data;more data ^p2;^myadd2'  
+ -&gt;SET myadd2 = '@another command;data again;even more;^myadd3' 
+ -&gt;SET myadd3 = '@last command ^p1;with the last;of the data'   
+ -&gt;myadd input1 input2  
+      -Builds and Executes- 
+          @long command 
+          data  
+          more data input2  
+          @another command  
+          data again
+          even more 
+          @last command input1  
+          with the last 
+          of the data   
+&nbsp;</PRE>
+
+<H1>10. Redirection</H1>
+
+<P>CSHELL redirection provides an easy way to pass input to a
+processor or pass output from a processor to an element, data file,
+or even another processor.</P>
+
+<H2>10.1. Output Redirection</H2>
+
+<P>Output redirection to the ECL community is better known as @BRKPT.
+Within CSHELL it is called output redirection and is easier to use
+and more flexible. With CSHELL output redirection, you can pass the
+output of any command or alias not only to a data file but to an
+element as well. Neither the data file or file containing the
+specified element have to exist. If the output file or element does
+not exist, CSHELL will create it for you and redirect the output to
+it (the file will be cataloged as PRIVATE and will NOT be secured).
+The redirected output can be optionally appended to the end of the
+specified output file or element. The meta-character which controls
+output redirection is "&gt;" and its syntax is as follows:</P>
+
+<PRE> -&gt;SomeCommand &gt; Output*File.or/Element 
+ -&gt;OtherCommand &gt;&gt; Output*File.or/Element   
+&nbsp;</PRE>
+
+<P>Two greater than signs in a row signify appended output
+redirection as is shown in the second example above. As was
+mentioned, you can redirect aliases as well. If the redirected alias
+contains multiple commands, all commands will be redirected into the
+specified output file or element. e.g.</P>
+
+<PRE> -&gt;SET cmd = 'cmd1 &amp;2;cmd2 &amp;*1;cmd3 &amp;3' 
+ -&gt;cmd p1 p2 p3 &gt; Some*File.Elt 
+      -Executes-  @CMD1 P2              All of these commands   
+                  @CMD2 P1 P2 P3        will be redirected  
+                  @CMD3 P3              into Some*File.Elt  
+ -&gt;SET cmd = 'cmd1 &amp;2;cmd2 &amp;*1 &gt;&gt; Other*File.;cmd3 &amp;3'  
+ -&gt;cmd p1 p2 p3 &gt; Some*File.Elt </PRE>
+
+<P>The execution of "CMD" above shows the flexibility of CSHELL's
+output redirection. The output of CMD1 and CMD3 will be placed into
+Some*File.Elt but since CMD2 already specifies output redirection,
+the output of CMD2 will be appended to Other*File. Here is another
+more useful example:</P>
+
+<PRE> -&gt;SET fileinfo = 'prt,f &amp;1&gt;Temp.;prt,tlb &amp;1&gt;&gt;Temp.;MORE Temp.' 
+ -&gt;fileinfo Some*File.  
+      -Executes-  @PRT,F SOME*FILE.       Redirects output to TEMP. file
+                  @PRT,TLB SOME*FILE.     Appends output to TEMP. file  
+                  MORE Temp.              Calls MORE to view TEMP. file 
+&nbsp;</PRE>
+
+<P>Sometimes you execute a processor and the output scrolls by too
+quickly to read. A useful command to execute after this situation
+would be something like:</P>
+
+<PRE> -&gt;!&gt;a  </PRE>
+
+<P>This command will reexecute the last command and redirect its
+output into TPF$.A for viewing or editing at your leisure.</P>
+
+<P>Another way to redirect output is to open a file or element for
+redirection and leave it open over a number of commands. The way to
+do this is to specify redirection without a leading command: e.g.
+</P>
+
+<PRE> -&gt;&gt;Some*File.elt                % Starts redirecting into Some*File.Elt
+ -&gt;SomeCommand  
+ -&gt;OtherCommand &gt; OtherFile.
+ -&gt;LastCommand  
+ -&gt;&gt;                             % Closes output redirection</PRE>
+
+<P>In the above sequence of commands, Some*File.Elt was opened for
+output redirection. The commands "SOMECOMMAND" and "LASTCOMMAND" are
+then redirected into Some*File.Elt before it is closed by a single
+"&gt;" character. Notice that "OTHERCOMMAND" will be redirected to
+OtherFile. since redirection was specified on the command.</P>
+
+<P>*IMPORTANT* If you open a file for redirection and leave it open
+as shown above (&gt;Some*File.Elt), you cannot enter any commands
+with a leading "@" sign. e.g.</P>
+
+<PRE> -&gt;@SomeCommand &gt; Some*File.  % Notice that this is OK  
+ -&gt;&gt;Some*File.                % This cmd opens redirection to Some*File.
+ -&gt;SomeCommand                % This is OK  
+ -&gt;@OtherCommand              % This is NOT OK, will cause CLIST
+                                processing. </PRE>
+
+<P>There is an environmental variable which relates to output
+redirection and its name is "NOCLOBBER". If "NOCLOBBER" is set to 1
+(default) and you specify output redirection to a file or element
+which already exists, CSHELL will tell you this and ask if you wish
+to overwrite the file or element. If NOCLOBBER is set to 0, CSHELL
+will always redirect to the file or element whether it exists or not.
+</P>
+
+<P>NOTE: If redirection is specified to an element, the output will
+be staged in the CSHELL related file "$$APPEND$$." and then copied
+into the element after completion.</P>
+
+<H2>10.2. Pipes</H2>
+
+<P>Pipes are used to pass the output of one command as input to
+another. Pipes are very similar to output redirection except that the
+destination of a pipe is a program rather than a file or element as
+it is with output redirection. The meta-character which is used for
+pipes is '|' and is used like so:</P>
+
+<PRE> -&gt;prt,t Some*File. | more  </PRE>
+
+<P>The above command will pipe the output of the "PRT,T" command to
+the MORE processor for viewing one page at a time. It is essentially
+the same as:</P>
+
+<PRE> -&gt;prt,t Some*File. &gt; TempFile. ; more TempFile.
+&nbsp;</PRE>
+
+<P>Piping simply allows you to do this in one step and not have to
+worry about the temporary file. CSHELL uses two temporary files for
+pipes. Their names are "$$PIPEn0$$." and "$$PIPEn1$$." where the
+value of n starts at zero for your first OS1100 session and
+increments for each concurrently active OS1100 session. When pipes
+are used, the name of the pipe file is passed as the last parameter
+to the command on the right of the pipe character. e.g.</P>
+
+<PRE> -&gt;SomeCommand P1 P2 | OtherCmd P3 P4   
+      -Executes-
+       @SOMECOMMAND P1 P1    % And places the output in $$PIPE10$$. 
+       @OTHERCMD P3 P4 $$PIPE10$$.  </PRE>
+
+<P>Knowing that the pipe file is always the last parameter given, you
+may create an alias like so:</P>
+
+<PRE> -&gt;SET lpr = 'sym,u &amp;2,,&amp;1' 
+ -&gt;SET b12x = 'lpr b12x'
+ -&gt;prt,t Some*File. | lpr a6
+      -Executes-
+       @PRT,T SOME*FILE.     % And puts the output in $$PIPE10$$.   
+       @SYM,U $$PIPE10$$.,,A6   % And SYMs the output to A6 
+ -&gt;SomeCommand | b12x   
+      -Executes-
+       @SOMECOMMAND          % And puts the output in $$PIPE10$$.   
+       @SYM,U $$PIPE10$$.,,B12X  % And SYMs it to B12x  
+&nbsp;</PRE>
+
+<P>More than one pipe can be specified on a command. e.g.</P>
+
+<PRE> -&gt;prt,t Some*File. | grep abs | more </PRE>
+
+<P>The above command will pipe the TOC of Some*File. to the GREP
+processor which will then search for the string "abs" (finding all
+absolute elements) and then pipe the GREP output to the MORE
+processor for viewing the results one page at a time.</P>
+
+<P>Note that a single command can use either output redirection or
+pipes, not both.</P>
+
+<PRE> -&gt;cmd1 | cmd2 &gt; file. | cmd3     % NO - Cannot have &gt; and | on CMD2
+ -&gt;cmd1 | cmd2 | cmd3 &gt; file.     % Can do this 
+&nbsp;</PRE>
+
+<P>Here are a couple more aliases which use pipes.</P>
+
+<PRE> -&gt;SET toc = 'prt,tlb &amp;1 | more'
+ -&gt;toc Some*File.     % Pipes TOC of Some*File. to MORE for viewing 
+ -&gt;SET slow = '! | more'
+ -&gt;SomeCommand        % Lots of output scrolls off the screen   
+ -&gt;slow               % Executes last cmd (SomeCommand) and pipes   
+                      % output to MORE for page at a time viewing.  </PRE>
+
+<H2>10.3. Input Redirection</H2>
+
+<P>Input redirection is a way to easily pass input to a command. The
+input is provided in a file or element. The meta-character which
+controls input redirection is '&lt;' and is used as follows:</P>
+
+<PRE> -&gt;mail user &lt; mail*file.   
+      -Executes-  @MAIL USER
+                  @ADD MAIL*FILE.   
+ -&gt;TestProg &lt; Test.Data | grep error warning &gt; Output.File  </PRE>
+
+<P>The last example will execute "TestProg" and then @ADD
+"Test.Data". The output will be piped to GREP which will search for
+the strings "error" and "warning". The output from GREP will then be
+redirected to the file "Output.File".</P>
+
+<P>Note: The meta character '&lt;' is also used for CSHELL ADD
+streams. The difference is that if the '&lt;' is in the first column,
+it is a CSHELL ADD stream. If the '&lt;' follows some command, it is
+input redirection.</P>
+
+<H1>11. CSHELL ADD Stream</H1>
+
+<P>A CSHELL ADD stream is different than an ECL ADD stream in that
+the CSHELL ADD stream contains any commands which you would enter at
+the CSHELL prompt. A leading '&lt;' sign denotes a CSHELL ADD stream.
+e.g.</P>
+
+<PRE> -&gt;&lt; CSHELL.Add/Stream  </PRE>
+
+<P>The element "CSHELL.Add/Stream" will be read by CSHELL and then
+each line in it will be executed as if they were entered at the
+CSHELL prompt. This can be a useful way to execute a large number of
+commands. For example, you may have a number of related variables
+which are used in a number of commands. These variables are set to
+different values depending on what you are working on. You could
+create a CSHELL ADD stream for each environment which would contain
+the SET commands to change the variables to the values associated
+with a certain working environment. You could then use the following
+alias to switch between environments:</P>
+
+<PRE> -&gt;chgenv = '&lt; &amp;1'  
+ -&gt;chgenv Env*File.Env1 
+&nbsp;</PRE>
+
+<P>It is also possible to pass parameters into your CSHELL ADD
+stream. Any parameters given on a CSHELL ADD stream line are set to
+the variables ARGV[1] through ARGV[n] where n is the number of
+parameters specified. e.g.</P>
+
+<P>Contents of CSHELL.Add/Stream:</P>
+
+<PRE> ECHO "@ASG,AZ " argv[1] "*PCF."
+ ASG,AZ ^argv[1]*PCF.   
+ ECHO "@ASG,AZ " argv[1] "*UTIL."   
+ ASG,AZ ^argv[1]*UTIL.  
+ ECHO "@ASG,AZ " argv[1] "*RO." 
+ ASG,AZ ^argv[1]*RO.
+ ECHO "@ASG,AZ " argv[1] "*ASM$PF." 
+ ASG,AZ ^argv[1]*ASM$PF.
+ ECHO "@ASG,AZ " argv[1] "*PLS$PF." 
+ ASG,AZ ^argv[1]*PLS$PF.
+ ECHO "@ASG,AZ " argv[1] "*FEATURES."   
+ ASG,AZ ^argv[1]*FEATURES.  
+ ECHO "@ASG,AZ " argv[1] "*NEWSI."  
+ ASG,AZ ^argv[1]*NEWSI. </PRE>
+
+<P>Executed as:</P>
+
+<PRE> -&gt;&lt; CSHELL.Add/Stream myqual   
+&nbsp;</PRE>
+
+<P>Execution of the above would set ARGV[1] to "myqual" and result in
+the execution of @ASG,AZ of MYQUAL*RO., MYQUAL*PCF., etc. along with
+the printing of each assign image before executing it.</P>
+
+<P>CSHELL ADD streams can be redirected and piped. In addition,
+CSHELL ADD streams can be nested. CSHELL ADD streams can be executed
+by commands within a CSHELL ADD stream.</P>
+
+<P>Note that your .LOGOUT element, as well as your .LOGIN element, is
+executed as a CSHELL ADD stream and therefore you can pass parameters
+to it on the FIN or LOGOUT line.</P>
+
+<P>CSHELL ADD streams can also be created at the CSHELL prompt. If
+you enter a '&lt;' sign by itself, CSHELL will begin building a
+CSHELL ADD stream and prompt you for each line. When you are finished
+entering all the commands you want executed, enter another '&lt;'
+sign by itself and CSHELL will begin executing the commands. If you
+make a mistake and don't want the ADD stream executed, enter "@EOF"
+instead of the second '&lt;' to abort the ADD stream building. After
+you enter the second '&lt;', the images you entered will be placed in
+the CSHELL related file "CSHELLADD." and executed. This mechanism is
+useful to stage a number of commands which may take a while to
+execute.</P>
+
+<P>Note that the contents of the CSHELL ADD stream will not be placed
+in your history. Only the command which initialized the CSHELL ADD
+stream will be placed in your history buffer.</P>
+
+<H1>12. Source .LOGIN Element</H1>
+
+<P>Your .LOGIN element is executed once upon starting your CSHELL
+session. It is executed as a CSHELL ADD stream. All of your aliases
+are available at this time so you can execute any command you want.
+The main purpose of the .LOGIN element in the initialization of
+CSHELL's environmental variables. These variables control they way
+CSHELL acts in particular circumstances.</P>
+
+<H1>13. Environmental Variables</H1>
+
+<P>As was mentioned, CSHELL's environmental variables allow you to
+change the way CSHELL acts. These variables are set in your .LOGIN
+element (except for "PROMPT" and "NUMON" which are set in your
+.PROMPT element) and CANNOT be set in your .ALIAS element. If they
+are not specified in your .LOGIN element, default values will be
+given to them. The variables can be changed at the CSHELL prompt or
+in a CSHELL ADD stream. They can be viewed at any time using the
+internal command "PRINTENV". Each variable will be discussed
+individually in the following sections.</P>
+
+<P>All environmental variables are set using the "SET" command. Some
+variables are set to strings which are enclosed within quotes. Other
+environmental variables are either turned on or off. In this case
+they are set to 1 or 0 respectively without any quotes. e.g.</P>
+
+<PRE> -&gt;SET EDTR = 'uedit'   
+ -&gt;SET NOCLOBBER = 1
+&nbsp;</PRE>
+
+<H2>13.1. PROMPT</H2>
+
+<P>This variable determines what your CSHELL prompt looks like. Its
+default is "CSHELL" and is changed in your .PROMPT element using the
+internal command "PROMPT" (see CSHELL Prompt section for more
+details).</P>
+
+<H2>13.2. NUMON</H2>
+
+<P>This variable is also changed in your .PROMPT element using the
+"PROMPT" command. It is set to 1 (default) to display the current
+command number before each prompt. If it is set to 0, the command
+number is not displayed.</P>
+
+<H2>13.3. EDTR</H2>
+
+<P>This variable is set to the name of your editor of choice. This
+will be the editor used by the "ALIAS", "PROMPT", and "CO$" commands
+to edit your .ALIAS, .PROMPT, and CO$.CO$1 elements. The default
+editor is FSED. If EDTR is set to IPF or CTS, CSHELL will enter IPF
+or CTS and execute an OLD of your .ALIAS, .PROMPT, or CO$.CO$1
+element.</P>
+
+<P>If EDTR NULL (''), CSHELL will skip the editing phase of the
+"ALIAS", "PROMPT", or "CO$" command but still do the rest. For
+example, you could have the following alias:</P>
+
+<PRE> -&gt;SET get-al = 'set EDTR = '''';ALIAS;set EDTR = ''uedit'''
+&nbsp;</PRE>
+
+<P>Execution of the above alias would set EDTR to NULL, execute the
+ALIAS command, and then set EDTR back to what it should be. This is
+useful if you have two CSHELL sessions active and you change your
+.ALIAS element on one session. The "get-al" alias allows your other
+session to get the updates to the .ALIAS element without having to
+invoke the editor.</P>
+
+<H2>13.4. NOWARN</H2>
+
+<P>The "NOWARN" environmental variable controls the printing of
+CSHELL warning messages. e.g.</P>
+
+<P>-&gt;*WARNING* Parameter 1 not supplied</P>
+
+<P>If NOWARN is set to 1, all warning messages will be suppressed
+(See appendix for list of warning messages). If NOWARN is set to 0
+(default), these messages will be displayed.</P>
+
+<P>Note that the recovery message:</P>
+
+<P>*WARNING* CSHELL auto-recovery file in use, recovery across
+sessions disabled</P>
+
+<P>will always be printed regardless of the value of NOWARN as it is
+displayed before the reading of the .LOGIN element.</P>
+
+<H2>13.5. SAVHIST</H2>
+
+<P>SAVHIST determines whether or not your history buffer is saved
+across sessions. If SAVHIST is set to 1 (default), your history
+buffer will be saved in your .CHIST element and restored upon
+starting your next session. The number of commands saved is
+determined by the value of another environmental variable, "HBUF".
+Your history buffer will be saved upon execution of "FIN" or
+"LOGOUT". If SAVHIST is set to 0, your history buffer will not be
+saved.</P>
+
+<H2>13.6. RTNPRMPT</H2>
+
+<P>RTNPRMPT (short for "return prompt") determines if a blank
+transmit gives you another CSHELL prompt or acts like a "!*" command.
+If RTNPRMPT is set to 0 (default), hitting a transmit without a
+command will result in your last executed command being displayed as
+the prompt. At this point, another blank transmit will cause
+execution of the command. If RTNPRMPT is set to 1, a blank transmit
+will simply give you another CSHELL prompt.</P>
+
+<H2>13.7. NOCLOBBER</H2>
+
+<P>NOCLOBBER is related to output redirection. If you redirect the
+output of a command to a file or element and that file or element
+already exists, if NOCLOBBER is set to 1 (default), CSHELL will
+solicit permission to overwrite the file or element. If NOCLOBBER is
+set to 0, it will do the redirection without asking permission.</P>
+
+<H2>13.8. PATH</H2>
+
+<P>The PATH variable is similar to that in MS-DOS and UNIX. It
+designates a number of files to look in for a given program to
+execute. If a command begins with a '~' character or the
+environmental variable SEARCHPATH is set to 1, the files given in the
+path will be searched for the program to execute. The files in your
+path are separated by the '\' character. e.g.</P>
+
+<PRE> -&gt;SET PATH = 'First*File.\My*Tools.\Some*File.'</PRE>
+
+<P>Execution of:</P>
+
+<PRE> -&gt;~cmd,x p1,p2 </PRE>
+
+<P>Would cause CSHELL to search your path files from left to right
+looking for an absolute called "CMD". If the absolute is found, the
+program will be executed from that file. If it is not found, the
+command will be executed as is. This means that TPF$ is implied as
+the last file in the path. If you want TPF$. searched before some of
+the other path files, you must explicitly put it in your PATH name.
+</P>
+
+<P>If a PATH is set up, the first execution of a command which uses
+the PATH will cause CSHELL to initialize the PATH. This means it will
+take longer than normal as CSHELL must get the TOC of each file. Once
+this is done, each following command which uses the PATH will be very
+quick.</P>
+
+<P>Once CSHELL has initialized your PATH, new absolutes added to your
+PATH files will not be recognized. To have CSHELL reinitialize your
+path (and thus record the new absolutes), execute the following:</P>
+
+<PRE> -&gt;SET PATH 
+&nbsp;</PRE>
+
+<P>Doing this will cause CSHELL to echo your current path and
+indicate that it is reinitialized.</P>
+
+<H2>13.9. SEARCHPATH</H2>
+
+<P>When SEARCHPATH is set to 1, your PATH will be searched upon
+execution of every command. This is essentially the same as having
+the '~' character precede each command. Note that a leading '\' on a
+command will override the PATH search and cause the given command to
+be executed as is. If SEARCHPATH is set to 1 and a command is found
+in one of the PATH files, the resultant command will not be echoed as
+it is on commands with a leading '~' character. The default value of
+this variable is 0.</P>
+
+<H2>13.10. CLIST</H2>
+
+<P>By far CLIST is the most confusing environmental variable. It
+concerns the course of action CSHELL should take when a control
+statement is entered while not at the CSHELL prompt. At the CSHELL
+prompt, CSHELL can handle any command with a leading @ sign. If a
+command with a leading @ sign is entered while not at the CSHELL
+prompt (e.g. within another program), the EXEC will pick it up and
+return an @EOF to any program which does a read (called a "hard
+EOF"). Note that this does not include entering something like "@ADD"
+or "@EOF". Once the EXEC picks up the control statement and starts
+returning a hard EOF, the program in which the control statement was
+entered will exit and CSHELL will regain control. CSHELL will query
+for the next command but the EXEC will interfere and return the hard
+EOF. CSHELL can recognize the hard EOF and will do one of two things
+depending upon the value of the environmental variable "CLIST".</P>
+
+<P>If CLIST is set to 0, CSHELL will terminate with the message:</P>
+
+<PRE> -&gt;*CONTROL STATEMENT ENTERED OUTSIDE OF CSHELL*
+ -&gt;To return enter: @CSHELL 
+&nbsp;</PRE>
+
+<P>After CSHELL exits, the EXEC will continue by executing the
+control statement. After the control statement has been executed you
+are left outside of CSHELL and must execute "@CSHELL" to return to
+where you left off.</P>
+
+<P>If CLIST = 1 (default), CSHELL will go into CLIST mode via the ER
+CLIST$ mechanism in order to try to get the control statement from
+the EXEC. If the control statement you issued is in CSHELL's default
+list or your own configured list, the command will be executed by
+CSHELL. If it is not in either list, CSHELL will display the
+following:</P>
+
+<PRE> -&gt;STATEMENT NOT IN CLIST   
+ -&gt;HIT TRANSMIT TO CONTINUE-&gt;   
+&nbsp;</PRE>
+
+<P>At which point you hist the transmit key to continue. In either
+case, you will remain in CSHELL. Note that "HIT TRANSMIT TO CONTINUE"
+will ALWAYS be displayed whether or not the statement is in the list
+and executed. Only hit transmit if the "STATEMENT NOT IN CLIST" image
+is displayed as well.</P>
+
+<P>The following diagram summarizes the CLIST variable:</P>
+
+<PRE> .                 -&gt;CSHELL-&gt;mail   
+                           -&gt;  :
+                           -&gt;  :
+                           -&gt;@CMD   
+                ----------------
+               /                \   
+ if CLIST = 0                    \  
+ CSHELL exited,                   \ 
+ @CMD executed                  if CLIST = 1
+ &gt; (now outside of CSHELL,           ------------   
+   enter @CSHELL to return          /            \  
+   to CSHELL prompt)               /              \ 
+                                  /                \
+                        if CMD in CLIST,     if CMD not in CLIST,   
+                        @CMD executed        &gt;STATEMENT NOT IN CLIST
+                        &gt; (returned to        (nothing executed)
+                          CSHELL prompt)     &gt; (HIT TRANSMIT TO 
+                                               CONTINUE)</PRE>
+
+<P>The processors that are included in CSHELL's CLIST are as follows:
+</P>
+
+<PRE>      ASG          BRKPT          CALL           CAT
+      COPY         CSHELL         CTS            DELETE 
+      ED           ERS            FLIST          FSED   
+      GURU         IACULL         MAIL           MAP
+      MASM         PACK           PRIMUS         PRT
+      QUERY        SYM            SYS            UEDIT  
+      XQT   </PRE>
+
+<P>CSHELL also allows you to configure your own CLIST list in your
+.CLIST element. Simply add the names of commands OR aliases, one per
+line. These names can be no more than 6 characters. In addition, do
+not include an @ sign at the start of the name. The ER CLIST$ is
+limited to 64 processors and therefore you have 64 - #in-list-above
+names available to configure.</P>
+
+<P>*IMPORTANT* To put your configured CLIST list in effect, execute
+the command:</P>
+
+<PRE> -&gt;SET CLIST = 1</PRE>
+
+<P>This will cause a MASM absolute to be created with your CLIST list
+and placed in your .CLIST element in your source file. This will only
+cause recompilation if the command is entered from the control line.
+If you have the above line in your .LOGIN element, it will not cause
+recompilation. You only need to recompile if you change your .CLIST
+element.</P>
+
+<H1>14. Source .LOGOUT Element</H1>
+
+<P>Your .LOGOUT element is executed as a CSHELL ADD stream when "FIN"
+or "LOGOUT" is entered. This gives you a chance to do some cleanup
+work when you sign off the system.</P>
+
+<P>Because your .LOGOUT element is executed as a CSHELL ADD stream,
+you can pass parameters to it on the "FIN" or "LOGOUT" command. This
+enables you to have multiple ways to sign off of the system. For
+example:</P>
+
+<P>Contents of your .LOGOUT element:</P>
+
+<PRE> ^ARGV[1]   
+ ECHO "Leaving CSHELL"  
+&nbsp;</PRE>
+
+<P>Note the line "^ARGV[1]" in the .LOGOUT example. This means that
+the first parameter on the "FIN" or "LOGOUT" command will be executed
+(if given). This enables you to create aliases like the following:
+</P>
+
+<PRE> -&gt;SET fin1 = 'fin FIN*Program.1' </PRE>
+
+<P>-&gt;SET fin2 = 'fin FIN*Program.2'</P>
+
+<P>Entering "FIN1" will cause the program "FIN*PROGRAM.1" to be
+passed as "ARGV[1]" to your .LOGOUT element and hence executed before
+the OS1100 "@FIN" is executed. The same goes for "FIN2".</P>
+
+<P>As with any other CSHELL ADD stream, all of your aliases as well
+as CSHELL functionality can be used in your .LOGOUT element.</P>
+
+<H1>15. CSHELL Internal Commands &amp; Processors</H1>
+
+<P>CSHELL provides a number of internal commands and processors to
+enhance your programming environment. The following is an
+alphabetized description of each command. When describing the syntax
+of a command's execution, any parameters which are enclosed between a
+'&lt;' and '&gt;' are optional.</P>
+
+<H2>15.1. ALIAS</H2>
+
+<PRE> -&gt;ALIAS</PRE>
+
+<P>The ALIAS command allows you to change your permanent aliases in
+your .ALIAS element. It takes no parameters and uses the editor
+defined by the environmental variable EDTR to edit the .ALIAS
+element. See the ALIAS section for more details of your .ALIAS
+element.</P>
+
+<H2>15.2. CALC</H2>
+
+<PRE> -&gt;CALC &lt;expression&gt;</PRE>
+
+<P>CALC is CSHELL's on-line calculator. It will perform addition,
+subtraction, multiplication, and division on both real and integer
+numbers. In addition, it recognizes octal numbers as numbers with a
+leading zero. Note that 093 will be taken as an octal 93 while 0.93
+will be taken as a base 10 real number.</P>
+
+<P>Both octal and decimal numbers can be used in the expression. If
+all of the numbers in an expression are octal, the result will also
+be printed in octal. As long as there is one decimal number in the
+expression, the result will be a decimal number. If a single number
+is entered, it will be converted to its octal or decimal equivalent.
+</P>
+
+<P>If the expression to be solved or number to be converted is given
+on the CALC command line, CALC will print the result and you will be
+returned to the CSHELL prompt. If CALC is entered by itself, you will
+enter interactive mode where you can enter any number of equations or
+number conversions until you enter "E" to exit CALC.</P>
+
+<H2>15.3. CCTS</H2>
+
+<PRE> -&gt;CCTS&lt;,d&gt; CTS_Subroutine_Name </PRE>
+
+<P>The CCTS command allows you to easily call CTS subroutines from
+CSHELL. There is nothing wrong with executing "@CTS" from CSHELL and
+"CALL"ing the subroutine from CTS but the CCTS command offers some
+additions. In particular, the CCTS mechanism allows you to pass an
+argument vector to your CTS subroutine. The variable "ARGC" is set to
+the number of parameters specified on the command line with "ARGV1"
+through "ARGVn" set to the actual parameters where "n" is the value
+of "ARGC". In addition, any options specified are passed in the
+variable "OPTS". For example:</P>
+
+<PRE> -&gt;SET MyCTSub = 'CCTS My*CTS.Subroutine'   
+ -&gt;MyCTSub,xz Param1 " P 2 " p3 
+&nbsp;</PRE>
+
+<P>If the above command were executed, the CTS subroutine
+"MY*CTS.SUBROUTINE" would be executed with the following variables
+initialized:</P>
+
+<PRE>      ARGC  = 3 
+      ARGV1 = 'Param1'  
+      ARGV2 = ' P 2 '   
+      ARGV3 = 'p3'  
+      OPTS  = 'xz'  </PRE>
+
+<P>The CTS subroutine can detect if it was called from CSHELL via the
+CCTS command. It can use this information to act accordingly
+including determining how to exit the subroutine. e.g.</P>
+
+<PRE> JUMP +2 IF STATUS('CALL') = 'CSHELL*CSHELL' % Was I called from CSHELL?
+ RETURN                                      % No, return to CTS
+ PXQT CSHELL*CSHELL.EXITCTS                  % Yes, exit CTS
+&nbsp;</PRE>
+
+<P>The absolute CSHELL*CSHELL.EXITCTS is an absolute which does an ER
+XCTS$ to exit CTS without the "IN EXEC MODE" being printed. If the
+'D' option is given on the CCTS command, the CTS subroutine will be
+executed in CTS debug mode (ASSUME SBUG ON).</P>
+
+<H2>15.4. CO$</H2>
+
+<P>CO$ is a CSHELL command which was provided due to the language
+CSHELL is written in: CALL. Some CALL macros build and execute ADD
+streams. The default element where these ADD streams are built is
+"CO$.CO$". Since CSHELL uses this element on virtually every command,
+debugging a CALL macro is difficult when CSHELL will overwrite
+CO$.CO$ with the command you executed to look at CO$.CO$. Thus the
+CO$ command was implemented. When executed, it moves the current
+contents on CO$.CO$ to CO$.CO$1 and then edits it using the editor
+defined by the environmental variable EDTR.</P>
+
+<H2>15.5. ECHO</H2>
+
+<PRE> -&gt;ECHO &lt;image&gt; </PRE>
+
+<P>The ECHO command is used to print images on the terminal. The
+image is enclosed within double quotes. Two double quotes in a row
+will result in a single double quote being printed. Variables can be
+printed as well and must be placed outside of the double quotes. e.g.
+</P>
+
+<PRE> -&gt;SET myvar = 'xyz'
+ -&gt;ECHO "Myvar = """ xyz """"   
+      - Prints -&gt;Myvar = "xyz"  </PRE>
+
+<P>Parameters can not be passed directly to the ECHO command but can
+be passed through a variable like so:</P>
+
+<PRE> -&gt;SET Repeat = 'SET temp = ''&amp;*1'';ECHO "You entered """ temp """" 
+ -&gt;Repeat All of this stuff 
+      - Prints -&gt;You entered "All of this stuff"</PRE>
+
+<P>The following ECHO example will cause your screen to be erased
+when function key 1 is pushed:</P>
+
+<PRE> -&gt;SET F1 = 'ECHO _ESC"e" _ESC"M"'  </PRE>
+
+<P>The "_ESC" is a system variable which is set to the ASCII escape
+character. A lower case 'e' following an escape character will move
+the cursor to home on a UTS terminal. An upper case 'M' following an
+escape character will erase to end of display on a UTS terminal. Thus
+hitting F1 will cause your screen to be erased.</P>
+
+<H2>15.6. EXIT</H2>
+
+<PRE> -&gt;EXIT </PRE>
+
+<P>The EXIT command is used to exit CSHELL and return to ECL command
+mode. It is possible to return to where you EXITed CSHELL by
+executing "@CSHELL". Note that unlike executing "FIN" or "LOGOUT",
+EXIT will not save your history buffer or execute your .LOGOUT
+element.</P>
+
+<H2>15.7. GETLINE</H2>
+
+<PRE> -&gt;GETLINE&lt;,line#&gt; File.&lt;element&gt; &lt;line#&gt;   </PRE>
+
+<P>GETLINE is used to return the specified line from the specified
+file or element. The line number can be either given as an option on
+the GETLINE call or as parameter two. The line returned is placed in
+the variable "LINE". If the line number specified is larger than the
+number of lines in the file or element, the last line will be
+returned. If the line number specified is zero, the number of lines
+in the file or element will be returned. e.g.</P>
+
+<PRE> -&gt;SET info = 'SET temp = ''&amp;1'';GETLINE,0 ^temp;info1' 
+ -&gt;SET info1 = 'ECHO temp " Has " line " lines."
+&nbsp;</PRE>
+
+<H2>15.8. GREP</H2>
+
+<PRE> -&gt;GREP&lt;,opts&gt; string1 &lt;string2 ...&gt; file.&lt;element&gt; </PRE>
+
+<P>GREP is a processor that allows you to search for a specified
+string or multiple strings in a data file, element, or program file.
+There is a minimum of two parameters required on the call to GREP.
+The last parameter is always the file or element and all preceding
+parameters are the search strings. The strings are separated by
+spaces and if you want spaces in your search string, you must enclose
+it within double quotes. The following are the available options for
+GREP.</P>
+
+<P>Valid options are: a - print lines containing all strings b -
+print lines beginning with string(s) (first column) c - print the
+number of lines containing string(s) e - print only element names
+containing string(s) s - case sensitive search t - suppress line
+numbers v - print all lines but those containing string(s)</P>
+
+<P>These options can be combined and used with multiple strings to
+provide a powerful search mechanism. The '#' character is used for
+character to character masking within a string. As was mentioned, the
+target of the search can be a program file. If this is the case, GREP
+will search each symbolic element within the program file for the
+specified string(s).</P>
+
+<P>Here are some examples of calling GREP:</P>
+
+<PRE> -&gt;GREP,s *WARNING *ERROR prtt. | j*m.fprint</PRE>
+
+<P>This example would do a case sensitive search for *WARNING and
+*ERROR in the file "PRTT." and then pipe that output to the program
+"J*M.FPRINT" (a utility to print files on an auxiliary printer).</P>
+
+<PRE> -&gt;GREP,bac * /DCL My*ProgramFile.  
+&nbsp;</PRE>
+
+<P>This example would look at each element in "MY*PROGRAMFILE." for
+lines that have a '*' starting in the first column and also have
+"/DCL" somewhere else on the same line. It would print a count for
+each element of the number of matching lines.</P>
+
+<PRE> -&gt;prt,t My*File. | GREP /tcf | MORE</PRE>
+
+<P>This example would pipe the TOC of "MY*FILE." to GREP to search
+for any lines containing the string "/tcf" and would then pipe that
+output to the MORE processor for viewing.</P>
+
+<H2>15.9. H</H2>
+
+<PRE> -&gt;H &lt;#&gt;</PRE>
+
+<P>This command prints the last HBUF (environmental variable)
+commands from your history buffer. If a number is specified on the
+"H" command then that is the number of commands that will be printed
+from the history buffer.</P>
+
+<H2>15.10. HELP</H2>
+
+<PRE> -&gt;HELP &lt;subject&gt;   
+&nbsp;</PRE>
+
+<P>The "HELP" command provides on-line help to CSHELL documentation.
+If a subject is specified on the command line then you will begin at
+that section of help (subjects are listed on the first screen of
+HELP).</P>
+
+<H2>15.11. LOGOUT</H2>
+
+<PRE> -&gt;LOGOUT &lt;parameters&gt;  </PRE>
+
+<P>LOGOUT is similar to the EXIT command in that you exit CSHELL when
+it is executed. There are two differences. The first is that if the
+environmental variable "SAVHIST" is set to 1, your last HBUF (another
+environmental variable) commands from your history buffer will be
+saved in your .CHIST element. The other difference is that your
+.LOGOUT element will be executed as a CSHELL ADD stream. The
+"parameters" mentioned above are optional parameters which could be
+used in your .LOGOUT element. See the section on CSHELL ADD streams
+for more details on this subject. After the LOGOUT command is
+executed you will be in ECL control mode. At this point you can enter
+"@CSHELL" to return to where you left off.</P>
+
+<H2>15.12. MORE</H2>
+
+<PRE> -&gt;MORE file.&lt;element&gt;  </PRE>
+
+<P>MORE is a quick and convenient way to view files or elements. It
+does not have editing capabilities but provides full screen viewing.
+It also allows you to locate and find strings within the file or
+element as well as shift the text left or right for viewing long
+lines. Enter a '?' while in MORE to get help on the commands.</P>
+
+<P>If the text being printed is less that 22 lines, MORE will simply
+print the lines on the screen and exit. If MORE is called while
+output is being redirected (redirection, pipes, brkpt), more will
+print the entire text and exit.</P>
+
+<P>MORE is very useful to pipe non essential output to. For example,
+if you execute a command which outputs more than a screen of
+information, it is very convenient to simply reexecute the command
+and pipe its output to MORE. Here is an example:</P>
+
+<PRE> -&gt;SET toc = 'prt,tb &amp;1 | MORE' 
+ -&gt;toc Some*File.   
+      - Executes -  @PRT,TB SOME*FILE. and pipes the output to MORE 
+                                       for viewing. </PRE>
+
+<H2>15.15. PHONE</H2>
+
+<PRE> -&gt;PHONE&lt;,U&gt; &lt;userid&gt;   </PRE>
+
+<P>CSHELL's PHONE processor allows you to carry on an interactive
+conversation with another user or users through "@@TM" messages. If
+the 'U' option is specified, the TM messages will be sent with the
+"/U" option (to all runs on the system with the given userid). If the
+'U' option is not specified, the TM messages will be sent with the
+"/R" option (only the specified runid will receive the messages). The
+PHONE processor can handle messages longer that the TM limit by
+splitting them into two TM messages. The PHONE processor prompt shows
+which userid/runid you are currently sending messages to. It also
+allows you to go into GLOBAL mode (g@) which will send your message
+to all open userid/runids (like a party line!). Here are the commands
+used in the PHONE processor:</P>
+
+<PRE> -&gt;HELP@  Shows these commands. 
+ -&gt;H@     Hangs up on current line(s).  
+ -&gt;L@     Lists your connections.   
+ -&gt;E@     Exits PHONE, hanging up on your current line(s).  
+ -&gt;C@ &lt;#|USERID&gt; Changes current line to # or USERID.  If USERID is 
+               not currently connected, USERID will be called.  
+ -&gt;G@     Puts you in global mode - this allows you to talk to all of   
+               your lines at once.  
+ -&gt;R@     Shows status of user on your current line (@@CONS RC).
+ -&gt;&gt;      Signals start of message and puts a hold (@@HOLD) on  
+               incoming messages.   
+ -&gt;&lt;      Signals completion of message and releases hold on messages.  </PRE>
+
+<H2>15.14. PRINTENV</H2>
+
+<PRE> -&gt;PRINTENV </PRE>
+
+<P>This command prints all of the environmental variables and their
+values.</P>
+
+<H2>15.15. PROMPT</H2>
+
+<PRE> -&gt;PROMPT   </PRE>
+
+<P>This command starts an edit session of your .PROMPT element using
+the editor defined by the environmental variable "EDTR". See PROMPT
+section for more details about changing your CSHELL PROMPT.</P>
+
+<H2>15.16. PUTLINE</H2>
+
+<PRE> -&gt;PUTLINE&lt;,#|N&gt; file.&lt;element&gt; &lt;image&gt; </PRE>
+
+<P>PUTLINE allows you to write to a file or element. If the 'N'
+option is specified, the file or element is erased and the image
+becomes the first line. If a line number is specified, the image is
+placed at that line in the file or element and the rest of the text
+is pushed down. The image can be strings and/or variables. The
+strings are placed within double quotes and the variables are placed
+outside of the double quotes. Once an 'N' option is specified, as
+long as the same file or element name is used on the PUTLINE command,
+the line counter will be advanced automatically. e.g.</P>
+
+<PRE> -&gt;PUTLINE,N MYFILE. "The variable A = " a " B = " b
+ -&gt;PUTLINE   MYFILE. "This line ends up third in MYFILE"
+ -&gt;PUTLINE,2 MYFILE. "This becomes line 2 and moves the other down" 
+&nbsp;</PRE>
+
+<P>Variable substitution can be used as well. The following is an
+example of how variable substitution works with the PUTLINE command:
+</P>
+
+<PRE> -&gt;SET a = 'MYFILE.'
+ -&gt;SET b = 'C'  
+ -&gt;SET c = 'D'  
+ -&gt;PUTLINE,N ^a "B[] = " b " [B[]] = " ^b   </PRE>
+
+<P>This would result in the line "B[] = c [B[]] = d" being put into
+"MYFILE."</P>
+
+<H2>15.17. SCRIPT</H2>
+
+<PRE> -&gt;SCRIPT&lt;,opts&gt; scriptfile&lt;.element&gt; &lt;parameter1 parameter2 ...&gt; </PRE>
+
+<P>SCRIPT is the command to execute CSHELL SCRIPTs. See CSHELL
+SCRIPTs section for more details on SCRIPTs.</P>
+
+<H2>15.18. SET</H2>
+
+<PRE> -&gt;SET AliasOrVariable &lt;= expression&gt;   </PRE>
+
+<P>The SET command is used to set variables and aliases in CSHELL.
+See ALIAS section for full details on aliases and variables.</P>
+
+<H2>15.19. T</H2>
+
+<PRE> -&gt;T</PRE>
+
+<P>This command prints the current time and date. One way it could be
+used is to test how long a program takes to execute:</P>
+
+<PRE> -&gt;SET time = 't&gt;time;&amp;*1;t&gt;&gt;time;more time'
+ -&gt;time SomeReally.Long command 
+&nbsp;</PRE>
+
+<P>The above execution of the alias TIME would put the current time
+into TPF$.TIME and then execute "@SOMEREALLY.LONG COMMAND". When that
+program finished, the current time would be appended to the end of
+TPF$.TIME and then the MORE processor would print the two timestamps.
+</P>
+
+<H1>16. CSHELL SCRIPTs</H1>
+
+<P>CSHELL SCRIPTs allow the user to program a routine using his
+CSHELL variables and aliases as well as other CSHELL functionality
+under such process control constructs as IF/ENDIF, WHILE/ENDWHILE.
+They also allow input to be obtained using the READ command.</P>
+
+<P>*IMPORTANT* CSHELL SCRIPTS DO NOT SUPPORT ANY FEATURES ADDED SINCE
+CSHELL 1.0</P>
+
+<P>The output of a CSHELL SCRIPT compilation is a CTS subroutine.
+This is a throw back to ASHELL days (CSHELL's predecessor). If fact,
+the CSHELL SCRIPT compiler IS ASHELL with some minor modifications.
+When ASHELL was converted from CTS to CALL, the SCRIPT compiler could
+do everything CSHELL 1.0 could do. As changes were made to CSHELL,
+the SCRIPT compiler remained untouched. The main reason we converted
+to CALL was that ASHELL was getting out of hand (hard to maintain and
+enhance). The idea of updating the SCRIPT compiler with new features
+would require much more work that putting the feature in CSHELL. It
+would be like maintaining two TOTALLY different shells which somehow
+produced the same results.</P>
+
+<P>Use of CSHELL SCRIPTs is not to be discouraged but their usage is
+not always necessary. If your SCRIPT does not use conditions (IF) or
+looping (WHILE), there is no reason not to make your SCRIPT into a
+long multiple command alias or a CSHELL ADD stream. Remember that a
+CSHELL ADD stream works the same as a SCRIPT except it doesn't have
+IF or WHILE statements. Arguments are passed to CSHELL ADD streams in
+the variables; ARGV[1], ARGV[2], ... .</P>
+
+<P>In addition, CSHELL gives you the ability to pass any parameters
+or variables to your own program. For example, using the dynamic ADD
+stream building feature ([]), you can pass any parameters you like in
+an ADD stream. e.g.</P>
+
+<PRE> -&gt;SET prog = '[@My*Own.Program;^var1 ^var2 &amp;*1]'  </PRE>
+
+<P>This example shows how variables as well as command line
+parameters can be passed in an ADD stream. Note also that since the
+variables and command line parameters are passed in an ADD stream,
+they remain case sensitive and can contain any character normally
+illegal on the ECL command line.</P>
+
+<P>The great thing about CSHELL is that there is always some way to
+do something and in the end, a simple press of a function key may be
+all that is needed to get the job done.</P>
+
+<P>Here is the original CSHELL 1.0 documentation on CSHELL SCRIPTs:
+</P>
+
+<P>CSHELL scripts allow you to create files or elements consisting of
+any commands that can be executed from within CSHELL; this includes
+ECL commands and any of your own aliases. Additionally, scripts have
+looping capability (using WHILE...ENDWHILE), conditional execution
+capability (using IF...ENDIF), interactive capability (using READ),
+file/ element I/O (using GETLINE and PUTLINE), and much more.</P>
+
+<P>Let's consider an example of a script that reads in a list of
+files and then deletes them. (There may be a number of new CSHELL
+symbols that you haven't seen before; these will be explained.)</P>
+
+<PRE> # FILE DELETION SCRIPT 
+ set count = 0                       % init file count  
+ set file[0] = ' '                   % init file name array 
+ while upper(file[count]) &lt;&gt; 'DONE'  % while not done   
+    set count = count + 1            %    increment count   
+    read file[count] File to delete: %    get next file name
+ endwhile                            % endwhile 
+ echo "Deleting files."              %  
+ set count2 = 1                      % init delete count
+ while count2 &lt; count                % while delete count &lt; file count  
+    delete ^file[count2]             %    delete file   
+    set count2 = count2 + 1          %    increment count   
+ endwhile                            % endwhile 
+ if count &lt; 2                        % display number of files deleted  
+    echo "No files deleted."         %      :   
+ elseif count = 2                    %      :   
+    echo "1 file deleted."  
+ else   
+    echo count " files deleted."
+ endif  
+ echo "end script"  
+&nbsp;</PRE>
+
+<P>There are two steps to running a script; compilation and
+execution. Compilation checks the script for logical errors and loop
+errors and creates a compiled version. A script cannot be run unless
+it has been successfully compiled. Compilation is done by entering
+the following:</P>
+
+<PRE> -&gt;script,c &lt;scriptname&gt;
+&nbsp;</PRE>
+
+<P>This generates the compiled file or element &lt;scriptname&gt;-a.
+To execute this, simply enter</P>
+
+<PRE> -&gt;script &lt;scriptname&gt;  </PRE>
+
+<P>Or enter</P>
+
+<PRE> -&gt;script,d &lt;scriptname&gt;</PRE>
+
+<P>for debug mode.</P>
+
+<P>NOTE: The script file or element name can be at most 10
+characters.</P>
+
+<P>Some of the features used in the above script include: - READ
+&lt;var&gt; &lt;prompt string&gt; prompts with &lt;prompt string&gt;
+and reads input into &lt;var&gt;.</P>
+
+<P>- Arrays are in the form varname[x,y,..], where the length of the
+varname + brackets + commas + subscripts must be &lt;= 12 characters,
+e.g. array[a,b,c] is legal (12 characters), but longarray[1,2,3] is
+not (16 characters).</P>
+
+<P>- ^varname generates the value of varname. For example, if we have
+</P>
+
+<PRE> -&gt;set file = 'myfile.' 
+&nbsp;</PRE>
+
+<P>then the line</P>
+
+<PRE> -&gt;delete ^file 
+&nbsp;</PRE>
+
+<P>is actually converted to the line</P>
+
+<PRE> -&gt;delete myfile.   
+&nbsp;</PRE>
+
+<P>Note: variable substitution does not occur inside quotes, so a
+command like</P>
+
+<PRE> -&gt;set del = 'delete ^file' 
+&nbsp;</PRE>
+
+<P>does not get converted to anything else. The correct command would
+be</P>
+
+<PRE> -&gt;set del = 'delete ' file 
+&nbsp;</PRE>
+
+<P>which would then be converted to</P>
+
+<PRE> -&gt;set del = 'delete myfile'
+&nbsp;
+&nbsp;
+   -   IF &lt;expression&gt;  
+           :    :   
+       ELSEIF &lt;expression&gt;  
+           :    :   
+       ELSE 
+           :    :   
+       ENDIF
+&nbsp;</PRE>
+
+<P>Where &lt;expression&gt; may contain any relation of the form
+=,&lt;=,&gt;=, &lt;&gt;,&lt;,&gt; and may use any of the following
+functions: In the following, "s" is a string enclosed in quotes or a
+string variable - len(s) returns the length of s - lower(s) returns
+lower case of s - upper(s) returns upper case of s - trm(s) trims
+trailing blanks from s - txt(s,start,end) returns s from start to end
+- num(s,start,end) returns the numeric value of s from start to end -
+id(s) returns the user information from the @RUN command for the
+following values of s: 'run' - returns the run-id 'proj' - returns
+the project-id 'acct' - returns the account number - date() returns a
+string containing the date and time in the form dd mmmm yy AT
+hh:mmm:ss</P>
+
+<P>In the following, "x" is a number or numeric variable</P>
+
+<PRE>         -  abs(x) returns the absolute value of x  
+         -  atn(x) returns the arctangent of x  
+         -  cos(x) returns the cosine of x  
+         -  cot(x) returns the cotangent of x   
+         -  exp(x) returns the exponential e**x 
+         -  lgt(x) returns the base 10 logarithm of x   
+         -  log(x) returns the base e logarithm of x
+         -  sin(x) returns the sine of x
+         -  sqr(x) returns the square root of x (x must be positive)
+         -  tan(x) returns the tangent of x 
+&nbsp;
+   -   WHILE &lt;expression&gt;   
+           :    :   
+       ENDWHILE 
+&nbsp;</PRE>
+
+<P>- % introduces in line comments (% must be followed by a blank).
+</P>
+
+<P>- # introduces comment lines.</P>
+
+<P>On a call to a script, you may want to pass in arguments. CSHELL
+allows you to do this by automatically setting up an argument vector
+(ARGV) and an argument count (ARGC).</P>
+
+<P>For example, suppose we want to pass in some arguments to a script
+called ADDSCRIPT as follows:</P>
+
+<PRE> -&gt;script ADDSCRIPT.ELT 543 23 4 22 
+&nbsp;</PRE>
+
+<P>The script call automatically does the following:</P>
+
+<P>- it sets ARGC to be the number of arguments (in this case there
+are four arguments (543, 23, 4, and 22), so ARGC = 4).</P>
+
+<P>- it sets up the argument vector so that ARGV[1] = 543, ARGV[2] =
+23, ARGV[3] = 45, and ARGV[4] = 22.</P>
+
+<P>- ARGV[0] is always set to the name of the script file; in this
+case ARGV[0] = 'ADDSCRIPT.ELT'.</P>
+
+<P>These variables are available to you for use in your script. Keep
+in mind that any time you call another script file or perform a CCTS
+call from within your script these values are reset, so it's best to
+save them at the start of your script.</P>
+
+<P>It is also possible to pass a string to a script; all you have to
+do is enclose it in double quotes (each string counts as one
+argument). For example:</P>
+
+<PRE> -&gt;script ADDSCRIPT.ELT "this is arg1" "this is arg2"   
+&nbsp;</PRE>
+
+<P>You can also have options on your script call line. CSHELL
+automatically sets up a variable called OPTS that you can use in your
+scripts. For example, you could call your script with the following
+line:</P>
+
+<PRE> -&gt;script,nm addscript.elt 23 343 5 
+&nbsp;</PRE>
+
+<P>The variable OPTS is set to 'nm' - this variable can be used in
+your script.</P>
+
+<P>NOTE: CSHELL reserves the 'd' option to initiate debug mode. This
+option may provide useful information for debugging your scripts.
+</P>
+
+<H1>Appendix A. Summary of Special Characters</H1>
+
+<P>; This meta-character is used to separate commands. e.g.</P>
+
+<PRE> -&gt;IACULL EXEC*42ML. ; FSED WFS*WORK.T  
+&nbsp;</PRE>
+
+<P>In the above example, you will enter IACULL first and will stay
+there until you EXIT from IACULL. At that point, the FSED command
+will be executed.</P>
+
+<P>&lt; This meta-character has two meanings depending upon where it
+is located in the command. A leading '&lt;' followed by a file or
+element name indicates a CSHELL ADD stream (see CSHELL ADD stream
+section for more details)</P>
+
+<P>If the '&lt;' sign is placed anywhere besides the first character
+in the command, input redirection is assumed (see section on Input
+Redirection for more details).</P>
+
+<P>! This character is used to re-execute commands from your history
+buffer (see History Buffer section for more details).</P>
+
+<P>? This character is used to print what an alias or variable is set
+to. e.g.</P>
+
+<PRE> -&gt;?myalias 
+&nbsp;</PRE>
+
+<P>^ This character can be used throughout a command and is used for
+variable substitution (see Variable Substitution section under
+Aliasing for more details).</P>
+
+<P>&amp; This character can be used throughout an alias and is used
+for parameter substitution (see Parameter Substitution section under
+Aliasing for more details).</P>
+
+<P>\ This character has two meaning depending upon its placement. If
+the first character of a command is a '\', then the command will be
+executed as is even if the command is aliased to another. e.g.</P>
+
+<PRE> -&gt;SET delete = 'CAT'   
+ -&gt;delete My*File.  
+      - Executes -  @CAT MY*FILE.   
+&nbsp;
+ -&gt;\delete My*File. 
+      - Executes -  @DELETE MY*FILE.
+&nbsp;</PRE>
+
+<P>If the '\' is someplace in a command besides the first character,
+then it acts as an escape character. For example:</P>
+
+<PRE> -&gt;GREP sys\; Some*File.
+&nbsp;</PRE>
+
+<P>The above execution of GREP would search for the string "sys;" in
+SOME*FILE.</P>
+
+<P>. If a period is the first character in a command, then that
+command is executed as a transparent command. e.g.</P>
+
+<PRE> -&gt;SET ss = '.cons ss'  
+ -&gt;ss   
+      - Executes - @@CONS SS
+&nbsp;</PRE>
+
+<P>Note that the output of transparent commands CANNOT be redirected
+or piped.</P>
+
+<P>% If this character is the first character in a command, CSHELL
+will append an "@EOF" to the execution of the command (see
+Compatibility section for more information on this subject).</P>
+
+<P>This character is also used in the .ALIAS and .PROMPT elements for
+in line comments.</P>
+
+<P>[ This character signifies the start of a dynamic ADD stream (see
+Dynamic ADD Stream section for more details).</P>
+
+<P>] This character signals the end of a dynamic ADD stream that was
+started with the '[' character (see Dynamic ADD Stream section for
+more details).</P>
+
+<P>~ This character is associated with CSHELL's searchpath mechanism.
+If a command begins with this character, the program files defined in
+your environmental variable "PATH" will be searched for the specified
+absolute. If an absolute is found that matches the command given, it
+is echoed on the screen and executed. If the specified command does
+not exist in any of the program files in your path, the command will
+be executed as it was entered.</P>
+
+<H1>Appendix B. *ERROR* and *WARNING* Messages</H1>
+
+<P>The following is a list of all the warning and error messages that
+are contained in CSHELL. Each message will be associated with a brief
+description. Note that the warning messages can be suppressed through
+the environmental variable "NOWARN". If this variable is SET to 1,
+warning messages will not be displayed. In general, if a warning
+message is printed, the command will still be executed (though
+perhaps not as planned). If an error message is printed, the command
+will be ignored.</P>
+
+<P>*WARNING* &lt;Some*File.&gt; could not be assigned, removing it
+from your path.</P>
+
+<P>This message is associated to your "PATH" environmental variable.
+It means that you have specified a file in your PATH that cannot be
+assigned. In this case, CSHELL removes it from your PATH.</P>
+
+<P>*WARNING* &lt;Some*File.&gt; cannot be used in your path,
+read-inhibited.</P>
+
+<P>This message is associated with your "PATH" environmental
+variable. It means that you have specified a file in your path that
+cannot be read by you. In this case, CSHELL removes it from your
+PATH. Note that even though the file may grant you execute access, if
+CSHELL cannot read the TOC of the file, it cannot search the file for
+a given executable.</P>
+
+<P>*WARNING* &lt;Some*File.&gt; cannot be referenced at this time.
+(possibly exclusively assigned)</P>
+
+<P>This message is associated with your "PATH" environmental
+variable. It means that CSHELL cannot currently read the TOC of the
+given program file specified in your PATH. Check the status of the
+file and reset the PATH variable ("SET PATH").</P>
+
+<P>*WARNING* &lt;Some*File.&gt; cannot be referenced in the search
+path. (not a program file)</P>
+
+<P>This message is associated with your "PATH" environmental
+variable. It means you have specified a file name in your PATH that
+is not a program file. Since your PATH can only contain program
+files, this file is ignored.</P>
+
+<P>*WARNING* $CSHELLSAVE$ breakpoint file can't be opened, using
+default file.</P>
+
+<P>The file $CSHELLSAVE$ is the file that CSHELL saves its current
+state in when it exits to execute a command. This file is used to
+restore your environment when that command is finished. If something
+happens to $CSHELLSAVE$ during your session and CSHELL can no longer
+write to it, CSHELL will use the default breakpoint file used by the
+CALL language. This message should never be printed. If it is, you
+should LOGOUT of CSHELL and restart it.</P>
+
+<P>*WARNING* CSHELL auto-recovery file in use, recovery across
+sessions disabled.</P>
+
+<P>This message is displayed once when you first sign on to CSHELL.
+It means that the catalogued file $CSHELLSAVE$ is already in use and
+CSHELL must create a temporary $CSHELLSAVE$ for use by this session.
+This message is only printed if the 'A' option (auto recovery) is
+being used on the call to CSHELL. This message indicates that you
+already have a CSHELL session running on the same system you are
+signing on to.</P>
+
+<P>*WARNING* GETLINE file &lt;Some*File.&gt; is empty.</P>
+
+<P>This message is printed when the internal command GETLINE is
+called on a file or element that is empty.</P>
+
+<P>*WARNING* Less than &lt;n&gt; lines in file, returning last line.
+</P>
+
+<P>This message is printed when the internal command GETLINE is
+called and specifies a line number that is greater than the number of
+lines in the given file or element. In this case, CSHELL will return
+the last line in the file or element.</P>
+
+<P>*WARNING* Possible circular alias &lt;alias-name&gt; stopped at
+level 25</P>
+
+<P>This command is printed after CSHELL interprets an alias 25 times
+without resolving it. At this point, CSHELL assumes the alias is a
+circular alias (SET a='b';SET b='a') and executes the command it has
+in hand.</P>
+
+<P>*WARNING* Command longer than 125 characters, trimmed for history
+buffer.</P>
+
+<P>It is possible for a command to grow very long by using the '!'
+command multiple times within a single command (e.g. !s;!5;!a;!q). If
+the length of the command grows too large, when it is printed on a
+history command, an IGDM can occur due to printing a line longer than
+132 characters. Therefore if a command grows too long, CSHELL will
+trim it at 125 characters. Note that re-executing this command from
+the history buffer will not execute the entire command as it has been
+trimmed.</P>
+
+<P>*WARNING* Parameter &lt;n&gt; not supplied.</P>
+
+<P>This command is associated with parameter substitution in aliases
+(e.g. &amp;3). If an alias asks for a parameter that is not given on
+the command line execution of the alias, this message is printed out.
+The message will be printed for each parameter specified in the alias
+but not given on the command line. Note that CSHELL NULL fills any
+parameters that are not given.</P>
+
+<P>*ERROR* Couldn't open save file: &lt;source&gt;.CHIST</P>
+
+<P>This message is associated with the environmental variable
+"SAVHIST". If SAVHIST is SET to 1, your history buffer will be saved
+across sessions in your .CHIST element when you FIN or LOGOUT. If
+CSHELL cannot write to this element, it will print the error message.
+</P>
+
+<P>*ERROR* Could not ADD &lt;Some*File.&gt;</P>
+
+<P>This message is associated with CSHELL ADD streams (e.g.
+"&lt;Some*File.") and is printed when the file or element specified
+to be ADDed cannot be read.</P>
+
+<P>*ERROR* Could not save ADD stream in CSHELLADD. file.</P>
+
+<P>This message is associated with CSHELL ADD streams which are built
+interactively (entering a single '&lt;' followed by commands followed
+by a single '&lt;'). When a CSHELL ADD stream is built this way,
+CSHELL saves the input in the file "CSHELLADD.". If CSHELL cannot
+write to this file, the above message is printed.</P>
+
+<P>*ERROR* Mismatched quotes</P>
+
+<P>This message is the most common. It can be printed in a number of
+different places but always means an uneven number of quotes were
+used on some command.</P>
+
+<P>*ERROR* Maximum of 64 CLISTed processors {Default: &lt;n&gt; User:
+&lt;N&gt;}</P>
+
+<P>This message is associated with building your own CLIST list (see
+"CLIST" under "Environmental Variables" for more information on
+CLIST). Your .CLIST element contains too many processors. The error
+line shows the number of processors in CSHELL's internal list as well
+as the number of processors you have specified. The sum of these
+numbers is larger than 64 and therefore you must shorten your list.
+</P>
+
+<P>*ERROR* CLIST processors limited to 6 characters:
+&lt;clist-name&gt;</P>
+
+<P>This message is associated with building your own CLIST list (see
+"CLIST" under "Environmental Variables" for more information on
+CLIST). Your .CLIST element contains the name of a processor that is
+longer than 6 characters. ER CLIST$ limits the length of processors
+to 6 characters.</P>
+
+<P>*ERROR* MAP error encountered, see $$BRKPT$$.</P>
+
+<P>This message is associated with building your own CLIST list (see
+"CLIST" under "Environmental Variables" for more information on
+CLIST). This message is printed when a MAP error is encountered when
+creating the CLIST absolute that contains the processors from your
+.CLIST list. The MASM and MAP listing is in the file "$$BRKPT$$.". If
+you cannot determine what went wrong, MAIL the file to the userid
+given at the end of the introduction.</P>
+
+<P>*ERROR* Can't read CO$.CO$'</P>
+
+<P>This message is associated with the internal command "CO$". The
+command CO$ moves the current contents of CO$.CO$ to CO$.CO$1. This
+message is printed when CSHELL cannot read the element CO$.CO$.</P>
+
+<P>*ERROR* Can't write to CO$.CO$1'</P>
+
+<P>This message is associated with the internal command "CO$". The
+command CO$ moves the current contents of CO$.CO$ to CO$.CO$1. This
+message is printed when CSHELL cannot write to the element CO$.CO$1.
+</P>
+
+<P>*ERROR* No CTS subroutine specified.</P>
+
+<P>This message is associated with the internal command "CCTS". The
+CCTS command is used to CALL a CTS subroutine (parameter 1). This
+message means that no CTS subroutine was specified.</P>
+
+<P>*ERROR* CTS subroutines cannot reside in data files.</P>
+
+<P>This message is associated with the internal command "CCTS". The
+CCTS command is used to CALL a CTS subroutine (parameter 1). This
+message means that the specified CTS subroutine is in a data file.
+CTS subroutines cannot reside in data files.</P>
+
+<P>*ERROR* CTS subroutine &lt;Some*File.Elt&gt; not found.</P>
+
+<P>This message is associated with the internal command "CCTS". The
+CCTS command is used to CALL a CTS subroutine (parameter 1). This
+message means that CSHELL cannot find the specified CTS subroutine
+element.</P>
+
+<P>*ERROR* Can't write to &lt;Some*File.&gt; because &lt;status&gt;.
+</P>
+
+<P>This message is associated with the internal command "PUTLINE"
+(used to write images to files or elements). In this case, CSHELL
+could not write to the file or element due to the given status.</P>
+
+<P>*ERROR* Bad line number: &lt;input-line-number&gt; specified on
+PUTLINE command.</P>
+
+<P>This message is associated with the internal command "PUTLINE"
+(used to write images to files or elements). In this case, the given
+line number to place the image on was invalid.</P>
+
+<P>*ERROR* Can't write to line 0 in &lt;Some*File.&gt;.</P>
+
+<P>This message is associated with the internal command "PUTLINE"
+(used to write images to files or elements). In this case, the line
+number given to write the image to was zero (illegal).</P>
+
+<P>*ERROR* No file specified on PUTLINE command.</P>
+
+<P>This message is associated with the internal command "PUTLINE"
+(used to write images to files or elements). In this case, the caller
+did not specify a file or element to write to.</P>
+
+<P>*ERROR* Nested input redirection is not allowed.</P>
+
+<P>This message is associated with input redirection which allows you
+to pass a file or element as input to a command or set of commands
+(cmd &lt; Some*File.). This message means that an input redirection
+file or element was already in effect when another input redirection
+file or element was specified. Only one input redirection file or
+element can be active at one time.</P>
+
+<P>*ERROR* No input redirection file specified.</P>
+
+<P>This message is associated with input redirection which allows you
+to pass a file or element as input to a command or set of commands
+(cmd &lt; Some*File.). This message means that input redirection was
+indicated (&lt;) but no file or element was given.</P>
+
+<P>*ERROR* Can't read input redirection file: &lt;Some*File.&gt;.
+</P>
+
+<P>This message is associated with input redirection which allows you
+to pass a file or element as input to a command or set of commands
+(cmd &lt; Some*File.). This message means that CSHELL could not read
+the specified file or element.</P>
+
+<P>*ERROR* Multiple input redirection not allowed.</P>
+
+<P>This message is associated with input redirection which allows you
+to pass a file or element as input to a command or set of commands
+(cmd &lt; Some*File.). This message means that two input redirection
+files or elements were specified on the same command. CSHELL allows
+only one input redirection file or element at a time.</P>
+
+<P>*ERROR* NUMON may only be set to 1 or 0.</P>
+
+<P>This message is printed when the environmental variable "NUMON" is
+set to any value besides a 1 or 0.</P>
+
+<P>*ERROR* HBUF must be a number.</P>
+
+<P>This message is printed when the environmental variable "HBUF" is
+SET to a non-numeric value.</P>
+
+<P>*ERROR* No file specified on GETLINE command.</P>
+
+<P>This message is associated with the internal command "GETLINE"
+which is used to read a given line from a given file or element. This
+message means that the call to GETLINE did not specify a file or
+element to read from.</P>
+
+<P>*ERROR* Bad line number: &lt;n&gt;</P>
+
+<P>This message is associated with the internal command "GETLINE"
+which is used to read a given line from a given file or element. This
+message means that the line number specified on the GETLINE command
+is invalid.</P>
+
+<P>*ERROR* Couldn't read &lt;Some*File.&gt; because &lt;status&gt;.
+</P>
+
+<P>This message is associated with the internal command "GETLINE"
+which is used to read a given line from a given file or element. This
+message means that CSHELL could not read the specified file or
+element.</P>
+
+<P>*ERROR* You cannot delete an environmental variable.</P>
+
+<P>This message is associated with the internal command "SET" used to
+set aliases and variable. The SET command can also delete variables
+and aliases. This message is printed when the user tries to delete an
+environmental variable.</P>
+
+<P>*ERROR* Alias &lt;alias-name&gt; does not exist.</P>
+
+<P>This message is associated with the internal command "SET" used to
+set aliases and variable. The SET command can also delete variables
+and aliases. This message is printed when the user tries to delete a
+variable or alias which does not exist.</P>
+
+<P>*ERROR* No SCRIPT file specified.</P>
+
+<P>This message is associated with the internal command "SCRIPT"
+which is used to compile and execute CSHELL scripts (given as
+parameter 1). This message means that the user did not specify the
+name of the script.</P>
+
+<P>*ERROR* Scripts currently cannot be data files.</P>
+
+<P>This message is associated with the internal command "SCRIPT"
+which is used to compile and execute CSHELL scripts (given as
+parameter 1). CSHELL scripts must reside as elements in program
+files. This message is printed when the user specifies the CSHELL
+script as residing in a data file.</P>
+
+<P>*ERROR* Could not find script file: &lt;Some*File.Elt&gt;.</P>
+
+<P>This message is associated with the internal command "SCRIPT"
+which is used to compile and execute CSHELL scripts (given as
+parameter 1). This message means that CSHELL could not read the
+specified SCRIPT file.</P>
+
+<P>*ERROR* SCRIPT &lt;Some*File.Elt&gt; has not been compiled.</P>
+
+<P>This message is associated with the internal command "SCRIPT"
+which is used to compile and execute CSHELL scripts (given as
+parameter 1). This message means that the given script has not been
+compiled (SCRIPT,C SOME*FILE.).</P>
+
+<P>*ERROR* Could not find SCRIPT &lt;Some*File.&gt;.</P>
+
+<P>This message is associated with the internal command "SCRIPT"
+which is used to compile and execute CSHELL scripts (given as
+parameter 1). This message means that CSHELL could not read the
+compiled script element.</P>
+
+<P>*ERROR* Couldn't read alias file: &lt;source&gt;.ALIAS.</P>
+
+<P>This message can be printed when first starting a CSHELL session
+or when executing the internal command "ALIAS". It means that CSHELL
+cannot read your .ALIAS element. This may mean that the wrong source
+file was given.</P>
+
+<P>*ERROR* ^ found with no variable.</P>
+
+<P>This message is associated with variable substitution. It is
+printed when the variable substitution meta-character (^) is followed
+by a space.</P>
+
+<P>*ERROR* Variable &lt;var-name&gt; not found.</P>
+
+<P>This message is associated with variable substitution. It is
+printed when the object of the variable substitution (the string
+following a ^) is not SET to anything.</P>
+
+<P>*ERROR* Illegal parameter number : "&lt;xxx&gt;".</P>
+
+<P>This message is associated with parameter substitution. The syntax
+of parameter substitution is &amp;*n where n is the parameter number
+and the * (optional) indicates all parameters from the specified
+parameter up. This error message is printed if the characters
+following the &amp; do not follow this syntax.</P>
+
+<P>*ERROR* Redirection sign preceding pipe command.</P>
+
+<P>This message is associated with output redirection and pipes. In
+this case a command was specified that indicated an output
+redirection operation (&gt;) as well as a pipe (|). The output of a
+single command can be either piped to another command or redirected
+to a file but cannot do both at once.</P>
+
+<P>*ERROR* Multiple output redirection is not allowed.</P>
+
+<P>This message is associated with output redirection. In this case,
+two output redirection commands (&gt;) were specified on the same
+command. Only one output redirection can be specified per individual
+command.</P>
+
+<P>*ERROR* No output redirection file specified.</P>
+
+<P>This message is associated with output redirection. In this case,
+output redirection was specified on a command (&gt;) but no file or
+element was given to place the output into.</P>
+
+<P>*ERROR* Can not redirect to &lt;file-name&gt;.</P>
+
+<P>This message is associated with output redirection. In this case,
+CSHELL was unable to place the output of the command into the
+specified file-name.</P>
+
+<H1>Appendix C. Release Information</H1>
+
+<P>The following is a chronological description of the updates that
+were made to CSHELL. In general, when a new feature(s) is added to
+CSHELL, the release number is incremented. If there are any fixes
+made to CSHELL, the release number remains the same but a letter is
+appended to the number. If a fix is made to a CSHELL level that
+already contains a letter, that letter is changed to the next letter
+in the alphabet.</P>
+
+<P>1.0 03/01/90</P>
+
+<P>First release of CSHELL</P>
+
+<P>1.1 04/03/90</P>
+
+<P>Added the "%" meta-character. When this character precedes a
+command, CSHELL issues an @EOF following execution of the command.
+Useful for some FURPUR-like processors such as EDIT*EDIT.PRT and
+TTC*LIB.PRT. See Special Characters section for more info.</P>
+
+<P>Enhanced the on-line calculator "CALC" to support octal numbers
+and conversions. See Internal Commands section for more detail.</P>
+
+<P>1.2 04/11/90</P>
+
+<P>Enhanced the MORE processor to allow you to move the text over to
+view lines longer than 80 characters. Also sped up the output rate of
+the MORE processor.</P>
+
+<P>1.3 04/24/90</P>
+
+<P>Enhanced the ALIAS and PROMPT commands to check if the
+environmental variable EDTR is CTS. If so, CSHELL will enter the
+processor and issue an OLD of the ALIAS or PROMPT element.</P>
+
+<P>Enhanced the SET command such that entering the SET command with
+no parameters will display all of the temporary aliases or variables.
+In addition, if a "SET &lt;alias&gt;" command is entered with no
+assignment (= sign), the &lt;alias&gt; will be deleted from the
+current session.</P>
+
+<P>1.4 05/16/90</P>
+
+<P>Enhanced the GREP processor with a number of new options (see GREP
+in the Internal Commands section).</P>
+
+<P>Enhanced the on-line HELP processor by removing the annoying
+"hicup" when it printed the screens and sped up the screen printing.
+</P>
+
+<P>1.5 05/21/90</P>
+
+<P>CSHELL now performs an @FIN instead of an @@TERM when "FIN" is
+entered.</P>
+
+<P>1.6 06/01/90</P>
+
+<P>CSHELL enhanced to provide recovery of CSHELL session in the case
+of an abnormal run termination. Recovery turned on by calling CSHELL
+with an 'A' option. See Setup section for more details.</P>
+
+<P>1.7 07/09/90</P>
+
+<P>Enhanced the MORE processor to support 43 line mode.</P>
+
+<P>Added an option to parameter substitution to allow multiple
+parameters to be substituted for a single '&amp;' sequence. See
+'&amp;' under Parameter Substitution section for more details.</P>
+
+<P>Added input redirection functionality using the '&lt;' character.
+See Input Redirection section for more detail.</P>
+
+<P>Added a new internal command 'CO$' to facilitate viewing the CALL
+ADD element CO$.CO$ without losing its contents.</P>
+
+<P>1.8 08/13/90</P>
+
+<P>Introduced new meta-character sequence
+"[&lt;cmd&gt;;&lt;cmd&gt;;...]" where the &lt;cmd&gt;s will be staged
+in an add stream and then ADDed when the "]" is encountered. This
+makes building dynamic ADD streams faster and more simple. See
+Dynamic ADD Stream section for more details.</P>
+
+<P>CLIST processing has been updated such that if a control statement
+is executed outside of CSHELL and the environmental variable "CLIST"
+is set to 1, and the control statement is in CSHELL's CLIST (is
+executed), the command will be saved in the history buffer.</P>
+
+<P>In addition the CLIST element is added to your source file set
+which enables you to define your own CLIST list (which can include
+alias names). See the CLIST section under Environmental Variables for
+more details.</P>
+
+<P>1.9 09/22/90</P>
+
+<P>Expanded use of '\' meta-character to escape sequences. This means
+that if a '\' precedes a character, that character will passed as is
+without any interpretation. For example:</P>
+
+<PRE>       -&gt;GREP \^\&amp;\\\"\&gt;\&lt;\; File*Name. | MORE  
+&nbsp;</PRE>
+
+<P>would result in a GREP search in File*Name. for the string:
+^&amp;\"&gt;&lt;;</P>
+
+<P>Fixed &amp;0 to return the entered command and any options
+specified. For example:</P>
+
+<PRE>       -&gt;SET L = '[@iacull exec*43ml.;&amp;*0]' 
+       -&gt;l tagname  
+&nbsp;</PRE>
+
+<P>&amp;0 in the above example is 'l' and execution of the above
+would build and execute the ADD stream:</P>
+
+<PRE>       @IACULL  
+       L TAGNAME
+&nbsp;</PRE>
+
+<P>And finally, the placement of options on an alias was made
+consistent. If options are placed on an execution of an alias, they
+are always placed on the first command of what the alias is aliased
+to. For example:</P>
+
+<PRE>      -&gt;SET LOOK = 'GREP &amp;*2 &amp;1 &gt; File. ;print File.'  
+       -&gt;look,c Search*File. string1 string2
+&nbsp;</PRE>
+
+<P>would result in:</P>
+
+<PRE>       GREP,C string1 string2 Search*File. &gt; File.  
+       print File.  
+&nbsp;</PRE>
+
+<P>1.9A 10/1/90</P>
+
+<P>Corrected bugs in input redirection processing: Infinite loop
+resulted from '&lt;' in command with no redirection file specified.
+In addition, redirection specified on an alias would be ignored
+unless the alias itself specified the redirection.</P>
+
+<P>2.0 11/5/90</P>
+
+<P>Added two new configurable variables to CSHELL:</P>
+
+<P>- SEARCHPATH - When set to 1 your path (SET PATH = ...) will be
+searched on every command.</P>
+
+<P>- NOWARN - When set to 1 no CSHELL warning messages will be
+printed.</P>
+
+<P>Look under Environmental Variables section for more details.</P>
+
+<P>In addition, a couple of bugs were fixed in this level. These had
+to do with building dynamic ADD streams ([]) and having an error
+occur or using double quotes to pass in as a parameter to the ADD
+stream.</P>
+
+<P>2.0A 11/9/90</P>
+
+<P>An initialization enhancement which went into CSHELL 2.0
+introduced a bug in SCRIPT usage. If a SCRIPT command is executed
+before any pipes are used, CSHELL will abort. This level fixes this
+bug.</P>
+
+<P>2.0B</P>
+
+<P>The same enhancement above will cause CSHELL to abort for some
+cases of output redirection if they are used before a pipe command is
+executed. This level fixes this bug.</P>
+
+<P>2.0C 11/14/90</P>
+
+<P>A bug existed in the way CSHELL handled double quotes during
+parameter substitution. The following is an example of what was
+wrong:</P>
+
+<PRE>       -&gt;SET Find = 'GREP &amp;2 &amp;1'
+       -&gt;Find Some*File. """This string"""  
+&nbsp;</PRE>
+
+<P>Before CSHELL 2.0C, the above FIND command execute this:</P>
+
+<PRE>       GREP This string Some*File.  
+&nbsp;</PRE>
+
+<P>Which would look for "This" and "string" as separate search items.
+With 2.0C, the above FIND command will result in this execution:</P>
+
+<PRE>       -&gt;GREP "This string" Some*File.  
+&nbsp;</PRE>
+
+<P>Which will look for "This string" in Some*File. as a single search
+item. Note that CSHELL's interpretation of the above FIND command is:
+</P>
+
+<P>Find Some*File. """This string""" | v GREP "This string"
+Some*File.</P>
+
+<P>2.0D 11/26/90</P>
+
+<P>The open and close brackets ([]) were not being recognized by
+CSHELL's escape character processing. ie:</P>
+
+<PRE>      -&gt;SET FILES = [@query;list files \[ownername=\'WFS\'\]\;;exit]'   
+&nbsp;</PRE>
+
+<P>would result this ADD stream:</P>
+
+<PRE>       @QUERY   
+       list files [ownername='WFS'  
+&nbsp;</PRE>
+
+<P>and then would execute:</P>
+
+<P>EXIT]</P>
+
+<P>Level 2.0D fixes this so that the above alias generates this ADD
+stream:</P>
+
+<PRE>       @QUERY   
+       list files [ownername='WFS'];
+       exit </PRE>
+
+<P>2.1 1/6/91</P>
+
+<P>A number of system variables have been added to CSHELL. Most of
+these include the low ASCII control characters such as _ESC, _DC1
+etc. The other variables include such things as CSHELL level (_LEVEL)
+and userid (_USERID). See last part of the ALIAS section for more
+details.</P>
+
+<P>2.1A 1/9/91</P>
+
+<P>A bug existed in CSHELL such that if an alias was aliased to a
+re-execution command (! command) and was used within a multiple
+command, an infinite loop could result. e.g.</P>
+
+<PRE>       -&gt;SET x = '!&amp;*1' 
+       -&gt;cmd;x str      % Used to cause infinite loop   
+&nbsp;</PRE>
+
+<P>2.1B 1/12/91</P>
+
+<P>If an alias was aliased to '!!"&amp;*1"**' and executed, CSHELL
+would error. Even though the alias doesn't do anything, CSHELL should
+not error.</P>
+
+<P>2.1C 1/24/91</P>
+
+<P>If output redirection and pipe was specified on the same command,
+CSHELL would go into an infinite loop printing out an error message.
+This level fixes this bug.</P>
+
+<P>2.1D 2/12/91</P>
+
+<P>If FCCs or TABs are read as input at the CSHELL prompt, they would
+not print normally when displayed by the history command due to
+cursor repositioning. This level fixes this problem by looking for
+the FCCs and TABs and removing the cursor positioning.</P>
+
+<P>2.1E 8/19/92</P>
+
+<P>Fixed CSHELL.CALC/OCTAL regarding message #157 in S7 OSM mail.
+There was a problem with "calc 100*.0006" ignoring the ".".</P>
+
+<P>Internally to CSHELL, there was a call to procedure CSCRIPT which
+was called only for userids WFS and ISPY. This routine had a call to
+ISPY*OPUS2.COMPILE. CSCRIPT has been removed from CSHELL.</P>
+
+<P>An @use name for the development CSHELL copy (DPS$*CSHELL.) is put
+into place internally in CSHELL.SETUP. References to CSHELL*CSHELL
+throughout CSHELL*CSHELL are changed to just CSHELL. It was necessary
+to change the #INCLUDES in CSHELL*CSHELL. It was also necessary to
+re-compile the @masm elements with CSHELL*CSHELL changed to CSHELL.
+</P>
+
+<P>Fixed a bug with TALK, by inserting a new routine "GET_INPUT" into
+the TALK (PHONE) routine. This handles the "@" in column 1. Also
+inserted an "undocumented" R option to PHONE (Runid).</P>
+
+<P>Fixed a bug for the following, as reported in message # 158. SET
+SRCH = 'GREP &amp;*1 file.elt' SRCH "ABC DEF",GHI</P>
+
+<P>CSHELL use to blow up in GET_PARAMETERS at line 952. This bug is
+now fixed. Note that the string passed to GREP is now the string "ABC
+DEF,GHI" as the comma is NOT a delimiter! In essence, we have a
+string concatenated with another string.</P>
+
+<P>It is not necessary to fix the "error" reported in msg #162. The
+CSHELL code is working as designed. Only TEXT and VARIABLES are to be
+entered in the "image" part of the putline (i.e. not ALIAS's).</P>
+
+<P>There were problems with CSHELL's internal CREATE/DOCS element. -
+Several "@ .@" images were changed to "@ . @" - Several lines were
+too long, and were split into 2 lines. - The call to TTC*LIB.UNADS
+was failing. The calls have now been changed from using "solicit
+input" to "power user" mode - Indented lines have been shortened to
+eliminate warning messages from NOMADS.</P>
+
+<P>The MORE processor leaves files assigned when displaying a file.
+The solution is to retain file assignment status. If the file was
+assigned, leave the file assigned. If the file was NOT assigned, do
+an FREE,R when finished. Also internally restructure MORE to exit
+from the main module instead of exiting from various subroutines.
+</P>
+
+<P>CSHELL sometimes dies when executing another program. This is
+cause by a deficiency in CALL. CALL is not prepared for when the
+breakpoint file (proj*CBPFL$runid) becomes data disabled. The fix is
+to recompile CSHELL with the new version of CALL.</P>
+
+<P>The routine "RESET" was never called within CSHELL. It has been
+removed.</P>
+
+<P>Unexpected results can occur when an alias is in the form:
+[...]stuff. In the routine Check_Building_Add, when the ']' is
+processed, and there is more "stuff". This 'bug' has not been fixed,
+since the '|' is a valid character to follow the ']'.</P>
+
+<P>Strange results can occur from the following: set abc := 'u' This
+sets the temporary variable "abc :" to the value "u". For "temporary"
+alias assignment, give the error: - Spaces are not allowed in alias
+names, command ignored For "permanent" alias assignment, give the
+error: - Spaces are not allowed in alias name on line xx of your
+alias file.</P>
+
+<P>Note: It is still legal to have "special characters" in alias
+names, therefore the following alias, set abc:='u', sets the variable
+"abc:" to the value "u".</P>
+
+<P>When entering "SET" to display temporary aliases, internal
+variables were displayed for NOWARN or SEARCHPATH. These are not of
+interest to the user so they are not displayed when the "SET" command
+is entered. The case statement in Print_Temp_Aliases has been
+updated.</P>
+
+<P>Alias set commands which are in error, destroy the prior alias.
+For example: set abc = 'badstring, will create an abc alias that is
+in error. This problem has not been fixed.</P>
+
+<P>Strange results can occur with temporary aliases:</P>
+
+<PRE>           -&gt;set zz='AL1'   
+           -&gt;alias  
+               set zz='AL2'     % in your 'permanent' aliases   
+               (exit the editor)
+           -&gt;set
+           -&gt;?zz
+           -&gt;set zz='AL3'   
+           -&gt;set
+           -&gt;?zz
+&nbsp;</PRE>
+
+<P>The "temporary" alias still shows "AL1", while the "permanent"
+alias now shows "AL3". This hasn't been fixed yet.</P>
+
+<P>Setting up aliases with special characters presents problems
+within CSHELL processing:</P>
+
+<PRE>           -&gt;set ab%de = 'oh my'
+           -&gt;?ab%de 
+           -&gt;set temp = ab%de   
+           -&gt;?temp  
+&nbsp;</PRE>
+
+<P>Note, the variable "ab%de" can not be used to the right side of an
+"=" in a "set" command. This hasn't been fixed yet.</P>
+
+<P>The variable substitution while building an addstream can cause
+CSHELL to sometimes crash.</P>
+
+<PRE>          -&gt;set settabs ='set tabs 10 20'  
+           -&gt;[@uedit;^settabs]  
+           -&gt;***** ERROR -- Undefined variable "rest_of_set" at 
+           -&gt;line 2907.  let cmd := cmd||' '||rest_of_set;  
+&nbsp;</PRE>
+
+<P>It did make a difference that the alias began with "set " as
+opposed to other characters. This is fixed in the
+Variable_substitution subroutine near the end. Instead of using
+"cmd[1,4] eq 'set '", the condition for the test is "processing_set =
+1".</P>
+
+<H1>Appendix D. Files Used by CSHELL</H1>
+
+<P>$CSHELLSAVE$</P>
+
+<P>This file is the most important file used by CSHELL. It is used to
+save your current state across execution of commands. If this file is
+FREEd during your CSHELL session, CSHELL will abort and need to be
+re-started. This file is used for auto-recovery as well (A option).
+If your CSHELL session terminates abnormally (@@TERM, $$CLOSE, system
+crash), this file will remain catalogued. CSHELL will recognize this
+situation when it is later started with the A option and ask if you
+want to recover the old session. If your CSHELL session terminates
+normally (@FIN), $CSHELLSAVE$ will be de-catalogued and your next
+session will start with a new $CSHELLSAVE$.</P>
+
+<P>$$PIPE1n$$ $$PIPE2n$$</P>
+
+<P>These files are associated with CSHELL pipes (|). They are used as
+the intermediate files to place output into during pipe commands. The
+files are catalogued as private and are not secured. The value of n
+starts at 0 for your first CSHELL session on a given system and
+increases for each concurrent CSHELL session.</P>
+
+<P>$$APPEND$$</P>
+
+<P>This file is associated with output redirection. It is used as an
+intermediate file when redirecting output to an element.</P>
+
+<P>CSHELLADD</P>
+
+<P>This file is associated with interactive CSHELL ADD streams. When
+you create a CSHELL ADD stream (see section on CSHELL ADD streams for
+more details), it is saved in CSHELLADD. This file is temporary.</P>
+
+<P>$$BRKPT$$</P>
+
+<P>This file is a temporary file and is used by CSHELL to BRKPT
+around miscellaneous executions.</P>
+
+<P>$$RELOAD$$</P>
+
+<P>This file is temporary and is used only by CSHELL SCRIPTs.</P>
+
+<P>$TESTSEARCH$</P>
+
+<P>This file is temporary and is only used by the CSHELL searchpath
+mechanism.</P>
+
+<H1>Appendix E. Trouble Shooting</H1>
+
+<P>This section mentions some possible problems you could encounter
+while running CSHELL.</P>
+
+<P>- ***** ERROR -- BREAKPOINT file not found:</P>
+
+<P>This error message can occur if you FREE $CSHELLSAVE$ at any point
+during your CSHELL session.</P>
+
+<P>- Don't return to the CSHELL prompt:</P>
+
+<P>This problem is most likely due to the processor you just
+executed. It will most likely be what is called a "reusable
+processor". What this means is after the processor completes, instead
+of exiting, it issues another READ$ in case the next command is a
+call to itself. Entering an @EOF or @ENDX at this point should return
+you to the CSHELL prompt. If this is the case, the problem can be
+hidden within an alias that calls the processor. See "ECL
+Compatibility" section for more details.</P>
+
+<P>- CSHELL goes into CLIST processing after executing a command:
+</P>
+
+<P>This problem can occur if you execute a control statement within
+another processor in order to exit the processor to have the command
+executed. If this is the case, see "ECL Compatibility" section for a
+discussion of this situation.</P>
+
+<P>This problem can also be the fault of the executing program. Some
+programs execute @ADD streams during their processing or when they
+are finished. If this is the case, the @ADD image must include the R
+option (@ADD,R). The R option on an @ADD image tells the EXEC to ADD
+the file now, before doing anything else. If the R option is not on
+the ADD image, the EXEC will check your deferred control statement
+execution (DCSE) stack first to see if there is anything on it.
+CSHELL places an image on that stack via ER QECL$ to reload itself
+after the currently executing program exits. If the currently
+executing program issues an @ADD image without the R option, the EXEC
+will pick up and execute the CSHELL reload image from the DCSE stack
+before doing the ADD stream. In this case, CSHELL will be reloaded
+and its next READ$ will come from the ADD stream. If the ADD stream
+contains control statements (most likely), CSHELL will go into CLIST
+processing. The solution to this problem is to make sure any @ADD
+images which are placed in a program use the R option. This will not
+have any adverse effect if the program is called from a non DCSE
+user.</P>
+
+<H1>Appendix F. Examples</H1>
+
+<P>Here are some examples of aliases. Some have been already given in
+other places within this documentation. Even though they may contain
+references to unknown processors, the content of the alias may
+provide ideas for other aliases. CSHELL aliases are very flexible.
+They can be a simple abbreviation for a single command or they can be
+a complex mix of more than a dozen commands. The best thing they
+offer is an opportunity to be creative and make that one command that
+you thought should have been there from the beginning. They can be
+permanent aliases that you use throughout the day or they can be
+specific temporary aliases that make a particular task easier. If you
+come up with an alias that you find very useful, let others know.
+Chances are it will be useful to them as well.</P>
+
+<P>The aliases listed below are mainly more complex aliases involving
+parameter substitution, variable substitution, pipes, redirection,
+and dynamic ADD streams. Each alias is followed by an example of its
+execution.</P>
+
+<PRE> -&gt;SET mailto = '[@mail &amp;1;@add &amp;2;@eof;y;n]'   
+ -&gt;mailto wfs Some*Mail.Message 
+&nbsp;
+ -&gt;SET mailcr = '[@mail,c &amp;1;m;@add &amp;2;@eof;y;e]'   
+ -&gt;mailcr 12 Mail*ForCR.12  
+&nbsp;
+ -&gt;SET ddp = '[@ipf;copy &amp;1::&amp;2,&amp;3::&amp;4,type=ddp;@eof]'  
+ -&gt;ddp RS07 Source*File. RS06 Dest*File.
+&nbsp;
+ -&gt;SET s6-s7 = 'ddp rs06 &amp;1 rs07 &amp;2' % Uses DDP alias above 
+ -&gt;s6-s7 Source*File. Dest*File.
+&nbsp;
+ -&gt;SET lines = 'getline &amp;1 0;echo line' % Returns # lines in var "LINE" 
+ -&gt;lines Some*File. 
+&nbsp;
+ -&gt;SET pages = 'getline &amp;1 0;calc ^line /80' % Assumes 80 lines per page
+ -&gt;pages Some*File. 
+&nbsp;
+ -&gt;SET tell = '[@mail &amp;1;&amp;*2;@eof;y;n]' % Send one line MAIL message
+ -&gt;tell userid Will you come see me after lunch, thanks.
+&nbsp;
+ -&gt;SET sp = '[@spell;&amp;*1;@eof]' % Check spelling of input words 
+ -&gt;sp necesary neccessary necessary 
+&nbsp;
+ -&gt;SET spell = 'spell,achov &amp;1 | more' % Check spelling in given file   
+ -&gt;spell Some*File. 
+&nbsp;
+ -&gt;SET done = 'echo "Done"|j*m.fprint' % Signal complete by printing
+ -&gt;SomeLongCommand ; done   
+ -&gt;SET tm = '.tm &amp;1/u &amp;2' % Send @@TM message to specified userid   
+ -&gt;tm userid Please free Some*File, thanks  
+ -&gt;SET preview = 'call,a dump,&amp;1,p,pr3,w;done' % Get CALL DUMP preview  
+                                                 and print  
+ -&gt;preview 305e 
+ -&gt;SET ptoc = '%ttc*lib.prt,t &amp;1 | j*m.fprint' % Print TOC of given 
+                                                 file   
+ -&gt;ptoc Some*File.  
+ -&gt;SET wait = 'cshell*cshell.clockabs' % Keep terminal from timing out  
+ -&gt;wait 
+ -&gt;SET cf = '[@cat,p &amp;1,f///99999;@save &amp;1]' % Catalogue and SECURE 
+                                               given file   
+ -&gt;cf Some*File.
+ -&gt;SET cw = '[@cat,p &amp;1,f///99999;@save &amp;1,week]' % CAT and save file   
+                                                    for a week  
+ -&gt;cw Some*File.
+ -&gt;SET bld = 'SET opt=''&amp;2'';[@masm,s^opt &amp;1,rel;@map ,abs;in rel;end]' 
+ -&gt;bld Some*MASM.Program
+ -&gt;SET ubld='SET opt = ''&amp;2'';[@uc,e^opt &amp;1;@link ,&amp;1;include &amp;1;@eof]' 
+ -&gt;ucbld Some*UC.Program
+ -&gt;SET ls = 'prt,tlb &amp;1 | more' % Expanded info TOC of file 
+ -&gt;ls Some*File.
+ -&gt;SET sl = '%ttc*lib.prt,tb &amp;1 | more' % Short TOC of file 
+ -&gt;sl Some*File.
+ -&gt;SET l = '[@call iacull,exec*43ml.;off lines;only &amp;*2;l &amp;1]'  
+ -&gt;l tag element
+ -&gt;SET c = '[@call iacull,exec*43ml.;off lines;only &amp;*2;c &amp;1]'  
+ -&gt;c tag
+ -&gt;SET go = '[@call iacull,exec*43ml.;off lines;go &amp;1]' 
+ -&gt;go 1,element 
+ -&gt;SET primus = '[@primus,m &amp;*1;;a em=screen;a dm=screen;a um=screen]'  
+ -&gt;primus   
+ -&gt;SET r = '[@primus,m;;r &amp;1 file=&amp;2;exit]' % Get report from PRIMUS
+ -&gt;r 41456  
+ -&gt;SET oc = '[@primus,m;;oc &amp;1 file=&amp;2 &amp;*3;exit]' % Get code from   
+                                                    PRIMUS  
+ -&gt;oc 41456 ele = scdta 
+ -&gt;SET x = '!&amp;*1' % Executes command from history buffer based on input 
+ -&gt;x s 
+ -&gt;SET l = '!&amp;*1*' % Finds command from history buffer and displays it  
+ -&gt;l s  
+ -&gt;SET lc = 'h 10000|grep &amp;*1' % Finds all occurrences on history   
+                                 buffer 
+ -&gt;lc fsed  
+ -&gt;SET al = 'SET edtr = '''';alias; -&gt;SET edtr = ''fsed,m'''
+ -&gt;al 
+ -&gt;SET f1 = 'echo _esc"e"_esc"M"' % Erase screen
+ -&gt;SET f3 = '!*' % Display last command 
+ -&gt;SET f4 = '.cons fs,tapes'
+ -&gt;SET f5 = '.prnt;echo _ff;.nopr' % Issue form feed on local printer   
+ -&gt;SET f6 = 'h 20'  
+ -&gt;SET f10 = '!' % Execute last command 
+ -&gt;SET f11 = 'cshell*cshell.clockabs' % wait mode to avoid TIMEOUT  
+ -&gt;SET s6 = 'echo "$$open dmrs06"_esc _dc1' % Execute $$OPEN DMRS06 
+ -&gt;SET soff = 'echo "$$soff"_esc _dc1' % Execute $$SOFF 
+&nbsp;
+ -&gt;SET pr3 = '.cons sq rempr3 *'
+ -&gt;SET tapes = '.cons fs,tapes' 
+ -&gt;SET bl = '.cons bl d'
+ -&gt;SET sq = '.cons sq &amp;1 *' 
+ -&gt;SET sx = '.cons sx &amp;1'   
+ -&gt;SET rc = '.cons rc'  
+ -&gt;SET rcb = '.cons,b rc'   
+ -&gt;SET ss = '.cons ss'  
+ -&gt;SET ssb = '.cons,b ss'   
+ -&gt;SET fs = '.cons fs,&amp;1'   
+ -&gt;SET ff = '.cons ff'  
+ -&gt;SET ffb = '.cons,b ff'   
+ -&gt;SET e = '.cons e'
+ -&gt;SET currqual  = 'bufqual' % These are all
+ -&gt;SET currsys   = 's26'     % default values that  
+ -&gt;SET currlev   = 'ml'      % are used with the
+ -&gt;SET currfile  = 'shared.' % CTCF and BUILDA aliases  
+ -&gt;SET ctcf      = '[@wfs*shellscripts.ctcf;^currqual ^currfile &amp;*1]'   
+ -&gt;SET bld = 'wfs*script.bld/call ^currqual,^currsys,^currlev,&amp;1,&amp;2,&amp;3' 
+ -&gt;SET chkmap = 'grep,sb *ERROR *WARNING &amp;1 | j*m.fprint' % Look for
+                                                            errors  
+ -&gt;chkmap Build*Output. 
+ -&gt;SET level = 'grep 43. 42. 41. &amp;1*pcf.e8id' % Get level of qual set   
+ -&gt;level ml 
+&nbsp;
+ -&gt;SET tcf1      = 'j*m.tcfbuilder,f'   
+ -&gt;SET tcf2      = 'j*m.tcfbuilder,s'   
+ -&gt;SET tcf       = 'tcf1 ,&amp;2,&amp;1;fsed &amp;1;tcf2 ,&amp;3,&amp;1'
+ -&gt;tcf element qualset Output*TCF.File  </PRE>
+
+<P>The following aliases use the FCC definitions for UTS20 terminals.
+The comment field in each indicates the corresponding FCC definitions
+for UTS30/40/60 terminals.</P>
+
+<PRE> -&gt;SET fcc_start           = _em   % CSHELL system variable = 031   
+ -&gt;SET fcc_reverse         = '^fcc_start^fcc_rev'   
+ -&gt;SET fcc_rev             = ':0'  % UTS30/40/60 = 'HP' 
+ -&gt;SET fcc_null            = '^fcc_start^fcc_nul'   
+ -&gt;SET fcc_nul             = '80'  % UTS30/40/60 = 'H@' 
+ -&gt;SET fcc_protected       = '^fcc_start^fcc_protect'   
+ -&gt;SET fcc_protect         = '&lt;3'  % UTS30/40/60 = 'LC' 
+ -&gt;SET fcc_rev_protected   = '^fcc_start^fcc_rev_protect'   
+ -&gt;SET fcc_rev_protect     = '&gt;3'  % UTS30/40/60 = 'LS' 
+ -&gt;SET fcc_tab             = '^fcc_start^fcc_tab1'  
+ -&gt;SET fcc_tab1            = '00'  % UTS30/40/60 = '@@' 
+ -&gt;SET fcc_reverse_tab     = '^fcc_start^fcc_rev_tab'   
+ -&gt;SET fcc_rev_tab         = '20'  % UTS30/40/60 = '@P' 
+ -&gt;SET fcc_blink_tab       = '^fcc_start^fcc_blk_tab'   
+ -&gt;SET fcc_blk_tab         = '30'  % UTS30/40/60 = '@X' 
+ -&gt;SET fcc_blink_protected = '^fcc_start^fcc_blk_prot'  
+ -&gt;SET fcc_blk_prot        = '?3'  % UTS30/40 = 'L['  UTS60 = ' L[O'
+&nbsp;
+ -&gt;SET prompt = '^fcc_protected^_sysid:^_urunid^fcc_null'   </PRE>
+
+<P>The following aliases can be used to alter your local printer.
+Most printers are changed using escape commands (including the
+AP1327/9). The problem is that the escape character (ASCII 27) is
+picked up by UTS screen handling and so the escape sequence never
+gets to the printer. The following solution to this problem requires
+that you are using a terminal emulation program (e.g. STEP) which
+offers screen-to-printer translations. A screen-to-printer
+translation simply means that the emulation program can receive a
+character and then change it to another character before passing it
+to the local printer. The following aliases assume that you have
+changed your UTS emulation program to translate the _VT (ASCII 11)
+character to an escape character (ASCII 27) in the screen-to-printer
+translation table. Once this is done, you have complete control over
+your printer. This control is then simplified through the use of the
+following aliases. These aliases produce the control sequences to
+manipulate an EPSON printer. IBM escape sequences may be slightly
+different.</P>
+
+<PRE> -&gt;SET init_p  = '.prnt;.esc o;echo _rs _eot'   
+ -&gt;SET end_p   = 'echo _nul _vt"j" _vt _esc _dc2 _eot;.end esc;.nopr'   
+ -&gt;SET reset_pr = 'init_p;echo _vt"@" _eot;end_p'  % reset printer  
+ -&gt;SET form    = 'init_p;echo _ff _eot;end_p'      % page eject 
+ -&gt;SET bell    = 'init_p;echo _bel _eot;end_p'     % audible alarm  
+ -&gt;SET 10cpi   = 'init_p;echo _vt"P" _eot;end_p'   % character pitch
+ -&gt;SET 12cpi   = 'init_p;echo _vt"M" _eot;end_p'   %
+ -&gt;SET 15cpi   = 'init_p;echo _vt"m" _eot;end_p'   %
+ -&gt;SET 6lpi    = 'init_p;echo _vt"2" _eot;end_p;   % 6 lines per inch   
+ -&gt;SET 8lpi    = 'init_p;echo _vt"0" _eot;end_p;   % 8 lines per inch   
+ -&gt;SET 10lpi   = 'init_p;echo _vt"1" _eot;end_p;   % 10 lines per inch  
+ -&gt;SET dbl_s_on = 'init_p;echo _vt"G" _eot;end_p'  % double strike  
+ -&gt;SET dbl_s_off = 'init_p;echo _vt"H" _eot;end_p' %
+ -&gt;SET dbl_w_on  = 'init_p;echo _vt"W1" _eot;end_p'% double width   
+ -&gt;SET dbl_w_off = 'init_p;echo _vt"W0" _eot;end_p'%
+ -&gt;SET emph_on  = 'init_p;echo _vt"E" _eot;end_p'  %  emphasized print  
+ -&gt;SET emph_off = 'init_p;echo _vt"F" _eot;end_p'  %   (10 CPI mode)
+ -&gt;SET under_on = 'init_p;echo _vt"-1" _eot;end_p' % underline  
+ -&gt;SET under_off = 'init_p;echo _vt"-0" _eot;end_p'%
+ -&gt;SET sub_on   = 'init_p;echo _vt"S1" _eot;end_p' % subscript  
+ -&gt;SET sub_off  = 'init_p;echo _vt"T" _eot;end_p'  %
+ -&gt;SET super_on = 'init_p;echo _vt"S0" _eot;end_p' % superscript
+ -&gt;SET super_off = 'init_p;echo _vt"T" _eot;end_p' %
+ -&gt;SET italic_on = 'init_p;echo _vt"4" _eot;end_p' % italic 
+ -&gt;SET italic_off = 'init_p;echo _vt"5" _eot;end_p'%
+ -&gt;SET prop_on  = 'init_p;echo _vt"p1" _eot;end_p' % proportional space 
+ -&gt;SET prop_off = 'init_p;echo _vt"p0" _eot;end_p' % (10 CPI mode only) 
+ -&gt;SET NLQ_on   = 'init_p;echo _vt"x1" _eot;end_p' % near letter
+ -&gt;SET NLQ_off  = 'init_p;echo _vt"x0" _eot;end_p' %  quality   
+ -&gt;SET head_home = 'init_p;echo _vt"&lt;" _eot;end_p' % one line   
+                                                   %  unidirectional
+ -&gt;SET uni_on   = 'init_p;echo _vt"U1" _eot;end_p' % unidirectional 
+ -&gt;SET uni_off  = 'init_p;echo _vt"U0" _eot;end_p' %
+ -&gt;SET incv_on  = 'init_p;echo _vt"i1" _eot;end_p' % increment and view 
+ -&gt;SET incv_off = 'init_p;echo _vt"i0" _eot;end_p' %
+ -&gt;SET 1/2_on   = 'init_p;echo _vt"s1" _eot;end_p' % half-speed 
+ -&gt;SET 1/2_off  = 'init_p;echo _vt"s0" _eot;end_p' %  printing  
+&nbsp;</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,1284 @@
+@CAT,P UUSIG*1096-005-006.,F///10000
+@ELT,SIQ UUSIG*1096-005-006(1).USER/DOCUMENT,,,152343010736,001
+
+                  TFUR/TREG - FREIPS CONVERSION ROUTINE
+                  -------------------------------------
+
+                  AUTHOR:   TROY L. TOWNSEND
+                  VERSION:  001
+                  RELEASED: 1/07/94
+
+
+Introduction.
+
+     This routine was created to ease the migration from the TFUR and TREG
+utilities to the FREIPS utility.  This routine takes your old source as
+input and makes all of the necessary conversions to work with the new FREIPS
+utility.
+     All you have to do is supply the file name.  The conversion routine will
+then search every element in that file for the keywords of TFUR and TREG.  It
+will change the processor calls to FREIPS and change the format of the
+functions that follow these calls.  The routine does not modify your original
+file.  It copies the original element to an alternate file and then modifies
+that element.  Once you have inspected the new elements, you may then copy
+them back to your original file.
+     This routine must remain in ASCII format.  Do not change to fieldata,
+or you will lose the current source and have to obtain a new source in
+ASCII format.
+     TIP training files are not supported in this release.  If you have code
+that creates these files, the converter will issue a msgcon function indicating
+that "T files are invalid".
+     The program uses TFPMAX (number of TIP files configured for your system)
+of 3200.  You will need to change this to match your system.  This is only
+necessary for the LF to LFD conversion.
+     This program will not convert functions that span multiple lines.
+
+
+Program Execution.
+
+                      >@ADD YOUR*FILE.CONVERT
+
+
+
+The routines create the following files with a (+1) cycle.
+
+
+
+FILES CREATED         CONTENTS
+--------------------------------------------------------------------------------
+{RUN-ID}*TEMP         This is the main work file.
+{RUN-ID}*ALTERNATE    This file holds the original elements.
+{RUN-ID}*CONVERTED    This file contains the converted elements.
+{RUN-ID}*BPFILE       This is the breakpoint file where the output goes.
+FREIPS*RUN            This file holds the element that you add or start.
+
+
+
+     When the run is finished, the converted elements will be located in the
+file {RUN-ID}*CONVERTED.  It is recommended that you back up your original file
+before copying the new elements in.  The following runstream allows you to copy
+all of the converted elements from {RUN-ID}*CONVERTED to your original file.
+
+          >@ADD {RUN-ID}*TEMP.COPYNEW
+
+     Once you have copied the new elements, you can remove all of the work
+files by using the following runstream.
+
+          >@ADD {RUN-ID}*TEMP.CLEANUP
+@ELT,SIQ UUSIG*1096-005-006(1).TECHNICAL/DOCUMENT,,,150751010736,001
+
+
+              The Process to Debug the FREIPS Conversion Routine
+
+
+     There is a certain pattern you should take when trying to
+debug this program.  This program has been rewritten to be more
+general so you could add more conversion routines at any point.
+First off, this is an overview of how the program actually works.
+The steps are listed as follows.
+
+
+
+   1)   After the filename is accepted from the user, this program
+        will create the SSG streams needed to make the conversions.
+        These streams are located in the temporary file
+        {RUN-ID}*TEMP.  The SSG streams created are :
+
+             a)  LIST
+             b)  SEARCH
+             c)  CONVERSION-ROUTINES { The names of each routine }
+             d)  MAIN-DRIVER
+
+
+
+   2)   The program's first action will be to execute LIST.  This
+        stream will make a listing of all elements within the
+        specified file and put the list in an element.  This
+        element is called NAME-CONVERT and is located in file
+        {RUN-ID}*TEMP. The format of this file is as follows.
+
+
+
+   COMMENT This is a listing of all the symbols in {file-name}
+   ELEMENT {element-name1}
+   ELEMENT {element-name2}
+      .          .
+      .          .
+      .          .
+   ELEMENT {element-name99}
+
+
+
+   3)   The program's second action will be to execute SEARCH.
+        This stream will search through the NAME-CONVERT element,
+        look at each element, and examine each element for a
+        specified target.  If the target is found in the element,
+        it will insert the target into NAME-CONVERT after the
+        element-name.  If no target is found in the element, it
+        will insert UNCHANGED after the element-name.  Since this
+        program is set to do multiple conversions to an element,
+        there may be more than one target it looks for.  Whenever
+        this program finds a target, it will insert that specific
+        target into NAME-CONVERT.  So the updated format of NAME-
+        CONVERT is as listed in the following example.
+
+
+
+   COMMENT This is a listing of all the symbols in {file-name}
+   ELEMENT  {element-name1}  {target1}
+   ELEMENT  {element-name2}  {target4} {target21} {target56}
+   ELEMENT  {element-name3}  UNCHANGED
+   ELEMENT  {element-name4}  {target99}
+   ELEMENT  {element-name5}  UNCHANGED
+
+
+
+   4)   The program's third action will be to execute MAIN-DRIVER.
+        This stream will search through the NAME-CONVERT element
+        examining the field after each element-name containing a
+        target.  If a target is specified after the element-name in
+        NAME-CONVERT, it will call the appropriate CONVERSION
+        ROUTINE for the target.  If UNCHANGED is found after the
+        element-name in NAME-CONVERT, nothing is done.
+
+
+
+   5)   The program's final action will be to execute COPYNEW.
+        This creates a SSG stream to copy all of the elements
+        listed in the converted file called {RUN-ID}*CONVERTED to
+        the original file name the user specified.  The user will
+        then have to execute this SSG stream in order to actually
+        do the copying.
+
+
+
+     The next stage is to call the program and look at each step
+individually.  Even if the program does not run correctly, there
+should be some elements out in the temporary file {RUN-ID}*TEMP.
+You should look at these elements and pay special attention to the
+elements called LIST, SEARCH, MAIN-DRIVER, COPYNEW, MAIN-DRIVER,
+NAME-CONVERT, and the CONVERSION ROUTINES.  To step through the
+program, all you need to do is run these elements in a certain
+order.
+
+     First off, you will need to run LIST.  This should create the
+element NAME-CONVERT with the format as shown above.  Compare the
+list of elements with those found in the specified file.  Once this
+stream has been successful, you can move on to SEARCH.
+
+     SEARCH should take the list of elements created by LIST and
+add another field beyond the element-name.  You may want to check
+a couple of the elements in the specified file to see if they
+contain the target listed.  If the format of NAME-CONVERT is
+similar to that shown above and it contains valid information, this
+stream must have been successful.
+
+     The next process needed is the MAIN-DRIVER.  Before you
+execute this stream, you should look at the CONVERSION ROUTINES.
+Make sure they either have all the information needed, or the MAIN-
+DRIVER gives them all the information needed to function properly.
+The general procedure to give them the information needed is listed
+as follows.
+
+
+
+    1)   Copy the CONVERSION ROUTINE from the temporary file to the
+         convert file.
+
+    2)   Edit the CONVERSION ROUTINE in the convert file inserting
+         the information needed ( i.e. element-name ).
+
+    3)   Call the CONVERSION ROUTINE.
+
+    4)   Delete the copy of the CONVERSION ROUTINE in the convert
+         file.
+
+
+
+     This process will allow you to have a general CONVERSION
+ROUTINE, so the same routine can be used for multiple elements.  If
+the MAIN-DRIVER looks fine, put an option B on the @SSG to redirect
+the output to a temporary file.  Call it and look at the output
+generated.  If the output generated is correct, the problem must
+lie in the CONVERSION ROUTINE.  Debug the CONVERSION ROUTINE and
+the program should be working.  Remember, the stream to do the
+actual copying of the updated elements back to the orginal file
+needs to be called by the user once the program has been finished.
+@ELT,SIQ UUSIG*1096-005-006(1).CONVERT,,,160170010736,001
+@cat,p freips*run(+1).,f///100
+@SSG,mnb ,,freips*run.convert
+SKEL
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*.
+*.                       TITLE: TFUR/TREG - FREIPS CONVERSION ROUTINE
+*.                      AUTHOR: TROY TOWNSEND
+*.                 1ST RELEASE: 1/07/94
+*.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*.
+*.      This routine was created to ease the migration from the TFUR and TREG
+*. utility to the FREIPS utility.  This routine takes your old source as input
+*. and makes all of the necessary conversions to work with the new FREIPS
+*. utility.  The routine will preserve the CASE of your original element.
+*.
+*.      This routine must remain in ASCII format.  Do not change to fieldata,
+*. or you will lose the current source and have to obtain a new source in
+*. ASCII format.
+*.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*.
+*define clear
+*SET ESC = C'033'
+*SET CLEAR_SCREEN = '[*ESC]e[*ESC]M'
+*DISPLAY CLEAR_SCREEN
+*enddefine clear
+*process clear
+*display '              * * * * * * * * * * * * * * * * * * * * * * * * * *'
+*display '              *      TFUR/TREG - FREIPS CONVERSION ROUTINE      *'
+*DISPLAY '              * * * * * * * * * * * * * * * * * * * * * * * * * *'
+*display ' '
+*accept fn     'Please enter the FILENAME of your source. '
+*display ' '
+*set runid='[info$,1,1,1]'                 . Initializes the run id
+*set projectid='[info$,1,3,1]'             . Initializes the project id
+*accept mode   'Is this going to be a batch or a demand run? (Enter B or D) '
+*display ' '
+*set case$=1
+*clear valid
+*increment p from 1 to 9999 while valid is clear
+*if [*mode]=B
+#run,a  [*runid],0,[*projectid],9999,99999
+*set valid
+*elseif [*mode]=D
+*set valid
+*else
+*accept mode  'Please enter "B" for batch or "D" for demand.'
+*endif
+*loop
+*set case$=0
+*.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*.
+*.      The purpose of the following code is to create an SGS with the filename
+*. that the user has input.  By using this SGS, it will ignore the '.' if the
+*. user has included it in the filename.
+*.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*.
+*create sgs: filename [*fn]          . This way, it will ignore the '.'
+*set fn ='[filename,1,1,1]'          . on the input filename
+*.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*.
+*.      Create breakpoint files to do all of the conversions.  Each file here
+*. uses the users runid as the qualifier and then the file name.  Here are the
+*. files created along with their uses :
+*.
+*.          brkptfn       --> Holds a listing of each element for a period of
+*.                            time and holds some unwanted output
+*.
+*.          tempfn        --> Holds all of the elements for the conversion run
+*.
+*.                              RUN     ----------> Holds stream which actually
+*.                                                  updates the element to
+*.                                                  FREIPS
+*.
+*.                              ELEMENT-LIST     -> Holds a SGS version of the
+*.                                                  current element while it is
+*.                                                  checked for TREG and TFUR
+*.
+*.                              SGS     ----------> Holds a SGS version of an
+*.                                                  element being converted
+*.
+*.                              CONVERT     ------> Holds stream to find and
+*.                                                  convert all elements in a
+*.                                                  file
+*.
+*.                              [*ELEMENT_NAME] --> Holds conversion routine
+*.                                                  for named element
+*.
+*.                              COPY     ---------> Holds a stream which will
+*.                                                  copy all changed elements
+*.                                                  to the alternate file
+*.
+*.          convertfn     --> Holds all of the elements which are converted
+*.
+*.          altfn         --> Holds the elements in the original file which
+*.                            can contain either TFUR or TREG
+*.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*.
+*set brkptfn = '[*runid]*BPFILE'           . * * * * * * * * * * * * * * * *
+*set tempfn = '[*runid]*TEMP'              . *  Initializes the names for
+*set convertfn = '[*runid]*CONVERTED'      . *  each temporary file.
+*set altfn = '[*runid]*ALTERNATE'          . * * * * * * * * * * * * * * * *
+#cat,p [*brkptfn](+1).,f///9999
+#brkpt print$,[*brkptfn].
+#cat,p [*altfn](+1).,f///9999
+#cat,p [*tempfn](+1).,f///9999
+#cat,p [*convertfn](+1).,f///9999
+#copy,s [*fn].,[*altfn].
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*. *  This edit stream will create a ssg stream which will do the following.
+*. *
+*. *    1) Create a element call NAME-CONVERT in the temporary file to
+*. *       contain all of the elements in the specified file.
+*. *
+*. *    2) Create a SGS for each element by inserting a label in front of
+*. *       every line in the element.  The SGS's are located in the
+*. *       temporary file.
+*. *
+*. *  This stream will set the elements up for the conversion routine.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*. *
+#ed,i  [*tempfn].list
+#edit
+i @ssg,mn
+i skel
+i *set tempfn = '[*tempfn]'
+i *set altfn = '[*altfn]'
+i *set fn = '[*fn]'
+*set lbrk$ = 1
+i *add sgs [*altfn]./FILENAME
+i #ed,i [*tempfn].name-convert
+i #edit
+i i COMMENT  This is a listing of all the symbols in [*fn].
+i exit
+i *increment a from 1 to [FILENAME]
+i *set element = '[FILENAME,a,1,1]'
+i *set version = '[FILENAME,a,2,1]'
+i *if [*version] <> '' ''
+i *set element = '[*element]/[*version]'
+i *endif
+i #ed,u [*tempfn].name-convert
+i #edit
+i [*a]
+i i ELEMENT   [*element]
+i exit
+i #copy,s [*altfn].[*element],[*tempfn].[*element]
+i #ed,u [*tempfn].[*element]
+i #edit
+i tab ~
+i c //LIST /a
+i c /. /* /a
+i c /./,/a
+i *set lbrk$ = 1
+i c /[/ /a
+i c /]/ /a
+i *set lbrk$ = 0
+i c /'/ /a
+i exit
+i *loop
+*set lbrk$ = 0
+i @eof
+i @eof
+exit
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*. *  This edit stream will create a ssg stream which will do the following.
+*. *
+*. *    1)  Read the element name from the SGS in the temporary file
+*. *        called NAME-CONVERT.
+*. *
+*. *    2)  Traverse through the element SGS located in the temporary
+*. *        file looking for the specified target(s).
+*. *
+*. *    3)  Edit NAME-CONVERT to insert the target(s) found for the
+*. *        current element.  Insert UNCHANGED if no target was found.
+*. *
+*. *  This routine will find all of the elements which need to be changed.
+*. *
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#ed,i [*tempfn].search
+#edit
+i @ssg,mn
+i skel
+i *set tempfn = '[*tempfn]'
+*set lbrk$ = 1
+i *add sgs [*tempfn].name-convert
+i *increment a from 1 to [ELEMENT]
+i *set element = '[ELEMENT,a,1,1]'
+i *add sgs [*tempfn].[*element]
+i *set found_target = 1
+i *increment b from 1 to [LIST]
+i *increment c from 1 to [LIST,b]
+i *increment d from 1 to [LIST,b,c]
+i *set target = '''[LIST,b,c,d]'''
+i *if [*target] = 'TREG' or [*target] = 'TFUR'
+i *set found_target = 0
+i #ed,u [*tempfn].name-convert
+i #edit
+i c ~[*element] ~[*element]     [*target]~a
+i c ~'~~a
+i exit
+i *exit b
+i *endif
+i *loop
+i *loop
+i *loop
+i *if [*found_target] = 1
+i #delete,s [*tempfn].[*element]
+i #ed,u [*tempfn].name-convert
+i #edit
+i c ~[*element] ~[*element]     UNCHANGED~a
+i exit
+i *endif
+i *remove sgs LIST,1,[LIST]
+i *loop
+*set lbrk$ = 0
+i @eof
+i @eof
+exit
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*. *  This edit stream will create a run stream which do the following.
+*. *
+*. *    1)  Create a SGS in the temporary file called SGS for the current
+*. *        element.
+*. *
+*. *    2)  Copy the element over to the convert file and performed the
+*. *        necessary edit procedures to do the updates to the element.
+*. *
+*. *  This stream will actually perform the edit to update the element.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#ed,iq [*tempfn].conversion/freips
+#edit
+tab ~
+i @delete,cs [*tempfn].SGS
+i @copy,s [*fn].(*element),[*tempfn].SGS
+i @ed,u [*tempfn].SGS
+i c /.TREG/ TREG/a
+i c /.TFUR/ TFUR/a
+i c /.treg/ treg/a
+i c /.tfur/ tfur/a
+i c /;//a
+i c /'//a
+i exit
+i @copy,s [*fn].(*element),[*convertfn].(*element)
+i @ed,u [*tempfn].SGS
+i c //FREIPS /a
+i exit
+i @SSG,mn
+i SKEL
+*set lbrk$ = 0
+i *set tempfn = '[*tempfn]'
+i *set convertfn = '[*convertfn]'
+*set lbrk$ = 1
+i *ADD SGS [*tempfn].SGS
+i *SET TFPMAX=3200                     . Change this to match exec config
+i *set edit_status = 0                 . Checks to see if file is editted
+i #ED,U [*convertfn].(*element)
+i *SET START=1
+i *SET MAX=[FREIPS]
+i *INCREMENT A FROM [*START] TO [*MAX]             . Search the entire src
+i *SET LENGTH=[FREIPS,[*A]]                        . # of fields in line
+i *INCREMENT B FROM 1 TO [*LENGTH]                 . Look at all the fields
+i *set case$
+i *SET UTILITY='[FREIPS,[*A],[*B],1]'              . Set var to each sbfld
+i *IF [*UTILITY]=TREG                              . Check if UTILITY = TREG
+i *.                                               . Go to line number where
+i *.                                               . TREG was located
+i *.                                               . and change to FREIPS
+i *set f = 1
+i *set case$
+i *set found_i_option = '' ''                      . \
+i *set found_u_option = '' ''                      .  | Initialize all opts
+i *set found_x_option = '' ''                      .  | which could be found
+i *set all_options = '' ''                         . /  to nil
+i *set xqt = '[FREIPS,[*a],1,1]'
+i *if [*xqt] = #XQT OR [*xqt] = @XQT               . \ If statement to check
+i *set sub_length = 0                              . / for @XQT command
+i *clear case$
+i *set sub = [FREIPS,[*a],2]
+i *set subs = [FREIPS,[*a],1]
+i *if [*subs] >= 1                                 . \  If statement to make
+i *set sub_length = [FREIPS,[*a],1,2,len$]         .  | sure there is at
+i *set sub_var = '[FREIPS,[*a],1,2]'               .  | least one option on
+i *.                                               . /  the @XQT command
+i *.
+i *.
+i *increment i from 1 to [*sub_length]                . \
+i *set option ='[FREIPS,[*a],[*f],2,substr$,[*i],1]'  .  | Loop to check
+i *if [*option] = I or [*option] = i                  .  | for all the
+i *set found_i_option = '[*option]'                   .  | possible options
+i *elseif [*option] = U or [*option] = u              .  | which the @XQT
+i *set found_u_option = '[*option]'                   .  | command could
+i *elseif [*option] = X or [*option] = x              .  | contain and set
+i *set found_x_option = '[*option]'                   .  | the appropriate
+i *endif                                              .  | indicators
+i *loop                                               . /
+i *.
+i *.
+i *set all_options = '[*found_i_option][*found_x_option][*found_u_option]'
+i *endif
+i [*a]
+i lnp
+i c /[*sub_var]/[*all_options]/
+i *set edit_status = 1
+i *endif
+i [*A]
+i lnp
+i C /.TREG/.FREIPS/
+i c /.treg/.freips/
+i *set case$
+i *SET NEXT=[*A]+1                                 . Check for the function
+i *INCREMENT C FROM [*NEXT] TO [*MAX]              . following the TREG call
+i *SET LENGTH2=[FREIPS,[*C]]                       . # of fields in the line
+i *INCREMENT D FROM 1 TO [*LENGTH2]                . Look at all the fields
+i *set sub_length= 0
+i *SET FUNCTION='[FREIPS,[*C],[*D],1]'             . Set func to 1st subfld
+i *SET CASE_INDICATOR = [FREIPS,[*C],1,1,LCLEN$]   . Check CASE of the func
+i *IF [FREIPS,[*C],[*D],1,SUBSTR$,1,1] <> '        . Case where field 1 = '
+i *SET TERMINATOR='[FREIPS,[*C],[*D],1,SUBSTR$,1,1]'   . Used to figure out
+i *ELSE                                                . where the function
+i *SET TERMINATOR='.'                                  . ends
+i *ENDIF  . if 1st char '
+i *. display 'terminator = ' terminator            . Debug code
+i *.                                               . Look for @anything in
+i *.                                               . first field to indicate
+i *.                                               . the end of the function
+i *.                                               . #anything is used if
+i *.                                               . are converting SSG skel
+i *IF [*TERMINATOR]=@ OR [*TERMINATOR]=#           .
+i *SET START=[*C]
+i *SET D=[*LENGTH]
+i *EXIT C                                          . Exit loop when the
+i *ENDIF  . If @ or #                              . termination symbol fnd
+i *.
+i *.
+i *IF [*FUNCTION]=REG                              . Case where func = REG
+i *CLEAR FOUND_OPTION_D
+i *CLEAR CASE$                                     . Options may be lower
+i *SET SUBS=[FREIPS,[*C],1]                        . # subfields in field 1
+i *IF [*SUBS]=2                                    . Case where options=2
+i *SET SUB_LENGTH= [FREIPS,[*C],1,2,LEN$]
+i *display 'sub_length = 'sub_length
+i *SET SUB_VAR = '[FREIPS,[*C],1,2]'               . Store the options
+i *INCREMENT X FROM 1 TO [*SUB_LENGTH]             . Loop through the opts
+i *SET CASE$                                       . one by one
+i *SET VAR = '[FREIPS,[*C],1,2,SUBSTR$,[*X],1]'
+i *IF [*VAR] = D
+i *SET FOUND_OPTION_D                              . Set boolean if D is in
+i *ENDIF   . [*VAR] = D                            .  the stored options
+i *LOOP X  . CHECK FOR D OPTION
+i *CLEAR CASE$
+i *ENDIF  . If SUBS
+i [*C]
+i lnp
+i *IF [*SUB_LENGTH] > 0                            . If there are no option
+i *.                                               .  replace with nothing
+i C /,[*SUB_VAR]//
+i *ENDIF  . IF SUB_LENGTH
+i *set case$
+i *IF [*FOUND_OPTION_D]                             . If a D was found
+i *clear case$                                      .  insert D option in
+i *IF [*CASE_INDICATOR] = 0                         .  TREG command
+i C /REG/TREG,D/
+i *ELSE
+i c /reg/treg,d/
+i *ENDIF                                           . If D
+i *ELSE                                            . If no D, replace only
+i *clear case$                                     .  TREG, no options
+i *IF [*CASE_INDICATOR] = 0                        . CHECK CASE
+i c /REG/TREG/
+i *ELSE
+i c /reg/treg/
+i *ENDIF                                           . END IF CASE_INDICATOR
+i *ENDIF  .END IF FOUND_OPTION_D
+i *.                                               . Change to new format
+i c /,tmp/,temp/
+i c /,TMP/,TEMP/
+i *ENDIF  . If FUNCTION=REG                        . END FUNCTION=REG
+i *IF [*FUNCTION]=TPFREE                           . Case where func=TPFREE
+i *CLEAR CASE$
+i *SET SUBS=[FREIPS,[*C],1]                        . See notes from TREG /\
+i *IF [*SUBS]=2
+i *SET SUB_LENGTH= [FREIPS,[*C],1,2,LEN$]
+i *SET SUB_VAR = '[FREIPS,[*C],1,2]'
+i *ENDIF  . If SUBS
+i [*C]
+i lnp
+i *IF [*SUB_LENGTH] > 0
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *ENDIF  . If FUNCTION=TPFREE                     . END FUNCTION=TPFREE
+i *IF [*FUNCTION]=DREG                             . Case where func=DREG
+i *CLEAR CASE$
+i *SET SUBS=[FREIPS,[*C],1]                        . See notes from TREG /\
+i *IF [*SUBS]=2
+i *SET SUB_LENGTH= [FREIPS,[*C],1,2,LEN$]
+i *SET SUB_VAR = '[FREIPS,[*C],1,2]'
+i *ENDIF  . If SUBS
+i [*C]
+i lnp
+i *IF [*SUB_LENGTH] > 0
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *ENDIF  . If FUNCTION=DREG                       . END FUNCTION=DREG
+i *IF [*FUNCTION]=TPASG                            . Case where func=TPASG
+i *CLEAR CASE$
+i *SET SUBS=[FREIPS,[*C],1]                        . See notes from TREG /\
+i *IF [*SUBS]=2
+i *SET SUB_LENGTH= [FREIPS,[*C],1,2,LEN$]
+i *SET SUB_VAR = '[FREIPS,[*C],1,2]'
+i *ENDIF  . If SUBS
+i *SET FILENAME='[FREIPS,[*C],2,1]'
+i [*C]
+i lnp
+i *IF [*SUB_LENGTH] > 0
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *ENDIF  . If FUNCTION=TPASG                      . END FUNCTION=TPASG
+i *IF [*FUNCTION]=MAP                              . Case where func=MAP
+i *CLEAR CASE$
+i *SET SUBS=[FREIPS,[*C],1]                        . See notes from TREG /\
+i *IF [*SUBS]=2
+i *SET SUB_LENGTH= [FREIPS,[*C],1,2,LEN$]
+i *SET SUB_VAR = '[FREIPS,[*C],1,2]'
+i *ENDIF  . If SUBS
+i [*C]
+i lnp
+i *IF [*SUB_LENGTH] > 0
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *ENDIF  . If FUNCTION=MAP                        . END FUNCTION=MAP
+i *SET CASE$
+i *LOOP D    . Line Loop inside of TREG
+i *LOOP C    . FUNCTION Loop inside of TREG
+i *SET START=[*A]+1
+i *ENDIF  . If UTILITY is TREG
+i *.
+i *.
+i *IF [*UTILITY]=TFUR                              . Check if UTILITY=TFUR
+i *set f = 1
+i *set case$
+i *set found_i_option = '' ''                      . \
+i *set found_u_option = '' ''                      .  | Initialize all opts
+i *set found_x_option = '' ''                      .  | which could be fnd
+i *set all_options = '' ''                         . /  to nil
+i *set xqt = '[FREIPS,[*a],1,1]'
+i *if [*xqt] = #XQT OR [*xqt] = @XQT               . \ If statement to check
+i *set sub_length = 0                              . / for @XQT command
+i *clear case$
+i *set sub = [FREIPS,[*a],2]
+i *set subs = [FREIPS,[*a],1]
+i *if [*subs] >= 1                                 . \  If statement to make
+i *set sub_length = [FREIPS,[*a],1,2,len$]         .  | sure there is at
+i *set sub_var = '[FREIPS,[*a],1,2]'               .  | least one option on
+i *.                                               . /  the @XQT command
+i *.
+i *.
+i *increment i from 1 to [*sub_length]                . \
+i *set option ='[FREIPS,[*a],[*f],2,substr$,[*i],1]'  .  | Loop to check
+i *if [*option] = I or [*option] = i                  .  | for all the
+i *set found_i_option = '[*option]'                   .  | possible options
+i *elseif [*option] = U or [*option] = u              .  | which the @XQT
+i *set found_u_option = '[*option]'                   .  | command could
+i *elseif [*option] = X or [*option] = x              .  | have and set
+i *set found_x_option = '[*option]'                   .  | the appropriate
+i *endif                                              .  | indicators
+i *loop                                               . /
+i *.
+i *.
+i *set all_options = '[*found_i_option][*found_x_option][*found_u_option]'
+i *endif
+i [*a]
+i lnp
+i c /[*sub_var]/[*all_options]/
+i *set edit_status = 1
+i *endif
+i *set case$
+i [*A]
+i lnp
+i C /.TFUR/.FREIPS/
+i c /.tfur/.freips/
+i *SET NEXT=[*A]+1
+i *INCREMENT E FROM [*NEXT] TO [*MAX]              . Loop through functions
+i *SET LENGTH3=[FREIPS,[*E]]
+i *set f=1
+i *if [*length3] > 0                               . Allow for blank lines
+i *SET FUNCTION='[FREIPS,[*E],[*F],1]'
+i *SET CASE_INDICATOR = [FREIPS,[*E],1,1,LCLEN$]
+i *IF [FREIPS,[*E],[*F],1,SUBSTR$,1,1] <> '
+i *SET TERMINATOR='[FREIPS,[*E],[*F],1,SUBSTR$,1,1]'
+i *ELSE
+i *SET TERMINATOR='.'
+i *ENDIF  . IF 1st char is '
+i *IF [*TERMINATOR]=@ OR [*TERMINATOR]=#
+i *SET START=[*E]
+i *SET F=[*LENGTH]
+i *EXIT E
+i *ENDIF  . If @ or #
+i *IF [*FUNCTION]=MSG
+i *CLEAR CASE$
+i *SET LAST_FIELD=[FREIPS,[*E]]
+i *SET LAST_SUBFIELD=[FREIPS,[*E],[*LAST_FIELD]]
+i *SET MSG='[FREIPS,[*E],2,1,SGSSTR$,[*LAST_FIELD],[*LAST_SUBFIELD]]'
+i [*E]
+i *IF [*CASE_INDICATOR] = 0
+i R MSGCON '[*MSG]'
+i *ELSE
+i R msgcon '[*msg]'
+i *ENDIF  . If CASE_INDICATOR
+i *ENDIF  . If FUNCTION=MSG
+i *.
+i *IF [*FUNCTION]=RE
+i *set sub_length= 0
+i *clear case$
+i *SET SUB=[FREIPS,[*E],2]
+i *SET SUBS=[FREIPS,[*E],1]
+i *IF [*SUBS]=2
+i *SET SUB_LENGTH= [FREIPS,[*E],1,2,LEN$]
+i *SET SUB_VAR = '[FREIPS,[*E],1,2]'
+i *SET CASE$
+i *.                  Loop through list of options to determine if M or G is
+i *.                    present, if they are, set respective booleans
+i *INCREMENT G FROM 1 TO [*SUB_LENGTH]
+i *SET OPTION='[FREIPS,[*E],[*F],2,SUBSTR$,[*G],1]'
+i *IF [*OPTION]=M
+i *SET FOUND_OPTION_M
+i *ELSEIF [*OPTION]=R
+i *SET FOUND_OPTION_R
+i *ENDIF   . If OPTIONS
+i *LOOP G
+i *CLEAR CASE$
+i *ENDIF  . If SUBS
+i [*E]
+i lnp
+i *IF [*SUB_LENGTH] > 0
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *IF FOUND_OPTION_M IS SET AND FOUND_OPTION_R IS SET
+i *clear FOUND_OPTION_M                            . If M and R are both set
+i *CLEAR FOUND_OPTION_R                            .  add GR option to REL
+i *IF [*CASE_INDICATOR] = 0
+i C /RE/REL,GR/
+i lnp
+i *ELSE
+i C /re/rel,gr/
+i lnp
+i *ENDIF  . If CASE_INDICATOR
+i *ELSEIF FOUND_OPTION_R IS SET                       . CHANGE RE,R TO REL,R
+i *CLEAR FOUND_OPTION_R
+i *IF [*CASE_INDICATOR] = 0
+i C /RE/REL,R/
+i *ELSE
+i C /re/rel,r/
+i *ENDIF  . If CASE_INDICATOR
+i *ELSEIF FOUND_OPTION_M IS SET                 . CHANGE OPTION M TO G
+i *CLEAR FOUND_OPTION_M
+i *IF [*CASE_INDICATOR] = 0
+i C /RE/REL,G/
+i *ELSE
+i c /re/rel,g/
+i *ENDIF .  CASE INDICATOR
+i *else
+i *IF [*CASE_INDICATOR] = 0                      . IF no options, RE = REL
+i C /RE/REL/
+i *ELSE
+i c /re/rel/
+i *ENDIF  . IF CASE_INDICATOR
+i *ENDIF  . If FOUND_OPTION_XX                     . END of Found Options IF
+i *ENDIF  . If FUNCTION=RE                         . END FUNCTION=RE
+i *.
+i *IF [*FUNCTION]=LF
+i *set sub_length= 0
+i *clear case$
+i *set f_length = [FREIPS,[*E]]
+i *if [*f_length] = 2                              . Check for parameters
+i *set param_length = [FREIPS,[*E],2,1,len$]
+i *if [*param_length] > 3                          . If 'ALL' is 2nd nd parm
+i *set start_sub_string = [*param_length] - 2      . Then param must be si>3
+i *set sub_string = '[FREIPS,[*E],2,1,substr$,[*start_sub_string],3]'
+i *display 'sub_string = ' sub_string
+i *if [*sub_string] = all or [*sub_string] = ALL   . Change /ALL to /TFPMAX
+i [*E]
+i lnp
+i c /all/[*TFPMAX]/
+i c /ALL/[*TFPMAX]/
+i *endif  . If SUB_STRING=ALL
+i *endif  . If PARAM_LENGTH>3
+i *endif  . If F_LENGTH=2
+i *SET SUBS=[FREIPS,[*E],1]
+i *IF [*SUBS]=2
+i *SET SUB_LENGTH=[FREIPS,[*E],1,2,LEN$]
+i *SET SUB_VAR = '[FREIPS,[*E],1,2]'
+i *INCREMENT H FROM 1 TO [*SUB_LENGTH]
+i *SET CASE$
+i *SET OPTION='[FREIPS,[*E],[*F],2,SUBSTR$,[*H],1]'
+i *IF [*OPTION]=M
+i *SET FOUND_OPTION_M
+i *ENDIF   . If OPTION M
+i *LOOP H  . Option Loop
+i *CLEAR CASE$
+i *ENDIF  . If SUBS
+i *SET FIELDS=[FREIPS,[*E]]
+i [*E]
+i lnp
+i *IF [*SUB_LENGTH] > 0
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *IF FOUND_OPTION_M IS SET
+i *clear FOUND_OPTION_M
+i *IF [*CASE_INDICATOR] = 0
+i C /LF/LFD,G/
+i *ELSE
+i C /lf/lfd,g/
+i *ENDIF  . If CASE_INDICATOR
+i *else
+i *IF [*CASE_INDICATOR] = 0
+i C /LF/LFD/
+i *ELSE
+i C /lf/lfd/
+i *ENDIF  . If CASE_INDICATOR
+i *ENDIF  . If FOUND_OPTION_M
+i *ENDIF  . If FUNCTION=LF                         . END FUNCTION=LF
+i *SET CASE$
+i *.
+i *.
+i *IF [*FUNCTION] = RV                             . FUNCTION = RV
+i *clear case$
+i *clear RCV_FOUND                                 . Boolean for RCV
+i *set SUB_LENGTH= 0
+i *SET SUBS=[FREIPS,[*E],1]
+i *CLEAR FOUND_OPTION_T
+i *IF [*SUBS]=2
+i *SET SUB_VAR='[FREIPS,[*E],1,2]'
+i *SET INDICATOR=[FREIPS,[*E],1,1,LCLEN$]
+i *SET SUB_LENGTH=[FREIPS,[*E],1,2,LEN$]
+i *INCREMENT J FROM 1 TO [*SUB_LENGTH]             . Loop and set booleans
+i *. CLEAR FOUND_OPTION_T                            .  for found options
+i *SET CASE$
+i *SET OPTION='[FREIPS,[*E],[*F],2,SUBSTR$,[*J],1]'
+i *IF [*OPTION]=M
+i *SET FOUND_OPTION_M
+i *ENDIF   . If OPTION M
+i *IF [*OPTION]=T
+i *SET FOUND_OPTION_T
+i *ENDIF   . If OPTION T
+i *LOOP J  . Option Loop
+i *CLEAR CASE$
+i *endif   . If SUBS
+i *.   ENDIF   . moved to end of rv
+i [*E]
+i *display 'line number = ' E                      . Debug Code
+i lnp
+i *IF [*SUB_LENGTH] > 0                            . Erase options
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *IF FOUND_OPTION_T IS SET                        . Display message if T pt
+i *IF [*INDICATOR] = 0
+i C /RV/MSGCON 'T FILES INVALID.' RV,[*SUB_VAR]/
+i *ELSE
+i C /rv/msgcon 't files invalid.' rv,[*sub_var]/
+i *ENDIF  . If INDICATOR
+i *ELSEIF FOUND_OPTION_M IS SET
+i *CLEAR FOUND_OPTION_M                          . If option M found,
+i *IF [*INDICATOR] = 0                           . replace it with G
+i C /RV/RES,G/
+i *ELSE
+i C /rv/res,g/
+i *ENDIF  . If INDICATOR
+i *ELSE
+i *IF [*INDICATOR] = 0                           . If not M or R, RV=RES
+i C /RV/RES/
+i *ELSE
+i C /rv/res/
+i *ENDIF  . If INDICATOR
+i *ENDIF  . If FOUND_OPTION_T SET
+i *set f_length=[freips,[*E]]
+i *if [*f_length] > 1                              . Check for > 1 field
+i *SET S_LENGTH=[FREIPS,[*E],2]                    . Check 2nd fld's subfld
+i *else
+i *set s_length= 0
+i *endif  . IF F_LENGTH
+i *clear audit_found
+i *if [*s_length]=9 and found_option_t is clear    . Check if there is AUDIT
+i *set audit_num='[freips,[*E],2,9]'               .   and set AUDIT_NUM
+i *SET AUDIT_FOUND
+i *ELSE
+i *SET AUDIT_NUM = 0
+i *endif  . If S_LENGTH
+i *DISPLAY 'S_LENGTH = ' S_LENGTH
+i *DISPLAY 'FOUND_OPTION_T = ' FOUND_OPTION_T
+i *.   The following IF-statement uses the number of sub_fields to
+i *.      determine the number of commas required
+i *IF [*s_length]=5
+i *SET STRING = '[FREIPS,E,2,5]'
+i *DISPLAY 'STRING = ' STRING
+i C ^,[*STRING] ^,[*STRING],,,AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*s_length]=6
+i *set STRING = '[freips,e,2,6]'
+i C ^,[*STRING] ^,[*STRING],,AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*S_LENGTH]=7
+i *SET STRING = '[FREIPS,E,2,7]'
+i C ^,[*STRING] ^,[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ENDIF  .    S_LENGTH = 5
+i *.  The following assumes there are 8 or more fields.
+i *IF [*S_LENGTH] > 7 AND FOUND_OPTION_T IS CLEAR
+i *DISPLAY  'IN S_LENGTH > 7, S_LENGTH = 'S_LENGTH
+i *SET SUB_LENGTH= [FREIPS,[*E],2,8,LEN$]
+i *SET START_CHAR = 1
+i *CLEAR PLUS_FOUND
+i *SET STRING = '[FREIPS,E,2,8]'
+i *SET NIL = ''
+i *IF [*AUDIT_FOUND] AND [*STRING]=[*NIL]
+i *DISPLAY 'IN STRING = NIL'
+i C ^,[*STRING],[*AUDIT_NUM]^[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*AUDIT_FOUND]
+i *DISPLAY 'IN AUDIT_FOUND'
+i C ^[*STRING],[*AUDIT_NUM]^[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ELSE
+i *DISPLAY 'IN ELSE'
+i C ^[*STRING]^[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ENDIF   . IF AUDIT_FOUND
+i *.  Loops and replaces the characters in field 8
+i *INCREMENT I FROM 1 TO [*SUB_LENGTH]
+i *SET CHAR ='[FREIPS,[*E],2,8,SUBSTR$,[*I],1]'
+i *set plus_sign = '+'
+i *SET STRING_LENGTH= [*I] - [*START_CHAR]
+i *IF [*CHAR] = [*plus_sign]                       . Indicators are
+i *SET PLUS_FOUND                                  . separated by '+'
+i *SET VAR ='[FREIPS,E,2,8,SUBSTR$,[*START_CHAR],[*STRING_LENGTH]]'
+i *SET START_CHAR = [*I] + 1
+i *IF [*VAR] = AL                                  . Every fallback indicatr
+i C /AL+/AL=P,/
+i C /al+/al=p,/
+i *ELSEIF [*VAR] = SAL                             . is separated by a '+'
+i C /SAL+/SAL=P,/
+i C /sal+/sal=p,/
+i *ELSEIF [*VAR] = RCV                             . except for the last one
+i C /RCV+/REC,/
+i C /rcv+/rec,/
+i *SET RCV_FOUND
+i *ELSEIF [*VAR] = WW                              . or if it is the only
+i C /WW+/WW=P,/
+i C /ww+/ww=P,/
+i *ELSEIF [*VAR] = N                               . Check following code
+i C /NM+/NMSG=P,/
+i C /nm+/nmsg=p,/
+i *ENDIF   . If VAR=                               . these special cases
+i *ENDIF   . If CHAR=
+i *LOOP I  . Loop for FALLBACK INDICATORS
+i *set case$
+i *IF PLUS_FOUND IS CLEAR
+i *SET VAR ='[FREIPS,[*E],2,8]'                    . Case if only 1 FALLBACK
+i *ELSE
+i *set case$                                       . Case if last FALLBACK
+i *SET STRING_LENGTH= [*STRING_LENGTH] + 1
+i *SET VAR ='[FREIPS,E,2,8,SUBSTR$,[*START_CHAR],[*STRING_LENGTH]]'
+i *ENDIF  . If PLUS_FOUND
+i *IF [*VAR] = AL
+i C /AL,/AL=P,/
+i C /al,/al=p,/
+i *ELSEIF [*VAR] = SAL
+i C /SAL,/SAL=P,/
+i C /sal,/sal=p,/
+i *ELSEIF [*VAR] = RCV
+i C /RCV,/REC,/
+i C /rcv,/rec,/
+i *SET RCV_FOUND
+i *ELSEIF [*VAR] = WW
+i C /WW,/WW=P,/
+i C /ww,/ww=p,/
+i *ELSEIF [*VAR] = NM
+i C /NM,/NMSG=P,/
+i C /nm,/nmsg=p,/
+i *ENDIF  . If VAR =
+i *display 's_length = 'S_LENGTH
+i *CLEAR CASE$
+i *ENDIF  . If S_LENGTH>7
+i *.  Adds the NREC when Audit=0 and there is no previous REC, this is done
+i *.    because the previous default was NREC, now with REL it is REC
+i *IF NOT [*RCV_FOUND] AND [*AUDIT_NUM]=0
+i *DISPLAY 'IN RCV NOT FOUND IF'
+i C /,AUDIT=[*AUDIT_NUM]/,AUDIT=[*AUDIT_NUM],NREC/
+i *ENDIF    .RCV_FOUND
+i *ENDIF  . If FUNCTION=RV                         . END FUNCTION=RV
+i *.                                               .
+i *IF [*FUNCTION] = CG
+i *clear case$
+i *CLEAR RCV_FOUND                                 . RCV-REC  Boolean
+i *set SUB_LENGTH= 0
+i *SET SUBS=[FREIPS,[*E],1]
+i *IF [*SUBS]=2
+i *SET SUB_VAR='[FREIPS,[*E],1,2]'
+i *SET INDICATOR=[FREIPS,[*E],1,1,LCLEN$]
+i *SET SUB_LENGTH=[FREIPS,[*E],1,2,LEN$]
+i *INCREMENT K FROM 1 TO [*SUB_LENGTH]             . Loop search for options
+i *SET CASE$
+i *SET OPTION='[FREIPS,[*E],[*F],2,SUBSTR$,[*K],1]'
+i *IF [*OPTION]=M
+i *SET FOUND_OPTION_M
+i *ENDIF   . If OPTION M
+i *LOOP K  . Option Loop
+i *CLEAR CASE$
+i *endif   . If SUBS
+i [*E]
+i *display 'line number = ' E                      . Debug Code
+i lnp
+i *IF [*SUB_LENGTH] > 0                            . Wipe out options
+i C /,[*SUB_VAR]//
+i *ENDIF  . If SUB_LENGTH
+i *IF FOUND_OPTION_M IS SET
+i *clear FOUND_OPTION_M
+i *IF [*INDICATOR] = 0                          . Replace option M with G
+i C /CG/CHA,G/
+i *ELSE
+i C /cg/cha,g/
+i *ENDIF  . If INDICATOR
+i *else
+i *IF [*INDICATOR] = 0                          . IF not opt M, CG = CHA
+i C /CG/CHA/
+i lnp
+i *ELSE
+i C /cg/cha/
+i lnp
+i *ENDIF  . If INDICATOR
+i *ENDIF  . If FOUND_OPTION_M
+i *set f_length=[freips,[*E]]
+i *if [*f_length] > 1                          . Check for > 1 field
+i *SET S_LENGTH=[FREIPS,[*E],2]                . Check 2nd field's subfield
+i *else
+i *set s_length= 0
+i *endif  . IF F_LENGTH
+i *CLEAR AUDIT_FOUND                           . If 8 subfields, set
+i *IF [*S_LENGTH]=8                            .   AUDIT_FOUND & AUDIT_NUM
+i *SET AUDIT_NUM='[FREIPS,E,2,8]'
+i *SET AUDIT_FOUND
+i *ELSE
+i *SET AUDIT_NUM=0                             . Else set AUDIT_NUM = 0
+i *ENDIF   .  IF S_LENGTH
+i *IF [*S_LENGTH]=6                            . Using # of Subfields,
+i *SET STRING = '[FREIPS,E,2,6]'               .  determine # of commas
+i C ^,[*STRING] ^,[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*S_LENGTH]=5
+i *SET STRING = '[FREIPS,E,2,5]'
+i C ^,[*STRING] ^,[*STRING],,AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*S_LENGTH]=4
+i *SET STRING = '[FREIPS,E,2,4]'
+i C ^,[*STRING] ^,[*STRING],,,AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*S_LENGTH]=3
+i *SET STRING = '[FREIPS,E,2,3]'
+i C ^,[*STRING] ^,[*STRING],,,,AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*S_LENGTH] = 2
+i *SET STRING = '[FREIPS,E,2,2]'
+i C ^,[*STRING] ^,[*STRING],,,,,AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*S_LENGTH]=1
+i *SET STRING = '[FREIPS,E,2,1]'
+i C ^[*STRING] ^[*STRING],,,,,,AUDIT=[*AUDIT_NUM]^
+i *ENDIF   .  S_LENGTH
+i *IF [*S_LENGTH] > 6                              . Check for a FALLBACK
+i *SET SUB_LENGTH= [FREIPS,[*E],2,7,LEN$]
+i *SET START_CHAR = 1
+i *CLEAR PLUS_FOUND
+i *SET STRING = '[FREIPS,E,2,7]'
+i *SET NIL = ''
+i *. IF NO FALLBACK, MOVE AUDIT INTO FIELD 7
+i *IF [*AUDIT_FOUND] AND [*STRING]=[*NIL]
+i C ^,[*STRING],[*AUDIT_NUM]^[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ELSEIF [*AUDIT_FOUND]                 . Since fallback, AUDIT goes in 8
+i C ^,[*STRING],[*AUDIT_NUM]^,[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ELSE
+i C ^,[*STRING] ^,[*STRING],AUDIT=[*AUDIT_NUM]^
+i *ENDIF     . IF AUDIT_FOUND
+i *INCREMENT I FROM 1 TO [*SUB_LENGTH]             . Loop for plus sign
+i *SET CHAR ='[FREIPS,[*E],2,7,SUBSTR$,[*I],1]'
+i *set plus_sign = '+'
+i *SET STRING_LENGTH = [*I] - [*START_CHAR]
+i *IF [*CHAR] = [*plus_sign]                       . Indicators are
+i *SET PLUS_FOUND                                  . separated by '+'
+i *set case$
+i *SET VAR ='[FREIPS,[*E],2,7,SUBSTR$,[*START_CHAR],[*STRING_LENGTH]]'
+i *SET START_CHAR = [*I] + 1
+i *IF [*VAR] = AL                                  . Every fallback indicatr
+i C /AL+/AL=P,/
+i C /al+/al=p,/
+i *ELSEIF [*VAR] = SAL                             . is separated by a '+'
+i C /SAL+/SAL=P,/
+i C /sal+/sal=p,/
+i *ELSEIF [*VAR] = RCV                             . except for the last one
+i C /RCV+/REC,/
+i C /rcv+/rec,/
+i *SET RCV_FOUND
+i *ELSEIF [*VAR] = WW                              . or if it is the only
+i C /WW+/WW=P,/
+i C /ww+/ww=P,/
+i *ELSEIF [*VAR] = NM                              . Check following code
+i C /NM+/NMSG=P,/
+i C /nm+/nmsg=p,/
+i *ELSEIF [*VAR] = TC
+i C /TC+/TCDBF=P,/
+i C /tc+/tcdbf=p,/
+i *ELSEIF [*VAR] = NOTC
+i C /NOTC+/TCDBF=I,/
+i C /notc+/tcdbf=i,/
+i *ENDIF   . If VAR=                               . these special cases
+i *ENDIF   . If CHAR=
+i *LOOP i I  . Loop for FALLBACK INDICATORS
+i *set case$
+i *IF PLUS_FOUND IS CLEAR
+i *SET VAR ='[FREIPS,[*E],2,7]'                    . Case if only 1 FALLBACK
+i *ELSE
+i *set case$                                       . Case if last FALLBACK
+i *SET STRING_LENGTH= [*STRING_LENGTH] + 1
+i *SET VAR ='[FREIPS,[*E],2,7,SUBSTR$,[*START_CHAR],[*STRING_LENGTH]]'
+i *ENDIF  . If PLUS_FOUND
+i *IF [*VAR] = AL
+i C /AL,/AL=P,/
+i C /al,/al=p,/
+i *ELSEIF [*VAR] = SAL
+i C /SAL,/SAL=P,/
+i C /sal,/sal=p,/
+i *ELSEIF [*VAR] = RCV
+i C /RCV,/REC,/
+i C /rcv,/rec,/
+i *SET RCV_FOUND
+i *ELSEIF [*VAR] = WW
+i C /WW,/WW=P,/
+i C /ww,/ww=p,/
+i *ELSEIF [*VAR] = NM
+i C /NM,/NMSG=P,/
+i C /nm,/nmsg=p,/
+i *ELSEIF [*VAR] = TC
+i C /TC,/TCDBF=P,/
+i C /tc,/tcdbf=p,/
+i *ELSEIF [*VAR] = NOTC
+i C /NOTC,/TCDBF=I,/
+i C /notc,/tcdbf=i,/
+i *ENDIF  . If VAR =
+i *. ENDIF  . If AUDIT_FOUND
+i *ENDIF  . If S_LENGTH>7
+i *IF NOT [*RCV_FOUND] AND [*AUDIT_NUM]=0           . If no RCV and AUDIT=0
+i *DISPLAY 'IN RCV NOT FOUND IF'                    .  add NREC
+i C /,AUDIT=[*AUDIT_NUM] /,AUDIT=[*AUDIT_NUM],NREC/
+i *ENDIF  . IF RCV_FOUND
+i *IF [*S_LENGTH] > 1                              . If more than 1 subfield
+i *SET STRING = '[FREIPS,E,2,2]'                   . place FILE= in front of
+i *SET NIL = ''                                    . the second subfield
+i *IF [*STRING] <> [*NIL]                          . Test for NIL
+i C /,[*STRING],/,FILE=[*STRING],/
+i *ENDIF  . STRING <> NIL
+i *ENDIF  . S_LENGTH > 1
+i *ENDIF  . If FUNCTION=CG                         . END FUNCTION=CG
+i *.                                               .
+i *SET CASE$
+i *endif  . If LENGTH3>0
+i *SET CASE$
+i *LOOP E
+i *ENDIF  . IF UTILITY=TFUR
+i *LOOP B . Line Loop
+i *LOOP A . SGS Loop                               . SGS loop
+i *if [*edit_status] = 1
+i EXIT
+i *else
+i OMIT
+i *endif
+*set lbrk$ = 0
+i @EOF
+i @EOF
+exit
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*. *  This edit stream will create a ssg stream to do the following.
+*. *
+*. *    1)  Edit the SGS element in the temporary file so it will contain
+*. *        the current element to be updated.
+*. *
+*. *    2)  Call the conversion routine to do the conversion.
+*. *
+*. *  This stream will call the conversiona routine to perform the updates
+*. *  for all of the elements and changes specified.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#ed,iq [*tempfn].MAIN-DRIVER
+#edit
+i @ssg,mn
+i skel
+i *set tempfn = '[*tempfn]'
+i *set convertfn = '[*convertfn]'
+*set lbrk$ = 1
+i *add sgs [*tempfn].NAME-CONVERT
+i *increment x from 1 to [ELEMENT]
+i *set element = '[ELEMENT,x,1,1]'
+i *set status = '[ELEMENT,x,2,1]'
+i *increment y from 2 to [ELEMENT,x]
+i *if [*status] = TFUR or [*status] = TREG
+i #copy,s [*tempfn].CONVERSION/FREIPS,[*convertfn].CONVERSION/FREIPS
+i #ed,u [*convertfn].CONVERSION/FREIPS
+i #edit
+i c ~(*element)~[*element]~a
+i exit
+i #add [*convertfn].CONVERSION/FREIPS
+i #delete,s [*convertfn].CONVERSION/FREIPS
+i *endif
+i *loop
+i *loop
+*set lbrk$ = 0
+i @eof
+i @eof
+exit
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*. *   This edit stream will create a ssg stream which will be put into
+*. *   the temporary file.  The ssg stream called COPYNEW will take all
+*. *   of the elements which were converted and copy them to the original
+*. *   file.  The user needs to start this ssg stream.
+*. * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#ed,iq [*tempfn].copyskel
+#edit
+i @ssg,mnb ,,[*tempfn].copynew
+i skel
+i *add sgs [*convertfn]./name
+i *add sgs [*altfn]./permname
+i *set tempfn = '[*tempfn]'             . \   Brings the names of the
+i *set convertfn = '[*convertfn]'       .  |  temporary files used
+i *set altfn = '[*altfn]'               . /   the editted element
+i #use original.,[*fn].
+i #use conv.,[*convertfn].
+i *set fn = '[*fn]'
+*set lbrk$ = 1
+i *increment N from 1 to [name]         . * * * * * * * * * * * * * * * * * * *
+i *set elt = '[name,N,1,1]'             . *  These looping structures will
+i *set version = '[name,N,2,1]'         . *  search thru two files, find the
+i *if [*version] <> '' ''               . *  matching element names between the
+i *set elt = '[*elt]/[*version]'        . *  two files, and then copy the
+i *endif                                . *  elements which match to the
+i *increment O from 1 to [permname]     . *  original file.
+i *set permelt = '[permname,O,1,1]'     . * * * * * * * * * * * * * * * * * * *
+i *set permversion = '[permname,O,2,1]'
+i *if [*permversion] <> '' ''
+i *set permelt = '[*permelt]/[*permversion]'
+i *endif
+i *if [*permelt] = [*elt]
+i #copy,s conv.[*elt],original.[*elt]
+i *endif
+i *loop
+i *loop
+*set lbrk$ = 0
+i @eof
+i @eof
+exit
+#ed,iq [*tempfn].cleanup
+#edit
+i @delete,c [*runid]*bpfile.
+i @delete,c [*runid]*temp.
+i @delete,c [*runid]*converted.
+i @delete,c [*runid]*alternate.
+exit
+#add [*tempfn].LIST
+#add [*tempfn].SEARCH
+#add [*tempfn].MAIN-DRIVER
+#add [*tempfn].COPYSKEL
+#brkpt print$
+*display ' '
+*display '* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*display '                                                                     '
+*set case$=1
+*if [*mode] = B
+*display '    To convert the file ' fn ', @START FREIPS*RUN.CONVERT            '
+*else
+*display '    To convert the file ' fn ', @ADD FREIPS*RUN.CONVERT              '
+*endif
+*display '                                                                     '
+*display '    The converted elements will be in a file called ' convertfn '.'
+*display '                                                                     '
+*display '* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+@EOF
+@EOF
+@EOF
