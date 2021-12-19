@@ -1,0 +1,226 @@
+          $INCLUDE  'MAXR$'           .   
+          $INCLUDE  'ERU$'            .  ER INDEXES   
+          $INCLUDE  'SYS$DEF'         .  PCT POINTERS 
+.     
+.         @FREEALL<,OPTS>     
+.            I - LIST ALL ASSIGNED FILES (TEST ONLY)  
+.            L - LIST ALL @FREE'D FILES   
+.            P - FREE PERMANENT (CATALOGUED) FILES    
+.            T - FREE TEMPORARY FILES     
+.            U - FREE @USE NAMES ON NON-ASSIGNED FILES.     
+.     
+.         IF NO OPTIONS ARE SPECIFIED THEN P+T ARE ASSUMED. 
+.     
+.         WE GO TO THE LAST PCT BLOCK AND RELEASE ALL FILES THERE (FROM 
+.         THE BACK), SEARCHING FOR THE LAST BLOCK FROM THE FRONT AT     
+.         EACH PASS.    
+.     
+.         X4  POINTS TO START OF CURRENT 63-WORD PCT SECTION
+.         X5  POINTS TO FILE-ITEM   
+.         A6  OPT$ OPTIONS)   
+.         A7  IS SET TO THE BASE OF THE LAST PCT BLOCK WHERE WE FOUND   
+.             A FILE TO FREE  
+.         A8  IS THE NUMBER OF FILENAMES ALREADY PROCESSED IN THIS PCT BLOCK  
+.         A9  IS THE NUMBER OF FILENAMES LEFT IN THIS PCT BLOCK   
+.     
+CAREFUL   $EQU      0                 .  DO FULL CHECK ON FIRST CHAR IF SET   
+UASCII    $EQU      0                 .  PRTEXT, SCSF IN FDATA    
+PCTNAM    $EQUF     0241,X4,W         .  ADDRESS OF FIRST NAME SECTION  
+ITMODE    $EQU      0                 .  TEST MODE (@FREEALL,I)   
+.     
+          $INFO  1  5                 .  TURD WURD    
+          $INFO  9  1,5               .   
+          $INFO  12 'SYSLIB'          .   
+.     
+$(5)      $LIT                        .   
+$(1)                                  .   
+FREEALL                               .   
+          LXI,U     A0,3*/15+PCTBD$   .  PCT    
+          LBJ       A0,$+1            .  BASE IT
+.     
+          $IF       ITMODE            .   
+          AND,U     A5,1*/('Z'-'I')++1*/('Z'-'P')++1*/('Z'-'T')++1*/('Z'-'U') .     
+          $ELSE                       .   
+          AND,U     A5,1*/('Z'-'P')++1*/('Z'-'T')++1*/('Z'-'U') . 
+          $ENDF                       .   
+.     
+          TNZ       A6                .  ALL CLEAR? SKIP IF ANY ARE SET 
+          A,U       A5,1*/('Z'-'P')++1*/('Z'-'T') . YES, SET T+P  
+.     
+          $IF       ITMODE            .  ISOLATE THE OPTIONS IN A6
+          AND,U     A5,1*/('Z'-'I')++1*/('Z'-'L')++1*/('Z'-'P')++;
+                       1*/('Z'-'T')++1*/('Z'-'U') .   
+          $ELSE                       .   
+          AND,U     A5,1*/('Z'-'L')++1*/('Z'-'P')++1*/('Z'-'T')++1*/('Z'-'U') .     
+          $ENDF                       .   
+.     
+          L,U       A7,0              .  GIVE A FICTITOUS LAST-BLOCK-NO 
+          E$DIT     EDPACK            .  ESTABLISH EDIT-MODE NOW  
+PCTPASS                               .  ******** START A NEW PASS *********  
+          $IF       ITMODE            .   
+          L         A0,(0101,($CFS('->PASS'))) . PREPARE TO SAY 'NEW PASS'    
+          TEP,U     A6,1*/('Z'-'I')   .  @FREEALL,I ? 
+          ER        PRINT$            .  YES    
+          $ENDF                       .   
+.     
+          L,U       X4,RPCTA$         .  POINT X4 AT THE PCT
+          L,U       X4,PCTNAM         .  ABS ADDR OF (NAME) SECTION IN PCT    
+          TNE       A7,X4             .  HAVE WE ANALYSED THIS BLOCK ALREADY? 
+          J         ENDFREEALL        .  YES - CELEBRATE.   
+PCTLOOP                               .   
+          TNZ,H2    0,X4              .  IS THERE A 'NEXT BLOCK'? 
+          J         LASTBLOCK         .  NO - WE HAVE THE LAST ONE
+          A,H2      X4,,X4            .  POINT TO NEXT BLOCK
+          LXI,U     X4,0              .  WE DO NOT INCREMENT
+          TE        A7,X4             .  HAVE WE ANALYSED THIS BLOCK ALREADY? 
+          J         PCTLOOP           .  NO, CARRY ON UP.   
+          TNZ,H2    075,X4            .  YES, IS THERE A PREVIOUS BLOCK?
+          J         ENDFREEALL        .  NO     
+          A,H2      X4,075,X4         .  YES - POINT BACK TO PREVIOUS BLOCK   
+          LXI,U     X4,0              .   
+LASTBLOCK                             .   
+          TNZ,S3    0,X4              .  LAST BLOCK - ANY ENTRIES?
+          J         ENDFREEALL        .  NO - GIVE UP NOW.  
+          L,U       A7,,X4            .  STOP THE NEXT SEARCH BEFORE THIS BLOCK     
+.                                                             ******    
+          $IF       ITMODE            .   
+          S,H2      X4,SNAPPACK+1     .   
+          L,U       A0,SNAPPACK       .   
+          TEP,U     A6,1*/('Z'-'I')   .  @FREEALL,I ? 
+          ER        SNAP$             .  YES    
+          $ENDF                       .   
+SETTOBACK                             .   
+          L,U       A8,0              .  'NO ENTRIES PROCESSED YET'     
+ENTRYLOOP                             .   
+          A,U       A8,1              .  SAY 'ONE MORE PROCESSED' 
+          L,S3      A9,,X4            .  LOAD ENTRY-COUNT (0..21) 
+          AN        A9,A8             .  SUBTRACT NUMBER-PROCESSED (1..22)    
+          JN        A9,PCTPASS        .  ESCAPE IF ALL PROCESSED  
+          L         A1,A9             .  GET THE ONE WE ARE POINTING TO 
+          MSI,U     A1,3              .  CALCULATE THE OFFSET     
+          A,U       A1,,X4            .  ADD THE BASE-ADDRESS IN  
+.     
+          L,U       X5,,X4            .  POINT TO START OF THIS SECTION 
+          A,H2      X5,3,A1           .  NOW X5 POINTS TO THE FILE-ITEM 
+          LXI,U     X5,0              .   
+.     
+          $IF       ITMODE            .   
+          L,U       A0,1,A1           .  POINT TO THE NAME  
+          LXI,U     A0,0202           .  SUPPLY THE LENGTH  
+          TEP,U     A6,1*/('Z'-'I')   .  @FREEALL,I ? 
+          ER        PRINT$            .  YES    
+.     
+          L,U       A0,,X5            .  POINT TO THE NAME  
+          LXI,U     A0,0117           .  SUPPLY THE LENGTH  
+          TEP,U     A6,1*/('Z'-'I')   .  @FREEALL,I ? 
+          ER        PRINT$            .  YES    
+          $ENDF                       .   
+          L,S1      A0,1,A1           .  GET FIRST CHAR OF INTERNAL FILENAME  
+          TZ,S3     10,X5             .  SYMBIONT FILE?     
+          J         ENTRYLOOP         .  YES - LEAVE IT     
+          DL        A4,1,A1           .  GET THE INTERNAL FILENAME
+.     
+          $IF       CAREFUL           .   
+          TNZ       CHARTAB,A0        .  IS A0 LEGAL AS A FIRST CHAR?   
+          J         ENTRYLOOP         .  NO - IGNORE THIS ONE     
+.         $ELSE                       .   
+.         JZ        A0,ENTRYLOOP      .  SKIP IF FIRST-CHAR ZERO  
+          $ENDF                       .   
+.     
+          DS        A4,FITPACK        .  YES - LOOK AT IT.  
+          L         A0,(FITPACKE,FITPACK) .     
+          DS        A4,FREELINE+1     .  PREPARE TO FREE @USE NAMES AS WELL   
+          ER        FITEM$            .   
+          L,S1      A1,FITPACK+6      .  EQUIPMENT CODE (=0 FOR NOT ASG'D @USE)     
+          L,U       A0,3              .  PREPARE TO SAY '3 WORDS' (DOFREE)    
+          TEP,U     A6,1*/('Z'-'U')   .  WAS U-OPTION SUPPLIED?   
+          JZ        A1,DOFREE         .  YES - 'DOFREE' IF FILE NOT ASSIGNED  
+          JZ        A1,ENTRYLOOP      .  NO, NEXT NAME IF FILE NOT ASSIGNED.  
+          L         A0,FITPACK+7      .  @ASG OPTIONS 
+          LSSL      A0,1              .  NOW 'TEMP-FILE' BIT IS SIGN BIT
+          JP        A0,PERMFILE       .  ESCAPE IF PERMANENT FILE.
+          TOP,U     A6,1*/('Z'-'T')   .  TEMP. DO WE FREE TEMP FILES?   
+          J         ENTRYLOOP         .  NO, SKIP THIS ENTRY
+          J         BUILDFREE         .  YES, CARRY ON
+PERMFILE                              .  PERMANENT FILE.    
+          TOP,U     A6,1*/('Z'-'P')   .  DO WE FREE PERMANENT FILES?    
+          J         ENTRYLOOP         .  NO, SKIP THIS ENTRY
+BUILDFREE                             .   
+          L         A4,FITPACK+2      .  FIRST WORD OF FILE NAME  
+          L         A3,FITPACK+4      .  FIRST WORD OF QUAL 
+          TNE       A4,($CFS('DIAG$')L) . DIAG$?
+          J         ENTRYLOOP         .  YES - SKIP   
+          TNE       A3,($CFS('SYS$WS')L) . 2200/900 WORKING-STORAGE     
+          J         ENTRYLOOP         .  YES - SKIP   
+          TNE       A4,($CFS('TPF$')L) . TPF$?  
+          J         ENTRYLOOP         .  YES - SKIP   
+          DTE       A3,($CFS('SYS$  LIB$')L) . SYS$*LIB$?   
+          TE        A0,A0             .  NO - SKIP AGAIN    
+          J         ENTRYLOOP         .  YES - SKIP   
+          E$CLEAR                     .   
+          E$FD2     FITPACK+4         .  QUALIFIER    
+          E$CHAR    $CFS('*')         .   
+          E$FD2     FITPACK+2         .  FILE NAME    
+          E$CHAR    $CFS('(')         .   
+          E$DECV    FITPACK+6,,T3     .  ABS FILE-CYCLE     
+          E$CHAR    $CFS(')')         .   
+          E$COLN                      .   
+          A,U       A0,5+6            .  ROUND UP AND ADD 1 WORD  
+          DSL       A0,36             .   
+          DI,U      A0,6              .   
+DOFREE                                .   
+          S,S3      A0,PRINTPTR       .   
+          LSSL      A0,18             .   
+          LXM,U     A0,FREELINE       .   
+          ER        CSF$              .   
+          TEP       A0,(1*/33)        .  FAC STATUS 100000000000? 
+          J         ENTRYLOOP         .  YES - FORGET WE EVEN TRIED IT. 
+.     
+.         WE DID FREE A FILE. PRINT IT IF NECESSARY   
+.     
+          L         A0,PRINTPTR       .   
+          TEP,U     A6,1*/('Z'-'L')   .   
+          ER        PRINT$            .   
+.     
+.         SET UP A8 SO THAT WE LOOK AT THE 'PREVIOUS' ENTRY NEXT. 
+.     
+          L,S3      A8,,X4            .  NUMBER OF ENTRIES LEFT (NOW)   
+          AN        A8,A9             .  THE NUMBER OF THE LAST ONE WE HIT    
+          JN        A8,SETTOBACK      .  SET TO LAST ENTRY IF WE ARE OUTSIDE  
+          J         ENTRYLOOP         .  LOOK AT THE NEXT ENTRY   
+ENDFREEALL  
+.         E$DITX                      .   
+          P$RINT    ALLFREEP          .   
+          ER        XCTS$             .  EXIT CTS IF NECESSARY    
+          ER        EXIT$             .   
+$(2)                                  .   
+EDPACK    E$PKT     6,FREELINE+1      .   
+PRINTPTR  $GFORM    12,1,6,,18,FREELINE . 
+FREELINE  $CFS('@FREE')               .   
+          $RES      6                 .   
+FITPACK   $RES      13                .   
+FITPACKE  $EQU      $-FITPACK         .   
+          $IF       ITMODE            .   
+SNAPPACK                              .   
+          $CFS(' *PCT*')              .   
+          +         63,0              .   
+          $RES      1                 .   
+          $ENDF                       .   
+$(5)                                  .   
+ALLFREE   $CFS('** ALL FILES FREED. **') .
+ALLFREEP  $GFORM    12,1,6,$-ALLFREE,18,ALLFREE .     
+.     
+          $IF       CAREFUL           .   
+CHARTAB   $UNLIST                     .  VALIDATION TABLE FOR FIRST CHAR OF NAME    
+ $DO 6 ,  +         0                 .  000-005 ARE ILLEGAL
+ $DO 26 , +         1                 .  'A'-'Z' ARE   LEGAL
+          +         0                 .  040     IS  ILLEGAL
+          +         1                 .  '-'     IS    LEGAL
+ $DO 5 ,  +         0                 .  042-046 ARE ILLEGAL
+          +         1                 .  '$'     IS    LEGAL
+ $DO 8 ,  +         0                 .  050-057 ARE ILLEGAL
+ $DO 10 , +         1                 .  '0'-'9' ARE   LEGAL
+ $DO 6 ,  +         0                 .  072-077 ARE ILLEGAL
+          $LIST                       .   
+          $ENDF                       .   
+          $END      FREEALL           .   

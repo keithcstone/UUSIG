@@ -1,0 +1,430 @@
+<!--This file created 5/26/97 5:57 PM by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>PQCUP 1R1 Documentation</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=90 BOTTOM=768 LEFT=12 RIGHT=542>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1>1. 'PQCUP' (Print Queue Clean-Up)</H1>
+
+<H2>1.1. Introduction</H2>
+
+<P>The PQCUP processor is used to maintain the symbiont queues on
+your system. The main reason PQCUP has been written is to selectively
+get rid of print files which have been queued for printing but are no
+longer required.</P>
+
+<P>Please report any problems or suggestions to:</P>
+
+<P>Erich Staubringer</P>
+
+<P>Email: gestau1@mvmhp.ciw.uni-karlsruhe.de</P>
+
+<P>Fax: xx49 7246/942094</P>
+
+<H2>1.2. Processor Call</H2>
+
+<P>The general PQCUP processor call syntax is:</P>
+
+<P><TT>@[&lt;file.&gt;]PQCUP[,&lt;options&gt;] [&lt;primary sel.
+specs&gt;],[&lt;secondary sel. specs&gt;]<BR>
+
+</TT><BR>
+
+As the above syntax indicates, all options and specification fields
+are optional and will have default values assigned, if necessary.
+</P>
+
+<P>The various specification fields are described in the following
+subsections.</P>
+
+<H3>1.2.1 File</H3>
+
+<P>This is the file in which PQCUP is stored and is not required to
+be specified if PQCUP has been installed and registered in a system
+library file.</P>
+
+<H3>1.2.2 Options</H3>
+
+<P>Options can be categorized into the following three groups:</P>
+
+<P>General options:</P>
+
+<P>C - Do not error terminate, even if an error occurs. This applies
+to non-internal and non-serious errors only.</P>
+
+<P>Z - If debugging is enabled within the program, this option
+produces diagnostic dumps at several key points in the program. If
+debugging is disabled this option is invalid.</P>
+
+<P>Action options:</P>
+
+<P>D - Delete the selected print files. When this option is used the
+J-option is assumed, if not specified.</P>
+
+<P>L - List the selected print file entries. This is the default
+option if no other action option has been specified.</P>
+
+<P>U - Update (toggle) the In-Progress and/or SV bit of the selected
+entries. This option requires at least one of the selection option
+and produces two lines of output per entry. The first line displays
+the original entry (before the change) and the second line displays
+the updated entry (after the change).</P>
+
+<P>Selection options:</P>
+
+<P>I - Select entries with the In-Progress bit set only.</P>
+
+<P>J - Bypass entries with the In-Progress bit set.</P>
+
+<P>S - Select entries with the SV bit set only.</P>
+
+<P>T - Bypass entries with the SV bit set.</P>
+
+<P>When more than one of the selection options are given, all tests
+must pass for the entry to be selected, provided it is a legal option
+combination (logical 'AND' operations are done).</P>
+
+<H3>1.2.3 Specification Fields</H3>
+
+<P>The specification fields are used to specify further selection
+criteria for print files to be searched for. Two types of
+specification fields are available: Primary selection specifications
+and secondary selection specifications. If neither selection options
+nor specification fields are given, PQCUP defaults to all print files
+queued on the system.</P>
+
+<H4>1.2.3.1 Primary Selection Specifications</H4>
+
+<P>Primary selection specs are the parameters which PQCUP passes on
+to the operating system and, in turn, retrieves only the entries
+which match the specified criteria. The format is:</P>
+
+<P>&lt;name&gt;/&lt;identifier&gt;</P>
+
+<P>where: name refers to an EXEC entity of the following identifier
+</P>
+
+<P>identifier describes the name above and can be:</P>
+
+<P>QUEUE Print queue identifier</P>
+
+<P>RUNID Generated runid</P>
+
+<P>USERID Userid</P>
+
+<P>OUTPUT-ID Output-id of in-progress print files</P>
+
+<P>PRIORITY Priority value (A - Z)</P>
+
+<P>FILE File name</P>
+
+<P>The above described identifiers can be abbreviated to any length.
+On the first specification field it can be omitted and defaults to
+QUEUE or FILE, respectively. This has been implemented to allow easy
+access to various print queues (@PQCUP B12, for example).</P>
+
+<P>All of the specified identifiers must match for an entry to be
+selected (logical 'AND' operations are done). The only exception to
+this rule is when multiple print queue ids have been specified to be
+searched. In this case, only one of the queue ids must match. The
+actual number of allowed print queue id specs is configurable and is
+currently set to a maximum of 10.</P>
+
+<P>If the identifier is RUNID or OUTPUT-ID and name is not specified,
+the generated runid of the calling run is assumed.</P>
+
+<P>If the identifier refers to a userid and name is omitted, the
+current userid is substituted.</P>
+
+<P>When the qualifier part of a file name is not specified, the run's
+default qualifier is used (@QUAL,D).</P>
+
+<P>When the qualifier is omitted but an asterisk precedes the
+filename the run's implied qualifier is used (@QUAL).</P>
+
+<P>When the file cycle is omitted the first print file found on the
+queue(s) which match the specified qualifier and file name is
+selected, regardless of the actual file cycle.</P>
+
+<P>Summarizing the rules outlined above gives the following syntax:
+</P>
+
+<P><TT>[&lt;device-1&gt;[/QUEUE],[&lt;device-n&gt;/QUEUE]],;</TT>
+</P>
+
+<P><TT>[[&lt;run-id&gt;]/RUNID],;</TT></P>
+
+<P><TT>[[&lt;user-id&gt;]/USERID],;</TT></P>
+
+<P><TT>[[&lt;output-id&gt;]/OUTPUT-ID],;</TT></P>
+
+<P><TT>[&lt;priority&gt;/PRIORITY],;</TT></P>
+
+<P><TT>[&lt;qual&gt;[*]]&lt;file&gt;[(cyc)].[/FILE] </TT></P>
+
+<H4>1.2.3.2 Secondary Selection Specifications</H4>
+
+<P>Secondary selection specs are selection parameters not supported
+by the operating system directly. Thus, PQCUP retrieves the entries
+specified via the primary selection specs and reselects the desired
+entries.</P>
+
+<P>This specification, if used, must be the last field on the
+processor call line. If this is the only field, it must be made
+unique by using the test-operator or date identifier field, otherwise
+it would be recognized as a primary spec field print queue or file
+name.</P>
+
+<P>Currently, only one secondary selection spec is implemented which
+allows to select files based on their relative age. The specification
+field format is:</P>
+
+<P><TT>[&lt;test-operator&gt;.][&lt;relative age&gt;][/&lt;date
+ident&gt;]<BR>
+
+</TT><BR>
+
+where: test-operator is an optional field used to specify the test to
+be done against the relative age specification, which selects the
+files based on the number of days since cataloged or number of days
+last referenced, respectively.</P>
+
+<P>Valid test operators are:</P>
+
+<P>TGE (Test Greater or Equal) TG (Test Greater) TE (Test Equal) TNE
+(Test Not Equal) TLE (Test Less than or Equal) TNG (Test Not Greater)
+</P>
+
+<P>If this specification is omitted TGE is assumed, which causes all
+file entries to be selected older than or equal to the number of days
+specified in the relative age specification field.</P>
+
+<P>relative age specifies the relative age in days of file entries to
+be selected. It can be omitted with the LIST function only and
+defaults to 0 in this case. For all other functions this
+specification is mandatory. The test to be performed depends on the
+test-operator specification described above.</P>
+
+<P>date ident specifies which date to use to determine the print
+file's age.</P>
+
+<P>Print files put on a symbiont queue do not have a field attached
+which tells the date the file has been symmed. To work around this
+gap, PQCUP offers the capability to refer either to the date the file
+has been cataloged or the last reference date of the file to
+determine it's relative age.</P>
+
+<P>Valid choices for this field are CATAGE or REFAGE. When it's not
+specified, CATAGE is the default.</P>
+
+<P>See section "Restrictions" for further details on this subject.
+</P>
+
+<H2>1.3. Current Restrictions and Limitations</H2>
+
+<H3>1.3.1 Maximum Number Of Print Queue Entries</H3>
+
+<P>Due to current (44R3) Exec limitations, PQCUP can only handle up
+to 169 print queue entries at most. However, when the D-option is
+used to delete entries, it could be possible for PQCUP to process all
+entries on a queue, even if there are more than 169 entries queued.
+Actually, the degree of success depends on the primary selection
+specs, i.e. the matching of the file entries against the user's
+specifications.</P>
+
+<P>Suppose there are 300 entries on a symbiont queue. PQCUP reads the
+first 169 entries and examines each one to determine which ones match
+the user-specified selection criteria. Let's assume that there have
+been 3 entries selected for deletion. When these entries have been
+successfully removed PQCUP recognizes that there are more entries
+queued and initiates another read request to retrieve the first 169
+entries again. If the queue has not been changed by any other
+activity, there are 3 new entries in the set of the first 169
+entries. The other 166 ones have already been read in the previous
+execution path.</P>
+
+<P>The user should be aware though that this processing is very
+inefficient, it does allow the removal of more than 169 print files,
+provided there is at least one entry which matches the primary
+selection specification.</P>
+
+<H3>1.3.2 Date Of @SYM</H3>
+
+<P>The Exec does not carry the date a file has been symmed along with
+the symbiont queue entries, so it's not possible to refer to the date
+a file has been symmed. To get around this gap, PQCUP refers to the
+date the file has been cataloged. Optionally, this default value can
+be overwritten to refer to the last reference date of the file.
+However, using the last-reference date it should be remembered that
+if a user referenced the file while DLOC$-privileged, the file's
+last-reference date is not updated.</P>
+
+<H2>1.4. Notes</H2>
+
+<H3>1.4.1 Changes To The System Clock</H3>
+
+<P>When PQCUP executes and a date change occurs (either manually
+initiated or automatically at midnight), PQCUP continues to use the
+date it has been invoked to determine the relative dates of the print
+files. In other words, the date used as a basis to calculate the
+relative date is determined at program initialization and
+subsequently reused.</P>
+
+<H3>1.4.2 The Sign-Off Line</H3>
+
+<P>When PQCUP terminates, it normally displays a sign-off line in the
+following format:</P>
+
+<P><TT>END PQCUP. Examined: a/b Listed: c Changed: d Deleted: e
+Rejected: f<BR>
+
+</TT><BR>
+
+where:</P>
+
+<P>a Number of entries returned by the operating system on the LAST
+retrieve operation.</P>
+
+<P>b Total number of entries at the time of the LAST retrieve
+operation.</P>
+
+<P>c The number of files that have been listed, i. e. displayed.</P>
+
+<P>d The number of entries updated.</P>
+
+<P>e The number of entries removed.</P>
+
+<P>f The number of entries that have not been processed due to any of
+the following errors encountered:</P>
+
+<P>- An error occurred reading the MFD information of a file<BR>
+
+- The In-progress bit could not be set for an entry<BR>
+
+- The entry could not be removed<BR>
+
+- The Exec marked the entry in error</P>
+
+<P>When a file is marked rejected or any other unusual situation is
+encountered a snapshot dump and/or formatted dump is displayed,
+depending on the type of error.</P>
+
+<H3>1.4.3 System Log Entries For Deleted Print Files</H3>
+
+<P>When a print file is being dropped via ER SMOQUE$, the Exec
+assigns it to it's PCT and finally marks it for deletion. Therefore,
+Exec is recorded in the system log file entry as the deleting
+activity, regardless of the initiator. Unfortunately, there is no way
+to determine the originating activity which actually initiated the
+delete request.</P>
+
+<P>I have opened a Feature Suggestion on this subject, but haven't
+received an answer yet.</P>
+
+<H3>1.4.4 Privileges And File Security</H3>
+
+<P>To access, modify and delete print files PQCUP uses various ER
+SMOQUE$ functions. Access to some of these functions is restricted,
+and only users with appropriate privileges can use them. The type of
+required privileges depends on the system configuration:</P>
+
+<P>On systems running Fundamental Security only the security officer
+has the rights to use privileged ER SMOQUE$ functions.</P>
+
+<P>On systems with Secopt-1 or higher turned on the calling user has
+to have the SSSMOQUE privilege to use the privileged ER SMOQUE$
+functions. The security officer grants these privileges to individual
+users.</P>
+
+<P>However, a user with access to the privileged ER SMOQUE$ functions
+bypasses all file security checks. Even in a Secopt-1 or higher
+system, delete access is granted to ALL files, not only to the files
+within the user's compartment set or clearance level range, as one
+might assume.</P>
+
+<P>I have opened a Feature Suggestion on this subject, but haven't
+received an answer yet.</P>
+
+<H2>1.5. Planned Enhancements For Future Releases</H2>
+
+<UL>
+   <LI>Detailed and meaningful messages on spec field errors
+   
+   <LI>Attach use-names to the selected print files (if no D-option)
+   
+   <LI>Copy / move the selected files into program file elements
+</UL>
+
+<H2>1.6. Release History</H2>
+
+<P>- Sep '95 1R1 Initial release</P>
+
+<H2>1.7. Examples</H2>
+
+<P>Each of the following examples shows at least two possible PQCUP
+calls. The first one shows the full spelled out syntax, and any
+following calls are abbreviated calls which deliver the same results.
+Additionally, all examples assume that PQCUP has been either
+installed in a system library file or copied into the run's TPF$
+file.</P>
+
+<P>List all print files on the system.</P>
+
+<P><TT>@PQCUP,L TGE.0/CATAGE</TT></P>
+
+<P><TT>@PQCUP</TT></P>
+
+<P>List all print files on the system on queue B12 which have been
+created 30 days or longer ago.</P>
+
+<P><TT>@PQCUP,L B12/QUEUE,TGE.30/CATAGE</TT></P>
+
+<P><TT>@PQCUP B12/Q,TGE.30</TT></P>
+
+<P><TT>@PQCUP B12,30</TT></P>
+
+<P>Delete all print files on the system which have been symmed by the
+current userid and have not been referenced for at least 30 days.
+</P>
+
+<P><TT>@PQCUP,D /USERID,TGE.30/REFAGE</TT></P>
+
+<P><TT>@PQCUP,D /USER,30/REFAGE</TT></P>
+
+<P><TT>@PQCUP,D /U,30/REFAGE</TT></P>
+
+<P>Delete all print files created by the user-id currently executing
+under which are cataloged 3 days before and have the SV-bit set, i.
+e. have been saved to tape via the SV keyin and the N-option.</P>
+
+<P><TT>@PQCUP,DS /USERID,TE.3/CATAGE</TT></P>
+
+<P><TT>@PQCUP,DS /U,TE.3</TT></P>
+
+<P>Same scenario as above, but clear the SV-bit rather than deleting
+the files.</P>
+
+<P><TT>@PQCUP,US /USERID,TE.3/CATAGE</TT></P>
+
+<P><TT>@PQCUP,US /U,TE.3</TT></P>
+
+<P>Delete all print files created by run SYSGEO which have been saved
+to tape but not removed from the symbiont queues (via SV ,/N) and
+have not been referenced within the last 7 days.</P>
+
+<P><TT>@PQCUP,DS SYSGEO/RUNID,TGE.7/REFAGE</TT></P>
+
+<P><TT>@PQCUP,DS SYSGEO/R,7/REFAGE</TT></P>
+
+<P>Clear the IP bit of all files on queues B12 and B13 which have the
+output-id PR5 attached and have last been referenced yesterday.</P>
+
+<P><TT>@PQCUP,UI B12/QUEUE,B13/QUE,PR5/OUTPUT-ID,TE.1/REFAGE</TT>
+</P>
+
+<P><TT>@PQCUP,UI B12,B13/Q,PR5/O,TE.1/REFAGE </TT></P>
+</BODY>
+</HTML>

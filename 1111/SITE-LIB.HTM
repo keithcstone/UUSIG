@@ -1,0 +1,214 @@
+<!--This file created 8/31/97 10:03 AM by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE> Data Base Editor [DBE] Level 9R1 Site Library Guide 
+   </TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=114 BOTTOM=768 LEFT=16 RIGHT=546>
+<!DOCTYPE PUBLIC HTML "-//IETF//DTD HTML 2.0//EN" > 
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1>1. Site Library Macros</H1>
+
+<P>This manual is devoted to presenting the syntax and use of the
+various DBE macros that are included on the release tape for
+installation in the Site Library Macro File. These macros were
+developed for use at the New York State Department of Social Services
+(Albany, N.Y.) primarily for use by Data Administration Staff. These
+macros may require modification before installing in your Site
+Library Macro file. Contact your Site DBE Administrator for details.
+</P>
+
+<P>The macros are covered alphabetically. Each macro's discussion
+will include references to other related macros in the System Library
+Macro File and the Site Library Macro File.</P>
+
+<H2>1.1. TARUS-SAVE</H2>
+
+<P>The TARUS-SAVE macro is used to create Database Save/Restore ECL
+for use by the TARUS (Tip Area Restoration Utility System) processor.
+</P>
+
+<H3>1.1.1 Syntax</H3>
+
+<P>TARUS-SAVE[,opts]
+&lt;area-mask&gt;,&lt;save-id&gt;,&lt;restore-id&gt;</P>
+
+<H3>1.1.2 Options</H3>
+
+<P>C Close the file when the macro ends and write two '@EOF'
+statements at the end of the ECL.</P>
+
+<P>L List the ECL created.</P>
+
+<P>N Do not use the Internal TARUS Database.</P>
+
+<P>U Down the areas for "Update" instead of full down.</P>
+
+<H3>1.1.3 Discussion</H3>
+
+<P>If the area-mask is omitted, ECL will be generated for all areas
+in the Schema.</P>
+
+<P>The ECL file created is in TPF$.&lt;save-id&gt; and the restore
+ECL is in TPF$.&lt;Restore-id&gt;.</P>
+
+<P>The save-id is used as the first 6 characters of the Save Tape
+Name.</P>
+
+<H3>1.1.4 Sample Output</H3>
+
+<PRE>*:SCH,T 2340 FMGDEV-SCH
+*:TARUS-SAVE,CN
+&nbsp;
+DBE IS CONNECTED TO UDS APPLICATION "APPFOR" (#4) BDI: 0402503
+WITH ALIAS FMGDEV-SCH
+&nbsp;
+&nbsp;
+&nbsp;
+SAVE IS IN TPF$.FMGDEV AND RESTORE IS IN TPF$.RESTOR
+&nbsp;
+*:TARUS-SAVE,CN *,SFMG00,RFMG00
+&nbsp;
+DBE IS CONNECTED TO UDS APPLICATION "APPFOR" (#4) BDI: 0402503
+WITH ALIAS FMGDEV-SCH
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+SAVE IS IN TPF$.SFMG00 AND RESTORE IS IN TPF$.RFMG00
+&nbsp;
+*:PRT,S SFMG00
+&nbsp;
+DBE*TPF$(0).SFMG00</PRE>
+
+<P>&nbsp;</P>
+
+<PRE>1: @RUN,A/RWY SFMG00,DA0000P,DA0
+2: @TARUS3R1*ABSFILE.TARUS,PUN
+3: DMU APPFOR
+4: SCHEMA FMGDEV-SCH
+5: SUBSCHEMA DMU-FMGDEV,2340,TIP
+6: TAPEA DA0*SAVE-SFMG00,15
+7: TAPEB DA0*COPY-SFMG00,15
+8: AREA 2341,LOGICAL-AREA
+9: AREA 2342,LOGICAL-HIST
+10: AREA 2343,FILE-AREA
+11: AREA 2344,FILE-HIST
+12: AREA 2345,PEND-AREA
+13: AREA 2346,USAGE-AREA
+14: AREA 2347,EXTRA-AREA
+15: @EOF
+16: @EOF
+17: @PRT,FC DA0*SAVE-SFMG00.
+18: @PRT,FC DA0*COPY-SFMG00.
+19: @FIN</PRE>
+
+<H2>1.2. TIP-MAP</H2>
+
+<P>The TIP-MAP macro is used to list Tip Files registered in an Exec
+file, similar to the TREG MAP function.</P>
+
+<H3>1.2.1 Syntax</H3>
+
+<P>1. TIP-MAP file-name 2. TIP-MAP ,file-number</P>
+
+<H3>1.2.2 Format 1</H3>
+
+<P>This format is used to display the Tip Files in the specified Exec
+File. Note that the format is File Name ONLY - no qualifier may be
+specified.</P>
+
+<H3>1.2.3 Format 2</H3>
+
+<P>This format is used to display the Tip Files in the specified
+TIP/Exec file number. This format is intended mainly for use by
+macros such as TIP-LF which have obtained the File Number and do not
+need to go through the overhead of converting file name to file
+number.</P>
+
+<H3>1.2.4 Discussuion</H3>
+
+<P>None.</P>
+
+<H3>1.2.5 Sample Output</H3>
+
+<PRE>*:TIP-MAP FMGDEV-AREAS
+&nbsp;
+&nbsp;
+EXEC EXECUTIVE FILE SIZE IN PACK
+FILE # NAME TRACKS ID
+49 DA0*FMGDEV-AREAS 2512 DA0001
+&nbsp;
+****** FCSS FILES WITHIN EXEC FILE ******
+&nbsp;
+FILE FCSS DMS FCSS FILE RECORD NUMBER NUMBER
+TYPE CODE CODE NAME SIZE RECORDS TRACKS
+5 1660 2341 LOGICAL-AREA 1792 800 800
+5 1659 2342 LOGICAL-HIST 1792 1000 1000
+5 1658 2343 FILE-AREA 1792 150 150
+5 1657 2344 FILE-HIST 1792 500 500
+5 1656 2345 PEND-AREA 1792 4 4
+5 1655 2346 USAGE-AREA 1792 4 4
+5 1654 2347 EXTRA-AREA 1792 4 4
+&nbsp;
+&nbsp;
+&nbsp;
+*:TPLOOK 20
+FCSS STATUS: 000100000000
+FILE CODE: 20 (TIP FILE NUMBER = 20)
+FCSS FILE NAME: ZAPID-TBL
+FILE TYPE: 1 (PERMANENT-TIP ONLY)
+STORAGE TYPE: 1 (SIMPLEX)
+RECORD LENGTH: 224
+NUMBER OF RECORDS: 1
+EXECUTIVE FILE NAME: TSU
+FCSS FILE STATUS: 0 (ACCESSIBLE)
+LOGICAL FILE #: 325
+&nbsp;
+&nbsp;
+&lt;XMIT&gt; TO CONTINUE: remain 14
+&nbsp;
+&nbsp;
+&nbsp;
+EXEC EXECUTIVE FILE SIZE IN PACK
+FILE # NAME TRACKS ID
+325 TIP$*TSU 4002 SS0001
+&nbsp;
+****** FCSS FILES WITHIN EXEC FILE ******
+&nbsp;
+FILE FCSS DMS FCSS FILE RECORD NUMBER NUMBER
+TYPE CODE CODE NAME SIZE RECORDS TRACKS
+1 20 ZAPID-TBL 224 1 0
+1 264 DATATRANIN 112 8000 500
+1 265 DATATRANOUT 112 8000 500
+1 371 LAURA-TIP 28 40 0</PRE>
+
+<H2>1.3. U$SCH-ABORT</H2>
+
+<P>The U$SCH-ABORT macro is used to create an answerable message on
+the console for each schema which is aborted within the current UDS
+application.</P>
+
+<H3>1.3.1 Syntax</H3>
+
+<P>U$SCH-ABORT[,options]</P>
+
+<H3>1.3.2 Options</H3>
+
+<P>None Display message on terminal and wait for user response.</P>
+
+<P>C Display message on Console and wait for operator response.</P>
+
+<H3>1.3.3 Sample Output</H3>
+
+<P>*:&gt; U$APP 4</P>
+
+<P>*:&gt; U$SCH-ABORT</P>
+
+<P>&nbsp;</P>
+
+<P>SCHEMA DBE-SCH HAS ABORTED IN APP APPFOR (APP 4) - NOTIFY DA</P>
+</BODY>
+</HTML>

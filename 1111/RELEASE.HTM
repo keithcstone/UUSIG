@@ -1,0 +1,996 @@
+<!--This file created 8/31/97 9:58 AM by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE> Data Base Editor [DBE] Level 9R1 Release Description
+   </TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=66 BOTTOM=768 LEFT=8 RIGHT=538>
+<!DOCTYPE PUBLIC HTML "-//IETF//DTD HTML 2.0//EN" > 
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<H1>1. APPENDIX B - SUMMARY OF CHANGES</H1>
+
+<H2>1.1. Level 8R4 - 03 SEP 92</H2>
+
+<H3>1.1.1 Processor Changes</H3>
+
+<H4>1.1.1.1 EXEC 43R4 Change</H4>
+
+<P>When attempting to run realtime under EXEC 43R4, DBE would get an
+IGDM error. This has been fixed by correctly loading the realtime
+level value instead of attempting to access protected memory.</P>
+
+<H4>1.1.1.2 AREA Command</H4>
+
+<P>Fixed code to clear current page when new area is based.</P>
+
+<H4>1.1.1.3 DECODE Command Enhanced / "Q" Processor Option</H4>
+
+<P>The DECODE command would error if it encountered an invalid area
+code in the pointer passed to it. The "Q" processor option was added
+to allow decode to return a value of zeros instead of erroring.</P>
+
+<H4>1.1.1.4 DOUBLE BUFFERED I/O Configuration Change</H4>
+
+<P>The size of the buffers used by the double buffered I/O routine
+(called by SCAN and RSCAN functions) are now configurable and can be
+specified at DBE SYSGEN time.</P>
+
+<H4>1.1.1.5 ERROR HANDLING Fixed</H4>
+
+<P>When the error handling routine checked to see if a SCAN was in
+progress, the register containing the return address was overlayed
+causing an IGDM error. This has been corrected by saving/restoring
+the register around the code.</P>
+
+<H4>1.1.1.6 FEATURE Command Implemented</H4>
+
+<P>Implemented FEATURE command which was documented but never coded.
+</P>
+
+<H4>1.1.1.7 LET Command Fix</H4>
+
+<P>Fixed code which caused E$31 errors following SCANs which
+encountered errors.</P>
+
+<H4>1.1.1.8 RSCAN Command Changes</H4>
+
+<P>RSCAN now correctly determines whether start/stop pages passed to
+it are valid.</P>
+
+<P>All arrays passed to the RSCAN function are now monitored.</P>
+
+<H4>1.1.1.9 SCAN Command</H4>
+
+<P>Changed E$77 error handling to set a bit in ERRSTS table instead.
+</P>
+
+<P>Added code to detect corrupted page offsets in record slots and to
+report the condition instead of causing an IGDM error.</P>
+
+<P>Added code to detect record "bit-out" condition, invalid area code
+or page # in record set pointers.</P>
+
+<P>Cleaned up/standardized error reporting.</P>
+
+<H3>1.1.2 System Macro Changes</H3>
+
+<H4>1.1.2.1 ATT</H4>
+
+<P>ATT macro fixed to test queue item status before referencing
+undefined "qdate" variable.</P>
+
+<P>Calculation of highest track fixed.</P>
+
+<P>Code added to prevent binary find from entering an infinite loop.
+</P>
+
+<H4>1.1.2.2 FRT</H4>
+
+<P>FRT macro rewritten to use FRT/DBPDT system tables.</P>
+
+<H4>1.1.2.3 LINK</H4>
+
+<P>LINK macro changed to recognize an owner record type being
+encountered and to re-calculate the pointer offset for the set being
+walked.</P>
+
+<H4>1.1.2.4 REC-COUNT</H4>
+
+<P>REC-COUNT macro changed to call SCAN$COUNT subroutine macro to
+display record counts/sizes.</P>
+
+<H4>1.1.2.5 SCAN-ONE</H4>
+
+<P>SCAN-ONE macro fixed to call SCAN$SIZE macro only once.</P>
+
+<P>Error handling cleaned up. If an error is detected, macro
+SCAN$ERRMSG will be attempted. This macro can be user written and
+should reside in the DBE Site Library File.</P>
+
+<P>Average I/O rates were truncated if rates were very large. Macro
+now uses half words instead of quarter words to hold I/O rate
+information.</P>
+
+<P>Dropped # of pages on free page chain from I/O calculations.</P>
+
+<H4>1.1.2.6 SIZE-REPORT</H4>
+
+<P>SIZE-REPORT enhanced to display total tracks used/available for
+all areas reported on.</P>
+
+<H4>1.1.2.7 U$GNLE</H4>
+
+<P>Added code to detect zero value in BDI field, indicating BDI of
+UDS global DBANK is to be used.</P>
+
+<P>Fixed looping problem when TCS GNLE not found.</P>
+
+<H3>1.1.3 New System Macros</H3>
+
+<H4>1.1.3.1 GED</H4>
+
+<P>Produces a formatted dump of the Global Encode Table.</P>
+
+<H4>1.1.3.2 RFT</H4>
+
+<P>Selects the correct FEATURE for the current record and calls the
+FRT macro.</P>
+
+<H4>1.1.3.3 STOC</H4>
+
+<P>Call the TOC macro for the current schema file.</P>
+
+<H3>1.1.4 Sysgen Changes</H3>
+
+<H4>1.1.4.1 DOUBLE</H4>
+
+<P>DOUBLE BUFFERED IO SIZE IS &lt;tracks&gt; TRACKS</P>
+
+<H2>1.2. Level 8R5 - 09 OCT 92</H2>
+
+<H3>1.2.1 Processor Changes</H3>
+
+<H4>1.2.1.1 ABORT Command fixed</H4>
+
+<P>DBE would get an IGDM error when the ABORT command was executed.
+This has been fixed by first clearing the contingency handler.</P>
+
+<H4>1.2.1.2 SCAN Command Errors Enhanced</H4>
+
+<P>The SCAN command error display has been enhanced to display the
+area name being scanned when the first error is detected and after
+all errors for the area have been displayed.</P>
+
+<H4>1.2.1.3 ER PCTWT$ Changed</H4>
+
+<P>The ER PCTWT$ code has been rewritten to allow the ER number to be
+specified at DBE SYSGEN time. This prevents a problem whereby DBE
+could not be genned when a new level of EXEC dropped the equate for
+this ER.</P>
+
+<H3>1.2.2 System Macro Changes</H3>
+
+<H4>1.2.2.1 SCAN-ONE</H4>
+
+<P>Changed dimension size of overflow array to correctly handle DARP
+areas which have pages on the free page chain.</P>
+
+<H4>1.2.2.2 U$APP</H4>
+
+<P>Error trap introduced to detect errors encountered when the UDS
+application group is down.</P>
+
+<H3>1.2.3 Sysgen Changes</H3>
+
+<H4>1.2.3.1 PCT</H4>
+
+<P>PCT WRITE IS ENABLED WITH ER &lt;ER-#&gt;</P>
+
+<P>-or- PCT WRITE IS DISABLED</P>
+
+<H2>1.3. Level 8R6 - 30 APR 93</H2>
+
+<H3>1.3.1 Processor Changes</H3>
+
+<H4>1.3.1.1 HISTOGRAM Command Enhanced</H4>
+
+<P>The HISTOGRAM command was enhanced to provide a cumulative
+percentage column when the "C" option is specified on the command
+call.</P>
+
+<H3>1.3.2 System Macro Changes</H3>
+
+<H4>1.3.2.1 ATT$$22</H4>
+
+<P>Subroutine macro changed to make SFS page number displayed 1
+relative.</P>
+
+<H4>1.3.2.2 ATT$$RTYPE</H4>
+
+<P>Macro changed to use user variable instead of system variable when
+displaying type of system log entry being processed.</P>
+
+<H4>1.3.2.3 ATT</H4>
+
+<P>"DUMP" parameter added to pass options from ATT to ATT-DUMP macro.
+</P>
+
+<P>IO error 5 from read of very small mass-storage Audit Trails has
+been fixed.</P>
+
+<P>Mass-Storage block size is now obtained from audit block header.
+</P>
+
+<H4>1.3.2.4 ATT-DUMP</H4>
+
+<P>Compacted After Looks will now be correctly broken out by the
+ATT-DUMP macro.</P>
+
+<H4>1.3.2.5 PGSLOT</H4>
+
+<P>The PGSLOT macro has been changed to correctly handle overflow
+pages whose prime pages have calc chains.</P>
+
+<H4>1.3.2.6 SCAN$SIZE</H4>
+
+<P>Reduced overflow pages in use by number of pages on Free Page
+Chain.</P>
+
+<H4>1.3.2.7 SCAN-ONE</H4>
+
+<P>Extra page ejects when executing "SCAN-ONE,R" have been
+eliminated.</P>
+
+<H4>1.3.2.8 SIZE-REPORT</H4>
+
+<P>Report headings lined up.</P>
+
+<P>"Q" option added to allow walking/counting of Free Page Chain to
+be skipped.</P>
+
+<H4>1.3.2.9 U$ACT</H4>
+
+<P>U$ACT macro enhanced to support UDS 5R1. If UDS level is less than
+5R1, the U$ACT-4R1 macro will be called.</P>
+
+<H4>1.3.2.10 U$BST</H4>
+
+<P>U$BST macro enhanced to support UDS 5R1. If UDS level is less than
+5R1, the U$BST-4R1 macro will be called.</P>
+
+<H4>1.3.2.11 U$FDT</H4>
+
+<P>U$FDT macro enhanced to support UDS 5R1. If UDS level is less than
+5R1, the U$FDT-4R1 macro will be called.</P>
+
+<H4>1.3.2.12 U$FPTE</H4>
+
+<P>U$FPTE macro enhanced to support UDS 5R1. If UDS level is less
+than 5R1, the U$FPTE-4R1 macro will be called.</P>
+
+<H4>1.3.2.13 U$GNLE</H4>
+
+<P>U$GNLE macro enhanced to support UDS 5R1. If UDS level is less
+than 5R1, the U$GNLE-4R1 macro will be called.</P>
+
+<H4>1.3.2.14 U$INDEX</H4>
+
+<P>U$INDEX macro enhanced to support UDS 5R1. If UDS level is less
+than 5R1, the U$INDEX-4R1 macro will be called.</P>
+
+<H4>1.3.2.15 U$LSS</H4>
+
+<P>U$LSS macro enhanced to support UDS 5R1. If UDS level is less than
+5R1, the U$LSS-4R1 macro will be called.</P>
+
+<H4>1.3.2.16 U$RFL</H4>
+
+<P>U$RFL macro enhanced to support UDS 5R1. If UDS level is less than
+5R1, the U$RFL-4R1 macro will be called.</P>
+
+<H4>1.3.2.17 U$TET</H4>
+
+<P>U$TET macro enhanced to support UDS 5R1. If UDS level is less than
+5R1, the U$TET-4R1 macro will be called.</P>
+
+<H4>1.3.2.18 U$TSTE</H4>
+
+<P>U$TSTE macro enhanced to support UDS 5R1. If UDS level is less
+than 5R1, the U$TSTE-4R1 macro will be called.</P>
+
+<H3>1.3.3 New System Macros</H3>
+
+<H4>1.3.3.1 AREA-PCT</H4>
+
+<P>Produces a report of Area Names/Codes/Sizes sortable by file size.
+</P>
+
+<H4>1.3.3.2 CALCSLOT</H4>
+
+<P>Similar to RECSLOT macro, performs a DUMPREC for the record
+pointed to by a specified calc chain header.</P>
+
+<H4>1.3.3.3 CALCLOTS</H4>
+
+<P>Dumps Calc Chain Header slots at the bottom of a prime page.</P>
+
+<H4>1.3.3.4 U$ACT-4R1</H4>
+
+<P>U$ACT macro for UDS levels 4R1 and lower (called by U$ACT macro).
+</P>
+
+<H4>1.3.3.5 U$BST-4R1</H4>
+
+<P>U$BST macro for UDS levels 4R1 and lower (called by U$BST macro).
+</P>
+
+<H4>1.3.3.6 U$FDT-4R1</H4>
+
+<P>U$FDT macro for UDS levels 4R1 and lower (called by U$FDT macro).
+</P>
+
+<H4>1.3.3.7 U$FPTE-4R1</H4>
+
+<P>U$FPTE macro for UDS levels 4R1 and lower (called by U$FPTE
+macro).</P>
+
+<H4>1.3.3.8 U$GNLE-4R1</H4>
+
+<P>U$GNLE macro for UDS levels 4R1 and lower (called by U$GNLE
+macro).</P>
+
+<H4>1.3.3.9 U$INDEX-4R1</H4>
+
+<P>U$INDEX macro for UDS levels 4R1 and lower (called by U$INDEX
+macro).</P>
+
+<H4>1.3.3.10 U$LSS-4R1</H4>
+
+<P>U$LSS macro for UDS levels 4R1 and lower (called by U$LSS macro).
+</P>
+
+<H4>1.3.3.11 U$RFL-4R1</H4>
+
+<P>U$RFL macro for UDS levels 4R1 and lower (called by U$RFL macro).
+</P>
+
+<H4>1.3.3.12 U$TET-4R1</H4>
+
+<P>U$TET macro for UDS levels 4R1 and lower (called by U$TET macro).
+</P>
+
+<H4>1.3.3.13 U$TSTE-4R1</H4>
+
+<P>U$TSTE macro for UDS levels 4R1 and lower (called by U$TSTE
+macro).</P>
+
+<H3>1.3.4 New System Variables</H3>
+
+<H4>1.3.4.1 UDS$LEVEL</H4>
+
+<P>Contains the UDS level from the ACT for the current UDS
+application.</P>
+
+<H2>1.4. Level 8R7 - 01 JUN 93</H2>
+
+<H3>1.4.1 Processor Changes</H3>
+
+<H4>1.4.1.1 REWRITE Command Enhanced</H4>
+
+<P>The "S" security bit was added to allow users with this bit to
+rewrite the SCRT for the currently based schema without giving the
+"U" permission which allows rewriting of all tables.</P>
+
+<H2>1.5. Level 8R8 - 17 JUN 93</H2>
+
+<H3>1.5.1 Processor Changes</H3>
+
+<H4>1.5.1.1 IGDM When SCANning mixed EXEC/TIP Schemas Fixed</H4>
+
+<P>The IGDM error encountered when scanning an EXEC database area
+using a schema which resides in a TIP file has been corrected.</P>
+
+<H2>1.6. Level 8R9 - 20 AUG 93</H2>
+
+<H3>1.6.1 Processor Changes</H3>
+
+<H4>1.6.1.1 REWRITE Command Enhanced</H4>
+
+<P>The "S" security bit, introduced in DBE 8R7, will now allow users
+to rewrite any schema table but NOT pages or sector formatted disk
+files.</P>
+
+<H4>1.6.1.2 PFFSCH Command</H4>
+
+<P>The PFFSCH command allows the user to retreive or update the
+element table information in the schema file for the currently based
+schema. The user must have the "S" or "U" security attribute set in
+order to rewrite the element table entry.</P>
+
+<H4>1.6.1.3 PFFSUB Command</H4>
+
+<P>The PFFSUB command allows the user to retreive or update the
+element table information in the subschema file for the currently
+based subschema. The user must have the "S" or "U" security attribute
+set in order to rewrite the element table entry.</P>
+
+<H2>1.7. Level 9R1 - 25 APR 94</H2>
+
+<H3>1.7.1 Processor Changes</H3>
+
+<H4>1.7.1.1 Extraneous Blank Lines From TIP Hardcopy Removed</H4>
+
+<P>When sending data via TIP Hardcopy, blank lines would be sent at
+the end of each buffer write if the last line sent was 33 words long.
+This has been corrected.</P>
+
+<H4>1.7.1.2 Scratch Area Common Bank Added</H4>
+
+<P>When DBE initially starts up, a scratch area common bank is
+aquired. This common bank is used by the SCAN function "Q" option to
+create the overflow page chain array.</P>
+
+<H4>1.7.1.3 KEYIN$ Handler Enhanced</H4>
+
+<P>The KEYIN$ interface has been enhanced to provide the current
+macro line number (if any) and statement currently being executed.
+</P>
+
+<H4>1.7.1.4 HISTOGRAM Negative Number Test</H4>
+
+<P>The HISTOGRAM command will now check for negative values. Before
+this check, DBE would get an IGDM error when encountering a negative
+value when attempting the HISTOGRAM.</P>
+
+<H4>1.7.1.5 MACRO Subtype Supported</H4>
+
+<P>A symbolic subtype of MAC is supported by using the "M" option on
+the OPEN SDFO command.</P>
+
+<H4>1.7.1.6 "P" Processor Option Implemented</H4>
+
+<P>The "P" processor option has been implemented to control the PAUSE
+macro when running in demand mode (ON D). If the "P" option is set,
+the PAUSE macro will function as if an "OFF D" was in effect.</P>
+
+<H4>1.7.1.7 RAREA Displays Area Type</H4>
+
+<P>When the RAREA command is executed with no parameters, the RDMS
+area type (DATA,INDEX,DATA/INDEX) will be displayed along with the
+area name.</P>
+
+<H4>1.7.1.8 RSCAN Changes</H4>
+
+<P>When RSCAN encounters errors, the word in question will be
+displayed along with the address on the page.</P>
+
+<P>If the array passed is large enough, the number of records on
+index pages, in addition to the number of records on data pages, will
+be returned.</P>
+
+<P>A condition in RDMS 5R1 causes extraneous words of ASCII zeros to
+be placed at the end of compacted records. The RSCAN function will
+now take these extra words into account when validating RDMS areas.
+</P>
+
+<H4>1.7.1.9 SCAN Command Enhancements</H4>
+
+<P>"I" option added to allow errors detected by SCAN to be ignored.
+Only a generic "SCAN ERRORS ENCOUNTERED IN AREA..." will be
+displayed.</P>
+
+<P>"Q" option added to cause the SCAN command to format the overflow
+pages array in the format of H1=page #,H2=# of overflow pages. This
+significantly reduces the CPU utilized by the SCAN-ONE macro. In
+addition, the "Q" option will pass the total IO count back in system
+variable SCANTOTALIO^.</P>
+
+<H4>1.7.1.10 Contigency Error 024512 Trapped</H4>
+
+<P>Contingency error 024512 (I/O ERROR WHILE CREATING OUTPUT FILE FOR
+BREAKPOINTED OR ALTERNATE PRINT/PUNCH FILE) is now trapped with an
+error message display instead of causing a DBE dump.</P>
+
+<H4>1.7.1.11 Error Printing Of Commands With "C" Or "W" Options Fixed
+</H4>
+
+<P>If DBE detected an error on a command or macro call which had the
+"C" and/or "W" option set, no error would be printed. This has been
+corrected.</P>
+
+<H3>1.7.2 System Macro Changes</H3>
+
+<H4>1.7.2.1 AREA-PCT</H4>
+
+<P>The AREA-PCT will now allow the "S" option to display areas sorted
+by area name, or the "U"/"D" options to sort up or down by area size.
+</P>
+
+<H4>1.7.2.2 AREAS</H4>
+
+<P>PAUSE macro will be called in demand mode after each screen of
+data is presented.</P>
+
+<P>The "S" option will display areas sorted by area name instead of
+TIP code.</P>
+
+<P>The "T" option will display whether TIP areas are simplexed or
+duplexed.</P>
+
+<H4>1.7.2.3 BREAK</H4>
+
+<P>BREAK will now detect when the end of the input variable is
+reached instead of scanning past the end.</P>
+
+<H4>1.7.2.4 EXPAND$REC</H4>
+
+<P>Macro changed to detect when the end of record data is reached.
+</P>
+
+<H4>1.7.2.5 EXPLAIN</H4>
+
+<P>Macro now tries to get "explain" text from DBE Help file , DBE
+Site Library file , User Library file and User Alternate Library
+file. Use of "On R" reverses this search order.</P>
+
+<P>This macro will search for elements with a version name of
+"MANUAL" as well as the standard "T$..../EXPLANATION" and
+"S$...../SYNTAX" elements.</P>
+
+<H4>1.7.2.6 MSG-OUT</H4>
+
+<P>Use of the "S" option on the macro call will cause the SUPS
+command to be executed.</P>
+
+<H4>1.7.2.7 PAUSE</H4>
+
+<P>If the "P" processor option is on, PAUSE will act as if in batch
+mode.</P>
+
+<P>Specifying "PAUSE ON" or "PAUSE OFF" will set/clear the "P"
+processor option.</P>
+
+<H4>1.7.2.8 PRT</H4>
+
+<P>The maximum image size is now truncated to 132 characters to
+prevent WRITE BUFFER OVERFLOW messages when the "S" option (line
+number) is used.</P>
+
+<H4>1.7.2.9 R$$ANAME</H4>
+
+<P>The "T" option will cause the RDMS area type to be printed via a
+call to the AREA$TYPE macro.</P>
+
+<H4>1.7.2.10 R$$FIRSTPAGE</H4>
+
+<P>The RDMS area type will be checked to ensure that it is DATA or
+DATA/INDEX via a call to the R$$VALIDAREA macro.</P>
+
+<H4>1.7.2.11 R$$TABLE-LD</H4>
+
+<P>Records with compressed keys are now handled.</P>
+
+<H4>1.7.2.12 R$BTREE</H4>
+
+<P>The RDMS area type is checked to ensure that it is INDEX or
+DATA/INDEX.</P>
+
+<P>The "Q" option will cause "..." to be printed instaed of data
+pages.</P>
+
+<H4>1.7.2.13 R$COUNT</H4>
+
+<P>The RDMS area type is checked to ensure that it is DATA or
+DATA/INDEX.</P>
+
+<H4>1.7.2.14 R$DATA</H4>
+
+<P>The computation of record header words has been fixed.</P>
+
+<H4>1.7.2.15 R$DUMPREC</H4>
+
+<P>Records with compressed keys are now correctly handled.</P>
+
+<H4>1.7.2.16 R$FETCH</H4>
+
+<P>The start of each data field has been updated with the R$$TABLE-LD
+macro.</P>
+
+<H4>1.7.2.17 R$PGDUMP</H4>
+
+<P>Erroneous words of ASCII zeros (from RDMS 5R1) are skipped.</P>
+
+<H4>1.7.2.18 R$SCAN</H4>
+
+<P>"V" option added to checksum all pages and RAP, RFCP tables.</P>
+
+<P>Both Index and Data record counts are now displayed.</P>
+
+<P>RDMS area type is displayed via the R$$ATYPE macro.</P>
+
+<H4>1.7.2.19 R$UPH</H4>
+
+<P>This macro has been changed to call the RPH macro with the "U"
+option.</P>
+
+<H4>1.7.2.20 RAPTS</H4>
+
+<P>Number of RAP tables is now correctly determined from the File
+Control Page (RFCP).</P>
+
+<H4>1.7.2.21 REC-COUNT</H4>
+
+<P>SCAN function "I" option supported.</P>
+
+<H4>1.7.2.22 REC-DDL</H4>
+
+<P>"W" option added to supress printing of "WITHIN" clauses.</P>
+
+<H4>1.7.2.23 RECORDS</H4>
+
+<P>Display will PAUSE after each screen of data is presented.</P>
+
+<P>"A" option will cause only records which can be stored in the
+current area to be reported.</P>
+
+<H4>1.7.2.24 RFCP</H4>
+
+<P>Enhanced to handle RDMS 5R1 table format.</P>
+
+<H4>1.7.2.25 RPH</H4>
+
+<P>"U" option added to process "pages" in USRBUF system table.</P>
+
+<H4>1.7.2.26 SCAN$FILE</H4>
+
+<P>"F" option causes SDF file OUTFL2 to be created containing record
+counts in SGS format.</P>
+
+<H4>1.7.2.27 SCAN$RCOUNT</H4>
+
+<P>Record counts which can be stored in area but have no occurrences
+are now reported.</P>
+
+<H4>1.7.2.28 SCAN$TOTREC</H4>
+
+<P>Record counts which can be stored in area but have no occurrences
+are now reported.</P>
+
+<H4>1.7.2.29 SCAN-ALL</H4>
+
+<P>Record counts which can be stored in area but have no occurrences
+are now reported.</P>
+
+<P>All options other than "S" are passed to SCAN-ONE.</P>
+
+<H4>1.7.2.30 SCAN-ONE</H4>
+
+<P>"F" option will be passed to SCAN$FILE macro to create a secondary
+SDF file containing records counts in SGS format.</P>
+
+<P>"I" option passed to SCAN function (if supplied) to ignore error
+message printing.</P>
+
+<P>"Q" option will always be used when calling SCAN function. This
+causes the SCAN function to do most of the overflow page
+chaining/total IO processing.</P>
+
+<P>All MSG-OUT macro calls changed to include the "S" option.</P>
+
+<H4>1.7.2.31 SCHEMA-LOAD</H4>
+
+<P>Up to 7 parameters may be passed to SCHEMA-LOAD to be executed.
+</P>
+
+<P>"A" option added to automatically generate an "AREA" command after
+all other commands.</P>
+
+<P>"S" option added to automatically generate an "SS" command after
+all other commands.</P>
+
+<H4>1.7.2.32 SCHEMATA</H4>
+
+<P>Now calls the SCHEMA-LOAD command to base the schema/area.</P>
+
+<H4>1.7.2.33 SETS</H4>
+
+<P>"A" option added to report on only those sets which have an owner
+or member record which can be stored in the current area.</P>
+
+<P>"L" option added to provided long detailed report, including all
+owner/ member record names.</P>
+
+<P>Display will pause after each screen of data is presented.</P>
+
+<H4>1.7.2.34 SYM</H4>
+
+<P>"Max lines allowed to be printed" message is ignored if less than
+max lines are sent.</P>
+
+<H4>1.7.2.35 SYNTAX</H4>
+
+<P>All processing for the SYNTAX macro is now performed by an
+internal call to the EXPLAIN macro.</P>
+
+<H4>1.7.2.36 SYSTEM</H4>
+
+<P>DBE Gen level &amp; date are now displayed.</P>
+
+<H4>1.7.2.37 U$APP</H4>
+
+<P>Site macsub XXXXXX-UFILS will be attempted to load UDS processor
+file names for the application being based (XXXXXX=system
+identifier).</P>
+
+<P>DD$FILE , DDL$FILE , DMU$FILE , IRU$FILE , SUDS$FILE system
+variables are loaded when U$APP is initially called to base an
+application. The variables are also written to the APPSGS system file
+in SGS format.</P>
+
+<H4>1.7.2.38 U$DAL</H4>
+
+<P>Will now correctly handle date/time stamp entries of 0.</P>
+
+<H4>1.7.2.39 U$DOWN-LIST</H4>
+
+<P>PAUSE added before octal dump if "D" option specified.</P>
+
+<H4>1.7.2.40 U$FDT</H4>
+
+<P>Calls U$GNLE-DIM to determine table/array sizes.</P>
+
+<H4>1.7.2.41 U$FPTE</H4>
+
+<P>UDS 5R1 support added.</P>
+
+<P>Calls U$GNLE-DIM to determine table/array sizes.</P>
+
+<H4>1.7.2.42 U$GNLE</H4>
+
+<P>Calls U$GNLE-DIM to determine table/array sizes.</P>
+
+<H4>1.7.2.43 U$USE-COUNT</H4>
+
+<P>"C" option causes all messages to be displayed on system console.
+</P>
+
+<P>"M" option causes messages to be sent every minute waiting for
+schema to be unused. First message is answerable if "C" option is
+specified.</P>
+
+<H3>1.7.3 New System Macros</H3>
+
+<H4>1.7.3.1 AREA-INIT</H4>
+
+<P>Creates an SDF file containing a call to invoke the DMU subschema
+from the correct processor file for the current schema and area
+initialization syntax.</P>
+
+<H4>1.7.3.2 ATT-STATS</H4>
+
+<P>Produces a histogram detailing block sizes for an Audit Trail.
+</P>
+
+<H4>1.7.3.3 ATT-UPDATES</H4>
+
+<P>Produces a histogram detailing number of looks between commits for
+an Audit Trail.</P>
+
+<H4>1.7.3.4 CHECKSUM-SET</H4>
+
+<P>Creates an SDF file containing DD runstream to modify the checksum
+setting for selected areas.</P>
+
+<H4>1.7.3.5 DD-CALL</H4>
+
+<P>Generates a call to the appropriate DD processor for the current
+UDS application and writes to an SDF file.</P>
+
+<H4>1.7.3.6 DMU-INVOKE</H4>
+
+<P>Creates an SDF file containing a call to the correct DMU processor
+for the current schema and an invoke of the DMU subschema.</P>
+
+<H4>1.7.3.7 DOWN-AREAS</H4>
+
+<P>Generates DMU/IRU down area syntax into an SDF file.</P>
+
+<H4>1.7.3.8 ELAPSED-TIME</H4>
+
+<P>Displays the elapsed time in milliseconds between the current time
+and a time (in milliseconds) passed as a parameter.</P>
+
+<H4>1.7.3.9 ILLPR-CLEAR</H4>
+
+<P>Creates an SDF file containing DMU commands to initialize a DARP
+area from the last prime page forward which will clear the "Intial
+Load In Progress" flag.</P>
+
+<H4>1.7.3.10 IODUMP</H4>
+
+<P>Calls the WDDUMP macro for the IOBUF system array.</P>
+
+<H4>1.7.3.11 IRU-CALL</H4>
+
+<P>Generates a call to the appropriate IRU processor for the current
+UDS application and returns in an array.</P>
+
+<H4>1.7.3.12 LEG-COMPARE</H4>
+
+<P>Compare 2 legs of a duplexed TIP file.</P>
+
+<H4>1.7.3.13 LF-ALL</H4>
+
+<P>Performs a TFUR "LF" function for each TIP file registered on the
+system and writes information to an SDF file.</P>
+
+<H4>1.7.3.14 LOOKS-OFF</H4>
+
+<P>Turns selected looks off (Before, After, Quick) for selected areas
+in DBE memory only.</P>
+
+<H4>1.7.3.15 LOOKS-ON</H4>
+
+<P>Turns selected looks on (Before, After, Quick) for selected areas
+in DBE memory only.</P>
+
+<H4>1.7.3.16 PAGE-COPY</H4>
+
+<P>Copies all pages for all areas in a schema which have been updated
+since a specified date to an EXEC file. Optionally copies pages from
+an exec file back into all areas in the schema.</P>
+
+<H4>1.7.3.17 PRIME-PATCH</H4>
+
+<P>Updates the ART (in DBE memory only) with new prime page and calc
+chain information.</P>
+
+<H4>1.7.3.18 SDF-DUMP</H4>
+
+<P>Reads records from an SDF file and dumps via WDDUMP macro.</P>
+
+<H4>1.7.3.19 SDF-POS</H4>
+
+<P>Positions an SDF file forward or to beginning a specified number
+of records.</P>
+
+<H4>1.7.3.20 SUPS</H4>
+
+<P>Displays current SUP values in a format similar to those on a run
+tail sheet.</P>
+
+<H4>1.7.3.21 U$PROCESS-I</H4>
+
+<P>Produces "Process Schema Install" syntax for use by DDS/UREP.</P>
+
+<H4>1.7.3.22 UP-AREAS</H4>
+
+<P>Generates DMU/IRU up area syntax into an SDF file.</P>
+
+<H3>1.7.4 New Subroutine Macros</H3>
+
+<H4>1.7.4.1 AREA-RECORDS</H4>
+
+<P>Returns an array identifying record codes for records which can be
+stored in the current area.</P>
+
+<H4>1.7.4.2 AREA-SETS</H4>
+
+<P>Returns an array identifying set codes for sets whose
+owner/members can be stored in the current area.</P>
+
+<H4>1.7.4.3 DD-CALL-F</H4>
+
+<P>Returns the DD processor call for the current UDS application.
+</P>
+
+<H4>1.7.4.4 DOWN-UP</H4>
+
+<P>Called by DOWN-AREAS and UP-AREAS macros to perform actual down/up
+syntax writing to SDF file.</P>
+
+<H4>1.7.4.5 R$$ATYPE</H4>
+
+<P>Returns the current RDMS area type in an array
+(INDEX,DATA,DATA/INDEX).</P>
+
+<H4>1.7.4.6 R$$VALIDAREA</H4>
+
+<P>Sends an error message if the current RDMS area type is not one of
+the allowable types specified on the macro call.</P>
+
+<H4>1.7.4.7 SETS-L</H4>
+
+<P>Called by SETS macro to perform long set listing.</P>
+
+<H4>1.7.4.8 TDATE4</H4>
+
+<P>Converts a date in TDATE format (MMDDYY/Seconds past midnight) to
+MM DD YY HH MM SS.</P>
+
+<H4>1.7.4.9 TDATE5</H4>
+
+<P>Converts a date in reverse TDATE format (Seconds past
+midnight/MMDDYY) to MM DD YY HH MM SS.</P>
+
+<H4>1.7.4.10 U$GNLE-DIM</H4>
+
+<P>Macsub to return sizes for FDT,FPTE,GNLE tables and file header
+lengths.</P>
+
+<H3>1.7.5 New System Variables</H3>
+
+<H4>1.7.5.1 DBE^LEVEL^</H4>
+
+<P>The GEN level for the version of DBE being executed.</P>
+
+<H4>1.7.5.2 DBE^GEN^</H4>
+
+<P>The GEN sub-level for the version of DBE being executed.</P>
+
+<H4>1.7.5.3 DBE^GENDATE^</H4>
+
+<P>The date the version of DBE being executed was generated.</P>
+
+<H4>1.7.5.4 DD$FILE</H4>
+
+<P>The processor file containing the DD absolute for the current UDS
+application group.</P>
+
+<H4>1.7.5.5 DDL$FILE</H4>
+
+<P>The processor file containing the DDL/SDDL/SRT absolutes for the
+current UDS application group.</P>
+
+<H4>1.7.5.6 DMU$FILE</H4>
+
+<P>The processor file containing the DMU absolute for the current UDS
+application group.</P>
+
+<H4>1.7.5.7 IRU$FILE</H4>
+
+<P>The processor file containing the IRU absolute for the current UDS
+application group.</P>
+
+<H4>1.7.5.8 RBTCNT</H4>
+
+<P>Number of B-Trees defined in the current RDMS area.</P>
+
+<H4>1.7.5.9 SCANTOTALIO^</H4>
+
+<P>Total IO count for an area being SCANned with the "Q" option set.
+</P>
+
+<H4>1.7.5.10 SUDS$FILE</H4>
+
+<P>The processor file containing the SUDS absolute for the current
+UDS application group.</P>
+
+<H4>1.7.5.11 SUPS^</H4>
+
+<P>Current SUP counts.</P>
+
+<H3>1.7.6 New Error Codes</H3>
+
+<H4>1.7.6.1 Error 127</H4>
+
+<P>&lt;127&gt; &amp; IS AN ILLEGAL VALUE FOR HISTOGRAM</P>
+
+<H3>1.7.7 Sysgen Changes</H3>
+
+<H4>1.7.7.1 IACULL</H4>
+
+<P>IACULL OUTPUT FILE IS ''DBE*IACULL''</P>
+
+<P>-or- IACULL FILE CREATION IS DISABLED</P>
+
+<H3>1.7.8 Documentation Changes</H3>
+
+<P>On-Line documentation is now provided for each command , macro,
+and system variable/table via the EXPLAIN macro. The documentation is
+taken directly from the DBE Users Guide and the DBE Programmers
+Reference.</P>
+</BODY>
+</HTML>

@@ -1,0 +1,366 @@
+$SET VERSION 11.006.054                                                 00001000          
+PROCEDURE SENDMAIL (PARM);                                              00002000          
+  ARRAY                                                                 00003000          
+    PARM [*];                                                           00004000          
+BEGIN                                                                   00005000          
+FILE                                                                    00006000          
+  CARD (                                                                00007000          
+    KIND = READER),                                                     00008000          
+  MAIL (                                                                00009000          
+    KIND = DISK,                                                        00010000          
+    DEPENDENTSPECS = TRUE),                                             00011000          
+  REPORT (                                                              00012000          
+    KIND = DISK,                                                        00013000          
+    DEPENDENTSPECS = TRUE),                                             00014000          
+  LINE (                                                                00015000          
+    KIND = PRINTER),                                                    00016000          
+  MAILPORTF (                                                           00017000          
+    KIND = PORT,                                                        00018000          
+    BLOCKEDTIMEOUT = 5,                                                 00019000          
+    BLOCKSTRUCTURE = EXTERNAL,                                          00020000          
+    DIALOGCHECKINTERVAL = 1,                                            00021000          
+    MINRECSIZE = 1,                                                     00022000          
+    MAXRECSIZE = 256,                                                   00023000          
+    FRAMESIZE = 8,                                                      00024000          
+    TRANSLATE = FULLTRANS,                                              00025000          
+    INTMODE = EBCDIC,                                                   00026000          
+    EXTMODE = ASCII,                                                    00027000          
+    MAXSUBFILES = 1,                                                    00028000          
+    MYNAME = ".",                                                       00029000          
+    YOURNAME = "25.",                                                   00030000          
+    YOURIPADDRESS = """"159.142.1.100""".",                             00031000          
+%   YOURIPADDRESS = """"206.29.114.4""".",                              00032000          
+    SERVICE = TCPIPNATIVESERVICE,                                       00033000          
+    YOURHOST = ".");                                                    00034000          
+POINTER                                                                 00035000          
+  P1, P2, P3, P4, P5;                                                   00036000          
+INTEGER                                                                 00037000          
+  I1, I2, I3, I4, I5,                                                   00038000          
+  UUE_RESIDUE,                                                          00040000          
+  UUE_POSITION,                                                         00041000          
+  UUE_COUNT,                                                            00041100          
+  CURRWRD,                                                              00042000          
+  PRTLEN,                                                               00043000          
+  RSLT,                                                                 00044000          
+  EVNT,                                                                 00045000          
+  MYVAL,                                                                00046000          
+  RLEN;                                                                 00047000          
+EBCDIC ARRAY                                                            00048000          
+  UUEREC [0:1023],                                                      00049000          
+  PRTREC [0:1023],                                                      00050000          
+  L [0:255],                                                            00051000          
+  E3 [0:255],                                                           00052000          
+  BUF [0:255];                                                          00053000          
+ARRAY                                                                   00054000          
+  ASCII_TRIPLET [0:0],                                                  00055000          
+  EBCDIC_TRIPLET [0:0],                                                 00056000          
+  UUENCODED_QUARTET [0:0],                                              00057000          
+  PRTBLK [0:299];                                                       00058000          
+TRANSLATETABLE                                                          00059000          
+  SPACETOQUOTE (EBCDIC TO EBCDIC, 48"20" TO 48"60");                    00060000          
+TRUTHSET                                                                00061000          
+  RTF_CONTROL ("{}\"),                                                  00062000          
+  LOWERCASE ("QWERTYUIOPASDFGHJKLZXCVBNM"),                             00063000          
+  SYMBOLS (48"407F" OR "[.<(+!&]$*);^-/|,%_>?`:#@'=~"),                 00064000          
+  PRINTABLE  (ALPHA OR LOWERCASE OR SYMBOLS); % OR RTF_CONTROL          00065000          
+VALUE ARRAY                                                             00065010          
+  DISCLAIMER (                                                          00065015          
+    "If you are a U.S. Government Lotus cc:Mail user, and have   ",     00065020          
+    "Microsoft Word for Windows (version 2.0 or later), you may  ",     00065040          
+    "shift-double-click on the Word icon above to view the       ",     00065060          
+    "attached report in a separate window.  (You may have to     ",     00065080          
+    "adjust your page size or window zoom factor, depending on   ",     00065100          
+    "the requirements of your particular printer or monitor,     ",     00065120          
+    "respectively.)                                              ",     00065140          
+    "============================================================",     00065160          
+    "This message was produced automatically by the Unisys       ",     00065180          
+    "A Series mainframe in ?.            Please, do not attempt  ",     00065200          
+    "to respond directly.  If you received this message in error,",     00065220          
+    "or have any other questions or concerns, please contact the ",     00065240          
+    "individual responsible for your BLDIST report routing, or   ",     00065260          
+    "Kansas City operations.                                     ",     00065280          
+    "============================================================",     00065300          
+    "If you are not a U.S. Government recipient, or are using    ",     00065320          
+    "another mail client, the attached report is UUEncoded ASCII ",     00065340          
+    "data.  Technical specifications and decoding programs are   ",     00065360          
+    "readily available via the World Wide Web.  The content is in",     00065380          
+    "RTF (Rich Text File) format.  Technical specifications are  ",     00065400          
+    "available from Microsoft corporation.             Bucky :)  ");    00065420          
+BOOLEAN                                                                 00066000          
+  B1, B2, B3, B4, B5,                                                   00066100          
+  FIRSTREC;                                                             00067000          
+DEFINE                                                                  00068000          
+  P_CARRAIGEONLY = BOOLEAN (PRTBLK [CURRWRD].[43:1]) #,                 00069000          
+  P_PAGECOMPONLY = BOOLEAN (PRTBLK [CURRWRD].[40:1]) #,                 00070000          
+  P_CHANNEL = REAL (PRTBLK [CURRWRD].[35:4]) #,                         00071000          
+  P_LINEADV = REAL (PRTBLK [CURRWRD].[31:2]) #,                         00072000          
+  P_RESIDUE = REAL (PRTBLK [CURRWRD].[19:3]) #,                         00073000          
+  P_RECLEN = REAL (PRTBLK [CURRWRD].[16:17]) #,                         00074000          
+  D_CHECKSUM = 186 #,                                                   00074100          
+  YALPSID [PS] =                                                        00075000          
+    BEGIN                                                               00076000          
+    REPLACE L BY "      " FOR 22 WORDS;                                 00077000          
+    REPLACE L BY PS;                                                    00078000          
+    WRITE (LINE, 132, L);                                               00079000          
+%   DISPLAY (L);                                                        00080000          
+    END #,                                                              00081000          
+  GOOF [PS] =                                                           00082000          
+    BEGIN                                                               00083000          
+    DISPLAY (PS);                                                       00084000          
+    YALPSID [PS];                                                       00085000          
+    MYSELF.STATUS := VALUE (TERMINATED);                                00086000          
+    END #;                                                              00087000          
+                                                                        00087100          
+PROCEDURE SENDBUF (PLEN);                                               00088000          
+  INTEGER PLEN;                                                         00088100          
+  BEGIN                                                                 00089000          
+  RLEN := PLEN - 1;                                                     00090000          
+  WHILE RLEN GEQ 1 AND BUF [RLEN] EQL " " DO                            00091000          
+    RLEN := * - 1;                                                      00092000          
+  IF RLEN GEQ 1 OR BUF [0] NEQ " " THEN                                 00093000          
+    RLEN := * + 1;                                                      00094000          
+  REPLACE E3 BY BUF FOR RLEN WITH EBCDICTOASCII, 48"0D0A";              00096000          
+  WRITE (MAILPORTF, RLEN + 2, E3);                                      00097000          
+  IF RSLT NEQ 354 OR BUF EQL "." FOR MAX (RLEN, 1) THEN                 00098000          
+    RSLT := 0;                                                          00099000          
+  END SENDBUF;                                                          00101000          
+                                                                        00101020          
+PROCEDURE UUENCODE;                                                     00101040          
+  BEGIN                                                                 00101060          
+  REPLACE ASCII_TRIPLET BY EBCDIC_TRIPLET FOR 3 WITH EBCDICTOASCII;     00101100          
+  UUENCODED_QUARTET [0].[47:8] := 32 + ASCII_TRIPLET [0].[47:6];        00101200          
+  UUENCODED_QUARTET [0].[39:8] := 32 + ASCII_TRIPLET [0].[41:6];        00101300          
+  UUENCODED_QUARTET [0].[31:8] := 32 + ASCII_TRIPLET [0].[35:6];        00101400          
+  UUENCODED_QUARTET [0].[23:8] := 32 + ASCII_TRIPLET [0].[29:6];        00101500          
+  REPLACE UUEREC [UUE_POSITION] BY UUENCODED_QUARTET FOR 4 WITH         00101600          
+      SPACETOQUOTE;                                                     00101700          
+  END UUENCODE;                                                         00101800          
+                                                                        00102000          
+PROCEDURE SENDBINBUF (PLEN);                                            00103000          
+  INTEGER PLEN;                                                         00104000          
+  BEGIN                                                                 00105000          
+  RLEN := 0;                                                            00106000          
+  WHILE RLEN LSS PLEN DO                                                00107000          
+    BEGIN                                                               00108000          
+    REPLACE POINTER (EBCDIC_TRIPLET [0]) + UUE_RESIDUE BY PRTREC        00109000          
+        [RLEN] FOR 1;                                                   00110000          
+    RLEN := * + 1;                                                      00111000          
+    IF UUE_RESIDUE := * + 1 GTR 2 THEN                                  00112000          
+      BEGIN                                                             00113000          
+      UUE_RESIDUE := 0;                                                 00114000          
+      UUENCODE;                                                         00114100          
+      UUE_COUNT := * + 3;                                               00121100          
+      IF UUE_POSITION := * + 4 GEQ 60 THEN                              00122000          
+        BEGIN                                                           00123000          
+        REPLACE UUEREC [UUE_POSITION] BY 48"0D0A";                      00124000          
+        UUE_POSITION := * + 2;                                          00125000          
+        WRITE (MAILPORTF, UUE_POSITION, UUEREC);                        00126000          
+        UUE_POSITION := 1;                                              00127000          
+        UUE_COUNT := 0;                                                 00127100          
+        END;                                                            00128000          
+      END;                                                              00129000          
+    END;                                                                00129100          
+  END SENDBINBUF;                                                       00130000          
+                                                                        00131000          
+PROCEDURE SENDREPORT;                                                   00132000          
+  BEGIN                                                                 00133000          
+  UUE_RESIDUE := 0;                                                     00134000          
+  UUE_COUNT := 0;                                                       00134100          
+  REPLACE UUEREC BY 48"4D" FOR 1;                                       00135000          
+  UUE_POSITION := 1;                                                    00136000          
+  REPLACE P1:BUF BY "begin 644 report.rtf";                             00137000          
+  SENDBUF (OFFSET (P1));                                                00138000          
+  REPLACE P1:PRTREC BY "{\rtf\ansi\deff0{\fonttbl{\f0\fmodern ",        00139000          
+                       "Courier New;}}\lndscpsxn\pgwsxn15840",          00140000          
+                       "\pghsxn12240\margrsxn1440\marglsxn1440",        00141000          
+                       "\margtsxn720\margbsxn720",                      00141100          
+                       "\b\fs16";                                       00142000          
+  SENDBINBUF (OFFSET (P1));                                             00143000          
+                                                                        00144000          
+  WHILE NOT (READ (REPORT, 300, PRTBLK)) DO                             00145000          
+    BEGIN                                                               00146000          
+    CURRWRD := 0;                                                       00147000          
+    IF FIRSTREC THEN                                                    00148000          
+      BEGIN                                                             00149000          
+      CURRWRD := P_RECLEN + 1;                                          00150000          
+      FIRSTREC := FALSE;                                                00151000          
+      END;                                                              00152000          
+    WHILE P_RECLEN > 0 DO                                               00153000          
+      BEGIN                                                             00154000          
+      REPLACE PRTREC BY " " FOR 256;                                    00155000          
+      P1 := PRTREC;                                                     00156000          
+      IF NOT P_CARRAIGEONLY AND NOT P_PAGECOMPONLY THEN                 00157000          
+        BEGIN                                                           00158000          
+        P2 := PRTBLK [CURRWRD + 1];                                     00159000          
+        PRTLEN := (P_RECLEN * 6) + P_RESIDUE;                           00160000          
+        WHILE PRTLEN GTR 0 DO                                           00161000          
+          BEGIN                                                         00162000          
+          REPLACE P1:P1 BY P2:P2 FOR PRTLEN:PRTLEN WHILE IN PRINTABLE;  00163000          
+          IF PRTLEN GTR 0 THEN                                          00164000          
+            IF P2 = "\" OR P2 = "{" OR P2 = "}" THEN                    00165000          
+              BEGIN                                                     00166000          
+              REPLACE P1:P1 BY "\", P2:P2 FOR 1;                        00167000          
+              PRTLEN := * - 1;                                          00168000          
+              END                                                       00169000          
+            ELSE                                                        00170000          
+              BEGIN                                                     00171000          
+              REPLACE P1:P1 BY "?";                                     00172000          
+              P2 := * + 1;                                              00173000          
+              PRTLEN := * - 1;                                          00174000          
+              END;                                                      00175000          
+          END;                                                          00176000          
+        END;                                                            00177000          
+      IF NOT P_PAGECOMPONLY THEN                                        00178000          
+        BEGIN                                                           00179000          
+        IF P_CHANNEL > 0 THEN                                           00180000          
+          REPLACE P1:P1 BY "\page "                                     00181000          
+        ELSE                                                            00182000          
+          BEGIN                                                         00183000          
+          I2 := P_LINEADV;                                              00184000          
+          WHILE I2 := * - 1 GEQ 0 DO                                    00185000          
+            REPLACE P1:P1 BY "\par ";                                   00186000          
+          END;                                                          00187000          
+        END;                                                            00188000          
+      PRTLEN := OFFSET (P1);                                            00189000          
+      CURRWRD := * + P_RECLEN + 1 + SIGN (P_RESIDUE);                   00190000          
+      IF PRTLEN GTR 0 THEN                                              00191000          
+        SENDBINBUF (PRTLEN);                                            00192000          
+      END;                                                              00193000          
+    END;                                                                00194000          
+  REPLACE PRTREC BY "}";                                                00195000          
+  SENDBINBUF (1);                                                       00196000          
+  IF UUE_RESIDUE GTR 0 THEN                                             00196010          
+    BEGIN                                                               00196020          
+    UUE_COUNT := * + UUE_RESIDUE;                                       00196030          
+    UUENCODE;                                                           00196040          
+    UUE_POSITION := * + 4;                                              00196050          
+    END;                                                                00196060          
+  IF UUE_COUNT GTR 0 THEN                                               00196070          
+    BEGIN                                                               00196090          
+    UUENCODED_QUARTET [0] := 32 + UUE_COUNT;                            00196095          
+    REPLACE UUEREC [0] BY POINTER (UUENCODED_QUARTET [0]) + 5 FOR 1;    00196100          
+    REPLACE UUEREC [UUE_POSITION] BY 48"0D0A";                          00196200          
+    UUE_POSITION := * + 2;                                              00196300          
+    WRITE (MAILPORTF, UUE_POSITION, UUEREC);                            00196400          
+    END;                                                                00196450          
+  REPLACE UUEREC BY 48"600D0A";                                         00196500          
+  WRITE (MAILPORTF, 3, UUEREC);                                         00196600          
+  REPLACE BUF BY "end";                                                 00196700          
+  SENDBUF (3);                                                          00196800          
+  I2 := -1;                                                             00196810          
+  I3 := 0;                                                              00196820          
+  WHILE I2 := * + 1 LSS 21 DO                                           00196830          
+    BEGIN                                                               00196840          
+    REPLACE BUF BY POINTER (DISCLAIMER [I2 * 10]) FOR 60;               00196860          
+    I3 := (I3 + DISCLAIMER [I2 * 10].[7:8]) MOD 256;                    00196870          
+    SENDBUF (60);                                                       00196880          
+    END;                                                                00196890          
+  IF I3 NEQ D_CHECKSUM THEN %SOURCE CODE CORRUPTED BY SUBDURAL ZERO.    00196900          
+    MYSELF.STATUS := VALUE (SUSPENDED);                                 00196950          
+                                                                        00197000          
+END SENDREPORT;                                                         00198000          
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%00199000          
+                                                                        00200000          
+DISPLAY ("MSG00:SMTP ROUTER VERSION : " CAT                             00201000          
+  STRING (COMPILETIME (20), *) CAT "." CAT                              00202000          
+  STRING (COMPILETIME (21), *) CAT "." CAT                              00203000          
+  STRING (COMPILETIME (22), *));                                        00204000          
+MYSELF.DISPLAYONLYTOMCS := TRUE;                                        00205000          
+EVNT := 3;                                                              00206000          
+                                                                        00207000          
+WHILE MYVAL = 0 DO                                                      00208000          
+  BEGIN                                                                 00209000          
+  CASE EVNT OF BEGIN                                                    00210000          
+    1:IF RSLT GTR 0 THEN % A GOOD RESULT HAS BEEN RECEIVED              00211000          
+        BEGIN                                                           00212000          
+        READ (CARD, 72, BUF);                                           00213000          
+        IF BUF = "<MAIL>" THEN                                          00214000          
+          BEGIN                                                         00214100          
+          WHILE NOT READ (MAIL, 255, BUF) DO                            00215000          
+            SENDBUF (MAIL.MAXRECSIZE);                                  00216000          
+          WAIT ((5));                                                   00216100          
+          END                                                           00216200          
+        ELSE IF BUF = "<REPORT>" THEN                                   00217000          
+          BEGIN                                                         00217100          
+          SENDREPORT;                                                   00218000          
+          WAIT ((5));                                                   00218100          
+          END                                                           00218200          
+        ELSE IF BUF = "DATA" AND BUF [4] = " " FOR 68 THEN              00219000          
+          BEGIN                                                         00220000          
+          SENDBUF (4);                                                  00221000          
+          REPLACE BUF BY "Subject:", PARM FOR 60 UNTIL = 48"00";        00222000          
+          SENDBUF (72);                                                 00223000          
+          REPLACE BUF BY " ";                                           00224000          
+          SENDBUF (1);                                                  00225000          
+          END                                                           00226000          
+        ELSE IF BUF NEQ "%" THEN                                        00227000          
+          SENDBUF (72);                                                 00228000          
+        END;                                                            00229000          
+    2:READ (MAILPORTF, 256, BUF);                                       00230000          
+      REPLACE E3 BY BUF FOR 256 WITH ASCIITOEBCDIC;                     00231000          
+      REPLACE P1:BUF BY E3 FOR 156 UNTIL = 48"0D";                      00232000          
+      YALPSID [BUF FOR OFFSET (P1)];                                    00233000          
+      RSLT := INTEGER (BUF, 3);                                         00234000          
+      CASE RSLT OF BEGIN                                                00235000          
+        220: YALPSID ["MSG01:RESPONSE:PORT OPEN TO HOST"];              00236000          
+        221: YALPSID ["MSG02:RESPONSE:CLOSING CONNECTION"];             00237000          
+        250: YALPSID ["MSG03:RESPONSE:POSITIVE RESPONSE"];              00238000          
+        354: YALPSID ["MSG04:RESPONSE:READY FOR MESSAGE DATA"];         00239000          
+        ELSE:GOOF ("MSG10:RESPONSE:ERROR = :" CAT STRING (RSLT, *));    00240000          
+        END;                                                            00241000          
+    3:CASE MAILPORTF.FILESTATE OF BEGIN                                 00242000          
+        VALUE (CLOSED):                                                 00243000          
+          OPEN (MAILPORTF, DONTWAIT, CONNECTTIMELIMIT = 0);             00244000          
+          YALPSID ["MSG05:CONNECTING"];                                 00245000          
+        VALUE (OPENED):                                                 00246000          
+          REPLACE E3 BY MAILPORTF.YOURIPADDRESS, 48"00";                00247000          
+          YALPSID ["MSG06:CONNECTED TO SMTP SERVER "                    00248000          
+              CAT STRING (E3, 30)];                                     00249000          
+        VALUE (DENIED):                                                 00250000          
+          GOOF ("MSG11:CONNECTION DENIED, TRY LATER");                  00251000          
+        VALUE (DENIEDILLEGALUSE):                                       00252000          
+          GOOF ("MSG12:SERVER NOT AVAILABLE");                          00253000          
+        VALUE (POSTPONED):                                              00254000          
+          YALPSID ["MSG07:CONNECTION POSTPONED, WAITING"];              00255000          
+        VALUE (AWAITINGHOST):                                           00256000          
+          YALPSID ["MSG08:WAITING FOR HOST"];                           00257000          
+        VALUE (AWAITINGOFFER):                                          00258000          
+          GOOF ("MSG13:A FOOL CHANGED THIS PROGRAM");                   00259000          
+        VALUE (BLOCKED):                                                00260000          
+          YALPSID ["MSG09:SUBPORT BLOCKED, WAITING FOR BRAN"];          00261000          
+        VALUE (CLOSECOLLRESPONSEPLEASE):                                00262000          
+          GOOF ("MSG14:CLOSE COLLISION, PROBABLY OK");                  00263000          
+        VALUE (CLOSEDINPUTPENDING):                                     00264000          
+          GOOF ("MSG15:SERVER DISCONNECTED US");                        00265000          
+        VALUE (CLOSEPENDING):                                           00266000          
+          YALPSID ["MSG0A:DISCONNECTING..."];                           00267000          
+        VALUE (CLOSEREQUESTED):                                         00268000          
+          YALPSID ["MSG0B:CLOSING"];                                    00269000          
+        VALUE (CLOSEREQUESTRECEIVED):                                   00270000          
+          CLOSE (MAILPORTF, CLOSEDISPOSITION = ORDERLY);                00271000          
+          MYVAL := -1;                                                  00272000          
+        VALUE (CLOSERESPONSEPLEASE):                                    00273000          
+          YALPSID ["MSG0C:CLOSERESPONSEPLEASE"];                        00274000          
+        VALUE (DEACTIVATED):                                            00275000          
+          YALPSID ["MSG0D:DEACTIVATED BY REMOTE"];                      00276000          
+        VALUE (DEACTIVATIONPENDING):                                    00277000          
+          YALPSID ["MSG0E:DEACTIVATIONPENDING"];                        00278000          
+        VALUE (OFFERED):                                                00279000          
+          YALPSID ["MSG0F:LOOKING FOR SERVER..."];                      00280000          
+        VALUE (OPENRESPONSEPLEASE):                                     00281000          
+          GOOF ("MSG16:A FOOL CHANGED THIS PROGRAM");                   00282000          
+        VALUE (SHUTTINGDOWN):                                           00283000          
+          GOOF ("MSG17:TCP/IP WAS SHUT DOWN");                          00284000          
+        VALUE (URGENTDATAWAITING):                                      00285000          
+          GOOF ("MSG18:URGENTDATAWAITING");                             00286000          
+        ELSE:                                                           00287000          
+          GOOF ("MSG19:UNKNOW FILESTATE:" CAT STRING                    00288000          
+              (MAILPORTF.FILESTATE, *));                                00289000          
+        END;                                                            00290000          
+    4:MYVAL := MYSELF.TASKVALUE;                                        00291000          
+    END;                                                                00292000          
+  EVNT := WAIT ((.1), MAILPORTF.INPUTEVENT, MAILPORTF.CHANGEEVENT,      00293000          
+      MYSELF.EXCEPTIONEVENT);                                           00294000          
+  END;                                                                  00295000          
+YALPSID ["MSGFF:TERMINATING NORMALLY"];                                 00296000          
+END.                                                                    00297000          

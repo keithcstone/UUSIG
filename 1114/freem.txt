@@ -1,0 +1,436 @@
+@BRKPT PRINT$/JJJJ 
+@SETC,N
+@HDG **UNCLASSIFIED**   FREEM  
+@MASM,IS  FREEM,FREEM  
+$(1)      $include  'maxr$'           .
+          $include  'eru$'            .
+          $include  'sys$def'         .
+          elt$ 
+.  
+.                   *** FREEM ***  
+.  
+. FREEM is a program designed to selectively free large numbers
+. of files from a job and/or terminate a demand job.
+.  
+.      @FREEM(,options)  (spec1)
+.  
+.         options: 
+.                   none - free all but system and CTS/ED files
+.                   a - free all files, including CTS/ED work-files
+.                   e - also free CTS/ED workfiles (only keep system files)
+.                   s - free only SYS$LIB$ (or <spec1>) qualified files
+.                   l - list files free'd  
+.                   m - free only mass storage files
+.                   t - submit @@term at conclusion of processing  
+.                   o - terminate and reopen to <spec1> DEVNET host
+.  
+.      spec1 - CMS session (ex. DEM4A )
+.  
+pf        $form     12,6,18           .
+optall    $equ      1*/('z'-'a')      . free all files, including CTS/ED
+optctsed  $equ      1*/('z'-'e')      . also free CTS/ED workfiles 
+optlist   $equ      1*/('z'-'l')      . list files being free'd
+optmass   $equ      1*/('z'-'m')      . only free mass storage files
+optterm   $equ      1*/('z'-'t')      . terminate run  
+optsys    $equ      1*/('z'-'s')      . SYS$LIB$ frees 
+optopen   $equ      1*/('z'-'o')      . term and reopen to <spec1> 
+tapend    $equf     eqpnam,,t3        .
+msend     $equf     eqpnam+1,,t3      .
+pctnam    $equf     0241,x4           .
+nnames    $equf     0,x5,s3           .
+curfil    $equf     0,x6              .
+uselnk    $equf     2,x6,t1           .
+extlnk    $equf     2,x6,h2           .
+pcteqp    $equf     1,x7,t1           .
+pcfqin    $equf     1,x7,h2           .
+pcfafc    $equf     4,x7,t3           .
+pcfrfc    $equf     4,x7,s4           .
+pcfidl    $equf     6,x7              .
+.                                     .
+freem*                                .
+          l         r5,a5             . hold xqt options
+          i$d       idpac             . display our name
+          tz,u      1                 . nop return 
+          l         a5,r5             . reload xqt options 
+          top       a5,(1*/('Z'-'H')) . want options listed?
+          j         unopt             . no 
+          l         x8,(1,pr_acw)     . yes, point to first opt acw
+          l,u       r1,8              . opts to list
+opt_loop                              .
+          l         a0,0,*x8          . get print$ acw 
+          er        print$            .
+          jgd       r1,opt_loop       .
+unopt                                 .
+          l         a0,(3,brkpt)      .
+          tep       a5,(1*/34)        . in breakpoint now? 
+          er        csf$              . yes, brkpt because we'll free brkpt
+                                      . file and will term properly
+          lxi,u     x11,pctbd$        . pct data bank  
+          ldj       x11,$+1           . base our pct
+          l,u       x4,rpcta$         . pct rel addr
+newmct                                .
+          l         a0,(1,mctnew)     .
+          er        mct$              . read eqp name table
+findtags                              .
+          l         a4,mctbuf,,t2     . load length of range tbl
+          ssl       a4,1              . get nbr entries
+          l,u       r2,eqplen-1       . nbr tags to look up
+          l         a2,(1,0)          . index for equip table  
+eqpnxt                                .
+          l         r1,a4             . load nbr entries
+          l         a0,(2,mctbuf+1-2) . pointer to name tbl
+          l         a1,eqpnam,a2      . load next name 
+          se        a1,2,*a0          . look for it
+          er        err$              . huh?
+          l         a1,1,a0           . load equipment range
+          a,u       a1,1              . fix for tests  
+          s         a1,eqpnam,*a2     . set range limits
+          jgd       r2,eqpnxt         . more to lookup?
+          l         r5,a5             .
+          i$nfor    'RINF$',28,buf    . read infor table
+          j         noinfo            .
+          i$nfor    'SELT$',0001      . ELT$ table 
+          j         noinfo            .
+          dl        a0,ename          .
+          ds        a0,sys            .
+noinfo                                .
+          l         a5,r5             .
+chkt                                  .
+          sa        a5,a6             . save for ldsl  
+          top       a5,(optopen)      . reopen?
+          tep       a5,(optterm)      . terminate??
+          or        a5,(optall)       . yes, set all option
+          ldsl      a5,36             . shift back to a5
+          l         a0,('  cts$')     .
+          l         a1,0,x4           .
+          s         a1,c$r            . save cts  runnid file  
+          ldsc      a0,12             .
+          ds        a0,c$f            . now has cts$runnid 
+          l         a1,0,x4           . get runid again
+          l         a0,(' ed$tc')     .
+          ldsc      a0,6              .
+          ds        a0,e$f            . set editor filename
+rescan                                .
+          l,u       x5,pctnam         . point to 1st name block
+nextblk.                              .
+          l         r3,nnames         . get name count 
+          jgd       r3,$+1            .
+          l,u       x6,1,x5           . point to 1st entry in block
+morelp                                .
+          tz,s1     curfil            . is it funny name?  
+          tnz,s3    curfil            . or print$/punch$ ? 
+          j         dontfre           . can't touch it!
+          dl        a0,curfil         .
+          l         a5,r5             . restore options
+          tep       a5,(optall)       . kill everbody??
+          j         dofre             . guess so!  
+          l         a2,(2,flst)       .
+          tep       a5,(optsys)       . s option?  
+          l         a2,(2,flst+2)     . yes, ignore SYS$LIB$*LIB$ (can free it!)
+          l,u       a3,flstl-1        .
+          top       a5,(optctsed)     . kill cts files?
+          l,u       a3,cflstl-1       . no, get longer save list
+          tep       a5,(optsys)       . s option
+          an,u      a3,1              . yes,-1 
+          dte       a0,0,*a2          .
+          jgd       a3,$-1            .
+          jn        a3,freeit         .
+          tnz       uselnk            . usename?
+          j         dontfre           . no, save it
+          l,u       a3,0,a2           . get pointer to find
+          te,u      a3,u$c+2          . save cts$file ?
+          tne,u     a3,u$e+2          . or ed$tc ? 
+          j         dontfre           . yes, save it
+          tne,u     a3,u$t            . catalogued diag$?  
+          j         savdiag           . yes, save item 
+          tne,u     a3,u$t+2          . catalogued tpf$ ?  
+          j         savitem           . yes, save the item address 
+          tne,u     a3,u$p+2          . @use'd psf$ ?  
+          j         dontfre           . yes, we'll get it later
+freea                                 .
+          e$dit     epkt              .
+          e$msg     freeamsg          .
+          e$fd2     curfil            .
+          j         freeae            .
+freeit                                .
+          tep       a5,(optsys)       . s option?  
+          j         sopt              . yep
+dofre               .                 .
+          l         x7,extlnk         .
+          a,u       x7,0,x5           . add in address of block
+          l,u       a0,0,x7           . get item address
+          tnz       pcteqp            . dummy item?
+          j         dontfre           . yes, keep it (it's really not asg'ed)  
+          tz        uselnk            . is it a use name?  
+          j         freea             . yes, @free,a it
+          te,h1     a0,i$t            . is this catalogued diag$?  
+          tne,h2    a0,i$t            . is this catalogued tpf$ ?  
+          j         dontfre           . yes, don't trash it
+          e$dit     epkt              .
+          e$msg     freemsg           .
+          l         a4,pcteqp         . get equipment type 
+          tep       a5,(optmass)      . only mass storage??
+          tg        a4,tapend         . and is this tape?  
+          j         $+2               . no, or no  
+          j         dontfre           . yes, save for him  
+          l         x8,pcfqin         .
+          a,u       x8,0,x7           .
+          l         a9,('SYS$WS')     . SYSTEM FILE?
+          tne       a9,1,x8           .
+          j         dontfre           . yes, skip this one 
+          e$fd2     1,x8              .
+          e$char    '*'               .
+          e$fd2     curfil            .
+          tg        a4,msend          . does this have a cycle ?
+          j         freeae            . no, probably a comline 
+          e$char    '('               .
+          l         a4,pcfafc         . get abs cycle  
+          tn        pcfidl            . temporary? 
+          j         notemp            . no 
+          jnz       a4,notemp         . or abs cyc NE 0
+          l         a3,pcfrfc         . rel cycle for temporary
+          and,u     a3,037            . remove sign
+          l,u       a0,'-'            .
+          top,u     a3,040            . neg cycle? 
+          l,u       a0,'+'            . no, +1 
+          e$char                      . edit in sign
+notemp                                .
+          e$decv    a4                .
+          e$char    ')'               .
+          e$char    '.'               .
+          e$char    ' '               .
+          e$char    ' '               .
+freeae                                .
+          e$coln                      . get col number 
+          dsl       a0,36             .
+          a,u       a1,5              .
+          di,u      a0,6              . nbr words rounded up
+          lssl      a0,18             . word count to h1
+          a         a0,(0100,ebuf)    . for print$ 
+          tep       a5,(optlist)      . list option?
+          er        print$            . yes, print what is being done  
+          l,u       a0,ebuf           .
+          er        csf$              .
+          jp        a0,rescan         . restart from top if o.k.
+          L$SNAP    'FAC',2,12,EBUF   .
+          L         A0,(0114,EBUF)    .
+          ER        PRINT$            .
+          er        err$              .
+savdiag                               .
+          l         x7,extlnk         .
+          a,u       x7,0,x5           .
+          s,h1      x7,i$t            .
+          j dontfre                   .
+savitem                               .
+          l         x7,extlnk         . get item address
+          a,u       x7,0,x5           . make it pct absolute
+          s,h2      x7,i$t            . save tpf$ item address 
+dontfre                               .
+          a,u       x6,3              .
+          jgd       r3,morelp         . go back for more
+          tnz,h2    0,x5              . any more blocks ?  
+          j         endnames          . nope
+          a,h2      x5,0,x5           . point to next block
+          j         nextblk           . and go to it
+sopt                                  .
+          l         x7,extlnk         .
+          a,u       x7,0,x5           .
+          l         a4,pcteqp         .
+          jnz       a4,inmfd          .
+          dl        a0,2,x7           .
+          dte       a0,sys            . SYS$LIB$
+          j         dontfre           .
+          j         dofre             . yep
+inmfd                                 .
+          l         a8,pcfqin         .
+          a,u       x8,0,x7           .
+          dl        a0,1,x8           .
+          dte       a0,sys            . SYS$LIB$
+          j         dontfre           .
+          j         dofre             .
+endnames                              .
+          top       a5,(optopen)      . reopen?
+          tep       a5,(optterm)      . term option?
+          j         fincod            . yes, do the @@term 
+          l         a0,(0103,endo)    .
+          er        aprint$           .
+          er        exit$             .
+fincod                                .
+          la        a0,(2,('d,@@esc     ')) . prtcn$ info  
+          er        prtcn$            . send @@
+          tep       a5,(optopen)      . reopen?
+          j         reopen            . yes, do it 
+          l         a0,(widel,widen)  .
+          er        prtcn$            .
+          la        a0,(2,infop)      . info$ pkt  
+          er        info$             . get siteid 
+          j         stlpe             .
+stlp      sz        a0                . clear a0
+          ldsl      a0,6              . shift in a char
+          tne,u     a0,05             . space? 
+          j         stlpe             . yes, must be done  
+          tle,u     a0,'0'            . numbers already to go  
+          aa,u      a0,0101-6         . convert to ascii
+          sa        a0,,*a3           . store char 
+          jnz       a1,stlp           . loop till done 
+stlpe                                 .
+          la        a0,(lout,out)     . ascii print image  
+          tep       a5,(optopen)      . reopen 
+          l         a0,(lopn,opnout)  . yes, get proper image  
+          er        aprint$           . print in ascii 
+          la        a0,(lout2,out2)   .
+          top       a5,(optopen)      . reopen 
+          er        aprint$           .
+          la        a0,(2,('d,@@term    ')) . prtcn$ info  
+          top       a5,(optopen)      . if reopen, don't bother
+          er        prtcn$            . submit @@  
+          er        exit$             . end
+reopen                                .
+          l         a1,sys            . new openid 
+          l         a3,(1,opnopn)     . and place to put it
+          j         stlp              . away we go 
+eqpnam                                .
+          'tapbeg'                    .
+          'msbeg '                    .
+eqplen    $equ      $-eqpnam          .
+sys       'SYS$LIB$    '              .
+flst      'LIB$        '              .
+          'diag$       '              .
+u$t       'tpf$        '              .
+u$p       'psf$        '              .
+          'dloc$       '              .
+flstl     $equ      ($-flst)/2        .
+c$r       'runid       '              .
+u$c       'cts$file    '              .
+c$f       'cts$runid   '              .
+u$e       'ed$tc       '              . dumb editor usename!
+e$f       'ed$tcrunid  '              .
+cflstl    $equ      ($-flst)/2        .
+i$t       $res      1                 .
+epkt      e$pkt     12,ebuf           .
+ebuf      $res      12                .
+freeamsg  '@free,a   &'               .
+freemsg   '@free     &'               .
+esc       $equ      0033              . esc
+bm        $equ      0115              . big m  
+sa        $equ      0141              . small a
+se        $equ      0145              . small e
+si        $equ      017               . shift in
+so        $equ      016               . shift out  
+vt        $equ      013               . vertical tabulation
+home      $equ      esc*/9+se         . home function  
+ers       $equ      esc*/9+bm         . erase display  
+ht        $equ      011               . horizontal tab 
+cret      $equ      015               . carriage return
+null      $equ      0                 . null timing pads
+infop     +         sitid$,0,0        . info$ pkt  
+          +         1,site            . buffer address 
+site      +         0                 . siteid 
+          $ascii
+endo      'End Freem.' 
+idpac     i$dpkt    'idline' 'File Freer 2R1' 021 .
+out       +         home,ers          . home and erase screen  
+          +         esc,013,047,0100  . address middle of screen
+          +         null,017,null,null.
+          'Scope Available'           .
+          +         home,null         .
+          +         037,040,040,076   . us, row 1, col 1, lo intensity 
+          +         060,036,null,null . any input, soe 
+          '$$OPEN DEM1 '              . openid1
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OPEN MCB1 '              . openid2
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OPEN DEM4 '              . openid3
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OPEN MCB4 '              . openid4
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OPEN DEMA '              . openid5
+          +         null,esc,ht,040   . tab
+          +         esc,vt,041,040    . row 2, col 1
+          +         si,null,null,null .
+          +         036,null          . soe
+          '$$OPEN DEMB '              . openid6
+          +         null,esc,ht,040   . tab     tab
+          +         036,null          . soe
+          '$$OPEN DEM5 '              . openid7
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OPEN DEM6 '              . openid8
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OP'                      . openid?
+          +         'EN',esc*/9+ht    . tab
+          +         '??',cret*/9+cret .
+lout      $equ      $-out             .
+out2      .                           .
+          +         null,esc,ht,040   . tab
+          +         esc,vt,042,040    . row 3, col 1
+          +         si,null,null,null .
+          +         036,null          . soe
+          '$$OPEN DEME '              . openid6
+          +         null,esc,ht,040   . tab     tab
+          +         036,null          . soe
+          '$$OPEN DEMF '              . openid7
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OPEN MCBA '              . openid8
+          +         null,esc,ht,040   . tab
+          +         036,null          . soe
+          '$$OPEN MCBB '              . openid9
+          +         null,esc,ht,040   .
+          +         036,null          .
+lout2     $equ      $-out2            . length in words
+opnout    .                           .
+          +         home,null         . homeit 
+          +         ers,null          . zappit 
+          $repeat   4                 .
+          +         null,null         .
+          $endr                       .
+          '$$OPEN'                    .
+opnopn    $res      6                 . new openid slot
+          +         esc,021,null,null . esc, transmit  
+lopn      $equ      $-opnout          .
+          $fdata                      .
+widen     .                           .
+          'W,500  '                   .
+widel     $equ      $-widen           .
+mctnew    +         18,mctbuf         . retrieve just eqp name tbl 
+          +         200,0             .
+          +         0                 .
+          +         0                 .
+mctbuf    $res      200               .
+brkpt     '@BRKPT PRINT$ . '          .
+pr_acw                                .
+          pf        1,msgl,msg1       .
+          pf        1,msgl,msg2       .
+          pf        1,msgl,msg3       .
+          pf        1,msgl,msg4       .
+          pf        1,msgl,msg5       .
+          pf        1,msgl,msg6       .
+          pf        1,msgl,msg7       .
+          pf        1,msgl,msg8       .
+          pf        1,msgl,msg9       .
+msg1      'none - free all but system and CTS/ED files             '
+msg2      'a - free all files, including CTS/ED work-files         '
+msg3      'e - also free CTS/ED workfiles (only keep system files) '
+msg4      's - free only SYS$LIB$ (or <spec1>) qualified files     '
+msg5      'l - list files free'd                                   '
+msg6      'm - free only mass storage files                        '
+msg7      't - submit @@term at conclusion of processing           '
+msg8      'o - terminate and reopen to <spec1> DEVNET host         '
+msg9      'h - list above options                                  '
+msgl      $equ      $-msg9            .
+buf       $res      28                .
+          $end      freem             .
+@MAP,IL  ,FREEM
+ . TYPE QUARTER
+IBANK,MC  EYE1 
+  FRSTIN FREEM 
+ END
+@BRKPT PRINT$  
+@ED,R  JJJJ.
+FC END 
