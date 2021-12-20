@@ -5,19 +5,19 @@
 
 <center><b>Index By Letter</b></center>
 
-<center>[A](A-INDEX.HTM) [B](B-INDEX.HTM)
-[C](C-INDEX.HTM) [D](D-INDEX.HTM)
-[E](E-INDEX.HTM) [F](F-INDEX.HTM)
-[G](G-INDEX.HTM) [H](H-INDEX.HTM)
-[I](I-INDEX.HTM) [J](J-INDEX.HTM)
-[K](K-INDEX.HTM) [L](L-INDEX.HTM)
-[M](M-INDEX.HTM) [N](N-INDEX.HTM)
-[O](O-INDEX.HTM) [P](P-INDEX.HTM)
-[Q](Q-INDEX.HTM) [R](R-INDEX.HTM)
-[S](S-INDEX.HTM) [T](T-INDEX.HTM)
-[U](U-INDEX.HTM) [V](V-INDEX.HTM)
-[W](W-INDEX.HTM) [X](X-INDEX.HTM)
-[Y](Y-INDEX.HTM) [Z](Z-INDEX.HTM)</center>
+<center>[A](A-INDEX.md) [B](B-INDEX.md)
+[C](C-INDEX.md) [D](D-INDEX.md)
+[E](E-INDEX.md) [F](F-INDEX.md)
+[G](G-INDEX.md) [H](H-INDEX.md)
+[I](I-INDEX.md) [J](J-INDEX.md)
+[K](K-INDEX.md) [L](L-INDEX.md)
+[M](M-INDEX.md) [N](N-INDEX.md)
+[O](O-INDEX.md) [P](P-INDEX.md)
+[Q](Q-INDEX.md) [R](R-INDEX.md)
+[S](S-INDEX.md) [T](T-INDEX.md)
+[U](U-INDEX.md) [V](V-INDEX.md)
+[W](W-INDEX.md) [X](X-INDEX.md)
+[Y](Y-INDEX.md) [Z](Z-INDEX.md)</center>
 
 
 &#10;
@@ -36,7 +36,7 @@ this:
 </b>
 - - -
 <b>
-MFD</b> (#1051, June 1990![[OS 2200]](../IMAGES/OS2200.JPG))
+MFD</b> (#1051, June 1990![[OS 2200]](IMAGES/OS2200.JPG))
 - @MFD (version 8.21) is a Master File Directory information
 processor. Technical papers on it were presented at the Fall 1974
 Toronto and Spring 1981 (New York City) USE Conferences. This

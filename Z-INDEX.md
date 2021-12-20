@@ -4,24 +4,24 @@
 
 <center><b>Program Index By Letter:</b></center>
 
-<center>&nbsp;[A](A-INDEX.HTM)
-[B](B-INDEX.HTM) [C](C-INDEX.HTM)
-[D](D-INDEX.HTM) [E](E-INDEX.HTM)
-[F](F-INDEX.HTM) [G](G-INDEX.HTM)
-[H](H-INDEX.HTM) [I](I-INDEX.HTM)
-[J](J-INDEX.HTM) [K](K-INDEX.HTM)
-[L](L-INDEX.HTM) [M](M-INDEX.HTM)
-[N](N-INDEX.HTM) [O](O-INDEX.HTM)
-[P](P-INDEX.HTM) [Q](Q-INDEX.HTM)
-[R](R-INDEX.HTM) [S](S-INDEX.HTM)
-[T](T-INDEX.HTM) [U](U-INDEX.HTM)
-[V](V-INDEX.HTM) [W](W-INDEX.HTM)
-[X](X-INDEX.HTM) [Y](Y-INDEX.HTM)</center>
+<center>&nbsp;[A](A-INDEX.md)
+[B](B-INDEX.md) [C](C-INDEX.md)
+[D](D-INDEX.md) [E](E-INDEX.md)
+[F](F-INDEX.md) [G](G-INDEX.md)
+[H](H-INDEX.md) [I](I-INDEX.md)
+[J](J-INDEX.md) [K](K-INDEX.md)
+[L](L-INDEX.md) [M](M-INDEX.md)
+[N](N-INDEX.md) [O](O-INDEX.md)
+[P](P-INDEX.md) [Q](Q-INDEX.md)
+[R](R-INDEX.md) [S](S-INDEX.md)
+[T](T-INDEX.md) [U](U-INDEX.md)
+[V](V-INDEX.md) [W](W-INDEX.md)
+[X](X-INDEX.md) [Y](Y-INDEX.md)</center>
 
 
 &#10;
 - - -
-<b>ZIP</b> ([1088](1088/INDEX.HTM), June 1993
+<b>ZIP</b> ([1088](1088/INDEX.md), June 1993
 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - <font color="#AF0000">ZIP</font> is a fast, powerful SDF file
 processor,written by Ward Condit who won the 1990 UPLI Contribution
 Award with MARS(#1080), that replaces and enhances most of the
@@ -37,7 +37,7 @@ computational fields; ability to preselect a subset of records based
 on fixed field contents prior to display, locate,extract functions.
 It incorporates FUSION simulated full-screen processing from CAA
 (available separately from UPLI, catalog
-[1081](1081/INDEX.HTM), for use with other software,
+[1081](1081/INDEX.md), for use with other software,
 such as Unisys' @ED processor). Release 2R1 has the ability to
 process a raw ASCII log as if it was SDF formatted. Each record is
 edited into a compressed standard format that includes the most
@@ -57,7 +57,7 @@ original &lt;UC&gt; and &lt;SC&gt; except that leading zeros are
 omitted. And level 3R1 has a built-in HELP facility. (MSM,ABS)
 
 
-<b>ZORK</b> ([1051](1051/INDEX.HTM), January 1983
+<b>ZORK</b> ([1051](1051/INDEX.md), January 1983
 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This is an FTN version of
 MIT's ZORK("DUNGEON") game. <font color="#AF0000">ZORK</font> starts
 where ADVENTURE and CAVE (see above for both)leave off: it allows

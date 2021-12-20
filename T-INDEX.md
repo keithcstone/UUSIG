@@ -4,38 +4,38 @@
 
 <center><b>Program Index By Letter:</b></center>
 
-<center>[A](A-INDEX.HTM) [B](B-INDEX.HTM)
-[C](C-INDEX.HTM) [D](D-INDEX.HTM)
-[E](E-INDEX.HTM) [F](F-INDEX.HTM)
-[G](G-INDEX.HTM) [H](H-INDEX.HTM)
-[I](I-INDEX.HTM) [J](J-INDEX.HTM)
-[K](K-INDEX.HTM) [L](L-INDEX.HTM)
-[M](M-INDEX.HTM) [N](N-INDEX.HTM)
-[O](O-INDEX.HTM) [P](P-INDEX.HTM)
-[Q](Q-INDEX.HTM) [R](R-INDEX.HTM)
-[S](S-INDEX.HTM) [U](U-INDEX.HTM)
-[V](V-INDEX.HTM) [W](W-INDEX.HTM)
-[X](X-INDEX.HTM) [Y](Y-INDEX.HTM)
-[Z](Z-INDEX.HTM)</center>
+<center>[A](A-INDEX.md) [B](B-INDEX.md)
+[C](C-INDEX.md) [D](D-INDEX.md)
+[E](E-INDEX.md) [F](F-INDEX.md)
+[G](G-INDEX.md) [H](H-INDEX.md)
+[I](I-INDEX.md) [J](J-INDEX.md)
+[K](K-INDEX.md) [L](L-INDEX.md)
+[M](M-INDEX.md) [N](N-INDEX.md)
+[O](O-INDEX.md) [P](P-INDEX.md)
+[Q](Q-INDEX.md) [R](R-INDEX.md)
+[S](S-INDEX.md) [U](U-INDEX.md)
+[V](V-INDEX.md) [W](W-INDEX.md)
+[X](X-INDEX.md) [Y](Y-INDEX.md)
+[Z](Z-INDEX.md)</center>
 
 
 &#10;
 - - -
-<b>TA</b> ([1058](1058/INDEX.HTM), October
-1985<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Tape Analyzer is a
+<b>TA</b> ([1058](1058/INDEX.md), October
+1985<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Tape Analyzer is a
 utility designed to aid tape users in the analysis of their tapes.
 Useful information can be obtained from this utility including tape
 record size, character set used, blocking factors, and record
 composition. Documentation included. (MSM, REL,ABS)
 
 
-<b>TABS-RSR</b> ([1072](1072/INDEX.HTM), December
-1989<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Places tabs below
+<b>TABS-RSR</b> ([1072](1072/INDEX.md), December
+1989<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Places tabs below
 each "=.=" in header. (RID)
 
 
-<b>TAG</b> ([1099](1099/INDEX.HTM), September
-1993<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This C processor
+<b>TAG</b> ([1099](1099/INDEX.md), September
+1993<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This C processor
 reads or sets a file's site use (MUSER$) cell in the MFD. You can
 later use FAS to select files with a given site use cell value. This
 is a C version of @MUSER. It is written in UCS C using SLIB, so you
@@ -45,29 +45,29 @@ is described in "Writing Processors in C", UNISPHERE,
 August/September 1993. (C, ABS)
 
 
-<b>TAL</b> ([1084](1084/INDEX.HTM), November
-1987<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Program
+<b>TAL</b> ([1084](1084/INDEX.md), November
+1987<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Program
 description not available.(ABS)
 
 
-<b>TAPEDELETE</b> ([1084](1084/INDEX.HTM), August
-1990<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - A program that
+<b>TAPEDELETE</b> ([1084](1084/INDEX.md), August
+1990<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - A program that
 will delete(@ASG,AQYZ/@FREE,D) cataloged tapes whose first reel is
 either absent (no data ever written to a tape) or does not match the
 qualifier, filename, and F-cycle as found in the STAR TIF. Files with
 tapes unknown to STAR are not deleted.(MSM, ABS)
 
 
-<b>TAPEMSG</b> ([1084](1084/INDEX.HTM), April
-1987<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Displays reel
+<b>TAPEMSG</b> ([1084](1084/INDEX.md), April
+1987<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Displays reel
 numbers of a cataloged tape on the console for the purpose of being a
 'pick list' for the tape room.If the W option is used, it causes the
 first of n messages to be displayed as an outstanding message
 (requires operator reply). @TAPEMSG[,W] tape-file.(ELT, ABS)
 
 
-<b>TAPE-LIST</b> ([1084](1084/INDEX.HTM), June
-1989<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This program will
+<b>TAPE-LIST</b> ([1084](1084/INDEX.md), June
+1989<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This program will
 create a data file(called TAPE-LIST) that contains one line of data
 for each reel in the TIF. The data included is: reel number,
 qualifier, file name, f-cycle, creating run, create data, expiration
@@ -76,76 +76,76 @@ out-of-area data, label type, owner, FLAG1 bits, FLAG2 bits.(MSM,
 ABS)
 
 
-<b>TATU02</b> ([1065](1065/INDEX.HTM), December
-1986<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This program
+<b>TATU02</b> ([1065](1065/INDEX.md), December
+1986<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This program
 alters a UTS terminal control page to change such things as uppercase
 conversion and alternate intensity representation. It also verifies
 the SID. It requires DPS.Documentation included. (COB, ABS)
 
 
-<b>TC</b> ([1067](1067/INDEX.HTM), November
-1987<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - TCOPY reads,
+<b>TC</b> ([1067](1067/INDEX.md), November
+1987<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - TCOPY reads,
 copies and dumps tapes. It provides "User Recovery" mode for reading
 the input tape, which allows you to process tapes that cannot be read
 with standard system utilities.Documentation included. (ABS)
 
 
-<b>TD</b> ([1067](1067/INDEX.HTM), November
-1987<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - The @TDUMP
+<b>TD</b> ([1067](1067/INDEX.md), November
+1987<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - The @TDUMP
 processor dumps a seven and nine track tape whose block size is less
 than or equal to 2000 words. If the tape is written in EBCDIC,
 individual blocks are limited to 9000 bytes each. Documentation
 included. (ABS)
 
 
-<b>TDATE</b> ([1065](1065/INDEX.HTM), MAY
-1989<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Decodes TDATE$
+<b>TDATE</b> ([1065](1065/INDEX.md), MAY
+1989<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Decodes TDATE$
 values into readable dates.Documentation included. (PLS, REL, ABS)
 
 
-<b>TDATE</b> ([1099](1099/INDEX.HTM), September
-1993<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This MASM
+<b>TDATE</b> ([1099](1099/INDEX.md), September
+1993<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This MASM
 processor decodes a twelve-digit octal TDATE$ word or DMS 1100 time
 stamp word into a readable form. This is very handy when looking at
 dumps. (MSM, ABS)
 
 
-<b>TECH</b> ([1084](1084/INDEX.HTM), February
-1990<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Program
+<b>TECH</b> ([1084](1084/INDEX.md), February
+1990<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Program
 description not available.(ABS)
 
 
-<b>TERM</b> ([1051](1051/INDEX.HTM), September
-198<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>1) - Program
+<b>TERM</b> ([1051](1051/INDEX.md), September
+198<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>1) - Program
 description not available.(MSM, ABS)
 
 
-<b>TESAVE</b> ([1084](1084/INDEX.HTM), October
-1990<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - TIP Error Save.
+<b>TESAVE</b> ([1084](1084/INDEX.md), October
+1990<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - TIP Error Save.
 Updates the file containing a record of the TIP transaction errors.
 Started every time the system log switches. (MSM, ABS)
 
 
-<b>TFIU</b> ([1084](1084/INDEX.HTM), September
-1989<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Tape File Index
+<b>TFIU</b> ([1084](1084/INDEX.md), September
+1989<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Tape File Index
 Utility. (MSM,ABS)
 
 
-<b>TFREPORT</b> ([1084](1084/INDEX.HTM), January
-1990<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Program to print
+<b>TFREPORT</b> ([1084](1084/INDEX.md), January
+1990<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Program to print
 the temporary file history kept in SF1*TEMPFILEDATA. (MSM, ABS)
 
 
 <b>TFUR/TREG-FREIPS CONVERSION</b>
-([1096](1096/INDEX.HTM), January 1994<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This routine was created to
+([1096](1096/INDEX.md), January 1994<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This routine was created to
 ease the migration from the TFUR and TREG utilities to the FREIPS
 utility. This routine takes your old work source as input and makes
 all of the necessary conversions to work with the new FREIPS utility.
 (MSM,ABS)
 
 
-<b>TFUTIL</b> ([1084](1084/INDEX.HTM), December
-1988<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - TIP File Utility.
+<b>TFUTIL</b> ([1084](1084/INDEX.md), December
+1988<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - TIP File Utility.
 This is essentially an SSG skeleton that is used to create (@CAT,
 TREG 'REG', AND TFUR 'RV'), or delete (TFUR 'RE', TREG 'DREG', AND
 @DELETE), or save (TIPOUT), or load (TIPIN) any or all of the files
@@ -153,8 +153,8 @@ defined in the 'matrix'(SYS$*ADD$.TFUTIL/SGS). It can be run at the
 console (ST TFUTIL) or in demand(@TFUTIL). (ABS, ELT)
 
 
-<b>TIDE$</b> ([1067](1067/INDEX.HTM), October
-1981<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - The TIDE$ package
+<b>TIDE$</b> ([1067](1067/INDEX.md), October
+1981<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - The TIDE$ package
 consists of a set of subroutines designed to facilitate the input-
 translation of numeric and alphanumeric data. TIDE$ is third-word
 quarter-word insensitive (except in ASCII mode), and activity
@@ -163,19 +163,19 @@ through parameters loaded into registers prior to calling the
 appropriate TIDE$ routines. Documentation included. (MSM, REL)
 
 
-<b>TIE</b> ([1081](1081/INDEX.HTM), January
-1992<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Editor macro used
+<b>TIE</b> ([1081](1081/INDEX.md), January
+1992<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Editor macro used
 to do a "TIME" for people with fumble fingers. (ELT)
 
 
-<b>TIMARK</b> ([1096](1096/INDEX.HTM), September
-1993<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - TIMARK is a
+<b>TIMARK</b> ([1096](1096/INDEX.md), September
+1993<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - TIMARK is a
 program that allows you to determine the time or number of SUPs
 required to execute a program.(MSM)
 
 
-<b>TIME</b> ([1055](1055/INDEX.HTM), February
-1985![](../IMAGES/MAPPER.JPG)) - TIME stands for "Total Information MAPPER
+<b>TIME</b> ([1055](1055/INDEX.md), February
+1985![](IMAGES/MAPPER.JPG)) - TIME stands for "Total Information MAPPER
 Environment." It is an electronic filing system, electronic mail, and
 a series of powerful commands for all levels of MAPPER users (end
 users, run writers and coordinators). Its purpose is to give these
@@ -185,29 +185,29 @@ phone number can be found in the TIME folder in the UPLI archives. He
 will support TIME. (RIDs)
 
 
-<b>TIME</b> ([1067](1067/INDEX.HTM), August
-1985<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - The @TIME
+<b>TIME</b> ([1067](1067/INDEX.md), August
+1985<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - The @TIME
 processor displays various computer usage statistics as well as the
 current time and date, which appear on the sign-on line.
 Documentation included. (MSM, ABS)
 
 
-<b>TIME</b> ([1084](1084/INDEX.HTM), January
-1991<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Time can be
+<b>TIME</b> ([1084](1084/INDEX.md), January
+1991<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Time can be
 obtained via console keyin 'D' or via the processors TIME and CLOCK.
 Console message can have the time on them (see CMSG). (MSM, ABS)
 
 
-<b>TIPMEM</b> ([1082](1082/INDEX.HTM), August
-1990<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - TIPMEM is a TIP
+<b>TIPMEM</b> ([1082](1082/INDEX.md), August
+1990<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - TIPMEM is a TIP
 Memory Utility similar to TMINIT supplied by Unisys, and is user
 friendly and keyword driven. The user may ADD, DELETE, or CHANGE
 memory groups. The user may also DISPLAY a group or all groups,
 CANCEL and RESTORE (default configuration) TIP memory.(ABS)
 
 
-<b>TIPMON</b> ([1078](1078/INDEX.HTM), February
-1991<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - TIPMON is a
+<b>TIPMON</b> ([1078](1078/INDEX.md), February
+1991<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - TIPMON is a
 stand-alone full screen processor that provides online TIP memory
 configuration data, such as current/min/max/average sizes, as well as
 contractions and expansions per memory group. A number of screens are
@@ -219,8 +219,8 @@ bank numbers and sizes to increase system performance. Documentation
 included.(MSM, REL, ABS)
 
 
-<b>TIP-PRT</b> ([1065](1065/INDEX.HTM), October
-1985<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - MASM program signs
+<b>TIP-PRT</b> ([1065](1065/INDEX.md), October
+1985<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - MASM program signs
 on as an RJE,takes all print files in that queue, and places them as
 elements in a program file. To take care of TIP dumps, it checks
 characters 2 through 7 of the filename for an * and, if found,
@@ -228,28 +228,28 @@ changes the * to a hyphen. This allows programmers to see their TIP
 dumps without waiting for them to print.(MSM)
 
 
-<b>TITLE</b> ([1081](1081/INDEX.HTM), November
-1992<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Prints title pages
+<b>TITLE</b> ([1081](1081/INDEX.md), November
+1992<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Prints title pages
 using block characters. Documentation included. (MSM, ABS)
 
 
-<b>TLIST</b> ([1067](1067/INDEX.HTM), December
-1977<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Program
+<b>TLIST</b> ([1067](1067/INDEX.md), December
+1977<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Program
 description not available.(ASM, REL, ABS)
 
 
-<b>TLU</b> ([1084](1084/INDEX.HTM), May
-1990<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Tape Library
+<b>TLU</b> ([1084](1084/INDEX.md), May
+1990<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Tape Library
 Utility. Menu interface to STAR utilities. (ELT 1990, ABS 1989)
 
 
-<b>TM</b> ([1084](1084/INDEX.HTM), February
-1987<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - To send a message
+<b>TM</b> ([1084](1084/INDEX.md), February
+1987<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - To send a message
 to a terminal (DEMAND)user. (MSM, ABS)
 
 
-<b>TMDUMP</b> ([1072](1072/INDEX.HTM), December
-1989<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This is a TAPE and
+<b>TMDUMP</b> ([1072](1072/INDEX.md), December
+1989<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This is a TAPE and
 MASS-STORAGE dump utility. By using the "D" option all documentation
 will be printed in 132 characters per line, or the "B" option will
 print in 80 characters per line.This utility will dump in ASCII,
@@ -257,20 +257,20 @@ FIELDATA, EBCDIC, OCTAL, HEX and almost any two combinations thereof.
 Documentation included. (MSM 1989, ABS 1988)
 
 
-<b>TOC</b> ([1097](1097/INDEX.HTM), February
-1991<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - The TOC program
+<b>TOC</b> ([1097](1097/INDEX.md), February
+1991<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - The TOC program
 displays the Table of Contents of a program file. It is a substitute
 for FURPUR @PRT,T.Documentation included. (ABS)
 
 
-<b>TOCED</b> ([1083](1083/INDEX.HTM), August
-1982<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This processor
+<b>TOCED</b> ([1083](1083/INDEX.md), August
+1982<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This processor
 operates on a program file's table of contents in a manner similar to
 the way that ED operates on an element. Many commands are similar.
 (ABS)
 
 
-<b>TOCED</b> ([1087](1087/INDEX.HTM), May 1991) -
+<b>TOCED</b> ([1087](1087/INDEX.md), May 1991) -
 The TOCED processor is used to conversationally edit the table of
 contents of a program file. It allows all, or portions of the table
 of contents to be edited, program elements to be deleted, and any
@@ -282,30 +282,30 @@ However, users familiar with @ED commands should find TOCED easy to
 learn. (MSM, ABS)
 
 
-<b>TPCERT</b> ([1065](1065/INDEX.HTM), April
-1986<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - MASM program to
+<b>TPCERT</b> ([1065](1065/INDEX.md), April
+1986<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - MASM program to
 test tapes by writing a test pattern to the end of tape, rewinding,
 and reading to the end. It solicits a reel number from the operator
 and proceeds to that reel. At completion of processing for a reel,
 the operator will be asked for another reel or END to stop. (ELT)
 
 
-<b>TPF</b> ([1051](1051/INDEX.HTM), March
-1983<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This processor
+<b>TPF</b> ([1051](1051/INDEX.md), March
+1983<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This processor
 provides a simple means for a user to create a file and attach it to
 his run as the TPF$ file.Documentation included. (ASM 1983, ABS 1978)
 
 
-<b>TPUTIL</b> ([1084](1084/INDEX.HTM), December
-1988<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Runstream
+<b>TPUTIL</b> ([1084](1084/INDEX.md), December
+1988<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Runstream
 interface to the VALTAB/SKEL SSG skeleton used by the librarian to
 effect changes to VALTAB entries. Starting or adding this runstream
 causes the OPTION SGS to be set to C (for change) and will solicit
 for the transaction names. (ABS)
 
 
-<b>TRADES</b> ([1050](1050/INDEX.HTM), June
-1984<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - The TRADES Model
+<b>TRADES</b> ([1050](1050/INDEX.md), June
+1984<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - The TRADES Model
 is designed to perform transient load analysis by discrete event
 simulation in an integrate devaluation system. It was designed to
 simulate message processing by Sperry 1100/80 system but is fully
@@ -318,29 +318,29 @@ programs in this package, but they all seem to be inter-related.
 (SYM, REL, ABS)
 
 
-<b>TREK</b> ([1051](1051/INDEX.HTM), June
-1979<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Program
+<b>TREK</b> ([1051](1051/INDEX.md), June
+1979<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Program
 description not available. (ELT 1975, ABS 1979)
 
 
-<b>TRSAVE</b> ([1084](1084/INDEX.HTM), October
-1990<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - TIP Rate Save.
+<b>TRSAVE</b> ([1084](1084/INDEX.md), October
+1990<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - TIP Rate Save.
 Updates the file containing a record of the TIP transaction rates.
 Started every time the SIP file is switched. (MSM, ABS)
 
 
-<b>TSWAP</b> ([1051](1051/INDEX.HTM), April
-1980<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Program
+<b>TSWAP</b> ([1051](1051/INDEX.md), April
+1980<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Program
 description unavailable. (MSM 1975, ABS 1980)
 
 
-<b>TWAIT</b> ([1051](1051/INDEX.HTM), October
-1973<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - Program
+<b>TWAIT</b> ([1051](1051/INDEX.md), October
+1973<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Program
 description unavailable. (ASM,ABS)
 
 
-<b>TWAIT</b> ([1099](1099/INDEX.HTM), September
-1993<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This MASM
+<b>TWAIT</b> ([1099](1099/INDEX.md), September
+1993<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This MASM
 processor waits a given number of milliseconds and then exits. It's
 very useful when a batch job must wait a while to allow something
 else to finish before continuing. (MSM, ABS)

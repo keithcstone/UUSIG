@@ -20,43 +20,43 @@
 &#13;&#13;
 - - -
 
-<b>ABF</b> ([1084](1084/INDEX.md), June 1990 ![](../IMAGES/OS2200.JPG))
+<b>ABF</b> ([1084](1084/INDEX.md), June 1990 ![](IMAGES/OS2200.JPG))
 - Program to assign a file and BRKPT PRINT$ to it. The file will be
 called 'runid*PRINT', except under certain circumstances.(MSM,
 ABS)
 
 
 <b>ABORT</b> ([1084](1084/INDEX.md), October 1987
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - Program description not available.(ELT, ABS)
 
 
 <b>ABSDOWN</b> ([1084](1084/INDEX.md), May 1990
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - Compares two absolute elements and prints the differences. @ABSDOWN
 program-1,program-2. (MSM, ABS)
 
 
-<b>ACEY</b> ([1051](1051/INDEX.md), October 1978
-![](../IMAGES/OS2200.JPG))
+<b>ACEY</b> ([1051](1051/1051.md), October 1978
+![](IMAGES/OS2200.JPG))
 - The game of Acey-Ducey.(BAS)
 
 
 <b>ACCT</b> ([1084](1084/INDEX.md), August 1989
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - Program to display fixed disk limit/usage for the user's account.
 (ABS)
 
 
 <b>ACOB$CKPT</b> ([1065](1065/INDEX.md), June 1983
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - MASM subroutine written to be called from ACOB program. It uses ER
 CSF$ to do an @CKPT into a disk file which is created by the
 subroutine. (MSM)
 
 
 <b>ACOB-SUBS</b> ([1065](1065/INDEX.md), April 1989
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - A set of MASM subroutines written to be called from an ACOB
 program. They do ER IOW$, ER FITEM$, ER TWAIT$, ER DM$IOW and ER
 INFO$ (user-ID function) from user-supplied packets.Documentation
@@ -64,20 +64,20 @@ included. (ASM)
 
 
 <b>ADATE</b> ([1065](1065/INDEX.md), March 1989
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - Given a Julian date and a displacement in days (into the past or
 future), this routine calculates a new Julian date.Documentation
 included. (ELT, COB, REL)
 
 
 <b>ADD</b> ([1084](1084/INDEX.md), December 1988
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - ECL command to dynamically add other ECL images to a runstream.
 (ELT, ABS)
 
 
 <b>ADDS</b> ([1084](1084/INDEX.md), December 1988
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - Automated Documentation Distribution System. The document to be
 distributed must exist in the file ADDS*DOCUMENT and must be a print
 file. Verify that the required distribution list(s) existing the file
@@ -91,8 +91,8 @@ users defined in DATASEC*DATA.AUSER. Type@ADDS and then enter each
 desired distribution list name. (ABS)
 
 
-<b>ADVENTURE</b> ([1051](1051/INDEX.md), April 1981
-![](../IMAGES/OS2200.JPG))
+<b>ADVENTURE</b> ([1051](1051/1051.md), April 1981
+![](IMAGES/OS2200.JPG))
 - This file contains an FTN version of the ADVENTURE program.
 ADVENTURE is an addictive game...be careful, it may take over your
 computer center for a month or two! Documentation included.(ABS)
@@ -105,7 +105,7 @@ capability. Debug and trace features are also provided.(ABS)
 
 
 <b>ALFP</b> ([1099](1099/INDEX.md), September 1993
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - This COBOL processor is used to report on BATCH or DEMAND runs
 activities. Selection can be on RUNID or FILENAME.The ASCII LOG entry
 types that are reported on are: 101, 106, 107, 109, 403,404, and 405.
@@ -117,7 +117,7 @@ cycle(s) of the ASCII LOG.(COB, ABS)
 
 
 <b>ALFQP 1R7</b> ([1082](1082/INDEX.md), July 1991
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - ASCII Log File Query Processor allows the user to select and print
 log entries based on criteria such as RUNID,ACCOUNT, TIME period or
 FILENAME, generate the CONSOLE listing, select on CONSOLE KEYINS as
@@ -127,14 +127,14 @@ save.Documentation included. (ABS)
 
 
 <b>ALIAS</b> ([1067](1067/INDEX.md), November 1984
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - @ALIAS allows the user to specify one or more alternate element
 names to be equated to an existing element.Documentation included.
 (MSM 1983, REL 1984, ABS 1981)
 
 
 <b>ASCII LOG ACCOUNTING PROGRAMS</b> ([1073](1073/INDEX.md),
-December 1990 ![](../IMAGES/OS2200.JPG))
+December 1990 ![](IMAGES/OS2200.JPG))
 - This is a set of programs to read the ASCII System Log and prepare
 a billing tape. Program LOG40-COPY uses SLRR to read log records and
 write selected record types to an output SDF file. Program
@@ -146,8 +146,8 @@ accumulates cataloged tape and disk existence units. Documentation
 included.(ELT's, COB's, ASM's, MSM's, ABS)
 
 
-<b>ASGCNT</b> ([1099](1099/INDEX.md), September 1993
-![](../IMAGES/OS2200.JPG))
+<b>ASGCNT</b> ([1099](1099/1099.md), September 1993
+![](IMAGES/OS2200.JPG))
 - This MASM processor tells you how many runs have a particular
 cataloged file assigned. It optionally pipes this information. The FF
 keyin is preferable for console and @@CONS users, but this processor
@@ -155,53 +155,53 @@ allows you to write smart batch jobs that vary their action depending
 on how many runs are using a file. (MSM, ELT)
 
 
-<b>ASGSORT</b> ([1084](1084/INDEX.md), April 1990
-![](../IMAGES/OS2200.JPG))
+<b>ASGSORT</b> ([1084](1084/1084.md), April 1990
+![](IMAGES/OS2200.JPG))
 - This is a program that is used to assign sort work files XA, XB and
 R$CORE on removable packs in the CFSUTL pool.(ABS)
 
 
-<b>ASGTEMP</b> ([1084](1084/INDEX.md), April 1990
-![](../IMAGES/OS2200.JPG))
+<b>ASGTEMP</b> ([1084](1084/1084.md), April 1990
+![](IMAGES/OS2200.JPG))
 - This is a program that is used to assign temporary files on
 removable packs in the CFSUTL pool.(ABS)
 
 
-<b>ASSIGN</b> ([1084](1084/INDEX.md), November
-1990![](../IMAGES/OS2200.JPG))
+<b>ASSIGN</b> ([1084](1084/1084.md), November
+1990![](IMAGES/OS2200.JPG))
 - Processor to assign files on removable disk packs by specifying a
 pool name rather than specific hard-coded pack IDs. (MSM 1990, ABS
 1989)
 
 
-<b>AT-SWITCH </b>([1081](1081/INDEX.md), February 1993
-![](../IMAGES/OS2200.JPG))
+<b>AT-SWITCH </b>([1081](1081/1081.md), February 1993
+![](IMAGES/OS2200.JPG))
 - Executed the first thing every morning to insure that a new cycle
 of the audit trail is created. (ELT)
 
 
-<b>ATAT</b> ([1097](1097/INDEX.md), May 1986
-![](../IMAGES/OS2200.JPG))
+<b>ATAT</b> ([1097](1097/1097.md), May 1986
+![](IMAGES/OS2200.JPG))
 - The program ATAT will read images, put"D,@@" in front of the image,
 and perform an ER APRTCN$. This program provides a means to perform
 @@-Commands from @ADD stream. (ABS)
 
 
 <b>ATP</b> ([1060](1060/INDEX.md), June 1990
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - Audit Trail Processor selects and prints any information from AUDIT
 TRAILs. It is compatible with UDS. Documentation included. (COB,
 ABS)
 
 
 <b>AUTO</b> ([1107](1107/INDEX.md), April 1998
-![](../IMAGES/OS2200.JPG))
+![](IMAGES/OS2200.JPG))
 - AUTO is an automated run scheduling utility for Unisys 1100/2200
 computers. Documentation included. (ASM, SSG)
 
 
-<b>AVAIL</b> ([1051](1051/INDEX.md), October
-1982![](../IMAGES/OS2200.JPG))
+<b>AVAIL</b> ([1051](1051/1051.md), October
+1982![](IMAGES/OS2200.JPG))
 - The @AVAIL processor displays mass storage availability by
 equipment type or by unit. Documentation included.(MSM 1982, ABS
 1978)
