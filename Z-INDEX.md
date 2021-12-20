@@ -22,7 +22,7 @@
 &#10;
 - - -
 <b>ZIP</b> ([1088](1088/INDEX.HTM), June 1993
-<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - <font color="#AF0000">ZIP</font> is a fast, powerful SDF file
+<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - <font color="#AF0000">ZIP</font> is a fast, powerful SDF file
 processor,written by Ward Condit who won the 1990 UPLI Contribution
 Award with MARS(#1080), that replaces and enhances most of the
 functions of of @ED,R and can outperform it by a factor of ten or
@@ -58,7 +58,7 @@ omitted. And level 3R1 has a built-in HELP facility. (MSM,ABS)
 
 
 <b>ZORK</b> ([1051](1051/INDEX.HTM), January 1983
-<i>![[OS 2200]](../IMAGES/OS2200.JPG)</i>) - This is an FTN version of
+<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - This is an FTN version of
 MIT's ZORK("DUNGEON") game. <font color="#AF0000">ZORK</font> starts
 where ADVENTURE and CAVE (see above for both)leave off: it allows
 more expressive input commands, and more complex relationships
