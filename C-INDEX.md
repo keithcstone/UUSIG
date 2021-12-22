@@ -25,12 +25,10 @@ SGS images for user written skels. CACHECHK will now TPASG any file
 that is TPFREE'd, not just the files that were cache disabled. (MSM,
 ABS)
 
-
 **CAL** ([1051](1051/1051.md), December
 1982![](IMAGES/OS2200.JPG)) - This processor, written in FORTRAN-V,can
 produce full-page monthly calendars for any year after 1752.
 Documentation included. (ABS)
-
 
 **CALL** ([1097](1097/1097.md), June
 1993![](IMAGES/OS2200.JPG)) - CALL is a medium performance high level language, oriented towards string processing. Language features include: modern, block structured syntax; automatic type conversion;
@@ -43,26 +41,21 @@ one-time programs and prototyping utilities. Where performance is not
 absolutely critical, CALL programs can be used successfully in
 production environments. Documentation included. (ABS, ELT, MSM)
 
-
 **CANDE** ([1097](1097/1097.md), March
 1987![](IMAGES/OS2200.JPG)) - CANDE is an OS1100 processor that will read a
 CANDE format (B Series) tape and convert the data into elements in a
 program file. Documentation and source are included. (MSM, ABS)
 
-
 **CAT** ([1077](1077/1077.md), May 1990![](IMAGES/OS2200.JPG)) - Works like the UNIX cat command.(IPF)
-
 
 **CATALOG** ([1067](1067/1067.md), August
 1980![](IMAGES/OS2200.JPG)) - @CATALOG provides information about cataloged
 files. Documentation included. (ABS)
 
-
 **CAVE** ([1051](1051/1051.md), October
 1980![](IMAGES/OS2200.JPG)) - CAVE is a sequel to the ADVENTURE
 game.Everything said above for ADVENTURE applies equally to CAVE.
 Documentation included. (ABS)
-
 
 **CBDUMP** ([1097](1097/1097.md), March
 1993![](IMAGES/OS2200.JPG)) - Snaps the contents of a given Common Bank.
@@ -70,26 +63,21 @@ The program works with AFCBs, CCBs, and NCCBs. It will not work if
 the bank is unloaded or has a guaranteed entry-point. Documentation
 included.(ABS)
 
-
 **CCL** ([1051](1081/1081.md), January
 1992![](IMAGES/OS2200.JPG)) - Editor macro used to convert all alphabetic
 characters to lowercase. (ELT)
-
 
 **CCU** ([1051](1081/1081.md), January
 1992![](IMAGES/OS2200.JPG)) - Editor macro used to convert all alphabetic
 characters to uppercase. (ELT)
 
-
 **CD** ([1077](1077/1077.md), May 1990![](IMAGES/OS2200.JPG)) - Works like the UNIX/DOS CD (change
 directory)command. (IPF)
-
 
 **CDATE** ([1051](1065/1065.md), March
 1989![](IMAGES/OS2200.JPG)) - This subprogram converts a 9(8) MMDDYYYY date
 to a 9(7) Julian date YYYYDDD, and vice-versa. Documentation
 included.(ELT, COB, REL)
-
 
 **CHANGE-FILE** ([1051](1081/1081.md),
 October 1991![](IMAGES/OS2200.JPG)) - Changes the number of
@@ -97,11 +85,9 @@ assignments, the cataloged date and time, and the last referenced
 date and time on the file on the processor call to the respective
 fields on the call.(ELT)
 
-
 **CHANGER** ([1051](1051/1051.md), July
 1982![](IMAGES/OS2200.JPG)) - Program description not available. (MSM 1982,
 ABS 1981)
-
 
 **CHDIR** ([1077](1077/1077.md), May
 1990![](IMAGES/OS2200.JPG)) - Works like the DOS CHDIR (change
@@ -114,19 +100,16 @@ purpose is to verify the integrity of a mass storage file as a guard
 against corruption caused by any means, including system hardware
 failure.Documentation included. (MSM, REL, ABS)
 
-
 **CHECKACTIVE** ([1084](1084/1084.md),
 August 1990![](IMAGES/OS2200.JPG)) - Program that checks to see if
 the specified original run ID is active and sets T3 of the condition
 word appropriately. (MSM, ABS)
-
 
 **CHECKRUN** ([1084](1084/1084.md), August
 1990![](IMAGES/OS2200.JPG)) - Program that compares the original run ID to
 the generated run ID and issues an outstanding message (and aborts
 the run) if they are not the same. Used by the PFX skeleton.
 (MSM,ABS)
-
 
 **CHECKSITE** ([1084](1084/1084.md), May
 1990![](IMAGES/OS2200.JPG)) - Program that compares the original runid
