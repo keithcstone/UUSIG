@@ -27,7 +27,7 @@ private, noncommercial purposes.</i>
 - **Pkg. # Package Name, Platform**
        
        
-- 1000 [TAPE DUMP, GENERALIZED](1000/1000.md) ![[2200]](IMAGES/OS2200.JPG)
+- 1000/1000.md [TAPE DUMP, GENERALIZED](1000/1000.md/1000/1000.md.md) ![[2200]](IMAGES/OS2200.JPG)
        
        
 - 1001 [FLOBOL, COBOL FLOWCHART](1001/1001.md) ![[2200]](IMAGES/OS2200.JPG)
@@ -117,11 +117,11 @@ private, noncommercial purposes.</i>
 - 1028 [FORTRAN DICTIONARY](1028/1028.md) ![[2200]](IMAGES/OS2200.JPG)
        
        
-- 1029 [GRAPHICS, TEKTRONICS](1029/INDEX.md) ![[2200]](IMAGES/OS2200.JPG)
+- 1029 [GRAPHICS, TEKTRONICS](1029/1029.md) ![[2200]](IMAGES/OS2200.JPG)
        
        
 - 1030 [COBOL CONVERSION DMS ANSI -
-       ASCII](1030/INDEX.md) ![[2200]](IMAGES/OS2200.JPG)
+       ASCII](1030/1030.md) ![[2200]](IMAGES/OS2200.JPG)
        
        
 - 1031 [DEMAND RESPONSE MONITOR](1031/1031.md) ![[2200]](IMAGES/OS2200.JPG)

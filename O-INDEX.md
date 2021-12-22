@@ -1,10 +1,6 @@
-<x-sas-window top="66" bottom="768" left="8" right="538">
+# Program Index By Letter: O
 
-
-
-<center><b>Program Index By Letter:</b></center>
-
-<center>[A](A-INDEX.md) [B](B-INDEX.md)
+[A](A-INDEX.md) [B](B-INDEX.md)
 [C](C-INDEX.md) [D](D-INDEX.md)
 [E](E-INDEX.md) [F](F-INDEX.md)
 [G](G-INDEX.md) [H](H-INDEX.md)
@@ -16,55 +12,43 @@
 [T](T-INDEX.md) [U](U-INDEX.md)
 [V](V-INDEX.md) [W](W-INDEX.md)
 [X](X-INDEX.md) [Y](Y-INDEX.md)
-[Z](Z-INDEX.md)</center>
+[Z](Z-INDEX.md)
 
 
-&#10;
 - - -
-<b>OIM</b> ([1081](1081/INDEX.md), January 1992![[OS 2200]](IMAGES/OS2200.JPG)) - Editor macro used to do an
+**OIM** ([1081](1081/1081.md), January 1992![[OS 2200]](IMAGES/OS2200.JPG)) - Editor macro used to do an
 "OMIT" for people with fumble fingers. (ELT)
 
-
-<b>OMA</b> ([1081](1081/INDEX.md), January
+**OMA** ([1081](1081/1081.md), January
 1992![[OS 2200]](IMAGES/OS2200.JPG)) - Editor macro used to
 omit from the editor and add the File/Element being edited. Prefixing
 the command with "LN" will cause the images being added to be listed.
 (ELT)
 
-
-<b>OMD</b> ([1081](1081/INDEX.md), January
+**OMD** ([1081](1081/1081.md), January
 1992![[OS 2200]](IMAGES/OS2200.JPG)) - Editor macro used to
-omit from the editor and delete the Element being edited. It does not
-delete files. (ELT)
+omit from the editor and delete the Element being edited. It does not delete files. (ELT)
 
-
-<b>OMNIMON</b> ([1084](1084/INDEX.md), October
+**OMNIMON** ([1084](1084/1084.md), October
 1990![[OS 2200]](IMAGES/OS2200.JPG)) - Processor that is used
 to monitor the system. Will display either a summary screen showing
 the top nineteen processors, I/O, or file allocation users, or a
 detail screen for a single run.(MSM, ABS)
 
-
-<b>OMSG</b> ([1084](1084/INDEX.md), December
+**OMSG** ([1084](1084/1084.md), December
 1988![[OS 2200]](IMAGES/OS2200.JPG)) - Program used to send
 the main console an outstanding message without having the run wait
 for a reply.(ABS)
 
-
-<b>ON</b> ([1051](1051/INDEX.md), August,
+**ON** ([1051](1051/1051.md), August,
 1982![[OS 2200]](IMAGES/OS2200.JPG)) - The @ON processor
 allows non-CTS users to easily configure their terminal control,
 assumed @USE and @ASG characteristics,etc., when they sign onto the
 system. Documentation included. (MSM,ABS)
 
-
-<b>ONE</b> ([1084](1084/INDEX.md), May 1990![[OS 2200]](IMAGES/OS2200.JPG)) - Program that assigns SYS$*DLOC$.
+**ONE** ([1084](1084/1084.md), May 1990![[OS 2200]](IMAGES/OS2200.JPG)) - Program that assigns SYS$*DLOC$.
 (MSM,ABS)
 
-
-<b>OUT</b> ([1051](1051/INDEX.md), November
+**OUT** ([1051](1051/1051.md), November
 1982![[OS 2200]](IMAGES/OS2200.JPG)) - See @IN above. (MSM
 April 1982, ABS 1980)
-
-
-</x-sas-window>

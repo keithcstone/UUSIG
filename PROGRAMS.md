@@ -3,7 +3,7 @@
 
 
 
-<center><b>Index By Letter</b></center>
+<center>**Index By Letter**</center>
 
 <center>[A](A-INDEX.md) [B](B-INDEX.md)
 [C](C-INDEX.md) [D](D-INDEX.md)
@@ -32,11 +32,11 @@ Each program listing in the Program Index looks something like
 this:
 
 
-<b>
-</b>
+**
+**
 - - -
-<b>
-MFD</b> (#1051, June 1990![[OS 2200]](IMAGES/OS2200.JPG))
+**
+MFD** (#1051, June 1990![[OS 2200]](IMAGES/OS2200.JPG))
 - @MFD (version 8.21) is a Master File Directory information
 processor. Technical papers on it were presented at the Fall 1974
 Toronto and Spring 1981 (New York City) USE Conferences. This

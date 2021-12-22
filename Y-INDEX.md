@@ -1,10 +1,6 @@
-<x-sas-window top="97" bottom="768" left="196" right="726">
+# Program Index By Letter: Y
 
-
-
-<center><b>Program Index By Letter:</b></center>
-
-<center>&nbsp;[A](A-INDEX.md)
+[A](A-INDEX.md)
 [B](B-INDEX.md) [C](C-INDEX.md)
 [D](D-INDEX.md) [E](E-INDEX.md)
 [F](F-INDEX.md) [G](G-INDEX.md)
@@ -16,14 +12,6 @@
 [R](R-INDEX.md) [S](S-INDEX.md)
 [T](T-INDEX.md) [U](U-INDEX.md)
 [V](V-INDEX.md) [W](W-INDEX.md)
-[X](X-INDEX.md) [Z](Z-INDEX.md)</center>
+[X](X-INDEX.md) [Z](Z-INDEX.md)
 
-
-&#10;
 - - -
-
-
-&nbsp;
-
-
-</x-sas-window>

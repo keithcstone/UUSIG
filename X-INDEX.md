@@ -1,10 +1,6 @@
-<x-sas-window top="92" bottom="768" left="322" right="852">
+# Program Index By Letter: X
 
-
-
-<center><b>Program Index By Letter:</b></center>
-
-<center>[A](A-INDEX.md) [B](B-INDEX.md)
+[A](A-INDEX.md) [B](B-INDEX.md)
 [C](C-INDEX.md) [D](D-INDEX.md)
 [E](E-INDEX.md) [F](F-INDEX.md)
 [G](G-INDEX.md) [H](H-INDEX.md)
@@ -16,30 +12,24 @@
 [S](S-INDEX.md) [T](T-INDEX.md)
 [U](U-INDEX.md) [V](V-INDEX.md)
 [W](W-INDEX.md) [Y](Y-INDEX.md)
-[Z](Z-INDEX.md)</center>
+[Z](Z-INDEX.md)
 
-<center>
 - - -
-<b>X</b> ([1081](1081/INDEX.md), April 1992 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Editor macro used to do an
+**X** ([1081](1081/1081.md), April 1992 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Editor macro used to do an
 "EXIT" for people with fumble fingers. (ELT)</center>
 
-
-<b>XCTS</b> ([1077](1077/INDEX.md), May 1990
+**XCTS** ([1077](1077/1077.md), May 1990
 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Works like the CTS XCTS
 command.(IPF)
 
-
-<b>XEDIT/FUNCTIONKEYS</b>
-([1077](1077/INDEX.md), May 1990 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Sets up your function keys
+**XEDIT/FUNCTIONKEYS**
+([1077](1077/1077.md), May 1990 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Sets up your function keys
 like VM/XEDIT. (IPF)
 
+**XIPF** ([1077](1077/1077.md), May 1990
+<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Gets you out of IPF. Same as the LOGOFF command. (IPF)
 
-<b>XIPF</b> ([1077](1077/INDEX.md), May 1990
-<i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - Gets you out of IPF. Same as
-the LOGOFF command. (IPF)
-
-
-<b>XREAD</b> ([1067](1067/INDEX.md), June 1983
+**XREAD** ([1067](1067/1067.md), June 1983
 <i>![[OS 2200]](IMAGES/OS2200.JPG)</i>) - XREAD is a tape read
 subroutine bypassing system error recovery. This FORTRAN-callable
 subroutine tries to read any tape, regardless of parity errors, bad
@@ -51,9 +41,3 @@ bypass system recovery. XREAD should only be used if the input tape
 is of unknown density or parity, or contains many permanent errors
 which normal system recovery is unable to get around. Documentation
 included. (ASM, REL)
-
-
-<center>&nbsp;</center>
-
-
-</x-sas-window>
